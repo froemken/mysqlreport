@@ -1,0 +1,18 @@
+<f:layout name="Default" />
+
+<f:section name="content">
+	<table class="table">
+		<thead>
+			<th>Query</th>
+			<th>Duration</th>
+		</thead>
+		<tbody>
+			<f:for each="{queries}" as="query">
+				<tr>
+					<td>{query.query}...</td>
+					<td>{query.duration}</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+</f:section>

@@ -1,0 +1,43 @@
+<f:layout name="Default" />
+
+<f:section name="content">
+	<f:link.action action="queryType" controller="Profile" class="btn btn-primary" arguments="{uniqueIdentifier: uniqueIdentifier, queryType: queryType}">Back</f:link.action>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Query</h3>
+		</div>
+		<div class="panel-body">{profiling.query}</div>
+	</div>
+	<h1>Profile output</h1>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Status</th>
+				<th>Duration</th>
+			</tr>
+		</thead>
+		<tbody>
+			<f:for each="{profiling.profile}" as="status">
+				<tr>
+					<td>{status.Status}</td>
+					<td>{status.Duration}</td>
+				</tr>
+			</f:for>
+		</tbody>
+	</table>
+	<f:if condition="{profiling.explain->f:count()}">
+		<h1>Explain output</h1>
+		<f:for each="{profiling.explain}" as="explain">
+			<table class="table">
+				<tbody>
+				<f:for each="{explain}" as="value" key="key">
+					<tr>
+						<td>{key}</td>
+						<td>{value}</td>
+					</tr>
+				</f:for>
+				</tbody>
+			</table>
+		</f:for>
+	</f:if>
+</f:section>

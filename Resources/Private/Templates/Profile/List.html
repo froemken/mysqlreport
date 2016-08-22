@@ -1,0 +1,31 @@
+<f:layout name="Default" />
+
+<f:section name="content">
+	<f:if condition="{profiles}">
+		<f:then>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Execution time</th>
+						<th>Mode</th>
+						<th>Amount of queries in request</th>
+						<th>Summed Duration</th>
+					</tr>
+				</thead>
+				<tbody>
+					<f:for each="{profiles}" as="profile">
+						<tr>
+							<td>{profile.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
+							<td>{profile.mode}</td>
+							<td>{profile.amount}</td>
+							<td><f:link.action action="show" controller="Profile" arguments="{uniqueIdentifier: profile.unique_call_identifier}">{profile.duration}</f:link.action></td>
+						</tr>
+					</f:for>
+				</tbody>
+			</table>
+		</f:then>
+		<f:else>
+			<p>No profiles collected. Please visit Frontend to collect profiles.</p>
+		</f:else>
+	</f:if>
+</f:section>

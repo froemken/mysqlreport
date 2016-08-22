@@ -1,0 +1,31 @@
+{namespace sf=StefanFroemken\Mysqlreport\ViewHelpers}
+
+<sf:threadCache status="{status}" variables="{variables}">
+	<div class="panel panel-{hitRatio.status}">
+		<div class="panel-heading">
+			<h3 class="panel-title">Hit Ratio</h3>
+		</div>
+		<div class="panel-body">
+			<p>{hitRatio.value}%</p>
+			<p>As closer to 100% as better.</p>
+			<f:if condition="{0: hitRatio.status}!={0: 'success'}">
+				<f:if condition="{variables.threadCacheSize}">
+					<f:then>
+						<f:if condition="{status.threadsConnected}<{variables.threadCacheSize}">
+							<f:then>
+								<p>It seems that you are the only person on this MySQL-Server, so this value should be OK.</p>
+							</f:then>
+							<f:else>
+								<p>It seems that your thread_cache_size ({variables.threadCacheSize}) is too low. Please increase this value in 10th steps.</p>
+							</f:else>
+						</f:if>
+					</f:then>
+					<f:else>
+						<p>Your thread_cache_size (0) is not activated. Please set this value 10.
+					</f:else>
+				</f:if>
+			</f:if>
+		</div>
+	</div>
+
+</sf:threadCache>

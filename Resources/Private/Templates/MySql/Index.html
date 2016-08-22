@@ -1,0 +1,80 @@
+{namespace sf=StefanFroemken\Mysqlreport\ViewHelpers}
+
+<f:layout name="Default" />
+
+<f:section name="content">
+	<f:render partial="Uptime" arguments="{status: status}" />
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Aborted Connects</h3>
+		</div>
+		<div class="panel-body">
+			<p>
+				You have {status.abortedConnects} aborted connects. If this value is high it could be that you have many<br />
+				wrong logins. Please check your application for wrong authentication data.
+			</p>
+		</div>
+	</div>
+
+	<f:if condition="{variables.backLog}">
+		<f:alias map="{maxSysConn: '{sf:command.backLog()}'}">
+			<f:if condition="{maxSysConn}">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">Back Log</h3>
+					</div>
+					<div class="panel-body">
+						<p>
+							The back_log is a small buffer, which holds all network requests to the Server. It will increase if you
+							have many requests at the same time. The back_log is limited to the max requests your operating system
+							can handle.
+						</p>
+						<p>MySQL Back_log: {variables.backLog}</p>
+						<p>Max allowed Request by operating system: {maxSysConn}</p>
+					</div>
+				</div>
+			</f:if>
+		</f:alias>
+	</f:if>
+
+	<f:if condition="{0: status.slaveRunning}=={0: 'OFF'}">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">Binary Log</h3>
+			</div>
+			<div class="panel-body">
+				<p>Your server runs in standalone-mode. You don't need replication. So you can deactivate binary logging</p>
+				<p>Link: <f:link.external target="_blank" uri="http://dev.mysql.com/doc/refman/5.6/en/glossary.html#glos_binary_log">MySQL-Glossar: Binary Log</f:link.external></p>
+				<p>Quote: "The binary logging feature can be turned on and off, although Oracle recommends always enabling it if you use replication or perform backups."</p>
+			</div>
+		</div>
+	</f:if>
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Sync Binary Log</h3>
+		</div>
+		<div class="panel-body">
+			<p>
+				By default the binary log is NOT written to disk with each write. So, if MySQL or the operating system
+				crashes there is a little chance that the last query gets lost. You can prevent that with enabling
+				sync_binlog, but that slows down your modifying statements like (INSERT, UPDATE, DELETE).
+			</p>
+			<p><strong>Sync_binlog:</strong> {f:if(condition: variables.syncBinlog, then: 'ON', else: 'OFF')}</p>
+		</div>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Standalone or Replication</h3>
+		</div>
+		<div class="panel-body">
+			<p>
+				If slave_running is ON, you have a network of master-slave servers. Else your server runs in standalone-mode
+			</p>
+			<p><strong>Slave_running:</strong> {status.slaveRunning}</p>
+		</div>
+	</div>
+
+</f:section>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2014-12-11T17:08:40Z" product-name="mysqlreport">
+		<header/>
+		<body>
+
+			<trans-unit id="tx_events2_domain_model_event">
+				<source>Event</source>
+			</trans-unit>
+
+		</body>
+	</file>
+</xliff>

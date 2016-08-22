@@ -1,0 +1,6 @@
+<f:layout name="Default" />
+
+<f:section name="content">
+	<f:render partial="Uptime" arguments="{status: status}" />
+	<f:render partial="InnoDbBuffer" arguments="{status: status, variables: variables}" />
+</f:section>

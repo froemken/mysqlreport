@@ -1,0 +1,33 @@
+{
+    "name": "stefanfroemken/mysqlreport",
+    "type": "typo3-cms-extension",
+    "description": "Analyze and profile your databases queries made via $GLOBALS['TYPO3_DB']",
+    "version": "0.3.0",
+    "license": "GPL-2.0+",
+    "keywords": ["typo3", "TYPO3 CMS", "mysql", "profiling", "report", "mysqlreport"],
+    "homepage": "http://www.typo3lexikon.de",
+    "authors": [
+      {
+        "name": "Stefan Froemken",
+        "email": "froemken@gmail.com",
+        "role": "Lead Developer"
+      }
+    ],
+    "support": {
+      "email": "froemken@gmail.com",
+      "issues": "https://github.com/froemken/mysqlreport/issues",
+      "source": "https://github.com/froemken/mysqlreport"
+    },
+    "require": {
+      "php": ">=5.3.7 <8.0",
+      "typo3/cms-core": ">=6.2.14,<9.0"
+    },
+    "require-dev": {
+      "phpunit/phpunit": "~4.8.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "StefanFroemken\\Mysqlreport\\": "Classes"
+        }
+    }
+}

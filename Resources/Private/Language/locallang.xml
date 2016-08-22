@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<T3locallang>
+	<meta type="array">
+		<type>module</type>
+		<description>Language labels for mysqlreport</description>
+	</meta>
+	<data type="array">
+		<languageKey index="default" type="array">
+			<label index="report_title">MySQL Check</label>
+			<label index="report_description">With this report you can test/check your MySQL-Server</label>
+
+			<label index="tableCache">Since MySQL 5.1.3 the table_cache-Variable was splitted into table_open_cache and table_definition_cache.
+				So it's easy to forget to set the definition cache while updating to newer MysQL-Versions.
+				The table_open_cache manages the filehandler to the tablefiles.
+				With f.e. PHP:fopen() you can open such filehandler, too. But in MySQL there can be many clients connect to the same tablefile.
+				In case of your storage engine it could be that a new handle will be created with each new connection to the DB. A too high value can result into problems,
+				because the operationsystem can handle only a maximum of filehandles. You can check this on unix systems in: /proc/sys/fs/file-max.
+				The defaultvalue is 400 and was set to 2000 in MySQL 5.6.8.
+				The table_definition_cache does not use these filehandlers, is smaller as table_open_cache and contains f.e. the structure of the table (*.frm).
+				The defaultvalue is 400 and will be managed automatically since MySQL 5.6.8 (-1).
+			</label>
+			<label index="freeTableDefinitions.title">Free entries in Definitioncache</label>
+			<label index="freeTableDefinitions.description">Personnel I think you should always have at least 10% free in Definitioncache.
+				If the value of Opened_table_definitions is high, you should increase table_definition_cache.</label>
+			<label index="freeOpenTables.title">Free entries in Table open cache</label>
+			<label index="freeOpenTables.description">Personnel I think you should always have at least 10% free in Tablecache.
+				If the value of Opened_tables is high, you should increase table_open_cache.</label>
+			<label index="openedDefinitionsEachSecond.title">Opened Definitions each second</label>
+			<label index="openedDefinitionsEachSecond.description">Here you can see how many Definitions the server has to open within one second.
+				Personnel I think a value between 0 and 3 should be OK. But if the value is higher than 10 you should increase the value of table_definition_cache.
+			</label>
+			<label index="openedTablesEachSecond.title">Opened tableinformations each second</label>
+			<label index="openedTablesEachSecond.description">Here you can see how many tablefilehandler the server has to open within one second.
+				Personnel I think a value between 0 and 3 should be OK. But if the value is higher than 10 you should increase the value of table_open_cache.
+			</label>
+
+			<label index="freeTableDefinitions.title">Free entries in Definitioncache</label>
+			<label index="freeTableDefinitions.description">It would be good to have 10% free in Definitioncache</label>
+			<label index="freeOpenTables.title">Free entries in Table open cache</label>
+			<label index="freeOpenTables.description">It would be good to have 10% free in Table open cache</label>
+			<label index="openedDefinitionsEachSecond.title">Opened Definitions each second</label>
+			<label index="openedDefinitionsEachSecond.description">0-3 should be OK. If value is above 10 you should increase table_definition_cache</label>
+			<label index="openedTablesEachSecond.title">Opened tableinformations each second</label>
+			<label index="openedTablesEachSecond.description">0-3 should be OK. If value is above 10 you should increase table_definition_cache</label>
+
+			<label index="createdThreadsEachSecond.title">Created Threads each second</label>
+			<label index="createdThreadsEachSecond.description">0-3 should be OK. If value is above 10 you should increase thread_cache_size</label>
+			<label index="sumOfAllThreadsInBytes.title">Sum of all created threads in byte</label>
+			<label index="sumOfAllThreadsInBytes.description">Each creation of a thread costs 256KB. This value shows the total costs of all created threads</label>
+
+			<label index="cacheHitRatioBook.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioBook.description">This calculation I have from this book "High Performance MySQL" given in percent. As higher as better.</label>
+			<label index="cacheHitRatioMySql.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioMySql.description">This calculation I have from MySQL-Website. The value should be near 0.01. As smaller as better.</label>
+			<label index="cacheHitRatio.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatio.description">Personal calculation. Schould be higher than 100.</label>
+			<label index="cacheMisses.title">Cache Misses</label>
+			<label index="cacheMisses.description">How ofter MySQL have to access the HDD instead of RAM. As lower as better. 5 should be OK, but 80 is really high.</label>
+			<label index="usedBuffer.title">Used KeyBuffer</label>
+			<label index="usedBuffer.description">Used KeyBuffer in percent</label>
+			<label index="myIsamIndexSize.title">Indexsize</label>
+			<label index="myIsamIndexSize.description">Sum of all MyISAM-Indexes. He should be smaller than key_buffer_size. If not, key_buffer_size should not be higher than 25-33% of RAM.</label>
+
+		</languageKey>
+		<languageKey index="de" type="array">
+			<label index="report_title">MySQL Überprüfung</label>
+			<label index="report_description">Dieser Bericht gibt Dir einen Überblick über Deinen MySQL-Server und einige Tipps die Geschwindigkeit zu verbessern</label>
+
+			<label index="tableCache">Seit MySQL 5.1.3 wurde die table_cache-Variable ausgesplittet in table_open_cache und table_definition_cache.
+				Gerade bei Updates wird schon mal gerne vergessen den Definitionscache anzupassen.
+				Der table_open_cache stellt die Dateihandler zu den Tabellendateien dar.
+				Mit PHP:fopen() z.B. wird auch so ein Dateihandle erzeugt. Bei MySQL können aber durchaus auch mehrere Clients auf ein und dieselbe Tabelle zugreifen.
+				Je nach Storageengine wird dann pro Verbindung ein zusätzliches Handle erzeugt. Ein zu hoher Wert kann aber auch zu Problemen führen,
+				denn das Betriebssystem stellt nur eine maximale Anzahl an Dateihandler zur verfügung. Bei Unixsystemen zu sehen in: /proc/sys/fs/file-max.
+				Der Defaultwert liegt bei 400 und wurde seit 5.6.8 auf 2000 erhöht.
+				Der table_definition_cache benötigt keine dieser Dateihandler, ist kleiner als der table_open_cache und beinhaltet z.B. die Struktur (*.frm) der Tabellen.
+				Der Defaultwert liegt bei 400 und wird ab MySQL 5.6.8 automatisch verwaltet (-1).
+			</label>
+			<label index="freeTableDefinitions.title">Freie Einträge im Definitionscache</label>
+			<label index="freeTableDefinitions.description">Ich persönlich finde, es sollten immer so 10% im Definitionscache frei sein.
+				Aber im Grunde entscheidet sich das über den Wert Opened_table_definitions. Wenn dieser besonders hoch ist, dann sollten Sie den Wert table_definition_cache erhöhen.</label>
+			<label index="freeOpenTables.title">Freie Einträge im Table Open Cache</label>
+			<label index="freeOpenTables.description">Ich persönlich finde, es sollten immer so 10% im Tablecache frei sein.
+				Aber im Grunde entscheidet sich das über den Wert Opened_tables. Wenn dieser besonders hoch ist, dann sollten Sie den Wert table_open_cache erhöhen.</label>
+			<label index="openedDefinitionsEachSecond.title">Geöffnete Definitionen pro Sekunde</label>
+			<label index="openedDefinitionsEachSecond.description">Hier könnt Ihr sehen, wie viele Definitionen der Server im Durchschnitt pro Sekunde öffnen musste.
+				Ich persönlich finde einen Wert von 0-3 völlig OK. Sollte der Wert jedoch über 10 steigen, solltet Ihr den Wert table_definition_cache höher setzen.
+			</label>
+			<label index="openedTablesEachSecond.title">Geöffnete Tabelleninformationen pro Sekunde</label>
+			<label index="openedTablesEachSecond.description">Hier könnt Ihr sehen, wie viele Tabellenhandler der Server im Durchschnitt pro Sekunde erstellen musste.
+				Ich persönlich finde einen Wert von 0-3 völlig OK. Sollte der Wert jedoch über 10 steigen, solltet Ihr den Wert table_open_cache höher setzen.
+			</label>
+
+			<label index="createdThreadsEachSecond.title">Erstellte Threads pro Sekunde</label>
+			<label index="createdThreadsEachSecond.description">0-3 sollte OK sein. Sollte der Wert allerdings über 10 gehen, dann sollten Sie den Wert für thread_cache_size entsprechend anpassen</label>
+			<label index="sumOfAllThreadsInBytes.title">Summe aller erstellten Threads in Byte</label>
+			<label index="sumOfAllThreadsInBytes.description">Jede Threaderstellung kostet 256KB und wird bei Nichtverwendung wieder freigegeben. Dieser Wert summiert alle erstellten Threads in Byte.</label>
+
+			<label index="cacheHitRatioBook.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioBook.description">Diese Berechnung habe ich aus dem Buch "High Performance MySQL". Angabe in Prozent. Je höher desto besser. Jedoch liegt zwischen 99% und 99,9% eine Leistungssteigerung von 10% vor.</label>
+			<label index="cacheHitRatioMySql.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatioMySql.description">Diese Berechnung habe ich von der MySQL-Webseite. Der Wert sollte um die 0.01 liegen. Je kleiner je besser.</label>
+			<label index="cacheHitRatio.title">Cache Hit Ratio</label>
+			<label index="cacheHitRatio.description">Persönliche Berechnung. Wenn wir davon ausgehen, dass das Verhältnis zwischen RAM und HDD bei einer Geschwindigkeit von 100 zu 1 liegt, dann sollte dieser Wert hier über 100 liegen.</label>
+			<label index="cacheMisses.title">Cache Misses</label>
+			<label index="cacheMisses.description">Wie oft musste MySQL pro Sekunde auf die Festplatte zugreifen, um einen Indexeintrag auszulesen. Je höher desto schlechter. 5 mag OK sein. 80 ist jedoch schon heftig viel</label>
+			<label index="usedBuffer.title">Verwendeter Buffer</label>
+			<label index="usedBuffer.description">Zu wie viel Prozent wird der KeyBuffer derzeit verwendet?</label>
+			<label index="myIsamIndexSize.title">Indexgröße</label>
+			<label index="myIsamIndexSize.description">Summe aller MyISAM-Indexes. Er sollte kleiner sein als die key_buffer_size. Falls das nicht geht, dann sollte die key_buffer_size 25-33% des RAMS nicht übersteigen.</label>
+
+		</languageKey>
+	</data>
+</T3locallang>
