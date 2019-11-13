@@ -16,6 +16,7 @@ namespace StefanFroemken\Mysqlreport\Database;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PostProcessQueryHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * @package mysqlreport
@@ -67,6 +68,9 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
         foreach ($this->profiles as $key => $profile) {
             $profile['pid'] = $pid;
             $profile['mode'] = $mode;
+            $profile['ip'] = $GLOBALS['REMOTE_ADDR'];
+            $profile['request'] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
+            $profile['referer'] = GeneralUtility::getIndpEnv('HTTP_REFERER');
             $profile['unique_call_identifier'] = $uniqueIdentifier;
             $profile['crdate'] = $crdate;
             $profile['query_id'] = $key;
@@ -119,7 +123,7 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
             $this->profiles[] = $row;
         }
     }
-    
+
     /**
      * Post-processor for the exec_INSERTquery method.
      *

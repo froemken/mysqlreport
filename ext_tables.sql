@@ -8,6 +8,9 @@ CREATE TABLE tx_mysqlreport_domain_model_profile (
 
 	query_id int(11) unsigned DEFAULT '0',
 	mode char(3) DEFAULT '' NOT NULL,
+	ip varchar(45) DEFAULT '' NOT NULL,
+	request text,
+	referer text,
 	unique_call_identifier varchar(15) DEFAULT '' NOT NULL,
 	duration double(11,8) DEFAULT '0.00000000' NOT NULL,
 	query blob NOT NULL,
