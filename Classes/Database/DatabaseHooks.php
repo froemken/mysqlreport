@@ -13,6 +13,8 @@ namespace StefanFroemken\Mysqlreport\Database;
  *
  * The TYPO3 project - inspiring people to share!
  */
+
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
 use TYPO3\CMS\Core\Database\PostProcessQueryHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -80,10 +82,11 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 
         // save profilings to database
         if (!empty($this->profiles)) {
-            $this->databaseConnection->exec_INSERTmultipleRows(
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)->getConnectionForTable('tx_mysqlreport_domain_model_profile');
+            $insertedRows = $connection->bulkInsert(
                 'tx_mysqlreport_domain_model_profile',
-                array('query_type', 'duration', 'profile', 'query', 'explain_query', 'not_using_index', 'using_fulltable', 'pid', 'mode', 'unique_call_identifier', 'crdate', 'query_id'),
-                $this->profiles
+                $this->profiles,
+                array('query_type', 'duration', 'profile', 'query', 'explain_query', 'not_using_index', 'using_fulltable', 'pid', 'mode', 'ip', 'request', 'referer', 'unique_call_identifier', 'crdate', 'query_id')
             );
         }
     }
