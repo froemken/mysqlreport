@@ -70,7 +70,7 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
         foreach ($this->profiles as $key => $profile) {
             $profile['pid'] = $pid;
             $profile['mode'] = $mode;
-            $profile['ip'] = $GLOBALS['REMOTE_ADDR'];
+            $profile['ip'] = GeneralUtility::getIndpEnv('REMOTE_ADDR');
             $profile['request'] = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
             $profile['referer'] = GeneralUtility::getIndpEnv('HTTP_REFERER');
             $profile['unique_call_identifier'] = $uniqueIdentifier;
