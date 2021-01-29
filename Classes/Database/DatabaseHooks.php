@@ -57,7 +57,7 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      */
     public function __destruct()
     {
-        // we done want to add additional queries to profiling table
+        // we don't want to add additional queries to profiling table
         $this->databaseConnection->sql_query('SET profiling = 0;');
 
         // A page can be called multiple times each second. So we need an unique identifier.
@@ -184,7 +184,7 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
             // save profiling information
             $this->addProfilingInformation($row);
             // build full query
-            $row['query'] = $this->databaseConnection->INSERTquery($table, $fields, $rows, $noQuoteFields);
+            $row['query'] = $this->databaseConnection->INSERTmultipleRows($table, $fields, $rows, $noQuoteFields);
             // save explain information
             $this->addExplainInformation($row);
 
@@ -344,5 +344,4 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
             $row['using_fulltable'] = (int)$usingFullTable;
         }
     }
-
 }
