@@ -15,7 +15,7 @@ if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf'][$_EXTKEY])) {
 
         // Add Debug Logger to Doctrine via first Hook in TYPO3
         $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['extTablesInclusion-PostProcessing'][]
-            = \StefanFroemken\Mysqlreport\Hook\RegisterDatabaseLoggerHook::class;
+            = 'StefanFroemken\\Mysqlreport\\Hook\\RegisterDatabaseLoggerHook';
     }
 }
 
