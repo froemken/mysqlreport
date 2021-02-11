@@ -25,6 +25,16 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class InnoDbBufferViewHelper extends AbstractViewHelper
 {
     /**
+     * @var bool
+     */
+    protected $escapeChildren = false;
+
+    /**
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
+    /**
      * analyze QueryCache parameters
      *
      * @param Status $status

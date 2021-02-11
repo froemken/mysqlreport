@@ -109,5 +109,4 @@ class MySqlController extends ActionController
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
-
 }
