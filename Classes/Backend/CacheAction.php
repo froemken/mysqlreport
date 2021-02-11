@@ -19,8 +19,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * @package mysqlreport
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Create ClearCache entry and process Cache Clearing of mysqlreport
  */
 class CacheAction implements ClearCacheActionsHookInterface
 {

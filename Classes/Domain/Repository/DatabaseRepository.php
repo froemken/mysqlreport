@@ -15,7 +15,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
  */
     
 /**
- * This model saves the mysql status
+ * Repository to get records to profile the queries of a request
  */
 class DatabaseRepository extends AbstractRepository
 {

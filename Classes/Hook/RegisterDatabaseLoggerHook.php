@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Add Logger to database connection
+ * Add Logger to database connection to store queries of a request
  */
 class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurationPostProcessingHookInterface
 {

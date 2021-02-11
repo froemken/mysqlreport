@@ -15,7 +15,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
  */
 
 /**
- * This model saves the mysql status
+ * This model saves information of a table
  */
 class TableInformation
 {

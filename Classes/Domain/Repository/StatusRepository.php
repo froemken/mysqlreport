@@ -15,7 +15,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
  */
 
 /**
- * This model saves the mysql status
+ * Repository to get the MySQL status
  */
 class StatusRepository extends AbstractRepository
 {
