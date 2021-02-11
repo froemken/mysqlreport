@@ -22,6 +22,16 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 class TableCacheViewHelper extends AbstractViewHelper
 {
     /**
+     * @var bool
+     */
+    protected $escapeChildren = false;
+
+    /**
+     * @var bool
+     */
+    protected $escapeOutput = false;
+
+    /**
      * analyze QueryCache parameters
      *
      * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
