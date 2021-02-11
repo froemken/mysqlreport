@@ -22,5 +22,6 @@ if (isset($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mysqlreport'])) {
 // add button to clear cache of profiling table
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['additionalBackendItems']['cacheActions'][]
     = 'StefanFroemken\\Mysqlreport\\Backend\\CacheAction';
+// process truncate of MySQL profiles
 $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][]
     = 'StefanFroemken\\Mysqlreport\\Backend\\CacheAction->clearProfiles';
