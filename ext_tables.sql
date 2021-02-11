@@ -23,5 +23,5 @@ CREATE TABLE tx_mysqlreport_domain_model_profile (
 	crdate int(11) unsigned DEFAULT '0' NOT NULL,
 
 	PRIMARY KEY (uid),
-	KEY profileCalls (unique_call_identifier,crdate,mode,duration),
+	KEY profileCalls (unique_call_identifier,crdate,mode,duration)
 );
