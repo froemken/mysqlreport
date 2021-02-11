@@ -15,6 +15,7 @@ namespace StefanFroemken\Mysqlreport\Hook;
  */
 
 use Doctrine\DBAL\Logging\DebugStack;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
@@ -25,6 +26,16 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurationPostProcessingHookInterface
 {
+    /**
+     * @var array
+     */
+    protected $extConf = array();
+
+    public function __construct()
+    {
+        $this->extConf = is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mysqlreport']) ?: unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mysqlreport']);
+    }
+
     public function processData()
     {
         $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
@@ -51,7 +62,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         if ($sqlLogger instanceof DebugStack) {
             $queriesToStore = [];
             foreach ($sqlLogger->queries as $key => $loggedQuery) {
-                $queriesToStore[] = [
+                $queryToStore = [
                     'pid' => $pid,
                     'ip' => GeneralUtility::getIndpEnv('REMOTE_ADDR'),
                     'referer' => GeneralUtility::getIndpEnv('HTTP_REFERER'),
@@ -68,6 +79,10 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
                     'crdate' => (int)$GLOBALS['EXEC_TIME'],
                     'query_id' => $key
                 ];
+
+                $this->addExplainInformation($queryToStore, $loggedQuery);
+
+                $queriesToStore[] = $queryToStore;
             }
 
             foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
@@ -94,5 +109,81 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
                 );
             }
         }
+    }
+
+    /**
+     * add result of EXPLAIN to profiling
+     *
+     * @param array $queryToStore
+     * @param array $loggedQuery
+     * @return void
+     */
+    protected function addExplainInformation(array &$queryToStore, array $loggedQuery)
+    {
+        $sql = $loggedQuery['sql'];
+        $queryType = GeneralUtility::trimExplode(' ', $sql, true, 2)[0];
+
+        // save explain information of query if activated
+        // EXPLAIN with other types than SELECT works since MySQL 5.6.3 only
+        // EXPLAIN does not work, if we have PreparedStatements (Statements with ?)
+        if (
+            $this->extConf['addExplain'] &&
+            strtoupper($queryType) === 'SELECT'
+        ) {
+            $explain = array();
+            $notUsingIndex = FALSE;
+            $usingFullTable = FALSE;
+
+            /** @var ConnectionPool $connectionPool */
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+            $statement = $connection->query($this->buildExplainQuery($sql, $loggedQuery['params'], $loggedQuery['types']));
+            while ($explainRow = $statement->fetch()) {
+                if ($notUsingIndex === FALSE && empty($explainRow['key'])) {
+                    $notUsingIndex = TRUE;
+                }
+                if ($usingFullTable === FALSE && strtolower($explainRow['select_type']) === 'all') {
+                    $usingFullTable = TRUE;
+                }
+                $explain[] = $explainRow;
+            }
+            $queryToStore['explain_query'] = serialize($explain);
+            $queryToStore['not_using_index'] = (int)$notUsingIndex;
+            $queryToStore['using_fulltable'] = (int)$usingFullTable;
+        }
+    }
+
+    protected function buildExplainQuery(string $sql, array $params, array $types)
+    {
+        $namedParameters = [];
+        foreach ($params as $key => $param) {
+            switch ($types[$key]) {
+                case \PDO::PARAM_INT:
+                    $param = (int)$param;
+                    break;
+                case \PDO::PARAM_BOOL:
+                    $param = $param === true ? 1 : 0;
+                    break;
+                case \PDO::PARAM_NULL:
+                    $param = NULL;
+                    break;
+                case Connection::PARAM_INT_ARRAY:
+                    $param = implode(',', $param);
+                    break;
+                case Connection::PARAM_STR_ARRAY:
+                    $param = '\'' . implode(',', $param) . '\'';
+                    break;
+                default:
+                case \PDO::PARAM_STR:
+                    $param = '\'' . (string)$param . '\'';
+            }
+            $namedParameters[':' . $key] = $param;
+        }
+
+        return 'EXPLAIN ' . str_replace(
+            array_keys($namedParameters),
+            $namedParameters,
+            $sql
+        );
     }
 }

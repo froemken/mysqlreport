@@ -92,5 +92,4 @@ class ProfileController extends ActionController
         $profiling['explain'] = unserialize($profiling['explain_query']);
         $this->view->assign('profiling', $profiling);
     }
-
 }
