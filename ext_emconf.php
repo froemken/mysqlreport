@@ -1,7 +1,7 @@
 <?php
 $EM_CONF[$_EXTKEY] = [
     'title' => 'MySQL Report',
-    'description' => 'Analyze and profile your databases queries made via $GLOBALS[\'TYPO3_DB\']',
+    'description' => 'Analyze and profile your TYPO3 databases queries',
     'category' => 'module',
     'author' => 'Stefan Froemken',
     'author_email' => 'froemken@gmail.com',

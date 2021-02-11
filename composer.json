@@ -1,7 +1,7 @@
 {
     "name": "stefanfroemken/mysqlreport",
     "type": "typo3-cms-extension",
-    "description": "Analyze and profile your databases queries made via $GLOBALS['TYPO3_DB']",
+    "description": "Analyze and profile your TYPO3 databases queries",
     "version": "0.3.0",
     "license": "GPL-2.0+",
     "keywords": ["typo3", "TYPO3 CMS", "mysql", "profiling", "report", "mysqlreport"],
