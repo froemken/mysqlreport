@@ -5,16 +5,20 @@
 		<body>
 			<trans-unit id="clearCache.title">
 				<source>Clear MySQL Profiles</source>
+				<target>MySQL Profiles löschen</target>
 			</trans-unit>
 			<trans-unit id="clearCache.description">
 				<source>Clear collected profile records of extension mysqlreport. This table can grow very fast, so maybe it is good to clear this table.</source>
+				<target>Lösche die gesammelten MySQL Profiles der mysqlreports extension. Die Tabelle kann sehr schnell wachsen, von daher sollte diese durchaus mal geleert werden.</target>
 			</trans-unit>
 
 			<trans-unit id="report_title">
 				<source>MySQL Check</source>
+				<target>MySQL Überprüfung</target>
 			</trans-unit>
 			<trans-unit id="report_description">
 				<source>With this report you can test/check your MySQL-Server</source>
+				<target>Dieser Bericht gibt Dir einen Überblick über Deinen MySQL-Server und einige Tipps die Geschwindigkeit zu verbessern</target>
 			</trans-unit>
 			<trans-unit id="tableCache">
 				<source>
@@ -28,90 +32,137 @@
 					The table_definition_cache does not use these filehandlers, is smaller as table_open_cache and contains f.e. the structure of the table (*.frm).
 					The defaultvalue is 400 and will be managed automatically since MySQL 5.6.8 (-1).
 				</source>
+				<target>
+					Seit MySQL 5.1.3 wurde die table_cache-Variable ausgesplittet in table_open_cache und table_definition_cache.
+					Gerade bei Updates wird schon mal gerne vergessen den Definitionscache anzupassen.
+					Der table_open_cache stellt die Dateihandler zu den Tabellendateien dar.
+					Mit PHP:fopen() z.B. wird auch so ein Dateihandle erzeugt. Bei MySQL können aber durchaus auch mehrere Clients auf ein und dieselbe Tabelle zugreifen.
+					Je nach Storageengine wird dann pro Verbindung ein zusätzliches Handle erzeugt. Ein zu hoher Wert kann aber auch zu Problemen führen,
+					denn das Betriebssystem stellt nur eine maximale Anzahl an Dateihandler zur verfügung. Bei Unixsystemen zu sehen in: /proc/sys/fs/file-max.
+					Der Defaultwert liegt bei 400 und wurde seit 5.6.8 auf 2000 erhöht.
+					Der table_definition_cache benötigt keine dieser Dateihandler, ist kleiner als der table_open_cache und beinhaltet z.B. die Struktur (*.frm) der Tabellen.
+					Der Defaultwert liegt bei 400 und wird ab MySQL 5.6.8 automatisch verwaltet (-1).
+				</target>
 			</trans-unit>
 			<trans-unit id="freeTableDefinitions.title">
 				<source>Free entries in Definitioncache</source>
+				<target>Freie Einträge im Definitionscache</target>
 			</trans-unit>
 			<trans-unit id="freeTableDefinitions.description">
 				<source>
 					Personnel I think you should always have at least 10% free in Definitioncache.
 					If the value of Opened_table_definitions is high, you should increase table_definition_cache.
 				</source>
+				<target>
+					Ich persönlich finde, es sollten immer so 10% im Definitionscache frei sein.
+					Aber im Grunde entscheidet sich das über den Wert Opened_table_definitions. Wenn dieser besonders hoch ist, dann sollten Sie den Wert table_definition_cache erhöhen.
+				</target>
 			</trans-unit>
 			<trans-unit id="freeOpenTables.title">
 				<source>Free entries in Table open cache</source>
+				<target>Freie Einträge im Table Open Cache</target>
 			</trans-unit>
 			<trans-unit id="freeOpenTables.description">
 				<source>
 					Personnel I think you should always have at least 10% free in Tablecache.
 					If the value of Opened_tables is high, you should increase table_open_cache.
 				</source>
+				<target>
+					Ich persönlich finde, es sollten immer so 10% im Tablecache frei sein.
+					Aber im Grunde entscheidet sich das über den Wert Opened_tables. Wenn dieser besonders hoch ist, dann sollten Sie den Wert table_open_cache erhöhen.
+				</target>
 			</trans-unit>
 			<trans-unit id="openedDefinitionsEachSecond.title">
 				<source>Opened Definitions each second</source>
+				<target>Geöffnete Definitionen pro Sekunde</target>
 			</trans-unit>
 			<trans-unit id="openedDefinitionsEachSecond.description">
 				<source>
 					Here you can see how many Definitions the server has to open within one second.
 					Personnel I think a value between 0 and 3 should be OK. But if the value is higher than 10 you should increase the value of table_definition_cache.
 				</source>
+				<target>
+					Hier könnt Ihr sehen, wie viele Definitionen der Server im Durchschnitt pro Sekunde öffnen musste.
+					Ich persönlich finde einen Wert von 0-3 völlig OK. Sollte der Wert jedoch über 10 steigen, solltet Ihr den Wert table_definition_cache höher setzen.
+				</target>
 			</trans-unit>
 			<trans-unit id="openedTablesEachSecond.title">
 				<source>Opened tableinformations each second</source>
+				<target>Geöffnete Tabelleninformationen pro Sekunde</target>
 			</trans-unit>
 			<trans-unit id="openedTablesEachSecond.description">
 				<source>
 					Here you can see how many tablefilehandler the server has to open within one second.
 					Personnel I think a value between 0 and 3 should be OK. But if the value is higher than 10 you should increase the value of table_open_cache.
 				</source>
+				<target>
+					Hier könnt Ihr sehen, wie viele Tabellenhandler der Server im Durchschnitt pro Sekunde erstellen musste.
+					Ich persönlich finde einen Wert von 0-3 völlig OK. Sollte der Wert jedoch über 10 steigen, solltet Ihr den Wert table_open_cache höher setzen.
+				</target>
 			</trans-unit>
 			<trans-unit id="createdThreadsEachSecond.title">
 				<source>Created Threads each second</source>
+				<target>Erstellte Threads pro Sekunde</target>
 			</trans-unit>
 			<trans-unit id="createdThreadsEachSecond.description">
 				<source>0-3 should be OK. If value is above 10 you should increase thread_cache_size</source>
+				<target>0-3 sollte OK sein. Sollte der Wert allerdings über 10 gehen, dann sollten Sie den Wert für thread_cache_size entsprechend anpassen</target>
 			</trans-unit>
 			<trans-unit id="sumOfAllThreadsInBytes.title">
 				<source>Sum of all created threads in byte</source>
+				<target>Summe aller erstellten Threads in Byte</target>
 			</trans-unit>
 			<trans-unit id="sumOfAllThreadsInBytes.description">
 				<source>Each creation of a thread costs 256KB. This value shows the total costs of all created threads</source>
+				<target>Jede Threaderstellung kostet 256KB und wird bei Nichtverwendung wieder freigegeben. Dieser Wert summiert alle erstellten Threads in Byte.</target>
 			</trans-unit>
 			<trans-unit id="cacheHitRatioBook.title">
 				<source>Cache Hit Ratio</source>
+				<target>Cache Hit Ratio</target>
 			</trans-unit>
 			<trans-unit id="cacheHitRatioBook.description">
 				<source>This calculation I have from this book "High Performance MySQL" given in percent. As higher as better.</source>
+				<target>Diese Berechnung habe ich aus dem Buch "High Performance MySQL". Angabe in Prozent. Je höher desto besser. Jedoch liegt zwischen 99% und 99,9% eine Leistungssteigerung von 10% vor.</target>
 			</trans-unit>
 			<trans-unit id="cacheHitRatioMySql.title">
 				<source>Cache Hit Ratio</source>
+				<target>Cache Hit Ratio</target>
 			</trans-unit>
 			<trans-unit id="cacheHitRatioMySql.description">
 				<source>This calculation I have from MySQL-Website. The value should be near 0.01. As smaller as better.</source>
+				<target>Diese Berechnung habe ich von der MySQL-Webseite. Der Wert sollte um die 0.01 liegen. Je kleiner je besser.</target>
 			</trans-unit>
 			<trans-unit id="cacheHitRatio.title">
 				<source>Cache Hit Ratio</source>
+				<target>Cache Hit Ratio</target>
 			</trans-unit>
 			<trans-unit id="cacheHitRatio.description">
 				<source>Personal calculation. Schould be higher than 100.</source>
+				<target>Persönliche Berechnung. Wenn wir davon ausgehen, dass das Verhältnis zwischen RAM und HDD bei einer Geschwindigkeit von 100 zu 1 liegt, dann sollte dieser Wert hier über 100 liegen.</target>
 			</trans-unit>
 			<trans-unit id="cacheMisses.title">
 				<source>Cache Misses</source>
+				<target>Cache Misses</target>
 			</trans-unit>
 			<trans-unit id="cacheMisses.description">
 				<source>How ofter MySQL have to access the HDD instead of RAM. As lower as better. 5 should be OK, but 80 is really high.</source>
+				<target>Wie oft musste MySQL pro Sekunde auf die Festplatte zugreifen, um einen Indexeintrag auszulesen. Je höher desto schlechter. 5 mag OK sein. 80 ist jedoch schon heftig viel</target>
 			</trans-unit>
 			<trans-unit id="usedBuffer.title">
 				<source>Used KeyBuffer</source>
+				<target>Verwendeter Buffer</target>
 			</trans-unit>
 			<trans-unit id="usedBuffer.description">
 				<source>Used KeyBuffer in percent</source>
+				<target>Zu wie viel Prozent wird der KeyBuffer derzeit verwendet?</target>
 			</trans-unit>
 			<trans-unit id="myIsamIndexSize.title">
 				<source>Indexsize</source>
+				<target>Indexgröße</target>
 			</trans-unit>
 			<trans-unit id="myIsamIndexSize.description">
 				<source>Sum of all MyISAM-Indexes. He should be smaller than key_buffer_size. If not, key_buffer_size should not be higher than 25-33% of RAM.</source>
+				<target>Summe aller MyISAM-Indexes. Er sollte kleiner sein als die key_buffer_size. Falls das nicht geht, dann sollte die key_buffer_size 25-33% des RAMS nicht übersteigen.</target>
 			</trans-unit>
 		</body>
 	</file>

@@ -3,7 +3,6 @@
 	<file source-language="en" datatype="plaintext" original="messages" date="2014-12-11T17:08:40Z" product-name="mysqlreport">
 		<header/>
 		<body>
-
 			<trans-unit id="mlang_tabs_tab">
 				<source>MySQL Report</source>
 			</trans-unit>

@@ -15,7 +15,7 @@ if (!defined('TYPO3_MODE')) {
     ),
     array(
         'access' => 'user,group',
-        'icon'   => 'EXT:mysqlreport/ext_icon.svg',
+        'icon'   => 'EXT:mysqlreport/Resources/Public/Icons/Extension.svg',
         'labels' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang_report.xlf',
     )
 );
