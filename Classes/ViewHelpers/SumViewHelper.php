@@ -16,8 +16,7 @@ namespace StefanFroemken\Mysqlreport\ViewHelpers;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * @package mysqlreport
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * VH to sum some values
  */
 class SumViewHelper extends AbstractViewHelper
 {

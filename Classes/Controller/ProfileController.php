@@ -17,8 +17,7 @@ use StefanFroemken\Mysqlreport\Domain\Repository\DatabaseRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
- * @package mysqlreport
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Controller to show and analyze all queries of a request
  */
 class ProfileController extends ActionController
 {

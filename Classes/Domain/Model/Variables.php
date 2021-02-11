@@ -15,7 +15,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
  */
 
 /**
- * This model saves the mysql status
+ * This model saves the mysql variables
  */
 class Variables
 {

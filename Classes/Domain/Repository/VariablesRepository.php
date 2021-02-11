@@ -15,7 +15,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
  */
     
 /**
- * This model saves the mysql status
+ * Repository to get the MySQL variables
  */
 class VariablesRepository extends AbstractRepository
 {

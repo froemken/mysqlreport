@@ -16,7 +16,7 @@ namespace StefanFroemken\Mysqlreport\Utility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Simple DataMapper to map an array to object
  */
 class DataMapper
 {

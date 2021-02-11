@@ -18,8 +18,7 @@ use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
- * @package mysqlreport
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Controller to show a basic analysis of MySQL variables and status
  */
 class MySqlController extends ActionController
 {

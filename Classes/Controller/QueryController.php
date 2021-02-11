@@ -17,8 +17,7 @@ use StefanFroemken\Mysqlreport\Domain\Repository\DatabaseRepository;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
- * @package mysqlreport
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Controller to show results of FTS and filesort
  */
 class QueryController extends ActionController
 {
@@ -57,5 +56,4 @@ class QueryController extends ActionController
     {
         $this->view->assign('queries', $this->databaseRepository->findQueriesWithFullTableScan());
     }
-
 }

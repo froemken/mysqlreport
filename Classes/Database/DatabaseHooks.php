@@ -21,8 +21,7 @@ use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * @package mysqlreport
- * @license http://www.gnu.org/licenses/gpl.html GNU General Public License, version 3 or later
+ * Store all Queries of TYPO3_DB
  */
 class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
 {
