@@ -12,24 +12,24 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use StefanFroemken\Mysqlreport\Domain\Model\TableInformation;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Repository to get table information
  */
 class TableInformationRepository extends AbstractRepository
 {
-    const INNODB = 'InnoDB';
-    const MYISAM = 'MyISAM';
-
     public function findAll(): array
     {
-        $rows = [];
-        $res = $this->databaseConnection->sql_query('
+        $connection = $this->getConnectionPool()->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $statement = $connection->query('
             SELECT *
             FROM information_schema.TABLES
             WHERE table_schema = "' . TYPO3_db . '";
         ');
-        while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
+
+        $rows = [];
+        while ($row = $statement->fetch()) {
             $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
 
@@ -38,16 +38,19 @@ class TableInformationRepository extends AbstractRepository
 
     public function findAllByEngine(string $engine): array
     {
-        $rows = [];
-        $res = $this->databaseConnection->sql_query('
+        $connection = $this->getConnectionPool()->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $statement = $connection->query('
             SELECT *
             FROM information_schema.TABLES
             WHERE table_schema = "' . TYPO3_db . '"
             AND ENGINE = "' . $engine . '";
         ');
-        while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
+
+        $rows = [];
+        while ($row = $statement->fetch()) {
             $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
+
         return $rows;
     }
 
@@ -57,7 +60,8 @@ class TableInformationRepository extends AbstractRepository
      */
     public function findByTable(string $table): array
     {
-        $res = $this->databaseConnection->sql_query('
+        $connection = $this->getConnectionPool()->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $statement = $connection->query('
             SELECT *
             FROM information_schema.TABLES
             WHERE table_schema = "' . TYPO3_db . '"
@@ -65,7 +69,7 @@ class TableInformationRepository extends AbstractRepository
         ');
 
         $rows = [];
-        while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
+        while ($row = $statement->fetch()) {
             $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
 
@@ -78,13 +82,16 @@ class TableInformationRepository extends AbstractRepository
         if (!empty($engine)) {
             $additionalWhere = ' AND ENGINE = "' . $engine . '"';
         }
-        $res = $this->databaseConnection->sql_query('
+
+        $connection = $this->getConnectionPool()->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $statement = $connection->query('
             SELECT SUM(INDEX_LENGTH) AS indexsize
             FROM information_schema.TABLES
             WHERE table_schema = "' . TYPO3_db . '"' .
             $additionalWhere . ';
         ');
-        $row = $this->databaseConnection->sql_fetch_assoc($res);
+
+        $row = $statement->fetch();
 
         return $row['indexsize'];
     }
