@@ -19,46 +19,31 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class Calculation
 {
     /**
-     * title
-     *
      * @var string
      */
     protected $title = '';
 
     /**
-     * description
-     *
      * @var string
      */
     protected $description = '';
 
     /**
-     * result
-     *
      * @var string
      */
     protected $result = '';
 
     /**
-     * minAllowedValue
-     *
      * @var int
      */
     protected $minAllowedValue = 0;
 
     /**
-     * maxAllowedValue
-     *
      * @var int
      */
     protected $maxAllowedValue = 0;
 
-    /**
-     * Getter for title
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         $title = LocalizationUtility::translate($this->title, 'mysqlreport');
         if (empty($title)) {
@@ -67,22 +52,12 @@ class Calculation
         return $title;
     }
 
-    /**
-     * Setter for title
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         $this->title = $title;
     }
 
-    /**
-     * Getter for description
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         $description = LocalizationUtility::translate($this->description, 'mysqlreport');
         if (empty($description)) {
@@ -91,82 +66,42 @@ class Calculation
         return $description;
     }
 
-    /**
-     * Setter for description
-     *
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
     }
 
-    /**
-     * Getter for result
-     *
-     * @return string
-     */
-    public function getResult()
+    public function getResult(): string
     {
         return $this->result;
     }
 
-    /**
-     * Setter for result
-     *
-     * @param string $result
-     */
-    public function setResult($result)
+    public function setResult(string $result)
     {
         $this->result = $result;
     }
 
-    /**
-     * Getter for minAllowedValue
-     *
-     * @return int
-     */
-    public function getMinAllowedValue()
+    public function getMinAllowedValue(): int
     {
         return $this->minAllowedValue;
     }
 
-    /**
-     * Setter for minAllowedValue
-     *
-     * @param int $minAllowedValue
-     */
-    public function setMinAllowedValue($minAllowedValue)
+    public function setMinAllowedValue(int $minAllowedValue)
     {
         $this->minAllowedValue = $minAllowedValue;
     }
 
-    /**
-     * Getter for maxAllowedValue
-     *
-     * @return int
-     */
-    public function getMaxAllowedValue()
+    public function getMaxAllowedValue(): int
     {
         return $this->maxAllowedValue;
     }
 
-    /**
-     * Setter for maxAllowedValue
-     *
-     * @param int $maxAllowedValue
-     */
-    public function setMaxAllowedValue($maxAllowedValue)
+    public function setMaxAllowedValue(int $maxAllowedValue)
     {
         $this->maxAllowedValue = $maxAllowedValue;
     }
 
-    /**
-     * is value in range
-     *
-     * @return bool
-     */
-    public function isInRange()
+    public function isInRange(): bool
     {
         if ($this->result >= $this->minAllowedValue && $this->result <= $this->maxAllowedValue) {
             // everything is OK

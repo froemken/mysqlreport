@@ -21,12 +21,7 @@ class TableInformationRepository extends AbstractRepository
     const INNODB = 'InnoDB';
     const MYISAM = 'MyISAM';
 
-    /**
-     * get table informations from information_scheme
-     *
-     * @return array
-     */
-    public function findAll()
+    public function findAll(): array
     {
         $rows = [];
         $res = $this->databaseConnection->sql_query('
@@ -37,16 +32,11 @@ class TableInformationRepository extends AbstractRepository
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
+
         return $rows;
     }
 
-    /**
-     * get table informations of a given engine from information_scheme
-     *
-     * @param string $engine
-     * @return array
-     */
-    public function findAllByEngine($engine)
+    public function findAllByEngine(string $engine): array
     {
         $rows = [];
         $res = $this->databaseConnection->sql_query('
@@ -62,12 +52,10 @@ class TableInformationRepository extends AbstractRepository
     }
 
     /**
-     * get table information of a given table from information_scheme
-     *
      * @param string $table
-     * @return \StefanFroemken\Mysqlreport\Domain\Model\TableInformation[]
+     * @return array|TableInformation[]
      */
-    public function findByTable($table)
+    public function findByTable(string $table): array
     {
         $res = $this->databaseConnection->sql_query('
             SELECT *
@@ -75,20 +63,16 @@ class TableInformationRepository extends AbstractRepository
             WHERE table_schema = "' . TYPO3_db . '"
             AND TABLE_NAME = "' . $table . '";
         ');
+
         $rows = [];
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
+
         return $rows;
     }
 
-    /**
-     * get indexSize from information_scheme
-     *
-     * @param string $engine
-     * @return array
-     */
-    public function getIndexSize($engine = '')
+    public function getIndexSize(string $engine = ''): array
     {
         $additionalWhere = '';
         if (!empty($engine)) {

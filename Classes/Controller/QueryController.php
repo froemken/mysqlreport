@@ -39,17 +39,11 @@ class QueryController extends AbstractController
         $this->databaseRepository = $databaseRepository;
     }
 
-    /**
-     * filesort action
-     */
     public function filesortAction()
     {
         $this->view->assign('queries', $this->databaseRepository->findQueriesWithFilesort());
     }
 
-    /**
-     * using full table scan action
-     */
     public function fullTableScanAction()
     {
         $this->view->assign('queries', $this->databaseRepository->findQueriesWithFullTableScan());

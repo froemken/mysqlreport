@@ -108,12 +108,6 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         }
     }
 
-    /**
-     * add result of EXPLAIN to profiling
-     *
-     * @param array $queryToStore
-     * @param array $loggedQuery
-     */
     protected function addExplainInformation(array &$queryToStore, array $loggedQuery)
     {
         $sql = $loggedQuery['sql'];

@@ -31,12 +31,12 @@ class MySqlController extends AbstractController
     protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
-     * @var \StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository
+     * @var StatusRepository
      */
     protected $statusRepository;
 
     /**
-     * @var \StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository
+     * @var VariablesRepository
      */
     protected $variablesRepository;
 
@@ -50,45 +50,30 @@ class MySqlController extends AbstractController
         $this->variablesRepository = $variablesRepository;
     }
 
-    /**
-     * introduction page
-     */
     public function indexAction()
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    /**
-     * query cache action
-     */
     public function queryCacheAction()
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    /**
-     * innoDb Buffer action
-     */
     public function innoDbBufferAction()
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    /**
-     * thread cache action
-     */
     public function threadCacheAction()
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    /**
-     * table cache action
-     */
     public function tableCacheAction()
     {
         $this->view->assign('status', $this->statusRepository->findAll());

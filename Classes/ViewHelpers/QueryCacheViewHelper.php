@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\ViewHelpers;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Status;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -28,14 +30,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    /**
-     * analyze QueryCache parameters
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables
-     * @return string
-     */
-    public function render(\StefanFroemken\Mysqlreport\Domain\Model\Status $status, \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables)
+    public function render(Status $status, Variables $variables): string
     {
         $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
         $this->templateVariableContainer->add('insertRatio', $this->getInsertRatio($status));
@@ -53,13 +48,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
         return $content;
     }
 
-    /**
-     * get hit ratio of query cache
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @return array
-     */
-    protected function getHitRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getHitRatio(Status $status): array
     {
         $result = [];
         $hitRatio = ($status->getQcacheHits() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
@@ -71,16 +60,11 @@ class QueryCacheViewHelper extends AbstractViewHelper
             $result['status'] = 'success';
         }
         $result['value'] = round($hitRatio, 4);
+
         return $result;
     }
 
-    /**
-     * get insert ratio of query cache
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @return array
-     */
-    protected function getInsertRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getInsertRatio(Status $status): array
     {
         $result = [];
         $insertRatio = ($status->getQcacheInserts() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
@@ -95,13 +79,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
         return $result;
     }
 
-    /**
-     * get prune ratio of query cache
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @return array
-     */
-    protected function getPruneRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getPruneRatio(Status $status): array
     {
         $result = [];
         $pruneRatio = ($status->getQcacheLowmemPrunes() / $status->getQcacheInserts()) * 100;
@@ -113,17 +91,11 @@ class QueryCacheViewHelper extends AbstractViewHelper
             $result['status'] = 'danger';
         }
         $result['value'] = round($pruneRatio, 4);
+
         return $result;
     }
 
-    /**
-     * get avg query size in query cache
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables
-     * @return array
-     */
-    protected function getAvgQuerySize(\StefanFroemken\Mysqlreport\Domain\Model\Status $status, \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables)
+    protected function getAvgQuerySize(Status $status, Variables $variables): array
     {
         $result = [];
         $avgQuerySize = $this->getUsedQueryCacheSize($status, $variables) / $status->getQcacheQueriesInCache();
@@ -133,29 +105,17 @@ class QueryCacheViewHelper extends AbstractViewHelper
             $result['status'] = 'success';
         }
         $result['value'] = round($avgQuerySize, 4);
+
         return $result;
     }
 
-    /**
-     * get used query size in bytes
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables
-     * @return float
-     */
-    protected function getUsedQueryCacheSize(\StefanFroemken\Mysqlreport\Domain\Model\Status $status, \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables)
+    protected function getUsedQueryCacheSize(Status $status, Variables $variables): int
     {
         $queryCacheSize = $variables->getQueryCacheSize() - (40 * 1024); // ~40KB are reserved by operating system
         return $queryCacheSize - $status->getQcacheFreeMemory();
     }
 
-    /**
-     * get fragmentation ratio
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @return array
-     */
-    protected function getFragmentationRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getFragmentationRatio(Status $status): array
     {
         $result = [];
         $fragmentation = ($status->getQcacheFreeBlocks() / ($status->getQcacheTotalBlocks() / 2)) * 100; // total blocks / 2 = maximum fragmentation
@@ -176,10 +136,10 @@ class QueryCacheViewHelper extends AbstractViewHelper
      * Quote from link: Every cached query requires a minimum of two blocks (one for the query text and one or more for the query results).
      *
      * @link: http://dev.mysql.com/doc/refman/5.0/en/query-cache-status-and-maintenance.html
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getAvgUsedBlocks(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getAvgUsedBlocks(Status $status): array
     {
         $result = [];
         $usedBlocks = $status->getQcacheTotalBlocks() - $status->getQcacheFreeBlocks();

@@ -17,403 +17,256 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
 class Status
 {
     /**
-     * Aborted_clients
-     *
      * @var int
      */
     protected $abortedClients = 0;
 
     /**
-     * Aborted_connects
-     *
      * @var int
      */
     protected $abortedConnects = 0;
 
     /**
-     * Com_select
-     *
      * @var int
      */
     protected $comSelect = 0;
 
     /**
-     * Connections
-     *
      * @var int
      */
     protected $connections = 0;
 
     /**
-     * Created_tmp_disk_tables
-     *
      * @var int
      */
     protected $createdTmpDiskTables = 0;
 
     /**
-     * Created_tmp_tables
-     *
      * @var int
      */
     protected $createdTmpTables = 0;
 
     /**
-     * Innodb_buffer_pool_pages_data
-     *
      * @var int
      */
     protected $innodbBufferPoolPagesData = 0;
 
     /**
-     * Innodb_buffer_pool_pages_flushed
-     *
      * @var int
      */
     protected $innodbBufferPoolPagesFlushed = 0;
 
     /**
-     * Innodb_buffer_pool_pages_free
-     *
      * @var int
      */
     protected $innodbBufferPoolPagesFree = 0;
 
     /**
-     * Innodb_buffer_pool_pages_misc
-     *
      * @var int
      */
     protected $innodbBufferPoolPagesMisc = 0;
 
     /**
-     * Innodb_buffer_pool_pages_total
-     *
      * @var int
      */
     protected $innodbBufferPoolPagesTotal = 0;
 
     /**
-     * Innodb_buffer_pool_read_requests
-     *
      * @var int
      */
     protected $innodbBufferPoolReadRequests = 0;
 
     /**
-     * Innodb_buffer_pool_reads
-     *
      * @var int
      */
     protected $innodbBufferPoolReads = 0;
 
     /**
-     * Innodb_buffer_pool_write_requests
-     *
      * @var int
      */
     protected $innodbBufferPoolWriteRequests = 0;
 
     /**
-     * Innodb_os_log_written
-     *
      * @var int
      */
     protected $innodbOsLogWritten = 0;
 
     /**
-     * Innodb_page_size
-     *
      * @var int
      */
     protected $innodbPageSize = 0;
 
     /**
-     * Key_blocks_unused
-     *
      * @var int
      */
     protected $keyBlocksUnused = 0;
 
     /**
-     * Key_read_requests
-     *
      * @var int
      */
     protected $keyReadRequests = 0;
 
     /**
-     * Key_reads
-     *
      * @var int
      */
     protected $keyReads = 0;
 
     /**
-     * Open_table_definitions
-     *
      * @var int
      */
     protected $openTableDefinitions = 0;
 
     /**
-     * Open_tables
-     *
      * @var int
      */
     protected $openTables = 0;
 
     /**
-     * Opened_table_definitions
-     *
      * @var int
      */
     protected $openedTableDefinitions = 0;
 
     /**
-     * Opened_tables
-     *
      * @var int
      */
     protected $openedTables = 0;
 
     /**
-     * qcacheFreeBlocks
-     *
      * @var int
      */
     protected $qcacheFreeBlocks = 0;
 
     /**
-     * qcacheFreeMemory
-     *
      * @var int
      */
     protected $qcacheFreeMemory = 0;
 
     /**
-     * qcacheHits
-     *
      * @var int
      */
     protected $qcacheHits = 0;
 
     /**
-     * qcacheInserts
-     *
      * @var int
      */
     protected $qcacheInserts = 0;
 
     /**
-     * qcacheLowmemPrunes
-     *
      * @var int
      */
     protected $qcacheLowmemPrunes = 0;
 
     /**
-     * qcacheNotCached
-     *
      * @var int
      */
     protected $qcacheNotCached = 0;
 
     /**
-     * qcacheQueriesInCache
-     *
      * @var int
      */
     protected $qcacheQueriesInCache = 0;
 
     /**
-     * qcacheTotalBlocks
-     *
      * @var int
      */
     protected $qcacheTotalBlocks = 0;
 
     /**
-     * slaveRunning
-     *
      * @var string
      */
     protected $slaveRunning = 'OFF';
 
     /**
-     * Threads_connected
-     *
      * @var int
      */
     protected $threadsConnected = 0;
 
     /**
-     * Threads_created
-     *
      * @var int
      */
     protected $threadsCreated = 0;
 
     /**
-     * Uptime
-     *
      * @var int
      */
     protected $uptime = 0;
 
     /**
-     * Uptime_since_flush_status
-     *
      * @var int
      */
     protected $uptimeSinceFlushStatus = 0;
 
-    /**
-     * Getter for Aborted_Clients
-     *
-     * @return int
-     */
-    public function getAbortedClients()
+    public function getAbortedClients(): int
     {
         return $this->abortedClients;
     }
 
-    /**
-     * Setter for Aborted_Clients
-     *
-     * @param int $abortedClients
-     */
-    public function setAbortedClients($abortedClients)
+    public function setAbortedClients(int $abortedClients)
     {
         $this->abortedClients = $abortedClients;
     }
 
-    /**
-     * Getter for Aborted_Connects
-     *
-     * @return int
-     */
-    public function getAbortedConnects()
+    public function getAbortedConnects(): int
     {
         return $this->abortedConnects;
     }
 
-    /**
-     * Setter for Aborted_Connects
-     *
-     * @param int $abortedConnects
-     */
-    public function setAbortedConnects($abortedConnects)
+    public function setAbortedConnects(int $abortedConnects)
     {
         $this->abortedConnects = $abortedConnects;
     }
 
-    /**
-     * Returns the comSelect
-     *
-     * @return int $comSelect
-     */
-    public function getComSelect()
+    public function getComSelect(): int
     {
         return $this->comSelect;
     }
 
-    /**
-     * Sets the comSelect
-     *
-     * @param int $comSelect
-     */
-    public function setComSelect($comSelect)
+    public function setComSelect(int $comSelect)
     {
         $this->comSelect = $comSelect;
     }
 
-    /**
-     * Returns the connections
-     *
-     * @return int $connections
-     */
-    public function getConnections()
+    public function getConnections(): int
     {
         return $this->connections;
     }
 
-    /**
-     * Sets the connections
-     *
-     * @param int $connections
-     */
-    public function setConnections($connections)
+    public function setConnections(int $connections)
     {
         $this->connections = $connections;
     }
 
-    /**
-     * Getter for Created_tmp_disk_tables
-     *
-     * @return int
-     */
-    public function getCreatedTmpDiskTables()
+    public function getCreatedTmpDiskTables(): int
     {
         return $this->createdTmpDiskTables;
     }
 
-    /**
-     * Setter for Created_tmp_disk_tables
-     *
-     * @param int $createdTmpDiskTables
-     */
-    public function setCreatedTmpDiskTables($createdTmpDiskTables)
+    public function setCreatedTmpDiskTables(int $createdTmpDiskTables)
     {
         $this->createdTmpDiskTables = $createdTmpDiskTables;
     }
 
-    /**
-     * Getter for Created_tmp_tables
-     *
-     * @return int
-     */
-    public function getCreatedTmpTables()
+    public function getCreatedTmpTables(): int
     {
         return $this->createdTmpTables;
     }
 
-    /**
-     * Setter for Created_tmp_tables
-     *
-     * @param int $createdTmpTables
-     */
-    public function setCreatedTmpTables($createdTmpTables)
+    public function setCreatedTmpTables(int $createdTmpTables)
     {
         $this->createdTmpTables = $createdTmpTables;
     }
 
-    /**
-     * Returns the innodbBufferPoolPagesData
-     *
-     * @return int $innodbBufferPoolPagesData
-     */
-    public function getInnodbBufferPoolPagesData()
+    public function getInnodbBufferPoolPagesData(): int
     {
         return $this->innodbBufferPoolPagesData;
     }
 
-    /**
-     * Sets the innodbBufferPoolPagesData
-     *
-     * @param int $innodbBufferPoolPagesData
-     */
-    public function setInnodbBufferPoolPagesData($innodbBufferPoolPagesData)
+    public function setInnodbBufferPoolPagesData(int $innodbBufferPoolPagesData)
     {
         $this->innodbBufferPoolPagesData = $innodbBufferPoolPagesData;
     }
 
-    /**
-     * Returns the innodbBufferPoolPagesFlushed
-     *
-     * @return int $innodbBufferPoolPagesFlushed
-     */
-    public function getInnodbBufferPoolPagesFlushed()
+    public function getInnodbBufferPoolPagesFlushed(): int
     {
         if ($this->innodbBufferPoolPagesFlushed) {
             return $this->innodbBufferPoolPagesFlushed;
@@ -423,572 +276,287 @@ class Status
         return 1;
     }
 
-    /**
-     * Sets the innodbBufferPoolPagesFlushed
-     *
-     * @param int $innodbBufferPoolPagesFlushed
-     */
-    public function setInnodbBufferPoolPagesFlushed($innodbBufferPoolPagesFlushed)
+    public function setInnodbBufferPoolPagesFlushed(int $innodbBufferPoolPagesFlushed)
     {
         $this->innodbBufferPoolPagesFlushed = $innodbBufferPoolPagesFlushed;
     }
 
-    /**
-     * Returns the innodbBufferPoolPagesFree
-     *
-     * @return int $innodbBufferPoolPagesFree
-     */
-    public function getInnodbBufferPoolPagesFree()
+    public function getInnodbBufferPoolPagesFree(): int
     {
         return $this->innodbBufferPoolPagesFree;
     }
 
-    /**
-     * Sets the innodbBufferPoolPagesFree
-     *
-     * @param int $innodbBufferPoolPagesFree
-     */
-    public function setInnodbBufferPoolPagesFree($innodbBufferPoolPagesFree)
+    public function setInnodbBufferPoolPagesFree(int $innodbBufferPoolPagesFree)
     {
         $this->innodbBufferPoolPagesFree = $innodbBufferPoolPagesFree;
     }
 
-    /**
-     * Returns the innodbBufferPoolPagesMisc
-     *
-     * @return int $innodbBufferPoolPagesMisc
-     */
-    public function getInnodbBufferPoolPagesMisc()
+    public function getInnodbBufferPoolPagesMisc(): int
     {
         return $this->innodbBufferPoolPagesMisc;
     }
 
-    /**
-     * Sets the innodbBufferPoolPagesMisc
-     *
-     * @param int $innodbBufferPoolPagesMisc
-     */
-    public function setInnodbBufferPoolPagesMisc($innodbBufferPoolPagesMisc)
+    public function setInnodbBufferPoolPagesMisc(int $innodbBufferPoolPagesMisc)
     {
         $this->innodbBufferPoolPagesMisc = $innodbBufferPoolPagesMisc;
     }
 
-    /**
-     * Returns the innodbBufferPoolPagesTotal
-     *
-     * @return int $innodbBufferPoolPagesTotal
-     */
-    public function getInnodbBufferPoolPagesTotal()
+    public function getInnodbBufferPoolPagesTotal(): int
     {
         return $this->innodbBufferPoolPagesTotal;
     }
 
-    /**
-     * Sets the innodbBufferPoolPagesTotal
-     *
-     * @param int $innodbBufferPoolPagesTotal
-     */
-    public function setInnodbBufferPoolPagesTotal($innodbBufferPoolPagesTotal)
+    public function setInnodbBufferPoolPagesTotal(int $innodbBufferPoolPagesTotal)
     {
         $this->innodbBufferPoolPagesTotal = $innodbBufferPoolPagesTotal;
     }
 
-    /**
-     * Getter for Innodb_buffer_pool_read_requests
-     *
-     * @return int
-     */
-    public function getInnodbBufferPoolReadRequests()
+    public function getInnodbBufferPoolReadRequests(): int
     {
         return $this->innodbBufferPoolReadRequests;
     }
 
-    /**
-     * Setter for Innodb_buffer_pool_read_requests
-     *
-     * @param int $innodbBufferPoolReadRequests
-     */
-    public function setInnodbBufferPoolReadRequests($innodbBufferPoolReadRequests)
+    public function setInnodbBufferPoolReadRequests(int $innodbBufferPoolReadRequests)
     {
         $this->innodbBufferPoolReadRequests = $innodbBufferPoolReadRequests;
     }
 
-    /**
-     * Getter for Innodb_buffer_pool_reads
-     *
-     * @return int
-     */
-    public function getInnodbBufferPoolReads()
+    public function getInnodbBufferPoolReads(): int
     {
         return $this->innodbBufferPoolReads;
     }
 
-    /**
-     * Setter for Innodb_buffer_pool_reads
-     *
-     * @param int $innodbBufferPoolReads
-     */
-    public function setInnodbBufferPoolReads($innodbBufferPoolReads)
+    public function setInnodbBufferPoolReads(int $innodbBufferPoolReads)
     {
         $this->innodbBufferPoolReads = $innodbBufferPoolReads;
     }
 
-    /**
-     * Returns the innodbBufferPoolWriteRequests
-     *
-     * @return int $innodbBufferPoolWriteRequests
-     */
-    public function getInnodbBufferPoolWriteRequests()
+    public function getInnodbBufferPoolWriteRequests(): int
     {
         return $this->innodbBufferPoolWriteRequests;
     }
 
-    /**
-     * Sets the innodbBufferPoolWriteRequests
-     *
-     * @param int $innodbBufferPoolWriteRequests
-     */
-    public function setInnodbBufferPoolWriteRequests($innodbBufferPoolWriteRequests)
+    public function setInnodbBufferPoolWriteRequests(int $innodbBufferPoolWriteRequests)
     {
         $this->innodbBufferPoolWriteRequests = $innodbBufferPoolWriteRequests;
     }
 
-    /**
-     * Returns the innodbOsLogWritten
-     *
-     * @return int $innodbOsLogWritten
-     */
-    public function getInnodbOsLogWritten()
+    public function getInnodbOsLogWritten(): int
     {
         return $this->innodbOsLogWritten;
     }
 
-    /**
-     * Sets the innodbOsLogWritten
-     *
-     * @param int $innodbOsLogWritten
-     */
-    public function setInnodbOsLogWritten($innodbOsLogWritten)
+    public function setInnodbOsLogWritten(int $innodbOsLogWritten)
     {
         $this->innodbOsLogWritten = $innodbOsLogWritten;
     }
 
-    /**
-     * Returns the innodbPageSize
-     *
-     * @return int $innodbPageSize
-     */
-    public function getInnodbPageSize()
+    public function getInnodbPageSize(): int
     {
         return $this->innodbPageSize;
     }
 
-    /**
-     * Sets the innodbPageSize
-     *
-     * @param int $innodbPageSize
-     */
-    public function setInnodbPageSize($innodbPageSize)
+    public function setInnodbPageSize(int $innodbPageSize)
     {
         $this->innodbPageSize = $innodbPageSize;
     }
 
-    /**
-     * Getter for Key_blocks_unused
-     *
-     * @return int
-     */
-    public function getKeyBlocksUnused()
+    public function getKeyBlocksUnused(): int
     {
         return $this->keyBlocksUnused;
     }
 
-    /**
-     * Setter for Key_blocks_unused
-     *
-     * @param int $keyBlocksUnused
-     */
-    public function setKeyBlocksUnused($keyBlocksUnused)
+    public function setKeyBlocksUnused(int $keyBlocksUnused)
     {
         $this->keyBlocksUnused = $keyBlocksUnused;
     }
 
-    /**
-     * Getter for Key_read_requests
-     *
-     * @return int
-     */
-    public function getKeyReadRequests()
+    public function getKeyReadRequests(): int
     {
         return $this->keyReadRequests;
     }
 
-    /**
-     * Setter for Key_read_requests
-     *
-     * @param int $keyReadRequests
-     */
-    public function setKeyReadRequests($keyReadRequests)
+    public function setKeyReadRequests(int $keyReadRequests)
     {
         $this->keyReadRequests = $keyReadRequests;
     }
 
-    /**
-     * Getter for Key_reads
-     *
-     * @return int
-     */
-    public function getKeyReads()
+    public function getKeyReads(): int
     {
         return $this->keyReads;
     }
 
-    /**
-     * Setter for Key_reads
-     *
-     * @param int $keyReads
-     */
-    public function setKeyReads($keyReads)
+    public function setKeyReads(int $keyReads)
     {
         $this->keyReads = $keyReads;
     }
 
-    /**
-     * Getter for Open_table_definitions
-     *
-     * @return int
-     */
-    public function getOpenTableDefinitions()
+    public function getOpenTableDefinitions(): int
     {
         return $this->openTableDefinitions;
     }
 
-    /**
-     * Setter for Open_table_definitions
-     *
-     * @param int $openTableDefinitions
-     */
-    public function setOpenTableDefinitions($openTableDefinitions)
+    public function setOpenTableDefinitions(int $openTableDefinitions)
     {
         $this->openTableDefinitions = $openTableDefinitions;
     }
 
-    /**
-     * Getter for Open_tables
-     *
-     * @return int
-     */
-    public function getOpenTables()
+    public function getOpenTables(): int
     {
         return $this->openTables;
     }
 
-    /**
-     * Setter for Open_tables
-     *
-     * @param int $openTables
-     */
-    public function setOpenTables($openTables)
+    public function setOpenTables(int $openTables)
     {
         $this->openTables = $openTables;
     }
 
-    /**
-     * Getter for Opened_table_definitions
-     *
-     * @return int
-     */
-    public function getOpenedTableDefinitions()
+    public function getOpenedTableDefinitions(): int
     {
         return $this->openedTableDefinitions;
     }
 
-    /**
-     * Setter for Opened_table_definitions
-     *
-     * @param int $openedTableDefinitions
-     */
-    public function setOpenedTableDefinitions($openedTableDefinitions)
+    public function setOpenedTableDefinitions(int $openedTableDefinitions)
     {
         $this->openedTableDefinitions = $openedTableDefinitions;
     }
 
-    /**
-     * Getter for Opened_tables
-     *
-     * @return int
-     */
-    public function getOpenedTables()
+    public function getOpenedTables(): int
     {
         return $this->openedTables;
     }
 
-    /**
-     * Setter for Opened_tables
-     *
-     * @param int $openedTables
-     */
-    public function setOpenedTables($openedTables)
+    public function setOpenedTables(int $openedTables)
     {
         $this->openedTables = $openedTables;
     }
 
-    /**
-     * Returns the qcacheFreeBlocks
-     *
-     * @return int $qcacheFreeBlocks
-     */
-    public function getQcacheFreeBlocks()
+    public function getQcacheFreeBlocks(): int
     {
         return $this->qcacheFreeBlocks;
     }
 
-    /**
-     * Sets the qcacheFreeBlocks
-     *
-     * @param int $qcacheFreeBlocks
-     */
-    public function setQcacheFreeBlocks($qcacheFreeBlocks)
+    public function setQcacheFreeBlocks(int $qcacheFreeBlocks)
     {
         $this->qcacheFreeBlocks = $qcacheFreeBlocks;
     }
 
-    /**
-     * Returns the qcacheFreeMemory
-     *
-     * @return int $qcacheFreeMemory
-     */
-    public function getQcacheFreeMemory()
+    public function getQcacheFreeMemory(): int
     {
         return $this->qcacheFreeMemory;
     }
 
-    /**
-     * Sets the qcacheFreeMemory
-     *
-     * @param int $qcacheFreeMemory
-     */
-    public function setQcacheFreeMemory($qcacheFreeMemory)
+    public function setQcacheFreeMemory(int $qcacheFreeMemory)
     {
         $this->qcacheFreeMemory = $qcacheFreeMemory;
     }
 
-    /**
-     * Returns the qcacheHits
-     *
-     * @return int $qcacheHits
-     */
-    public function getQcacheHits()
+    public function getQcacheHits(): int
     {
         return $this->qcacheHits;
     }
 
-    /**
-     * Sets the qcacheHits
-     *
-     * @param int $qcacheHits
-     */
-    public function setQcacheHits($qcacheHits)
+    public function setQcacheHits(int $qcacheHits)
     {
         $this->qcacheHits = $qcacheHits;
     }
 
-    /**
-     * Returns the qcacheInserts
-     *
-     * @return int $qcacheInserts
-     */
-    public function getQcacheInserts()
+    public function getQcacheInserts(): int
     {
         return $this->qcacheInserts;
     }
 
-    /**
-     * Sets the qcacheInserts
-     *
-     * @param int $qcacheInserts
-     */
-    public function setQcacheInserts($qcacheInserts)
+    public function setQcacheInserts(int $qcacheInserts)
     {
         $this->qcacheInserts = $qcacheInserts;
     }
 
-    /**
-     * Returns the qcacheLowmemPrunes
-     *
-     * @return int $qcacheLowmemPrunes
-     */
-    public function getQcacheLowmemPrunes()
+    public function getQcacheLowmemPrunes(): int
     {
         return $this->qcacheLowmemPrunes;
     }
 
-    /**
-     * Sets the qcacheLowmemPrunes
-     *
-     * @param int $qcacheLowmemPrunes
-     */
-    public function setQcacheLowmemPrunes($qcacheLowmemPrunes)
+    public function setQcacheLowmemPrunes(int $qcacheLowmemPrunes)
     {
         $this->qcacheLowmemPrunes = $qcacheLowmemPrunes;
     }
 
-    /**
-     * Returns the qcacheNotCached
-     *
-     * @return int $qcacheNotCached
-     */
-    public function getQcacheNotCached()
+    public function getQcacheNotCached(): int
     {
         return $this->qcacheNotCached;
     }
 
-    /**
-     * Sets the qcacheNotCached
-     *
-     * @param int $qcacheNotCached
-     */
-    public function setQcacheNotCached($qcacheNotCached)
+    public function setQcacheNotCached(int $qcacheNotCached)
     {
         $this->qcacheNotCached = $qcacheNotCached;
     }
 
-    /**
-     * Returns the qcacheQueriesInCache
-     *
-     * @return int $qcacheQueriesInCache
-     */
-    public function getQcacheQueriesInCache()
+    public function getQcacheQueriesInCache(): int
     {
         return $this->qcacheQueriesInCache;
     }
 
-    /**
-     * Sets the qcacheQueriesInCache
-     *
-     * @param int $qcacheQueriesInCache
-     */
-    public function setQcacheQueriesInCache($qcacheQueriesInCache)
+    public function setQcacheQueriesInCache(int $qcacheQueriesInCache)
     {
         $this->qcacheQueriesInCache = $qcacheQueriesInCache;
     }
 
-    /**
-     * Returns the qcacheTotalBlocks
-     *
-     * @return int $qcacheTotalBlocks
-     */
-    public function getQcacheTotalBlocks()
+    public function getQcacheTotalBlocks(): int
     {
         return $this->qcacheTotalBlocks;
     }
 
-    /**
-     * Sets the qcacheTotalBlocks
-     *
-     * @param int $qcacheTotalBlocks
-     */
-    public function setQcacheTotalBlocks($qcacheTotalBlocks)
+    public function setQcacheTotalBlocks(int $qcacheTotalBlocks)
     {
         $this->qcacheTotalBlocks = $qcacheTotalBlocks;
     }
 
-    /**
-     * Returns the slaveRunning
-     *
-     * @return string $slaveRunning
-     */
-    public function getSlaveRunning()
+    public function getSlaveRunning(): string
     {
         return $this->slaveRunning;
     }
 
-    /**
-     * Sets the slaveRunning
-     *
-     * @param string $slaveRunning
-     */
-    public function setSlaveRunning($slaveRunning)
+    public function setSlaveRunning(string $slaveRunning)
     {
         $this->slaveRunning = $slaveRunning;
     }
 
-    /**
-     * Getter for Threads_connected
-     *
-     * @return int
-     */
-    public function getThreadsConnected()
+    public function getThreadsConnected(): int
     {
         return $this->threadsConnected;
     }
 
-    /**
-     * Setter for Threads_connected
-     *
-     * @param int $threadsConnected
-     */
-    public function setThreadsConnected($threadsConnected)
+    public function setThreadsConnected(int $threadsConnected)
     {
         $this->threadsConnected = $threadsConnected;
     }
 
-    /**
-     * Getter for Threads_created
-     *
-     * @return int
-     */
-    public function getThreadsCreated()
+    public function getThreadsCreated(): int
     {
         return $this->threadsCreated;
     }
 
-    /**
-     * Setter for Threads_connected
-     *
-     * @param int $threadsCreated
-     */
-    public function setThreadsCreated($threadsCreated)
+    public function setThreadsCreated(int $threadsCreated)
     {
         $this->threadsCreated = $threadsCreated;
     }
 
-    /**
-     * Getter for Uptime
-     *
-     * @return int
-     */
-    public function getUptime()
+    public function getUptime(): int
     {
         return $this->uptime;
     }
 
-    /**
-     * Setter for Uptime
-     *
-     * @param int $uptime
-     */
-    public function setUptime($uptime)
+    public function setUptime(int $uptime)
     {
         $this->uptime = $uptime;
     }
 
-    /**
-     * Returns the uptimeSinceFlushStatus
-     *
-     * @return int $uptimeSinceFlushStatus
-     */
-    public function getUptimeSinceFlushStatus()
+    public function getUptimeSinceFlushStatus(): int
     {
         return $this->uptimeSinceFlushStatus;
     }
 
-    /**
-     * Sets the uptimeSinceFlushStatus
-     *
-     * @param int $uptimeSinceFlushStatus
-     */
-    public function setUptimeSinceFlushStatus($uptimeSinceFlushStatus)
+    public function setUptimeSinceFlushStatus(int $uptimeSinceFlushStatus)
     {
         $this->uptimeSinceFlushStatus = $uptimeSinceFlushStatus;
     }

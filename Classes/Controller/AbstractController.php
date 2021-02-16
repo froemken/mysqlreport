@@ -98,9 +98,6 @@ abstract class AbstractController extends ActionController
         }
     }
 
-    /**
-     * @return BackendUserAuthentication
-     */
     protected function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];

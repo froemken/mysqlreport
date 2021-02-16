@@ -19,66 +19,41 @@ use TYPO3\CMS\Extbase\Utility\LocalizationUtility;
 class Report
 {
     /**
-     * title
-     *
      * @var string
      */
     protected $title = '';
 
     /**
-     * description
-     *
      * @var string
      */
     protected $description = '';
 
     /**
-     * status
-     *
      * @var array
      */
     protected $status = [];
 
     /**
-     * variables
-     *
      * @var array
      */
     protected $variables = [];
 
     /**
-     * calculations
-     *
      * @var array
      */
     protected $calculations = [];
 
-    /**
-     * Getter for title
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Setter for title
-     *
-     * @param string $title
-     */
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         $this->title = $title;
     }
 
-    /**
-     * Getter for description
-     *
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         $description = LocalizationUtility::translate($this->description, 'mysqlreport');
         if (empty($description)) {
@@ -87,104 +62,58 @@ class Report
         return $description;
     }
 
-    /**
-     * Setter for description
-     *
-     * @param string $description
-     */
-    public function setDescription($description)
+    public function setDescription(string $description)
     {
         $this->description = $description;
     }
 
-    /**
-     * Getter for status
-     *
-     * @return array
-     */
-    public function getStatus()
+    public function getStatus(): array
     {
         return $this->status;
     }
 
-    /**
-     * Setter for status
-     *
-     * @param array $status
-     */
-    public function setStatus($status)
+    public function setStatus(array $status)
     {
         $this->status = $status;
     }
 
-    /**
-     * Adds a status
-     *
-     * @param string $key
-     * @param string $value
-     */
-    public function addStatus($key, $value)
+    public function addStatus(string $key, string $value)
     {
         $this->status[$key] = $value;
     }
 
-    /**
-     * Getter for variables
-     *
-     * @return array
-     */
-    public function getVariables()
+    public function getVariables(): array
     {
         return $this->variables;
     }
 
-    /**
-     * Setter for variables
-     *
-     * @param array $variables
-     */
-    public function setVariables($variables)
+    public function setVariables(array $variables)
     {
         $this->variables = $variables;
     }
 
-    /**
-     * Adds a variable
-     *
-     * @param string $key
-     * @param string $value
-     */
-    public function addVariable($key, $value)
+    public function addVariable(string $key, string $value)
     {
         $this->variables[$key] = $value;
     }
 
     /**
-     * Getter for calculations
-     *
-     * @return array
+     * @return array|Calculation[]
      */
-    public function getCalculations()
+    public function getCalculations(): array
     {
         return $this->calculations;
     }
 
     /**
-     * Setter for calculations
-     *
-     * @param array $calculations
+     * @param array|Calculation[] $calculations
      */
-    public function setCalculations($calculations)
+    public function setCalculations(array $calculations)
     {
         $this->calculations = $calculations;
     }
 
-    /**
-     * Adds a calculation
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Calculation $calculation
-     */
-    public function addCalculation(\StefanFroemken\Mysqlreport\Domain\Model\Calculation $calculation)
+    public function addCalculation(Calculation $calculation)
     {
         $this->calculations[] = $calculation;
     }
