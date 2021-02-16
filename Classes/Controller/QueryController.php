@@ -17,7 +17,8 @@ use TYPO3\CMS\Backend\View\BackendTemplateView;
 /**
  * Controller to show results of FTS and filesort
  */
-class QueryController extends AbstractController{
+class QueryController extends AbstractController
+{
     /**
      * @var BackendTemplateView
      */

@@ -11,15 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
-use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
-use TYPO3\CMS\Lang\LanguageService;
 
 /**
  * Abstract Controller with useful methods like adding buttons to BE view

@@ -30,5 +30,4 @@ class StatusRepository extends AbstractRepository
         }
         return $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\Status', $rows);
     }
-
 }

@@ -992,5 +992,4 @@ class Status
     {
         $this->uptimeSinceFlushStatus = $uptimeSinceFlushStatus;
     }
-
 }

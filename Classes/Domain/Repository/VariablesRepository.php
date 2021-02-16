@@ -30,5 +30,4 @@ class VariablesRepository extends AbstractRepository
         }
         return $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\Variables', $rows);
     }
-
 }

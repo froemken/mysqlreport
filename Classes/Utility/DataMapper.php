@@ -65,21 +65,21 @@ class DataMapper
                 $propertyData = $this->reflectionService->getClassSchema($className)->getProperty($propertyName);
                 switch ($propertyData['type']) {
                     case 'array':
-                        $object->$methodName((array) $value);
+                        $object->$methodName((array)$value);
                         break;
                     case 'int':
                     case 'integer':
-                        $object->$methodName((int) $value);
+                        $object->$methodName((int)$value);
                         break;
                     case 'bool':
                     case 'boolean':
                         $object->$methodName($value);
                         break;
                     case 'string':
-                        $object->$methodName((string) $value);
+                        $object->$methodName((string)$value);
                         break;
                     case 'float':
-                        $object->$methodName((float) $value);
+                        $object->$methodName((float)$value);
                         break;
                     case 'SplObjectStorage':
                     case 'Tx_Extbase_Persistence_ObjectStorage':

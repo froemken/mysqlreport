@@ -178,8 +178,8 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
         }
         $result['value'] = $variables->getInnodbLogFileSize();
         $result['niceToHave'] = $sizeOfEachLogFile;
-        return $result;
 
+        return $result;
     }
 
     /**
@@ -194,8 +194,8 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
         $innodbBufferShouldBe = $variables->getInnodbBufferPoolInstances() * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
         if ($variables->getInnodbBufferPoolSize() < (1 * 1024 * 1024 * 1024) && $variables->getInnodbBufferPoolInstances() === 1) {
             $result['status'] = 'success';
-        }	elseif ($innodbBufferShouldBe !== $variables->getInnodbBufferPoolSize()) {
-                $result['status'] = 'danger';
+        } elseif ($innodbBufferShouldBe !== $variables->getInnodbBufferPoolSize()) {
+            $result['status'] = 'danger';
         } else {
             $result['status'] = 'success';
         }

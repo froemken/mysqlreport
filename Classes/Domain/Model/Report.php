@@ -188,5 +188,4 @@ class Report
     {
         $this->calculations[] = $calculation;
     }
-
 }

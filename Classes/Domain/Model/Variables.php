@@ -652,5 +652,4 @@ class Variables
     {
         $this->tmpTableSize = $tmpTableSize;
     }
-
 }

@@ -42,7 +42,6 @@ class TableInformationRepository extends AbstractRepository
      * get table informations of a given engine from information_scheme
      *
      * @param string $engine
-     *
      * @return array
      */
     public function findAllByEngine($engine)
@@ -64,7 +63,6 @@ class TableInformationRepository extends AbstractRepository
      * get table information of a given table from information_scheme
      *
      * @param string $table
-     *
      * @return \StefanFroemken\Mysqlreport\Domain\Model\TableInformation[]
      */
     public function findByTable($table)
@@ -104,5 +102,4 @@ class TableInformationRepository extends AbstractRepository
         
         return $row['indexsize'];
     }
-
 }

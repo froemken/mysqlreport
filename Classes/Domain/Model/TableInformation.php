@@ -231,5 +231,4 @@ class TableInformation
     {
         $this->autoIncrement = $autoIncrement;
     }
-
 }

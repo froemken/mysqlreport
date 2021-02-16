@@ -28,7 +28,9 @@ class DatabaseRepository extends AbstractRepository
             'crdate, unique_call_identifier, mode, SUM(duration) as duration, COUNT(*) as amount',
             'tx_mysqlreport_domain_model_profile',
             '',
-            'unique_call_identifier', 'crdate DESC', 100
+            'unique_call_identifier',
+            'crdate DESC',
+            100
         );
     }
 
@@ -44,7 +46,9 @@ class DatabaseRepository extends AbstractRepository
             'query_type, unique_call_identifier, SUM(duration) as duration, COUNT(*) as amount',
             'tx_mysqlreport_domain_model_profile',
             'unique_call_identifier = "' . $uniqueIdentifier . '"',
-            'query_type', 'duration DESC', ''
+            'query_type',
+            'duration DESC',
+            ''
         );
     }
 
@@ -62,7 +66,9 @@ class DatabaseRepository extends AbstractRepository
             'tx_mysqlreport_domain_model_profile',
             'unique_call_identifier = "' . $uniqueIdentifier . '"
             AND query_type = "' . $queryType . '"',
-            '', 'duration DESC', ''
+            '',
+            'duration DESC',
+            ''
         );
     }
 
@@ -78,7 +84,9 @@ class DatabaseRepository extends AbstractRepository
             'query, query_type, profile, explain_query, not_using_index, duration',
             'tx_mysqlreport_domain_model_profile',
             'uid = ' . $uid,
-            '', '', ''
+            '',
+            '',
+            ''
         );
     }
 
@@ -93,7 +101,9 @@ class DatabaseRepository extends AbstractRepository
             'LEFT(query, 255) as query, explain_query, duration',
             'tx_mysqlreport_domain_model_profile',
             'explain_query LIKE "%using filesort%"',
-            '', 'duration DESC', '100'
+            '',
+            'duration DESC',
+            '100'
         );
     }
 
@@ -108,8 +118,9 @@ class DatabaseRepository extends AbstractRepository
             'LEFT(query, 255) as query, explain_query, duration',
             'tx_mysqlreport_domain_model_profile',
             'using_fulltable = 1',
-            '', 'duration DESC', '100'
+            '',
+            'duration DESC',
+            '100'
         );
     }
-
 }

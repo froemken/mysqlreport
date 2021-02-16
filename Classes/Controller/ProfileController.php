@@ -75,7 +75,7 @@ class ProfileController extends AbstractController
      *
      * @param string $uniqueIdentifier
      * @param string $queryType
-     * @param integer $uid
+     * @param int $uid
      */
     public function profileInfoAction($uniqueIdentifier, $queryType, $uid)
     {

@@ -171,10 +171,9 @@ class Calculation
         if ($this->result >= $this->minAllowedValue && $this->result <= $this->maxAllowedValue) {
             // everything is OK
             return true;
-        } else {
-            // value too high or low
-            return false;
         }
-    }
 
+        // value too high or low
+        return false;
+    }
 }
