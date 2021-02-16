@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use StefanFroemken\Mysqlreport\Utility\DataMapper;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Abstract Repository
@@ -24,18 +26,13 @@ abstract class AbstractRepository
      */
     protected $dataMapper;
 
-    /**
-     * @var DatabaseConnection
-     */
-    protected $databaseConnection;
-
     public function injectDataMapper(DataMapper $dataMapper)
     {
         $this->dataMapper = $dataMapper;
     }
 
-    public function initializeObject()
+    protected function getConnectionPool(): ConnectionPool
     {
-        $this->databaseConnection = $GLOBALS['TYPO3_DB'];
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

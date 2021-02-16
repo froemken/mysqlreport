@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use StefanFroemken\Mysqlreport\Domain\Model\Status;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Repository to get the MySQL status
@@ -20,9 +21,11 @@ class StatusRepository extends AbstractRepository
 {
     public function findAll(): Status
     {
+        $connection = $this->getConnectionPool()->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $statement = $connection->query('SHOW GLOBAL STATUS');
+
         $rows = [];
-        $res = $this->databaseConnection->sql_query('SHOW GLOBAL STATUS;');
-        while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
+        while ($row = $statement->fetch()) {
             $rows[strtolower($row['Variable_name'])] = $row['Value'];
         }
 
