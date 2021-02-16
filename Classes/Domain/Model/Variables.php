@@ -17,482 +17,276 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
 class Variables
 {
     /**
-     * back_log
-     *
      * @var int
      */
     protected $backLog = 0;
 
     /**
-     * innodb_buffer_pool_instances
-     *
      * @var int
      */
     protected $innodbBufferPoolInstances = 0;
 
     /**
-     * innodb_buffer_pool_size
-     *
      * @var int
      */
     protected $innodbBufferPoolSize = 0;
 
     /**
-     * innodb_flush_log_at_trx_commit
-     *
      * @var int
      */
     protected $innodbFlushLogAtTrxCommit = 0;
 
     /**
-     * innodb_log_buffer_size
-     *
      * @var int
      */
     protected $innodbLogBufferSize = 0;
 
     /**
-     * innodb_log_file_size
-     *
      * @var int
      */
     protected $innodbLogFileSize = 0;
 
     /**
-     * innodb_log_files_in_group
-     *
      * @var int
      */
     protected $innodbLogFilesInGroup = 0;
 
     /**
-     * join_buffer_size
-     *
      * @var int
      */
     protected $joinBufferSize = 0;
 
     /**
-     * key_buffer_size
-     *
-     * @var int
+    * @var int
      */
     protected $keyBufferSize = 0;
 
     /**
-     * key_cache_block_size
-     *
      * @var int
      */
     protected $keyCacheBlockSize = 0;
 
     /**
-     * log_bin
-     *
      * @var string
      */
     protected $logBin = 'OFF';
 
     /**
-     * max_heap_table_size
-     *
      * @var int
      */
     protected $maxHeapTableSize = 0;
 
     /**
-     * queryCacheLimit
-     *
      * @var int
      */
     protected $queryCacheLimit = 0;
 
     /**
-     * queryCacheMinResUnit
-     *
      * @var int
      */
     protected $queryCacheMinResUnit = 0;
 
     /**
-     * queryCacheSize
-     *
      * @var int
      */
     protected $queryCacheSize = 0;
 
     /**
-     * queryCacheStripComments
-     *
      * @var bool
      */
     protected $queryCacheStripComments = false;
 
     /**
-     * queryCacheType
-     *
-     * @var bool
+    * @var bool
      */
     protected $queryCacheType = false;
 
     /**
-     * queryCacheWlockInvalidate
-     *
      * @var bool
      */
     protected $queryCacheWlockInvalidate = false;
 
     /**
-     * sync_binlog
-     *
      * @var bool
      */
     protected $syncBinlog = false;
 
     /**
-     * table_definition_cache
-     *
      * @var int
      */
     protected $tableDefinitionCache = 0;
 
     /**
-     * table_open_cache
-     *
      * @var int
      */
     protected $tableOpenCache = 0;
 
     /**
-     * thread_cache_size
-     *
      * @var int
      */
     protected $threadCacheSize = 0;
 
     /**
-     * tmp_table_size
-     *
      * @var int
      */
     protected $tmpTableSize = 0;
 
-    /**
-     * Returns the backLog
-     *
-     * @return int $backLog
-     */
-    public function getBackLog()
+    public function getBackLog(): int
     {
         return $this->backLog;
     }
 
-    /**
-     * Sets the backLog
-     *
-     * @param int $backLog
-     */
-    public function setBackLog($backLog)
+    public function setBackLog(int $backLog)
     {
         $this->backLog = $backLog;
     }
 
-    /**
-     * Returns the innodbBufferPoolInstances
-     *
-     * @return int $innodbBufferPoolInstances
-     */
-    public function getInnodbBufferPoolInstances()
+    public function getInnodbBufferPoolInstances(): int
     {
         return $this->innodbBufferPoolInstances;
     }
 
-    /**
-     * Sets the innodbBufferPoolInstances
-     *
-     * @param int $innodbBufferPoolInstances
-     */
-    public function setInnodbBufferPoolInstances($innodbBufferPoolInstances)
+    public function setInnodbBufferPoolInstances(int $innodbBufferPoolInstances)
     {
         $this->innodbBufferPoolInstances = $innodbBufferPoolInstances;
     }
 
-    /**
-     * Returns the innodbBufferPoolSize
-     *
-     * @return int $innodbBufferPoolSize
-     */
-    public function getInnodbBufferPoolSize()
+    public function getInnodbBufferPoolSize(): int
     {
         return $this->innodbBufferPoolSize;
     }
 
-    /**
-     * Sets the innodbBufferPoolSize
-     *
-     * @param int $innodbBufferPoolSize
-     */
-    public function setInnodbBufferPoolSize($innodbBufferPoolSize)
+    public function setInnodbBufferPoolSize(int $innodbBufferPoolSize)
     {
         $this->innodbBufferPoolSize = $innodbBufferPoolSize;
     }
 
-    /**
-     * Getter for innodb_flush_log_at_trx_commit
-     *
-     * @return int
-     */
-    public function getInnodbFlushLogAtTrxCommit()
+    public function getInnodbFlushLogAtTrxCommit(): int
     {
         return $this->innodbFlushLogAtTrxCommit;
     }
 
-    /**
-     * Setter for innodb_flush_log_at_trx_commit
-     *
-     * @param int $innodbFlushLogAtTrxCommit
-     */
-    public function setInnodbFlushLogAtTrxCommit($innodbFlushLogAtTrxCommit)
+    public function setInnodbFlushLogAtTrxCommit(int $innodbFlushLogAtTrxCommit)
     {
         $this->innodbFlushLogAtTrxCommit = $innodbFlushLogAtTrxCommit;
     }
 
-    /**
-     * Getter for innodb_log_buffer_size
-     *
-     * @return int
-     */
-    public function getInnodbLogBufferSize()
+    public function getInnodbLogBufferSize(): int
     {
         return $this->innodbLogBufferSize;
     }
 
-    /**
-     * Setter for innodb_log_buffer_size
-     *
-     * @param int $innodbLogBufferSize
-     */
-    public function setInnodbLogBufferSize($innodbLogBufferSize)
+    public function setInnodbLogBufferSize(int $innodbLogBufferSize)
     {
         $this->innodbLogBufferSize = $innodbLogBufferSize;
     }
 
-    /**
-     * Returns the innodbLogFileSize
-     *
-     * @return int $innodbLogFileSize
-     */
-    public function getInnodbLogFileSize()
+    public function getInnodbLogFileSize(): int
     {
         return $this->innodbLogFileSize;
     }
 
-    /**
-     * Sets the innodbLogFileSize
-     *
-     * @param int $innodbLogFileSize
-     */
-    public function setInnodbLogFileSize($innodbLogFileSize)
+    public function setInnodbLogFileSize(int $innodbLogFileSize)
     {
         $this->innodbLogFileSize = $innodbLogFileSize;
     }
 
-    /**
-     * Returns the innodbLogFilesInGroup
-     *
-     * @return int $innodbLogFilesInGroup
-     */
-    public function getInnodbLogFilesInGroup()
+    public function getInnodbLogFilesInGroup(): int
     {
         return $this->innodbLogFilesInGroup;
     }
 
-    /**
-     * Sets the innodbLogFilesInGroup
-     *
-     * @param int $innodbLogFilesInGroup
-     */
-    public function setInnodbLogFilesInGroup($innodbLogFilesInGroup)
+    public function setInnodbLogFilesInGroup(int $innodbLogFilesInGroup)
     {
         $this->innodbLogFilesInGroup = $innodbLogFilesInGroup;
     }
 
-    /**
-     * Getter for join_buffer_size
-     *
-     * @return int
-     */
-    public function getJoinBufferSize()
+    public function getJoinBufferSize(): int
     {
         return $this->joinBufferSize;
     }
 
-    /**
-     * Setter for join_buffer_size
-     *
-     * @param int $joinBufferSize
-     */
-    public function setJoinBufferSize($joinBufferSize)
+    public function setJoinBufferSize(int $joinBufferSize)
     {
         $this->joinBufferSize = $joinBufferSize;
     }
 
-    /**
-     * Getter for key_buffer_size
-     *
-     * @return int
-     */
-    public function getKeyBufferSize()
+    public function getKeyBufferSize(): int
     {
         return $this->keyBufferSize;
     }
 
-    /**
-     * Setter for key_buffer_size
-     *
-     * @param int $keyBufferSize
-     */
-    public function setKeyBufferSize($keyBufferSize)
+    public function setKeyBufferSize(int $keyBufferSize)
     {
         $this->keyBufferSize = $keyBufferSize;
     }
 
-    /**
-     * Getter for key_cache_block_size
-     *
-     * @return int
-     */
-    public function getKeyCacheBlockSize()
+    public function getKeyCacheBlockSize(): int
     {
         return $this->keyCacheBlockSize;
     }
 
-    /**
-     * Setter for key_cache_block_size
-     *
-     * @param int $keyCacheBlockSize
-     */
-    public function setKeyCacheBlockSize($keyCacheBlockSize)
+    public function setKeyCacheBlockSize(int $keyCacheBlockSize)
     {
         $this->keyCacheBlockSize = $keyCacheBlockSize;
     }
 
-    /**
-     * Returns the logBin
-     *
-     * @return string $logBin
-     */
-    public function getLogBin()
+    public function getLogBin(): string
     {
         return $this->logBin;
     }
 
-    /**
-     * Sets the logBin
-     *
-     * @param string $logBin
-     */
-    public function setLogBin($logBin)
+    public function setLogBin(string $logBin)
     {
         $this->logBin = $logBin;
     }
 
-    /**
-     * Getter for max_heap_table_size
-     *
-     * @return int
-     */
-    public function getMaxHeapTableSize()
+    public function getMaxHeapTableSize(): int
     {
         return $this->maxHeapTableSize;
     }
 
-    /**
-     * Setter for max_heap_table_size
-     *
-     * @param int $maxHeapTableSize
-     */
-    public function setMaxHeapTableSize($maxHeapTableSize)
+    public function setMaxHeapTableSize(int $maxHeapTableSize)
     {
         $this->maxHeapTableSize = $maxHeapTableSize;
     }
 
-    /**
-     * Returns the queryCacheLimit
-     *
-     * @return int $queryCacheLimit
-     */
-    public function getQueryCacheLimit()
+    public function getQueryCacheLimit(): int
     {
         return $this->queryCacheLimit;
     }
 
-    /**
-     * Sets the queryCacheLimit
-     *
-     * @param int $queryCacheLimit
-     */
-    public function setQueryCacheLimit($queryCacheLimit)
+    public function setQueryCacheLimit(int $queryCacheLimit)
     {
         $this->queryCacheLimit = $queryCacheLimit;
     }
 
-    /**
-     * Returns the queryCacheMinResUnit
-     *
-     * @return int $queryCacheMinResUnit
-     */
-    public function getQueryCacheMinResUnit()
+    public function getQueryCacheMinResUnit(): int
     {
         return $this->queryCacheMinResUnit;
     }
 
-    /**
-     * Sets the queryCacheMinResUnit
-     *
-     * @param int $queryCacheMinResUnit
-     */
-    public function setQueryCacheMinResUnit($queryCacheMinResUnit)
+    public function setQueryCacheMinResUnit(int $queryCacheMinResUnit)
     {
         $this->queryCacheMinResUnit = $queryCacheMinResUnit;
     }
 
-    /**
-     * Returns the queryCacheSize
-     *
-     * @return int $queryCacheSize
-     */
-    public function getQueryCacheSize()
+    public function getQueryCacheSize(): int
     {
         return $this->queryCacheSize;
     }
 
-    /**
-     * Sets the queryCacheSize
-     *
-     * @param int $queryCacheSize
-     */
-    public function setQueryCacheSize($queryCacheSize)
+    public function setQueryCacheSize(int $queryCacheSize)
     {
         $this->queryCacheSize = $queryCacheSize;
     }
 
-    /**
-     * Returns the queryCacheStripComments
-     *
-     * @return bool $queryCacheStripComments
-     */
-    public function getQueryCacheStripComments()
+    public function getQueryCacheStripComments(): bool
     {
         return $this->queryCacheStripComments;
     }
 
-    /**
-     * Sets the queryCacheStripComments
-     *
-     * @param bool $queryCacheStripComments
-     */
-    public function setQueryCacheStripComments($queryCacheStripComments)
+    public function setQueryCacheStripComments(string $queryCacheStripComments)
     {
         if ($queryCacheStripComments || strtolower($queryCacheStripComments) === 'on') {
             $this->queryCacheStripComments = true;
@@ -501,46 +295,29 @@ class Variables
         }
     }
 
-    /**
-     * Returns the queryCacheType
-     *
-     * @return bool $queryCacheType
-     */
-    public function getQueryCacheType()
+    public function getQueryCacheType(): bool
     {
         return $this->queryCacheType;
     }
 
     /**
-     * Sets the queryCacheType
-     *
-     * @param bool $queryCacheType
+     * @param int|string $queryCacheType
      */
     public function setQueryCacheType($queryCacheType)
     {
-        if ($queryCacheType == 1 || strtolower($queryCacheType) === 'on') {
+        if ((int)$queryCacheType === 1 || strtolower($queryCacheType) === 'on') {
             $this->queryCacheType = true;
         } else {
             $this->queryCacheType = false;
         }
     }
 
-    /**
-     * Returns the queryCacheWlockInvalidate
-     *
-     * @return bool $queryCacheWlockInvalidate
-     */
-    public function getQueryCacheWlockInvalidate()
+    public function getQueryCacheWlockInvalidate(): bool
     {
         return $this->queryCacheWlockInvalidate;
     }
 
-    /**
-     * Sets the queryCacheWlockInvalidate
-     *
-     * @param bool $queryCacheWlockInvalidate
-     */
-    public function setQueryCacheWlockInvalidate($queryCacheWlockInvalidate)
+    public function setQueryCacheWlockInvalidate(string $queryCacheWlockInvalidate)
     {
         if ($queryCacheWlockInvalidate || strtolower($queryCacheWlockInvalidate) === 'on') {
             $this->queryCacheWlockInvalidate = true;
@@ -549,22 +326,12 @@ class Variables
         }
     }
 
-    /**
-     * Returns the syncBinlog
-     *
-     * @return bool $syncBinlog
-     */
-    public function getSyncBinlog()
+    public function getSyncBinlog(): bool
     {
         return $this->syncBinlog;
     }
 
-    /**
-     * Sets the syncBinlog
-     *
-     * @param bool $syncBinlog
-     */
-    public function setSyncBinlog($syncBinlog)
+    public function setSyncBinlog(string $syncBinlog)
     {
         if ($syncBinlog || strtolower($syncBinlog) === 'on') {
             $this->syncBinlog = true;
@@ -573,82 +340,42 @@ class Variables
         }
     }
 
-    /**
-     * Getter for table_definition_cache
-     *
-     * @return int
-     */
-    public function getTableDefinitionCache()
+    public function getTableDefinitionCache(): int
     {
         return $this->tableDefinitionCache;
     }
 
-    /**
-     * Setter for tableDefinitionCache
-     *
-     * @param int $tableDefinitionCache
-     */
-    public function setTableDefinitionCache($tableDefinitionCache)
+    public function setTableDefinitionCache(int $tableDefinitionCache)
     {
         $this->tableDefinitionCache = $tableDefinitionCache;
     }
 
-    /**
-     * Getter for table_open_cache
-     *
-     * @return int
-     */
-    public function getTableOpenCache()
+    public function getTableOpenCache(): int
     {
         return $this->tableOpenCache;
     }
 
-    /**
-     * Setter for tableOpenCache
-     *
-     * @param int $tableOpenCache
-     */
-    public function setTableOpenCache($tableOpenCache)
+    public function setTableOpenCache(int $tableOpenCache)
     {
         $this->tableOpenCache = $tableOpenCache;
     }
 
-    /**
-     * Getter for thread_cache_size
-     *
-     * @return int
-     */
-    public function getThreadCacheSize()
+    public function getThreadCacheSize(): int
     {
         return $this->threadCacheSize;
     }
 
-    /**
-     * Setter for thread_cache_size
-     *
-     * @param int $threadCacheSize
-     */
-    public function setThreadCacheSize($threadCacheSize)
+    public function setThreadCacheSize(int $threadCacheSize)
     {
         $this->threadCacheSize = $threadCacheSize;
     }
 
-    /**
-     * Getter for tmp_table_size
-     *
-     * @return int
-     */
-    public function getTmpTableSize()
+    public function getTmpTableSize(): int
     {
         return $this->tmpTableSize;
     }
 
-    /**
-     * Setter for tmp_table_size
-     *
-     * @param int $tmpTableSize
-     */
-    public function setTmpTableSize($tmpTableSize)
+    public function setTmpTableSize(int $tmpTableSize)
     {
         $this->tmpTableSize = $tmpTableSize;
     }

@@ -16,13 +16,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
  */
 class DatabaseRepository extends AbstractRepository
 {
-    /**
-     * get grouped profilings grouped by unique identifier
-     * and ordered by crdate descending
-     *
-     * @return array
-     */
-    public function findProfilingsForCall()
+    public function findProfilingsForCall(): array
     {
         return $this->databaseConnection->exec_SELECTgetRows(
             'crdate, unique_call_identifier, mode, SUM(duration) as duration, COUNT(*) as amount',
@@ -34,13 +28,7 @@ class DatabaseRepository extends AbstractRepository
         );
     }
 
-    /**
-     * get a grouped version of a profiling
-     *
-     * @param string $uniqueIdentifier
-     * @return array
-     */
-    public function getProfilingByUniqueIdentifier($uniqueIdentifier)
+    public function getProfilingByUniqueIdentifier(string $uniqueIdentifier): array
     {
         return $this->databaseConnection->exec_SELECTgetRows(
             'query_type, unique_call_identifier, SUM(duration) as duration, COUNT(*) as amount',
@@ -52,14 +40,7 @@ class DatabaseRepository extends AbstractRepository
         );
     }
 
-    /**
-     * get queries of defined query type
-     *
-     * @param string $uniqueIdentifier
-     * @param string $queryType
-     * @return array
-     */
-    public function getProfilingsByQueryType($uniqueIdentifier, $queryType)
+    public function getProfilingsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
         return $this->databaseConnection->exec_SELECTgetRows(
             'uid, query_id, LEFT(query, 120) as query, not_using_index, duration',
@@ -72,13 +53,7 @@ class DatabaseRepository extends AbstractRepository
         );
     }
 
-    /**
-     * get profiling infomations by uid
-     *
-     * @param string $uid
-     * @return array
-     */
-    public function getProfilingByUid($uid)
+    public function getProfilingByUid(int $uid): array
     {
         return $this->databaseConnection->exec_SELECTgetSingleRow(
             'query, query_type, profile, explain_query, not_using_index, duration',
@@ -90,12 +65,7 @@ class DatabaseRepository extends AbstractRepository
         );
     }
 
-    /**
-     * find queries using filesort
-     *
-     * @return array
-     */
-    public function findQueriesWithFilesort()
+    public function findQueriesWithFilesort(): array
     {
         return $this->databaseConnection->exec_SELECTgetRows(
             'LEFT(query, 255) as query, explain_query, duration',
@@ -107,12 +77,7 @@ class DatabaseRepository extends AbstractRepository
         );
     }
 
-    /**
-     * find queries using full table scan
-     *
-     * @return array
-     */
-    public function findQueriesWithFullTableScan()
+    public function findQueriesWithFullTableScan(): array
     {
         return $this->databaseConnection->exec_SELECTgetRows(
             'LEFT(query, 255) as query, explain_query, duration',

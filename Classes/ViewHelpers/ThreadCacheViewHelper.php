@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\ViewHelpers;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Status;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -28,14 +30,7 @@ class ThreadCacheViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    /**
-     * analyze QueryCache parameters
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables
-     * @return string
-     */
-    public function render(\StefanFroemken\Mysqlreport\Domain\Model\Status $status, \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables)
+    public function render(Status $status, Variables $variables): string
     {
         $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
         $content = $this->renderChildren();
@@ -47,10 +42,10 @@ class ThreadCacheViewHelper extends AbstractViewHelper
      * get hit ratio of threads cache
      * A ratio nearly 100 would be cool
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getHitRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getHitRatio(Status $status): array
     {
         $result = [];
         $hitRatio = 100 - (($status->getThreadsCreated() / $status->getConnections()) * 100);

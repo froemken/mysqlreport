@@ -33,24 +33,16 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
     protected $extConf = [];
 
     /**
-     * save profiles
-     *
      * @var array
      */
     protected $profiles = [];
 
-    /**
-     * constructor of this class
-     */
     public function __construct()
     {
         $this->databaseConnection = $GLOBALS['TYPO3_DB'];
         $this->extConf = is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mysqlreport']) ?: unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mysqlreport']);
     }
 
-    /**
-     * destructor of this class
-     */
     public function __destruct()
     {
         // we don't want to add additional queries to profiling table

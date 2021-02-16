@@ -31,14 +31,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    /**
-     * analyze QueryCache parameters
-     *
-     * @param Status $status
-     * @param Variables $variables
-     * @return string
-     */
-    public function render(Status $status, Variables $variables)
+    public function render(Status $status, Variables $variables): string
     {
         $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
         $this->templateVariableContainer->add('hitRatioBySF', $this->getHitRatioBySF($status));
@@ -53,6 +46,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
         $this->templateVariableContainer->remove('load');
         $this->templateVariableContainer->remove('logFile');
         $this->templateVariableContainer->remove('instances');
+
         return $content;
     }
 
@@ -60,10 +54,10 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      * get hit ratio of innoDb Buffer
      * A ratio of 99.9 equals 1/1000
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getHitRatio(Status $status)
+    protected function getHitRatio(Status $status): array
     {
         $result = [];
         $hitRatio = ($status->getInnodbBufferPoolReadRequests() / ($status->getInnodbBufferPoolReadRequests() + $status->getInnodbBufferPoolReads())) * 100;
@@ -75,16 +69,17 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
             $result['status'] = 'success';
         }
         $result['value'] = round($hitRatio, 2);
+
         return $result;
     }
 
     /**
      * get hit ratio of innoDb Buffer by SF
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getHitRatioBySF(Status $status)
+    protected function getHitRatioBySF(Status $status): array
     {
         $result = [];
 
@@ -99,6 +94,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
             $result['status'] = 'success';
         }
         $result['value'] = round($hitRatio, 2);
+
         return $result;
     }
 
@@ -106,10 +102,10 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      * get write ratio of innoDb Buffer
      * A value more higher than 1 is good
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getWriteRatio(Status $status)
+    protected function getWriteRatio(Status $status): array
     {
         $result = [];
         $writeRatio = $status->getInnodbBufferPoolWriteRequests() / $status->getInnodbBufferPoolPagesFlushed();
@@ -121,16 +117,17 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
             $result['status'] = 'success';
         }
         $result['value'] = round($writeRatio, 2);
+
         return $result;
     }
 
     /**
      * get load of InnoDB Buffer
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getLoad(Status $status)
+    protected function getLoad(Status $status): array
     {
         $load = [];
 
@@ -159,11 +156,11 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      *
      * @link http://www.psce.com/blog/2012/04/10/what-is-the-proper-size-of-innodb-logs/
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables
+     * @param Status $status
+     * @param Variables $variables
      * @return array
      */
-    protected function getLogFileSize(Status $status, Variables $variables)
+    protected function getLogFileSize(Status $status, Variables $variables): array
     {
         $result = [];
 
@@ -182,13 +179,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
         return $result;
     }
 
-    /**
-     * check if instances are set correct
-     *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables
-     * @return array
-     */
-    protected function getInstances(Variables $variables)
+    protected function getInstances(Variables $variables): array
     {
         $result = [];
         $innodbBufferShouldBe = $variables->getInnodbBufferPoolInstances() * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
@@ -200,6 +191,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
             $result['status'] = 'success';
         }
         $result['value'] = $variables->getInnodbBufferPoolInstances();
+
         return $result;
     }
 }

@@ -39,31 +39,24 @@ class ProfileController extends AbstractController
         $this->databaseRepository = $databaseRepository;
     }
 
-    /**
-     * list action
-     */
     public function listAction()
     {
         $this->view->assign('profiles', $this->databaseRepository->findProfilingsForCall());
     }
 
     /**
-     * show action
-     *
      * @param string $uniqueIdentifier
      */
-    public function showAction($uniqueIdentifier)
+    public function showAction(string $uniqueIdentifier)
     {
         $this->view->assign('profileTypes', $this->databaseRepository->getProfilingByUniqueIdentifier($uniqueIdentifier));
     }
 
     /**
-     * query type action
-     *
      * @param string $uniqueIdentifier
      * @param string $queryType
      */
-    public function queryTypeAction($uniqueIdentifier, $queryType)
+    public function queryTypeAction(string $uniqueIdentifier, string $queryType)
     {
         $this->view->assign('uniqueIdentifier', $uniqueIdentifier);
         $this->view->assign('queryType', $queryType);
@@ -71,13 +64,11 @@ class ProfileController extends AbstractController
     }
 
     /**
-     * profileInfo action
-     *
      * @param string $uniqueIdentifier
      * @param string $queryType
      * @param int $uid
      */
-    public function profileInfoAction($uniqueIdentifier, $queryType, $uid)
+    public function profileInfoAction(string $uniqueIdentifier, string $queryType, int $uid)
     {
         $this->view->assign('uniqueIdentifier', $uniqueIdentifier);
         $this->view->assign('queryType', $queryType);

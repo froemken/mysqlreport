@@ -45,11 +45,11 @@ class CacheAction implements ClearCacheActionsHookInterface
     }
 
     /**
-     * truncate table tx_mysqlreport_domain_model_profile
+     * Truncate table tx_mysqlreport_domain_model_profile
      *
      * @param array $params
      */
-    public function clearProfiles($params = [])
+    public function clearProfiles(array $params = [])
     {
         if ($params['cacheCmd'] === 'mysqlprofiles') {
             GeneralUtility::makeInstance(ConnectionPool::class)

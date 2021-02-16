@@ -27,7 +27,7 @@ class BackLogViewHelper extends AbstractViewHelper
      * @link: http://forums.gentoo.org/viewtopic-p-7374046.html#7374046
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $value = '';
         $command = CommandUtility::getCommand('sysctl');
@@ -40,6 +40,6 @@ class BackLogViewHelper extends AbstractViewHelper
             $parts = GeneralUtility::trimExplode(':', $lastLine);
             $value = $parts[1];
         }
-        return $value;
+        return (string)$value;
     }
 }

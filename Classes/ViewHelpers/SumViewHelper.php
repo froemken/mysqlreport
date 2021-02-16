@@ -25,12 +25,13 @@ class SumViewHelper extends AbstractViewHelper
      * @param string $field
      * @return string
      */
-    public function render(array $profiles, $field = 'summed_duration')
+    public function render(array $profiles, string $field = 'summed_duration'): string
     {
         $sum = 0;
         foreach ($profiles as $profile) {
             $sum += $profile[$field];
         }
-        return $sum;
+
+        return (string)$sum;
     }
 }

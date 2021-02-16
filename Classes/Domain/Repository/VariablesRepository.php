@@ -18,18 +18,18 @@ use StefanFroemken\Mysqlreport\Domain\Model\Variables;
  */
 class VariablesRepository extends AbstractRepository
 {
-    /**
-     * get status from MySql
-     *
-     * @return \StefanFroemken\Mysqlreport\Domain\Model\Variables
-     */
-    public function findAll()
+    public function findAll(): Variables
     {
         $rows = [];
         $res = $this->databaseConnection->sql_query('SHOW GLOBAL VARIABLES;');
+
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[strtolower($row['Variable_name'])] = $row['Value'];
         }
-        return $this->dataMapper->mapSingleRow(Variables::class, $rows);
+
+        /** @var Variables $variables */
+        $variables = $this->dataMapper->mapSingleRow(Variables::class, $rows);
+
+        return $variables;
     }
 }

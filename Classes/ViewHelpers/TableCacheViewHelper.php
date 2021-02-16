@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\ViewHelpers;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Status;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -31,27 +33,28 @@ class TableCacheViewHelper extends AbstractViewHelper
     /**
      * analyze QueryCache parameters
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables
+     * @param Status $status
+     * @param Variables $variables
      * @return string
      */
-    public function render(\StefanFroemken\Mysqlreport\Domain\Model\Status $status, \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables)
+    public function render(Status $status, Variables $variables): string
     {
         $this->templateVariableContainer->add('openedTableDefsEachSecond', $this->getOpenedTableDefinitionsEachSecond($status));
         $this->templateVariableContainer->add('openedTablesEachSecond', $this->getOpenedTablesEachSecond($status));
         $content = $this->renderChildren();
         $this->templateVariableContainer->remove('openedTableDefsEachSecond');
         $this->templateVariableContainer->remove('openedTablesEachSecond');
+
         return $content;
     }
 
     /**
      * get amount of opened table definitions each second
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getOpenedTableDefinitionsEachSecond(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getOpenedTableDefinitionsEachSecond(Status $status): array
     {
         $result = [];
         $openedTableDefinitions = $status->getOpenedTableDefinitions() / $status->getUptime();
@@ -69,10 +72,10 @@ class TableCacheViewHelper extends AbstractViewHelper
     /**
      * get amount of opened tables each second
      *
-     * @param \StefanFroemken\Mysqlreport\Domain\Model\Status $status
+     * @param Status $status
      * @return array
      */
-    protected function getOpenedTablesEachSecond(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
+    protected function getOpenedTablesEachSecond(Status $status): array
     {
         $result = [];
         $openedTables = $status->getOpenedTables() / $status->getUptime();
@@ -84,6 +87,7 @@ class TableCacheViewHelper extends AbstractViewHelper
             $result['status'] = 'danger';
         }
         $result['value'] = round($openedTables, 4);
+
         return $result;
     }
 }

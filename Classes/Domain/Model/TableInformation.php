@@ -17,217 +17,120 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
 class TableInformation
 {
     /**
-     * tableName
-     *
      * @var string
      */
     protected $tableName = '';
 
     /**
-     * engine
-     *
      * @var string
      */
     protected $engine = '';
 
     /**
-     * tableRows
-     *
      * @var int
      */
     protected $tableRows = 0;
 
     /**
-     * avgRowLength
-     *
      * @var int
      */
     protected $avgRowLength = 0;
 
     /**
-     * dataLength
-     *
      * @var int
      */
     protected $dataLength = 0;
 
     /**
-     * indexLength
-     *
      * @var int
      */
     protected $indexLength = 0;
 
     /**
-     * dataFree
-     *
      * @var int
      */
     protected $dataFree = 0;
 
     /**
-     * autoIncrement
-     *
      * @var int
      */
     protected $autoIncrement = 0;
 
-    /**
-     * Getter for tableName
-     *
-     * @return string
-     */
-    public function getTableName()
+    public function getTableName(): string
     {
         return $this->tableName;
     }
 
-    /**
-     * Setter for tableName
-     *
-     * @param string $tableName
-     */
-    public function setTableName($tableName)
+    public function setTableName(string $tableName)
     {
         $this->tableName = $tableName;
     }
 
-    /**
-     * Getter for engine
-     *
-     * @return string
-     */
-    public function getEngine()
+    public function getEngine(): string
     {
         return $this->engine;
     }
 
-    /**
-     * Setter for engine
-     *
-     * @param string $engine
-     */
-    public function setEngine($engine)
+    public function setEngine(string $engine)
     {
         $this->engine = $engine;
     }
-
-    /**
-     * Getter for tableRows
-     *
-     * @return int
-     */
-    public function getTableRows()
+    public function getTableRows(): int
     {
         return $this->tableRows;
     }
 
-    /**
-     * Setter for tableRows
-     *
-     * @param int $tableRows
-     */
-    public function setTableRows($tableRows)
+    public function setTableRows(int $tableRows)
     {
         $this->tableRows = $tableRows;
     }
 
-    /**
-     * Getter for avgRowLength
-     *
-     * @return int
-     */
-    public function getAvgRowLength()
+    public function getAvgRowLength(): int
     {
         return $this->avgRowLength;
     }
 
-    /**
-     * Setter for avgRowLength
-     *
-     * @param int $avgRowLength
-     */
-    public function setAvgRowLength($avgRowLength)
+    public function setAvgRowLength(int $avgRowLength)
     {
         $this->avgRowLength = $avgRowLength;
     }
 
-    /**
-     * Getter for dataLength
-     *
-     * @return int
-     */
-    public function getDataLength()
+    public function getDataLength(): int
     {
         return $this->dataLength;
     }
 
-    /**
-     * Setter for dataLength
-     *
-     * @param int $dataLength
-     */
-    public function setDataLength($dataLength)
+    public function setDataLength(int $dataLength)
     {
         $this->dataLength = $dataLength;
     }
 
-    /**
-     * Getter for indexLength
-     *
-     * @return int
-     */
-    public function getIndexLength()
+    public function getIndexLength(): int
     {
         return $this->indexLength;
     }
 
-    /**
-     * Setter for indexLength
-     *
-     * @param int $indexLength
-     */
-    public function setIndexLength($indexLength)
+    public function setIndexLength(int $indexLength)
     {
         $this->indexLength = $indexLength;
     }
 
-    /**
-     * Getter for dataFree
-     *
-     * @return int
-     */
-    public function getDataFree()
+    public function getDataFree(): int
     {
         return $this->dataFree;
     }
 
-    /**
-     * Setter for dataFree
-     *
-     * @param int $dataFree
-     */
-    public function setDataFree($dataFree)
+    public function setDataFree(int $dataFree)
     {
         $this->dataFree = $dataFree;
     }
 
-    /**
-     * Getter for autoIncrement
-     *
-     * @return int
-     */
-    public function getAutoIncrement()
+    public function getAutoIncrement(): int
     {
         return $this->autoIncrement;
     }
 
-    /**
-     * Setter for autoIncrement
-     *
-     * @param int $autoIncrement
-     */
-    public function setAutoIncrement($autoIncrement)
+    public function setAutoIncrement(int $autoIncrement)
     {
         $this->autoIncrement = $autoIncrement;
     }

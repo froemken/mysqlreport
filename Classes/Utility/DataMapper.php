@@ -39,14 +39,7 @@ class DataMapper
         $this->reflectionService = $reflectionService ?? $this->objectManager->get(ReflectionService::class);
     }
 
-    /**
-     * Maps a single row on an object of the given class
-     *
-     * @param string $className The name of the target class
-     * @param array $row A single array with field_name => value pairs
-     * @return object An object of the given class
-     */
-    public function mapSingleRow($className, array $row)
+    public function mapSingleRow(string $className, array $row)
     {
         if (class_exists($className)) {
             $object = $this->objectManager->get($className);
@@ -96,14 +89,7 @@ class DataMapper
         return $object;
     }
 
-    /**
-     * map a object storage with given rows
-     *
-     * @param string $className
-     * @param array $rows
-     * @return \TYPO3\CMS\Extbase\Persistence\ObjectStorage
-     */
-    public function mapObjectStorage($className, array $rows)
+    public function mapObjectStorage(string $className, array $rows): ObjectStorage
     {
         $objectStorage = $this->objectManager->get(ObjectStorage::class);
         foreach ($rows as $row) {
