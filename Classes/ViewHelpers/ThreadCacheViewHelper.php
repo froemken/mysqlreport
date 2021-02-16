@@ -30,11 +30,28 @@ class ThreadCacheViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    public function render(Status $status, Variables $variables): string
+    public function initializeArguments()
     {
-        $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
+        $this->registerArgument(
+            'status',
+            Status::class,
+            'Status of MySQL server',
+            true
+        );
+        $this->registerArgument(
+            'variables',
+            Variables::class,
+            'Variables of MySQL server',
+            true
+        );
+    }
+
+    public function render(): string
+    {
+        $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($this->arguments['status']));
         $content = $this->renderChildren();
         $this->templateVariableContainer->remove('hitRatio');
+
         return $content;
     }
 

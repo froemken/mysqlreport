@@ -18,18 +18,28 @@ use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class SumViewHelper extends AbstractViewHelper
 {
-    /**
-     * analyze QueryCache parameters
-     *
-     * @param array $profiles
-     * @param string $field
-     * @return string
-     */
-    public function render(array $profiles, string $field = 'summed_duration'): string
+    public function initializeArguments()
+    {
+        $this->registerArgument(
+            'profiles',
+            'array',
+            'Profile records',
+            true
+        );
+        $this->registerArgument(
+            'field',
+            'string',
+            'Field',
+            false,
+            'summed_duration'
+        );
+    }
+
+    public function render(): string
     {
         $sum = 0;
-        foreach ($profiles as $profile) {
-            $sum += $profile[$field];
+        foreach ($this->arguments['profiles'] as $profile) {
+            $sum += $profile[$this->arguments['field']];
         }
 
         return (string)$sum;
