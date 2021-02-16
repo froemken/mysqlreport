@@ -1,56 +1,56 @@
 <?php
-return array(
-    'ctrl' => array(
+return [
+    'ctrl' => [
         'title'	=> 'Profile',
         'label' => 'uid',
         'crdate' => 'crdate',
-        'hideTable' => TRUE,
-    ),
-    'interface' => array(
+        'hideTable' => true,
+    ],
+    'interface' => [
         'showRecordFieldList' => '',
-    ),
-    'columns' => array(
-        'query_id' => array(
+    ],
+    'columns' => [
+        'query_id' => [
             'exclude' => 0,
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-        'mode' => array(
+            ],
+        ],
+        'mode' => [
             'exclude' => 0,
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-        'unique_call_identifier' => array(
+            ],
+        ],
+        'unique_call_identifier' => [
             'exclude' => 0,
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-        'duration' => array(
+            ],
+        ],
+        'duration' => [
             'exclude' => 0,
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-        'query' => array(
+            ],
+        ],
+        'query' => [
             'exclude' => 0,
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-        'query_type' => array(
+            ],
+        ],
+        'query_type' => [
             'exclude' => 0,
-            'config' => array(
+            'config' => [
                 'type' => 'passthrough',
-            ),
-        ),
-    ),
-    'types' => array(
-        '1' => array('showitem' => ''),
-    ),
-    'palettes' => array(
-        '1' => array('showitem' => ''),
-    ),
-);
+            ],
+        ],
+    ],
+    'types' => [
+        '1' => ['showitem' => ''],
+    ],
+    'palettes' => [
+        '1' => ['showitem' => ''],
+    ],
+];

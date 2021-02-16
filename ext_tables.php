@@ -8,14 +8,14 @@ if (!defined('TYPO3_MODE')) {
     'system', // Make module a submodule of 'web'
     'mysql', // Submodule key
     '', // Position
-    array(
+    [
         'MySql' => 'index, queryCache, innoDbBuffer, threadCache, tableCache, report',
         'Profile' => 'list, show, queryType, profileInfo',
         'Query' => 'filesort, fullTableScan',
-    ),
-    array(
+    ],
+    [
         'access' => 'user,group',
         'icon'   => 'EXT:mysqlreport/Resources/Public/Icons/Extension.svg',
         'labels' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang_report.xlf',
-    )
+    ]
 );

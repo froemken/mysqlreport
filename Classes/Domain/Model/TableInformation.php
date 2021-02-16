@@ -1,18 +1,15 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Domain\Model;
-    
+
+declare(strict_types=1);
+
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\Domain\Model;
 
 /**
  * This model saves information of a table
@@ -89,7 +86,6 @@ class TableInformation
      * Setter for tableName
      *
      * @param string $tableName
-     * @return void
      */
     public function setTableName($tableName)
     {
@@ -110,7 +106,6 @@ class TableInformation
      * Setter for engine
      *
      * @param string $engine
-     * @return void
      */
     public function setEngine($engine)
     {
@@ -131,7 +126,6 @@ class TableInformation
      * Setter for tableRows
      *
      * @param int $tableRows
-     * @return void
      */
     public function setTableRows($tableRows)
     {
@@ -152,7 +146,6 @@ class TableInformation
      * Setter for avgRowLength
      *
      * @param int $avgRowLength
-     * @return void
      */
     public function setAvgRowLength($avgRowLength)
     {
@@ -173,7 +166,6 @@ class TableInformation
      * Setter for dataLength
      *
      * @param int $dataLength
-     * @return void
      */
     public function setDataLength($dataLength)
     {
@@ -194,7 +186,6 @@ class TableInformation
      * Setter for indexLength
      *
      * @param int $indexLength
-     * @return void
      */
     public function setIndexLength($indexLength)
     {
@@ -215,7 +206,6 @@ class TableInformation
      * Setter for dataFree
      *
      * @param int $dataFree
-     * @return void
      */
     public function setDataFree($dataFree)
     {
@@ -236,11 +226,9 @@ class TableInformation
      * Setter for autoIncrement
      *
      * @param int $autoIncrement
-     * @return void
      */
     public function setAutoIncrement($autoIncrement)
     {
         $this->autoIncrement = $autoIncrement;
     }
-
 }

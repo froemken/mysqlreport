@@ -1,19 +1,16 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Domain\Repository;
-    
+
+declare(strict_types=1);
+
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
-    
+
+namespace StefanFroemken\Mysqlreport\Domain\Repository;
+
 /**
  * Repository to get table information
  */
@@ -29,7 +26,7 @@ class TableInformationRepository extends AbstractRepository
      */
     public function findAll()
     {
-        $rows = array();
+        $rows = [];
         $res = $this->databaseConnection->sql_query('
             SELECT *
             FROM information_schema.TABLES
@@ -45,12 +42,11 @@ class TableInformationRepository extends AbstractRepository
      * get table informations of a given engine from information_scheme
      *
      * @param string $engine
-     *
      * @return array
      */
     public function findAllByEngine($engine)
     {
-        $rows = array();
+        $rows = [];
         $res = $this->databaseConnection->sql_query('
             SELECT *
             FROM information_schema.TABLES
@@ -67,7 +63,6 @@ class TableInformationRepository extends AbstractRepository
      * get table information of a given table from information_scheme
      *
      * @param string $table
-     *
      * @return \StefanFroemken\Mysqlreport\Domain\Model\TableInformation[]
      */
     public function findByTable($table)
@@ -78,7 +73,7 @@ class TableInformationRepository extends AbstractRepository
             WHERE table_schema = "' . TYPO3_db . '"
             AND TABLE_NAME = "' . $table . '";
         ');
-        $rows = array();
+        $rows = [];
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\TableInformation', $row);
         }
@@ -104,8 +99,7 @@ class TableInformationRepository extends AbstractRepository
             $additionalWhere . ';
         ');
         $row = $this->databaseConnection->sql_fetch_assoc($res);
-        
+
         return $row['indexsize'];
     }
-
 }

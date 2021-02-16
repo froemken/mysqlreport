@@ -1,19 +1,19 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Utility;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\Utility;
+
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Reflection\ReflectionService;
 
 /**
  * Simple DataMapper to map an array to object
@@ -21,16 +21,22 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class DataMapper
 {
     /**
-     * @var \TYPO3\CMS\Extbase\Reflection\ReflectionService
-     * @inject
+     * @var ReflectionService
      */
     protected $reflectionService;
 
     /**
-     * @var \TYPO3\CMS\Extbase\Object\ObjectManager
-     * @inject
+     * @var ObjectManager
      */
     protected $objectManager;
+
+    public function __construct(
+        ReflectionService $reflectionService = null,
+        ObjectManager $objectManager = null
+    ) {
+        $this->objectManager = $objectManager ?? GeneralUtility::makeInstance(ObjectManager::class);
+        $this->reflectionService = $reflectionService ?? $this->objectManager->get(ReflectionService::class);
+    }
 
     /**
      * Maps a single row on an object of the given class
@@ -43,7 +49,9 @@ class DataMapper
     {
         if (class_exists($className)) {
             $object = $this->objectManager->get($className);
-        } else return NULL;
+        } else {
+            return null;
+        }
 
         // loop through all properties
         foreach ($row as $propertyName => $value) {
@@ -56,21 +64,21 @@ class DataMapper
                 $propertyData = $this->reflectionService->getClassSchema($className)->getProperty($propertyName);
                 switch ($propertyData['type']) {
                     case 'array':
-                        $object->$methodName((array) $value);
+                        $object->$methodName((array)$value);
                         break;
                     case 'int':
                     case 'integer':
-                        $object->$methodName((int) $value);
+                        $object->$methodName((int)$value);
                         break;
                     case 'bool':
                     case 'boolean':
                         $object->$methodName($value);
                         break;
                     case 'string':
-                        $object->$methodName((string) $value);
+                        $object->$methodName((string)$value);
                         break;
                     case 'float':
-                        $object->$methodName((float) $value);
+                        $object->$methodName((float)$value);
                         break;
                     case 'SplObjectStorage':
                     case 'Tx_Extbase_Persistence_ObjectStorage':

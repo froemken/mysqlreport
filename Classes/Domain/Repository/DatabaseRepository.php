@@ -1,19 +1,16 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Domain\Repository;
-    
+
+declare(strict_types=1);
+
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
-    
+
+namespace StefanFroemken\Mysqlreport\Domain\Repository;
+
 /**
  * Repository to get records to profile the queries of a request
  */
@@ -31,7 +28,9 @@ class DatabaseRepository extends AbstractRepository
             'crdate, unique_call_identifier, mode, SUM(duration) as duration, COUNT(*) as amount',
             'tx_mysqlreport_domain_model_profile',
             '',
-            'unique_call_identifier', 'crdate DESC', 100
+            'unique_call_identifier',
+            'crdate DESC',
+            100
         );
     }
 
@@ -47,7 +46,9 @@ class DatabaseRepository extends AbstractRepository
             'query_type, unique_call_identifier, SUM(duration) as duration, COUNT(*) as amount',
             'tx_mysqlreport_domain_model_profile',
             'unique_call_identifier = "' . $uniqueIdentifier . '"',
-            'query_type', 'duration DESC', ''
+            'query_type',
+            'duration DESC',
+            ''
         );
     }
 
@@ -65,7 +66,9 @@ class DatabaseRepository extends AbstractRepository
             'tx_mysqlreport_domain_model_profile',
             'unique_call_identifier = "' . $uniqueIdentifier . '"
             AND query_type = "' . $queryType . '"',
-            '', 'duration DESC', ''
+            '',
+            'duration DESC',
+            ''
         );
     }
 
@@ -81,7 +84,9 @@ class DatabaseRepository extends AbstractRepository
             'query, query_type, profile, explain_query, not_using_index, duration',
             'tx_mysqlreport_domain_model_profile',
             'uid = ' . $uid,
-            '', '', ''
+            '',
+            '',
+            ''
         );
     }
 
@@ -96,7 +101,9 @@ class DatabaseRepository extends AbstractRepository
             'LEFT(query, 255) as query, explain_query, duration',
             'tx_mysqlreport_domain_model_profile',
             'explain_query LIKE "%using filesort%"',
-            '', 'duration DESC', '100'
+            '',
+            'duration DESC',
+            '100'
         );
     }
 
@@ -111,8 +118,9 @@ class DatabaseRepository extends AbstractRepository
             'LEFT(query, 255) as query, explain_query, duration',
             'tx_mysqlreport_domain_model_profile',
             'using_fulltable = 1',
-            '', 'duration DESC', '100'
+            '',
+            'duration DESC',
+            '100'
         );
     }
-
 }

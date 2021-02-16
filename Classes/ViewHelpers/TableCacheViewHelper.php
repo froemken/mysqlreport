@@ -1,18 +1,16 @@
 <?php
-namespace StefanFroemken\Mysqlreport\ViewHelpers;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\ViewHelpers;
+
 use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -55,7 +53,7 @@ class TableCacheViewHelper extends AbstractViewHelper
      */
     protected function getOpenedTableDefinitionsEachSecond(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $openedTableDefinitions = $status->getOpenedTableDefinitions() / $status->getUptime();
         if ($openedTableDefinitions <= 0.3) {
             $result['status'] = 'success';
@@ -76,7 +74,7 @@ class TableCacheViewHelper extends AbstractViewHelper
      */
     protected function getOpenedTablesEachSecond(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $openedTables = $status->getOpenedTables() / $status->getUptime();
         if ($openedTables <= 0.6) {
             $result['status'] = 'success';

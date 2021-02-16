@@ -1,18 +1,16 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Backend;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\Backend;
+
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -28,7 +26,6 @@ class CacheAction implements ClearCacheActionsHookInterface
      *
      * @param array $cacheActions Array of CacheMenuItems
      * @param array $optionValues Array of AccessConfigurations-identifiers (typically used by userTS with options.clearCache.identifier)
-     * @return void
      */
     public function manipulateCacheActions(&$cacheActions, &$optionValues)
     {
@@ -51,9 +48,8 @@ class CacheAction implements ClearCacheActionsHookInterface
      * truncate table tx_mysqlreport_domain_model_profile
      *
      * @param array $params
-     * @return void
      */
-    public function clearProfiles($params = array())
+    public function clearProfiles($params = [])
     {
         if ($params['cacheCmd'] === 'mysqlprofiles') {
             GeneralUtility::makeInstance(ConnectionPool::class)

@@ -1,33 +1,9 @@
-<f:be.container includeCssFiles="{0: '{f:uri.resource(path: \'css/bootstrap.min.css\')}', 1: '{f:uri.resource(path: \'css/bootstrap-theme.min.css\')}'}" includeJsFiles="{0: '{f:uri.resource(path: \'js/bootstrap.min.js\')}'}">
-	<div class="typo3-fullDoc">
-		<div id="typo3-docheader">
-			<div class="typo3-docheader-functions">
-				<div class="left">
-					<div class="docheader-funcmenu">
-						<f:be.menus.actionMenu>
-							<f:be.menus.actionMenuItem label="Introduction" controller="MySql" action="index" />
-							<f:be.menus.actionMenuItem label="Query Cache" controller="MySql" action="queryCache" />
-							<f:be.menus.actionMenuItem label="InnoDB Buffer" controller="MySql" action="innoDbBuffer" />
-							<f:be.menus.actionMenuItem label="Threads Cache" controller="MySql" action="threadCache" />
-							<f:be.menus.actionMenuItem label="Table Cache" controller="MySql" action="tableCache" />
-							<f:be.menus.actionMenuItem label="Profiling" controller="Profile" action="list" />
-							<f:be.menus.actionMenuItem label="Queries using Filesort" controller="Query" action="filesort" />
-							<f:be.menus.actionMenuItem label="Queries with FTS" controller="Query" action="fullTableScan" />
-						</f:be.menus.actionMenu>
-					</div>
-				</div>
-				<div class="right"></div>
-			</div>
-			<div class="typo3-docheader-buttons">
-				<div class="left"></div>
-				<div class="right"><f:be.buttons.shortcut /></div>
-			</div>
-		</div>
-		<div id="typo3-docbody">
-			<div id="typo3-inner-docbody">
-				<f:flashMessages />
-				<f:render section="content" />
-			</div>
-		</div>
-	</div>
-</f:be.container>
+<html lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers">
+
+<div class="ext-mysqlreport">
+	<f:flashMessages/>
+
+	<f:render section="content"/>
+</div>
+</html>

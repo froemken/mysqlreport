@@ -1,18 +1,15 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Database;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\Database;
 
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\DatabaseConnection;
@@ -33,14 +30,14 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
     /**
      * @var array
      */
-    protected $extConf = array();
+    protected $extConf = [];
 
     /**
      * save profiles
      *
      * @var array
      */
-    protected $profiles = array();
+    protected $profiles = [];
 
     /**
      * constructor of this class
@@ -60,7 +57,7 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
         $this->databaseConnection->sql_query('SET profiling = 0;');
 
         // A page can be called multiple times each second. So we need an unique identifier.
-        $uniqueIdentifier = uniqid('', TRUE);
+        $uniqueIdentifier = uniqid('', true);
         $crdate = (int)$GLOBALS['EXEC_TIME'];
         $pid = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
         $mode = (string)TYPO3_MODE;
@@ -85,7 +82,7 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
             $insertedRows = $connection->bulkInsert(
                 'tx_mysqlreport_domain_model_profile',
                 $this->profiles,
-                array('query_type', 'duration', 'profile', 'query', 'explain_query', 'not_using_index', 'using_fulltable', 'pid', 'mode', 'ip', 'request', 'referer', 'unique_call_identifier', 'crdate', 'query_id')
+                ['query_type', 'duration', 'profile', 'query', 'explain_query', 'not_using_index', 'using_fulltable', 'pid', 'mode', 'ip', 'request', 'referer', 'unique_call_identifier', 'crdate', 'query_id']
             );
         }
     }
@@ -100,18 +97,16 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      * @param string $orderBy Order by statement
      * @param int $limit Database return limit
      * @param \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject
-     *
-     * @return void
      */
     public function exec_SELECTquery_postProcessAction(&$select_fields, &$from_table, &$where_clause, &$groupBy, &$orderBy, &$limit, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject)
     {
         // don't log profiles of this extension
         // be login does not work, if my extension was installed. So I added a check against BE_USER
         if (
-            strpos($from_table, 'tx_mysqlreport_domain_model_profile') === FALSE &&
-            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+            strpos($from_table, 'tx_mysqlreport_domain_model_profile') === false &&
+            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== null) || TYPO3_MODE === 'FE')
         ) {
-            $row = array();
+            $row = [];
             // Save kind of query
             $row['query_type'] = 'SELECT';
             // save profiling information
@@ -133,18 +128,16 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      * @param array $fieldsValues Field values as key => value pairs
      * @param string|array $noQuoteFields List/array of keys NOT to quote
      * @param \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject
-     *
-     * @return void
      */
     public function exec_INSERTquery_postProcessAction(&$table, array &$fieldsValues, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject)
     {
         // don't log profiles of this extension
         // be login does not work, if my extension was installed. So I added a check against BE_USER
         if (
-            strpos($table, 'tx_mysqlreport_domain_model_profile') === FALSE &&
-            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+            strpos($table, 'tx_mysqlreport_domain_model_profile') === false &&
+            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== null) || TYPO3_MODE === 'FE')
         ) {
-            $row = array();
+            $row = [];
             // Save kind of query
             $row['query_type'] = 'INSERT';
             // save profiling information
@@ -167,17 +160,16 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      * @param array $rows Table rows
      * @param string|array $noQuoteFields List/array of keys NOT to quote
      * @param \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject
-     * @return void
      */
     public function exec_INSERTmultipleRows_postProcessAction(&$table, array &$fields, array &$rows, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject)
     {
         // don't log profiles of this extension
         // be login does not work, if my extension was installed. So I added a check against BE_USER
         if (
-            strpos($table, 'tx_mysqlreport_domain_model_profile') === FALSE &&
-            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+            strpos($table, 'tx_mysqlreport_domain_model_profile') === false &&
+            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== null) || TYPO3_MODE === 'FE')
         ) {
-            $row = array();
+            $row = [];
             // Save kind of query
             $row['query_type'] = 'INSERT';
             // save profiling information
@@ -200,17 +192,16 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      * @param array $fieldsValues Field values as key => value pairs
      * @param string|array $noQuoteFields List/array of keys NOT to quote
      * @param \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject
-     * @return void
      */
     public function exec_UPDATEquery_postProcessAction(&$table, &$where, array &$fieldsValues, &$noQuoteFields, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject)
     {
         // don't log profiles of this extension
         // be login does not work, if my extension was installed. So I added a check against BE_USER
         if (
-            strpos($table, 'tx_mysqlreport_domain_model_profile') === FALSE &&
-            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+            strpos($table, 'tx_mysqlreport_domain_model_profile') === false &&
+            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== null) || TYPO3_MODE === 'FE')
         ) {
-            $row = array();
+            $row = [];
             // Save kind of query
             $row['query_type'] = 'UPDATE';
             // save profiling information
@@ -231,17 +222,16 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      * @param string $table Database table name
      * @param string $where WHERE clause
      * @param \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject
-     * @return void
      */
     public function exec_DELETEquery_postProcessAction(&$table, &$where, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject)
     {
         // don't log profiles of this extension
         // be login does not work, if my extension was installed. So I added a check against BE_USER
         if (
-            strpos($table, 'tx_mysqlreport_domain_model_profile') === FALSE &&
-            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+            strpos($table, 'tx_mysqlreport_domain_model_profile') === false &&
+            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== null) || TYPO3_MODE === 'FE')
         ) {
-            $row = array();
+            $row = [];
             // Save kind of query
             $row['query_type'] = 'DELETE';
             // save profiling information
@@ -261,17 +251,16 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      *
      * @param string $table Database table name
      * @param \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject
-     * @return void
      */
     public function exec_TRUNCATEquery_postProcessAction(&$table, \TYPO3\CMS\Core\Database\DatabaseConnection $parentObject)
     {
         // don't log profiles of this extension
         // be login does not work, if my extension was installed. So I added a check against BE_USER
         if (
-            strpos($table, 'tx_mysqlreport_domain_model_profile') === FALSE &&
-            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== NULL) || TYPO3_MODE === 'FE')
+            strpos($table, 'tx_mysqlreport_domain_model_profile') === false &&
+            ((TYPO3_MODE === 'BE' && $GLOBALS['BE_USER']->user !== null) || TYPO3_MODE === 'FE')
         ) {
-            $row = array();
+            $row = [];
             // Save kind of query
             $row['query_type'] = 'TRUNCATE';
             // save profiling information
@@ -290,11 +279,10 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      * Add profiling information
      *
      * @param array $row
-     * @return void
      */
     protected function addProfilingInformation(array &$row)
     {
-        $profile = array();
+        $profile = [];
         $duration = 0;
         $mysqlResult = $this->databaseConnection->sql_query('SHOW PROFILE');
         while ($profileRow = $this->databaseConnection->sql_fetch_assoc($mysqlResult)) {
@@ -309,11 +297,10 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
      * add result of EXPLAIN to profiling
      *
      * @param array $row
-     * @return void
      */
     protected function addExplainInformation(&$row)
     {
-        $row['explain_query'] = serialize(array());
+        $row['explain_query'] = serialize([]);
         $row['not_using_index'] = 0;
         $row['using_fulltable'] = 0;
 
@@ -323,18 +310,18 @@ class DatabaseHooks implements PostProcessQueryHookInterface, SingletonInterface
         if (
             $this->extConf['addExplain'] &&
             $row['query_type'] === 'SELECT' &&
-            strpos($row['query'], '?') === FALSE
+            strpos($row['query'], '?') === false
         ) {
-            $explain = array();
-            $notUsingIndex = FALSE;
-            $usingFullTable = FALSE;
+            $explain = [];
+            $notUsingIndex = false;
+            $usingFullTable = false;
             $showExplain = $this->databaseConnection->sql_query('EXPLAIN ' . $row['query']);
             while ($explainRow = $this->databaseConnection->sql_fetch_assoc($showExplain)) {
-                if ($notUsingIndex === FALSE && empty($explainRow['key'])) {
-                    $notUsingIndex = TRUE;
+                if ($notUsingIndex === false && empty($explainRow['key'])) {
+                    $notUsingIndex = true;
                 }
-                if ($usingFullTable === FALSE && strtolower($explainRow['select_type']) === 'all') {
-                    $usingFullTable = TRUE;
+                if ($usingFullTable === false && strtolower($explainRow['select_type']) === 'all') {
+                    $usingFullTable = true;
                 }
                 $explain[] = $explainRow;
             }
