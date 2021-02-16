@@ -14,13 +14,23 @@ namespace StefanFroemken\Mysqlreport\Controller;
  * The TYPO3 project - inspiring people to share!
  */
 use StefanFroemken\Mysqlreport\Domain\Repository\DatabaseRepository;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
 
 /**
  * Controller to show and analyze all queries of a request
  */
-class ProfileController extends ActionController
+class ProfileController extends AbstractController
 {
+    /**
+     * @var BackendTemplateView
+     */
+    protected $view;
+
+    /**
+     * @var BackendTemplateView
+     */
+    protected $defaultViewObjectName = BackendTemplateView::class;
+
     /**
      * @var DatabaseRepository
      */

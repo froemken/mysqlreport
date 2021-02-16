@@ -15,13 +15,23 @@ namespace StefanFroemken\Mysqlreport\Controller;
  */
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
+use TYPO3\CMS\Backend\View\BackendTemplateView;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status
  */
-class MySqlController extends ActionController
+class MySqlController extends AbstractController
 {
+    /**
+     * @var BackendTemplateView
+     */
+    protected $view;
+
+    /**
+     * @var BackendTemplateView
+     */
+    protected $defaultViewObjectName = BackendTemplateView::class;
+
     /**
      * @var \StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository
      */
