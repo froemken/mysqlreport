@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use StefanFroemken\Mysqlreport\Domain\Model\TableInformation;
+
 /**
  * Repository to get table information
  */
@@ -33,7 +35,7 @@ class TableInformationRepository extends AbstractRepository
             WHERE table_schema = "' . TYPO3_db . '";
         ');
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
-            $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\TableInformation', $row);
+            $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
         return $rows;
     }
@@ -54,7 +56,7 @@ class TableInformationRepository extends AbstractRepository
             AND ENGINE = "' . $engine . '";
         ');
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
-            $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\TableInformation', $row);
+            $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
         return $rows;
     }
@@ -75,7 +77,7 @@ class TableInformationRepository extends AbstractRepository
         ');
         $rows = [];
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
-            $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\TableInformation', $row);
+            $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow(TableInformation::class, $row);
         }
         return $rows;
     }

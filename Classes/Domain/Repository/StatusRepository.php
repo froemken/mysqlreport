@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Status;
+
 /**
  * Repository to get the MySQL status
  */
@@ -28,6 +30,6 @@ class StatusRepository extends AbstractRepository
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[strtolower($row['Variable_name'])] = $row['Value'];
         }
-        return $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\Status', $rows);
+        return $this->dataMapper->mapSingleRow(Status::class, $rows);
     }
 }

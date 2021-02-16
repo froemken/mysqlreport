@@ -13,6 +13,7 @@ namespace StefanFroemken\Mysqlreport\Utility;
 
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
+use TYPO3\CMS\Extbase\Persistence\ObjectStorage;
 use TYPO3\CMS\Extbase\Reflection\ReflectionService;
 
 /**
@@ -82,7 +83,7 @@ class DataMapper
                         break;
                     case 'SplObjectStorage':
                     case 'Tx_Extbase_Persistence_ObjectStorage':
-                    case 'TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage':
+                    case ObjectStorage::class:
                         $object->$methodName($this->mapObjectStorage($propertyData['elementType'], $value));
                         break;
                     default:
@@ -104,7 +105,7 @@ class DataMapper
      */
     public function mapObjectStorage($className, array $rows)
     {
-        $objectStorage = $this->objectManager->get('TYPO3\\CMS\\Extbase\\Persistence\\ObjectStorage');
+        $objectStorage = $this->objectManager->get(ObjectStorage::class);
         foreach ($rows as $row) {
             $objectStorage->attach($this->mapSingleRow($className, $row));
         }
