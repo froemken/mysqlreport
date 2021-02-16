@@ -13,7 +13,7 @@ namespace StefanFroemken\Mysqlreport\ViewHelpers;
 
 use StefanFroemken\Mysqlreport\Domain\Model\Status;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use TYPO3\CMS\Fluid\Core\ViewHelper\AbstractViewHelper;
+use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * VH which adds variables regarding ThreadCache to template
