@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+
 /**
  * Repository to get the MySQL variables
  */
@@ -28,6 +30,6 @@ class VariablesRepository extends AbstractRepository
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[strtolower($row['Variable_name'])] = $row['Value'];
         }
-        return $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\Variables', $rows);
+        return $this->dataMapper->mapSingleRow(Variables::class, $rows);
     }
 }
