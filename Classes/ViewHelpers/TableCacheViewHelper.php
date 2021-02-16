@@ -30,17 +30,26 @@ class TableCacheViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    /**
-     * analyze QueryCache parameters
-     *
-     * @param Status $status
-     * @param Variables $variables
-     * @return string
-     */
-    public function render(Status $status, Variables $variables): string
+    public function initializeArguments()
     {
-        $this->templateVariableContainer->add('openedTableDefsEachSecond', $this->getOpenedTableDefinitionsEachSecond($status));
-        $this->templateVariableContainer->add('openedTablesEachSecond', $this->getOpenedTablesEachSecond($status));
+        $this->registerArgument(
+            'status',
+            Status::class,
+            'Status of MySQL server',
+            true
+        );
+        $this->registerArgument(
+            'variables',
+            Variables::class,
+            'Variables of MySQL server',
+            true
+        );
+    }
+
+    public function render(): string
+    {
+        $this->templateVariableContainer->add('openedTableDefsEachSecond', $this->getOpenedTableDefinitionsEachSecond($this->arguments['status']));
+        $this->templateVariableContainer->add('openedTablesEachSecond', $this->getOpenedTablesEachSecond($this->arguments['status']));
         $content = $this->renderChildren();
         $this->templateVariableContainer->remove('openedTableDefsEachSecond');
         $this->templateVariableContainer->remove('openedTablesEachSecond');

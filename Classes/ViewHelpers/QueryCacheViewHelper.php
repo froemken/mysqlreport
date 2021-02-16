@@ -30,14 +30,30 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    public function render(Status $status, Variables $variables): string
+    public function initializeArguments()
     {
-        $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
-        $this->templateVariableContainer->add('insertRatio', $this->getInsertRatio($status));
-        $this->templateVariableContainer->add('pruneRatio', $this->getPruneRatio($status));
-        $this->templateVariableContainer->add('fragmentationRatio', $this->getFragmentationRatio($status));
-        $this->templateVariableContainer->add('avgQuerySize', $this->getAvgQuerySize($status, $variables));
-        $this->templateVariableContainer->add('avgUsedBlocks', $this->getAvgUsedBlocks($status));
+        $this->registerArgument(
+            'status',
+            Status::class,
+            'Status of MySQL server',
+            true
+        );
+        $this->registerArgument(
+            'variables',
+            Variables::class,
+            'Variables of MySQL server',
+            true
+        );
+    }
+
+    public function render(): string
+    {
+        $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($this->arguments['status']));
+        $this->templateVariableContainer->add('insertRatio', $this->getInsertRatio($this->arguments['status']));
+        $this->templateVariableContainer->add('pruneRatio', $this->getPruneRatio($this->arguments['status']));
+        $this->templateVariableContainer->add('fragmentationRatio', $this->getFragmentationRatio($this->arguments['status']));
+        $this->templateVariableContainer->add('avgQuerySize', $this->getAvgQuerySize($this->arguments['status'], $this->arguments['variables']));
+        $this->templateVariableContainer->add('avgUsedBlocks', $this->getAvgUsedBlocks($this->arguments['status']));
         $content = $this->renderChildren();
         $this->templateVariableContainer->remove('hitRatio');
         $this->templateVariableContainer->remove('insertRatio');

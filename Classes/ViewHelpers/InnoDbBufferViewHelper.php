@@ -31,14 +31,30 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected $escapeOutput = false;
 
-    public function render(Status $status, Variables $variables): string
+    public function initializeArguments()
     {
-        $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($status));
-        $this->templateVariableContainer->add('hitRatioBySF', $this->getHitRatioBySF($status));
-        $this->templateVariableContainer->add('writeRatio', $this->getWriteRatio($status));
-        $this->templateVariableContainer->add('load', $this->getLoad($status));
-        $this->templateVariableContainer->add('logFile', $this->getLogFileSize($status, $variables));
-        $this->templateVariableContainer->add('instances', $this->getInstances($variables));
+        $this->registerArgument(
+            'status',
+            Status::class,
+            'Status of MySQL server',
+            true
+        );
+        $this->registerArgument(
+            'variables',
+            Variables::class,
+            'Variables of MySQL server',
+            true
+        );
+    }
+
+    public function render(): string
+    {
+        $this->templateVariableContainer->add('hitRatio', $this->getHitRatio($this->arguments['status']));
+        $this->templateVariableContainer->add('hitRatioBySF', $this->getHitRatioBySF($this->arguments['status']));
+        $this->templateVariableContainer->add('writeRatio', $this->getWriteRatio($this->arguments['status']));
+        $this->templateVariableContainer->add('load', $this->getLoad($this->arguments['status']));
+        $this->templateVariableContainer->add('logFile', $this->getLogFileSize($this->arguments['status'], $this->arguments['variables']));
+        $this->templateVariableContainer->add('instances', $this->getInstances($this->arguments['variables']));
         $content = $this->renderChildren();
         $this->templateVariableContainer->remove('hitRatio');
         $this->templateVariableContainer->remove('hitRatioBySF');
