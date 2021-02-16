@@ -417,10 +417,10 @@ class Status
     {
         if ($this->innodbBufferPoolPagesFlushed) {
             return $this->innodbBufferPoolPagesFlushed;
-        } else {
-            // prevent division by zero
-            return 1;
         }
+
+        // prevent division by zero
+        return 1;
     }
 
     /**

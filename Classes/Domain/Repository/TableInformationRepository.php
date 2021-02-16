@@ -99,7 +99,7 @@ class TableInformationRepository extends AbstractRepository
             $additionalWhere . ';
         ');
         $row = $this->databaseConnection->sql_fetch_assoc($res);
-        
+
         return $row['indexsize'];
     }
 }
