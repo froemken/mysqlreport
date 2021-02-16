@@ -1,18 +1,16 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Controller;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\Controller;
+
 use StefanFroemken\Mysqlreport\Domain\Repository\DatabaseRepository;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 
@@ -35,12 +33,6 @@ class QueryController extends AbstractController{
      */
     protected $databaseRepository;
 
-    /**
-     * inject databaseRepository
-     *
-     * @param DatabaseRepository $databaseRepository
-     * @return void
-     */
     public function injectDatabaseRepository(DatabaseRepository $databaseRepository)
     {
         $this->databaseRepository = $databaseRepository;
@@ -48,8 +40,6 @@ class QueryController extends AbstractController{
 
     /**
      * filesort action
-     *
-     * @return void
      */
     public function filesortAction()
     {
@@ -58,8 +48,6 @@ class QueryController extends AbstractController{
 
     /**
      * using full table scan action
-     *
-     * @return void
      */
     public function fullTableScanAction()
     {

@@ -1,18 +1,16 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Controller;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the TYPO3 CMS project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\Controller;
+
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -42,23 +40,11 @@ class MySqlController extends AbstractController
      */
     protected $variablesRepository;
 
-    /**
-     * inject statusRepository
-     *
-     * @param StatusRepository $statusRepository
-     * @return void
-     */
     public function injectStatusRepository(StatusRepository $statusRepository)
     {
         $this->statusRepository = $statusRepository;
     }
 
-    /**
-     * inject variablesRepository
-     *
-     * @param VariablesRepository $variablesRepository
-     * @return void
-     */
     public function injectVariablesRepository(VariablesRepository $variablesRepository)
     {
         $this->variablesRepository = $variablesRepository;
@@ -66,8 +52,6 @@ class MySqlController extends AbstractController
 
     /**
      * introduction page
-     *
-     * @return void
      */
     public function indexAction()
     {
@@ -77,8 +61,6 @@ class MySqlController extends AbstractController
 
     /**
      * query cache action
-     *
-     * @return void
      */
     public function queryCacheAction()
     {
@@ -88,8 +70,6 @@ class MySqlController extends AbstractController
 
     /**
      * innoDb Buffer action
-     *
-     * @return void
      */
     public function innoDbBufferAction()
     {
@@ -99,8 +79,6 @@ class MySqlController extends AbstractController
 
     /**
      * thread cache action
-     *
-     * @return void
      */
     public function threadCacheAction()
     {
@@ -110,8 +88,6 @@ class MySqlController extends AbstractController
 
     /**
      * table cache action
-     *
-     * @return void
      */
     public function tableCacheAction()
     {

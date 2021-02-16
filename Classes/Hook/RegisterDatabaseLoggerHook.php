@@ -1,18 +1,15 @@
 <?php
-namespace StefanFroemken\Mysqlreport\Hook;
+
+declare(strict_types=1);
 
 /*
- * This file is part of the mysqlreport project.
- *
- * It is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License, either version 2
- * of the License, or any later version.
+ * This file is part of the package stefanfroemken/mysqlreport.
  *
  * For the full copyright and license information, please read the
- * LICENSE.txt file that was distributed with this source code.
- *
- * The TYPO3 project - inspiring people to share!
+ * LICENSE file that was distributed with this source code.
  */
+
+namespace StefanFroemken\Mysqlreport\Hook;
 
 use Doctrine\DBAL\Logging\DebugStack;
 use TYPO3\CMS\Core\Database\Connection;
@@ -116,7 +113,6 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
      *
      * @param array $queryToStore
      * @param array $loggedQuery
-     * @return void
      */
     protected function addExplainInformation(array &$queryToStore, array $loggedQuery)
     {
