@@ -29,7 +29,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
     /**
      * @var array
      */
-    protected $extConf = array();
+    protected $extConf = [];
 
     public function __construct()
     {
@@ -130,20 +130,20 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
             $this->extConf['addExplain'] &&
             strtoupper($queryType) === 'SELECT'
         ) {
-            $explain = array();
-            $notUsingIndex = FALSE;
-            $usingFullTable = FALSE;
+            $explain = [];
+            $notUsingIndex = false;
+            $usingFullTable = false;
 
             /** @var ConnectionPool $connectionPool */
             $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
             $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
             $statement = $connection->query($this->buildExplainQuery($sql, $loggedQuery['params'], $loggedQuery['types']));
             while ($explainRow = $statement->fetch()) {
-                if ($notUsingIndex === FALSE && empty($explainRow['key'])) {
-                    $notUsingIndex = TRUE;
+                if ($notUsingIndex === false && empty($explainRow['key'])) {
+                    $notUsingIndex = true;
                 }
-                if ($usingFullTable === FALSE && strtolower($explainRow['select_type']) === 'all') {
-                    $usingFullTable = TRUE;
+                if ($usingFullTable === false && strtolower($explainRow['select_type']) === 'all') {
+                    $usingFullTable = true;
                 }
                 $explain[] = $explainRow;
             }
@@ -165,7 +165,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
                     $param = $param === true ? 1 : 0;
                     break;
                 case \PDO::PARAM_NULL:
-                    $param = NULL;
+                    $param = null;
                     break;
                 case Connection::PARAM_INT_ARRAY:
                     $param = implode(',', $param);

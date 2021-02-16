@@ -29,7 +29,7 @@ class TableInformationRepository extends AbstractRepository
      */
     public function findAll()
     {
-        $rows = array();
+        $rows = [];
         $res = $this->databaseConnection->sql_query('
             SELECT *
             FROM information_schema.TABLES
@@ -50,7 +50,7 @@ class TableInformationRepository extends AbstractRepository
      */
     public function findAllByEngine($engine)
     {
-        $rows = array();
+        $rows = [];
         $res = $this->databaseConnection->sql_query('
             SELECT *
             FROM information_schema.TABLES
@@ -78,7 +78,7 @@ class TableInformationRepository extends AbstractRepository
             WHERE table_schema = "' . TYPO3_db . '"
             AND TABLE_NAME = "' . $table . '";
         ');
-        $rows = array();
+        $rows = [];
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[$row['TABLE_NAME']] = $this->dataMapper->mapSingleRow('StefanFroemken\\Mysqlreport\\Domain\\Model\\TableInformation', $row);
         }

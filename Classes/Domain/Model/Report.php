@@ -39,21 +39,21 @@ class Report
      *
      * @var array
      */
-    protected $status = array();
+    protected $status = [];
 
     /**
      * variables
      *
      * @var array
      */
-    protected $variables = array();
+    protected $variables = [];
 
     /**
      * calculations
      *
      * @var array
      */
-    protected $calculations = array();
+    protected $calculations = [];
 
     /**
      * Getter for title

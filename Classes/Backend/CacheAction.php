@@ -53,7 +53,7 @@ class CacheAction implements ClearCacheActionsHookInterface
      * @param array $params
      * @return void
      */
-    public function clearProfiles($params = array())
+    public function clearProfiles($params = [])
     {
         if ($params['cacheCmd'] === 'mysqlprofiles') {
             GeneralUtility::makeInstance(ConnectionPool::class)

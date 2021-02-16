@@ -67,7 +67,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected function getHitRatio(Status $status)
     {
-        $result = array();
+        $result = [];
         $hitRatio = ($status->getInnodbBufferPoolReadRequests() / ($status->getInnodbBufferPoolReadRequests() + $status->getInnodbBufferPoolReads())) * 100;
         if ($hitRatio <= 90) {
             $result['status'] = 'danger';
@@ -88,7 +88,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected function getHitRatioBySF(Status $status)
     {
-        $result = array();
+        $result = [];
 
         // we always want a factor of 1/1000.
         $niceToHave = $status->getInnodbBufferPoolReads() * 1000;
@@ -113,7 +113,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected function getWriteRatio(Status $status)
     {
-        $result = array();
+        $result = [];
         $writeRatio = $status->getInnodbBufferPoolWriteRequests() / $status->getInnodbBufferPoolPagesFlushed();
         if ($writeRatio <= 2) {
             $result['status'] = 'danger';
@@ -134,7 +134,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected function getLoad(Status $status)
     {
-        $load = array();
+        $load = [];
 
         // in Bytes
         $total = $status->getInnodbBufferPoolPagesTotal() * $status->getInnodbPageSize();
@@ -167,7 +167,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected function getLogFileSize(Status $status, Variables $variables)
     {
-        $result = array();
+        $result = [];
 
         $bytesWrittenEachSecond = $status->getInnodbOsLogWritten() / $status->getUptime();
         $bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
@@ -192,7 +192,7 @@ class InnoDbBufferViewHelper extends AbstractViewHelper
      */
     protected function getInstances(Variables $variables)
     {
-        $result = array();
+        $result = [];
         $innodbBufferShouldBe = $variables->getInnodbBufferPoolInstances() * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
         if ($variables->getInnodbBufferPoolSize() < (1 * 1024 * 1024 * 1024) && $variables->getInnodbBufferPoolInstances() === 1) {
             $result['status'] = 'success';

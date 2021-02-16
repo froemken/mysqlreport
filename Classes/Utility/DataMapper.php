@@ -43,7 +43,7 @@ class DataMapper
     {
         if (class_exists($className)) {
             $object = $this->objectManager->get($className);
-        } else return NULL;
+        } else return null;
 
         // loop through all properties
         foreach ($row as $propertyName => $value) {

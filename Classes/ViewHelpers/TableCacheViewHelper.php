@@ -55,7 +55,7 @@ class TableCacheViewHelper extends AbstractViewHelper
      */
     protected function getOpenedTableDefinitionsEachSecond(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $openedTableDefinitions = $status->getOpenedTableDefinitions() / $status->getUptime();
         if ($openedTableDefinitions <= 0.3) {
             $result['status'] = 'success';
@@ -76,7 +76,7 @@ class TableCacheViewHelper extends AbstractViewHelper
      */
     protected function getOpenedTablesEachSecond(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $openedTables = $status->getOpenedTables() / $status->getUptime();
         if ($openedTables <= 0.6) {
             $result['status'] = 'success';

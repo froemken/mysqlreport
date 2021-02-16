@@ -26,7 +26,7 @@ class VariablesRepository extends AbstractRepository
      */
     public function findAll()
     {
-        $rows = array();
+        $rows = [];
         $res = $this->databaseConnection->sql_query('SHOW GLOBAL VARIABLES;');
         while ($row = $this->databaseConnection->sql_fetch_assoc($res)) {
             $rows[strtolower($row['Variable_name'])] = $row['Value'];

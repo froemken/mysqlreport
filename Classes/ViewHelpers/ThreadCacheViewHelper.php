@@ -54,7 +54,7 @@ class ThreadCacheViewHelper extends AbstractViewHelper
      */
     protected function getHitRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $hitRatio = 100 - (($status->getThreadsCreated() / $status->getConnections()) * 100);
         if ($hitRatio <= 80) {
             $result['status'] = 'danger';

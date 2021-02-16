@@ -129,28 +129,28 @@ class Variables
      *
      * @var bool
      */
-    protected $queryCacheStripComments = FALSE;
+    protected $queryCacheStripComments = false;
 
     /**
      * queryCacheType
      *
      * @var bool
      */
-    protected $queryCacheType = FALSE;
+    protected $queryCacheType = false;
 
     /**
      * queryCacheWlockInvalidate
      *
      * @var bool
      */
-    protected $queryCacheWlockInvalidate = FALSE;
+    protected $queryCacheWlockInvalidate = false;
 
     /**
      * sync_binlog
      *
      * @var bool
      */
-    protected $syncBinlog = FALSE;
+    protected $syncBinlog = false;
 
     /**
      * table_definition_cache
@@ -514,9 +514,9 @@ class Variables
     public function setQueryCacheStripComments($queryCacheStripComments)
     {
         if ($queryCacheStripComments || strtolower($queryCacheStripComments) === 'on') {
-            $this->queryCacheStripComments = TRUE;
+            $this->queryCacheStripComments = true;
         } else {
-            $this->queryCacheStripComments = FALSE;
+            $this->queryCacheStripComments = false;
         }
     }
 
@@ -539,9 +539,9 @@ class Variables
     public function setQueryCacheType($queryCacheType)
     {
         if ($queryCacheType == 1 || strtolower($queryCacheType) === 'on') {
-            $this->queryCacheType = TRUE;
+            $this->queryCacheType = true;
         } else {
-            $this->queryCacheType = FALSE;
+            $this->queryCacheType = false;
         }
     }
 
@@ -564,9 +564,9 @@ class Variables
     public function setQueryCacheWlockInvalidate($queryCacheWlockInvalidate)
     {
         if ($queryCacheWlockInvalidate || strtolower($queryCacheWlockInvalidate) === 'on') {
-            $this->queryCacheWlockInvalidate = TRUE;
+            $this->queryCacheWlockInvalidate = true;
         } else {
-            $this->queryCacheWlockInvalidate = FALSE;
+            $this->queryCacheWlockInvalidate = false;
         }
     }
 
@@ -589,9 +589,9 @@ class Variables
     public function setSyncBinlog($syncBinlog)
     {
         if ($syncBinlog || strtolower($syncBinlog) === 'on') {
-            $this->syncBinlog = TRUE;
+            $this->syncBinlog = true;
         } else {
-            $this->syncBinlog = FALSE;
+            $this->syncBinlog = false;
         }
     }
 

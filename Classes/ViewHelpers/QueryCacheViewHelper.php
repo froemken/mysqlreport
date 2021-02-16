@@ -63,7 +63,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected function getHitRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $hitRatio = ($status->getQcacheHits() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
         if ($hitRatio <= 20) {
             $result['status'] = 'danger';
@@ -84,7 +84,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected function getInsertRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $insertRatio = ($status->getQcacheInserts() / ($status->getQcacheHits() + $status->getComSelect())) * 100;
         if ($insertRatio <= 20) {
             $result['status'] = 'success';
@@ -105,7 +105,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected function getPruneRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $pruneRatio = ($status->getQcacheLowmemPrunes() / $status->getQcacheInserts()) * 100;
         if ($pruneRatio <= 10) {
             $result['status'] = 'success';
@@ -127,7 +127,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected function getAvgQuerySize(\StefanFroemken\Mysqlreport\Domain\Model\Status $status, \StefanFroemken\Mysqlreport\Domain\Model\Variables $variables)
     {
-        $result = array();
+        $result = [];
         $avgQuerySize = $this->getUsedQueryCacheSize($status, $variables) / $status->getQcacheQueriesInCache();
         if ($avgQuerySize > $variables->getQueryCacheMinResUnit()) {
             $result['status'] = 'danger';
@@ -159,7 +159,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected function getFragmentationRatio(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $fragmentation = ($status->getQcacheFreeBlocks() / ($status->getQcacheTotalBlocks() / 2)) * 100; // total blocks / 2 = maximum fragmentation
         if ($fragmentation <= 15) {
             $result['status'] = 'success';
@@ -183,7 +183,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
      */
     protected function getAvgUsedBlocks(\StefanFroemken\Mysqlreport\Domain\Model\Status $status)
     {
-        $result = array();
+        $result = [];
         $usedBlocks = $status->getQcacheTotalBlocks() - $status->getQcacheFreeBlocks();
         $minimumUsedBlocks = $status->getQcacheQueriesInCache() * 2; // see link above
         $avgUsedBlocks = $usedBlocks / $minimumUsedBlocks;
