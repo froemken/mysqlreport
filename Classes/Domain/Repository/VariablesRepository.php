@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
-use StefanFroemken\Mysqlreport\Domain\Model\Status;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
