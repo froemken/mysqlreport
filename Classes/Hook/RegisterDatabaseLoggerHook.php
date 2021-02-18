@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Hook;
 
 use Doctrine\DBAL\Logging\DebugStack;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
@@ -30,80 +31,94 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
 
     public function __construct()
     {
-        $this->extConf = is_array($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mysqlreport']) ?: unserialize($GLOBALS['TYPO3_CONF_VARS']['EXT']['extConf']['mysqlreport']);
+        /** @var ExtensionConfiguration $extensionConfiguration */
+        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
+        $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
     }
 
     public function processData()
     {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        // @ToDo: Loop through all Connection names
-        $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        $connection->getConfiguration()->setSQLLogger(
-            GeneralUtility::makeInstance(DebugStack::class)
-        );
+        if (
+            ($this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
+            ($this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
+        ) {
+            $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['initCommands'] .= LF . ' SET profiling = 1;';
+
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            // @ToDo: Loop through all Connection names
+            $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+            $connection->getConfiguration()->setSQLLogger(
+                GeneralUtility::makeInstance(DebugStack::class)
+            );
+        }
     }
 
     public function __destruct()
     {
-        $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-        $connection = $connectionPool->getConnectionForTable('tx_mysqlreport_domain_model_profile');
+        if (
+            ($this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
+            ($this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
+        ) {
+            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
+            $connection = $connectionPool->getConnectionForTable('tx_mysqlreport_domain_model_profile');
 
-        // do not log our insert queries
-        $sqlLogger = clone $connection->getConfiguration()->getSQLLogger();
-        $connection->getConfiguration()->setSQLLogger(null);
+            // do not log our insert queries
+            $sqlLogger = clone $connection->getConfiguration()->getSQLLogger();
+            $connection->getConfiguration()->setSQLLogger(null);
 
-        // A page can be called multiple times each second. So we need an unique identifier.
-        $uniqueIdentifier = uniqid();
-        $pid = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
+            // A page can be called multiple times each second. So we need an unique identifier.
+            $uniqueIdentifier = uniqid();
+            $pid = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
 
-        if ($sqlLogger instanceof DebugStack) {
-            $queriesToStore = [];
-            foreach ($sqlLogger->queries as $key => $loggedQuery) {
-                $queryToStore = [
-                    'pid' => $pid,
-                    'ip' => GeneralUtility::getIndpEnv('REMOTE_ADDR'),
-                    'referer' => GeneralUtility::getIndpEnv('HTTP_REFERER'),
-                    'request' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
-                    'query_type' => GeneralUtility::trimExplode(' ', $loggedQuery['sql'], true, 2)[0],
-                    'duration' => $loggedQuery['executionMS'],
-                    'query' => $connection->quote($loggedQuery['sql']),
-                    'profile' => serialize([]),
-                    'explain_query' => serialize([]),
-                    'not_using_index' => 0,
-                    'using_fulltable' => 0,
-                    'mode' => (string)TYPO3_MODE,
-                    'unique_call_identifier' => $uniqueIdentifier,
-                    'crdate' => (int)$GLOBALS['EXEC_TIME'],
-                    'query_id' => $key
-                ];
+            if ($sqlLogger instanceof DebugStack) {
+                $queriesToStore = [];
+                foreach ($sqlLogger->queries as $key => $loggedQuery) {
+                    $queryToStore = [
+                        'pid' => $pid,
+                        'ip' => GeneralUtility::getIndpEnv('REMOTE_ADDR'),
+                        'referer' => GeneralUtility::getIndpEnv('HTTP_REFERER'),
+                        'request' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
+                        'query_type' => GeneralUtility::trimExplode(' ', $loggedQuery['sql'], true, 2)[0],
+                        'duration' => $loggedQuery['executionMS'],
+                        'query' => $connection->quote($loggedQuery['sql']),
+                        'profile' => serialize([]),
+                        'explain_query' => serialize([]),
+                        'not_using_index' => 0,
+                        'using_fulltable' => 0,
+                        'mode' => (string)TYPO3_MODE,
+                        'unique_call_identifier' => $uniqueIdentifier,
+                        'crdate' => (int)$GLOBALS['EXEC_TIME'],
+                        'query_id' => $key
+                    ];
 
-                $this->addExplainInformation($queryToStore, $loggedQuery);
+                    $this->addExplainInformation($queryToStore, $loggedQuery);
 
-                $queriesToStore[] = $queryToStore;
-            }
+                    $queriesToStore[] = $queryToStore;
+                }
 
-            foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
-                $connection->bulkInsert(
-                    'tx_mysqlreport_domain_model_profile',
-                    $chunkOfQueriesToStore,
-                    [
-                        'pid',
-                        'ip',
-                        'referer',
-                        'request',
-                        'query_type',
-                        'duration',
-                        'query',
-                        'profile',
-                        'explain_query',
-                        'not_using_index',
-                        'using_fulltable',
-                        'mode',
-                        'unique_call_identifier',
-                        'crdate',
-                        'query_id'
-                    ]
-                );
+                foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
+                    $connection->bulkInsert(
+                        'tx_mysqlreport_domain_model_profile',
+                        $chunkOfQueriesToStore,
+                        [
+                            'pid',
+                            'ip',
+                            'referer',
+                            'request',
+                            'query_type',
+                            'duration',
+                            'query',
+                            'profile',
+                            'explain_query',
+                            'not_using_index',
+                            'using_fulltable',
+                            'mode',
+                            'unique_call_identifier',
+                            'crdate',
+                            'query_id'
+                        ]
+                    );
+                }
             }
         }
     }
