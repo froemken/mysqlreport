@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\Backend;
 
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
-use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
