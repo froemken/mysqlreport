@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Backend;
 
+use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Backend\Utility\BackendUtility;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -29,16 +30,13 @@ class CacheAction implements ClearCacheActionsHookInterface
      */
     public function manipulateCacheActions(&$cacheActions, &$optionValues)
     {
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
+
         $cacheActions[] = [
             'id' => 'mysqlprofiles',
             'title' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.title',
             'description' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.description',
-            'href' => BackendUtility::getModuleUrl(
-                'tce_db',
-                [
-                    'cacheCmd' => 'mysqlprofiles'
-                ]
-            ),
+            'href' => (string)$uriBuilder->buildUriFromRoute('tce_db', ['cacheCmd' => 'mysqlprofiles']),
             'iconIdentifier' => 'actions-system-cache-clear-impact-high'
         ];
         $optionValues[] = 'mysqlprofiles';
