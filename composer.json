@@ -2,8 +2,7 @@
   "name": "stefanfroemken/mysqlreport",
   "type": "typo3-cms-extension",
   "description": "Analyze and profile your TYPO3 databases queries",
-  "version": "0.3.0",
-  "license": "GPL-2.0+",
+  "license": "GPL-2.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "mysql", "profiling", "report", "mysqlreport"],
   "homepage": "http://www.typo3lexikon.de",
   "authors": [
