@@ -9,7 +9,9 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\Analysis;
+namespace StefanFroemken\Mysqlreport\Analysis\InnoDbBuffer;
+
+use StefanFroemken\Mysqlreport\Analysis\AbstractAnalysis;
 
 /**
  * Instances Check Analysis for InnoDB
