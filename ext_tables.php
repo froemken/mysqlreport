@@ -4,14 +4,14 @@ if (!defined('TYPO3_MODE')) {
 }
 
 \TYPO3\CMS\Extbase\Utility\ExtensionUtility::registerModule(
-    'StefanFroemken.Mysqlreport',
+    'Mysqlreport',
     'system', // Make module a submodule of 'web'
     'mysql', // Submodule key
     '', // Position
     [
-        'MySql' => 'index, queryCache, innoDbBuffer, threadCache, tableCache, report',
-        'Profile' => 'list, show, queryType, profileInfo',
-        'Query' => 'filesort, fullTableScan',
+        \StefanFroemken\Mysqlreport\Controller\MySqlController::class => 'index, queryCache, innoDbBuffer, threadCache, tableCache, report',
+        \StefanFroemken\Mysqlreport\Controller\ProfileController::class => 'list, show, queryType, profileInfo',
+        \StefanFroemken\Mysqlreport\Controller\QueryController::class => 'filesort, fullTableScan',
     ],
     [
         'access' => 'user,group',

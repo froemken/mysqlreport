@@ -6,9 +6,6 @@ return [
         'crdate' => 'crdate',
         'hideTable' => true,
     ],
-    'interface' => [
-        'showRecordFieldList' => '',
-    ],
     'columns' => [
         'query_id' => [
             'exclude' => 0,
