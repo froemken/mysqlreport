@@ -1,6 +1,10 @@
-{namespace sf=StefanFroemken\Mysqlreport\ViewHelpers}
+<html lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:m="http://typo3.org/ns/StefanFroemken/Mysqlreport/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
 
-<sf:innoDbBuffer status="{status}" variables="{variables}">
+
+<m:innoDbBuffer status="{status}" variables="{variables}">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">InnoDB Buffer Load</h3>
@@ -87,4 +91,5 @@
 			<p>As higher than 1 as better.</p>
 		</div>
 	</div>
-</sf:innoDbBuffer>
+</m:innoDbBuffer>
+</html>

@@ -1,6 +1,9 @@
-{namespace sf=StefanFroemken\Mysqlreport\ViewHelpers}
+<html lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:m="http://typo3.org/ns/StefanFroemken/Mysqlreport/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
 
-<sf:tableCache status="{status}" variables="{variables}">
+<m:tableCache status="{status}" variables="{variables}">
 	<div class="panel panel-{openedTableDefsEachSecond.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Opened Table Definitions each second</h3>
@@ -19,4 +22,5 @@
 			<p>As lower as better</p>
 		</div>
 	</div>
-</sf:tableCache>
+</m:tableCache>
+</html>

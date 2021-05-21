@@ -1,6 +1,9 @@
-{namespace sf=StefanFroemken\Mysqlreport\ViewHelpers}
+<html lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:m="http://typo3.org/ns/StefanFroemken/Mysqlreport/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
 
-<sf:queryCache status="{status}" variables="{variables}">
+<m:queryCache status="{status}" variables="{variables}">
 	<div class="panel panel-{hitRatio.status}">
 		<div class="panel-heading">
 			<h3 class="panel-title">Hit Ratio</h3>
@@ -86,4 +89,5 @@
 			</ul>
 		</div>
 	</div>
-</sf:queryCache>
+</m:queryCache>
+</html>

@@ -1,4 +1,7 @@
-{namespace sf=StefanFroemken\Mysqlreport\ViewHelpers}
+<html lang="en"
+	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+	  xmlns:m="http://typo3.org/ns/StefanFroemken/Mysqlreport/ViewHelpers"
+	  data-namespace-typo3-fluid="true">
 
 <f:layout name="Default" />
 
@@ -18,7 +21,7 @@
 	</div>
 
 	<f:if condition="{variables.backLog}">
-		<f:alias map="{maxSysConn: '{sf:command.backLog()}'}">
+		<f:alias map="{maxSysConn: '{m:command.backLog()}'}">
 			<f:if condition="{maxSysConn}">
 				<div class="panel panel-default">
 					<div class="panel-heading">
@@ -76,5 +79,5 @@
 			<p><strong>Slave_running:</strong> {status.slaveRunning}</p>
 		</div>
 	</div>
-
 </f:section>
+</html>
