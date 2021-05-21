@@ -34,17 +34,17 @@ class QueryController extends AbstractController
      */
     protected $databaseRepository;
 
-    public function injectDatabaseRepository(DatabaseRepository $databaseRepository)
+    public function __construct(DatabaseRepository $databaseRepository)
     {
         $this->databaseRepository = $databaseRepository;
     }
 
-    public function filesortAction()
+    public function filesortAction(): void
     {
         $this->view->assign('queries', $this->databaseRepository->findQueriesWithFilesort());
     }
 
-    public function fullTableScanAction()
+    public function fullTableScanAction(): void
     {
         $this->view->assign('queries', $this->databaseRepository->findQueriesWithFullTableScan());
     }

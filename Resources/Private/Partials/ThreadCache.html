@@ -12,14 +12,14 @@
 			<p>{hitRatio.value}%</p>
 			<p>As closer to 100% as better.</p>
 			<f:if condition="{0: hitRatio.status}!={0: 'success'}">
-				<f:if condition="{variables.threadCacheSize}">
+				<f:if condition="{variables.thread_cache_size}">
 					<f:then>
-						<f:if condition="{status.threadsConnected}<{variables.threadCacheSize}">
+						<f:if condition="{status.Threads_connected}<{variables.thread_cache_size}">
 							<f:then>
 								<p>It seems that you are the only person on this MySQL-Server, so this value should be OK.</p>
 							</f:then>
 							<f:else>
-								<p>It seems that your thread_cache_size ({variables.threadCacheSize}) is too low. Please increase this value in 10th steps.</p>
+								<p>It seems that your thread_cache_size ({variables.thread_cache_size}) is too low. Please increase this value in 10th steps.</p>
 							</f:else>
 						</f:if>
 					</f:then>

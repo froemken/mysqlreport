@@ -23,7 +23,7 @@
 			<p>If you have just started your MySQL-Server or have less SELECT-Statement this value can be red or yellow. So please wait till all caches are warmed up.</p>
 		</div>
 	</div>
-	<f:if condition="{variables.queryCacheSize}>268435456">
+	<f:if condition="{variables.query_cache_size}>268435456">
 		<div class="panel panel-danger">
 			<div class="panel-heading">
 				<h3 class="panel-title">Query Cache too high</h3>
@@ -68,7 +68,7 @@
 			<h3 class="panel-title">Average Query size</h3>
 		</div>
 		<div class="panel-body">
-			<p>Average Query Size of <strong>{avgQuerySize.value}</strong> Bytes should not be higher than <strong>{variables.queryCacheMinResUnit}</strong> (query_cache_min_res_unit).</p>
+			<p>Average Query Size of <strong>{avgQuerySize.value}</strong> Bytes should not be higher than <strong>{variables.query_cache_min_res_unit}</strong> (query_cache_min_res_unit).</p>
 			<f:if condition="{0:avgQuerySize.status}=={0: 'danger'}">
 				<p>Please set query_cache_min_res_unit a little bit higher than average Query Size.</p>
 			</f:if>
@@ -80,7 +80,7 @@
 		</div>
 		<div class="panel-body">
 			<p>With an average amount of <strong>{avgUsedBlocks.value}</strong> used blocks you have overall <strong>{avgUsedBlocks.status}</strong> Queries in Cache</p>
-			<p>Please adjust query_cache_limit of currently <strong>{variables.queryCacheLimit}</strong> Bytes to your needs:</p>
+			<p>Please adjust query_cache_limit of currently <strong>{variables.query_cache_limit}</strong> Bytes to your needs:</p>
 			<ul>
 				<li><strong>very small</strong> queries: 16KB - 128KB</li>
 				<li><strong>small</strong> queries: 128KB - 256KB</li>

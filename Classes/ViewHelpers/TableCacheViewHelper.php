@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\ViewHelpers;
 
-use StefanFroemken\Mysqlreport\Domain\Model\Status;
-use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -34,13 +32,13 @@ class TableCacheViewHelper extends AbstractViewHelper
     {
         $this->registerArgument(
             'status',
-            Status::class,
+            'array',
             'Status of MySQL server',
             true
         );
         $this->registerArgument(
             'variables',
-            Variables::class,
+            'array',
             'Variables of MySQL server',
             true
         );
@@ -60,13 +58,13 @@ class TableCacheViewHelper extends AbstractViewHelper
     /**
      * get amount of opened table definitions each second
      *
-     * @param Status $status
+     * @param array $status
      * @return array
      */
-    protected function getOpenedTableDefinitionsEachSecond(Status $status): array
+    protected function getOpenedTableDefinitionsEachSecond(array $status): array
     {
         $result = [];
-        $openedTableDefinitions = $status->getOpenedTableDefinitions() / $status->getUptime();
+        $openedTableDefinitions = $status['Opened_table_definitions'] / $status['Uptime'];
         if ($openedTableDefinitions <= 0.3) {
             $result['status'] = 'success';
         } elseif ($openedTableDefinitions <= 2) {
@@ -81,13 +79,13 @@ class TableCacheViewHelper extends AbstractViewHelper
     /**
      * get amount of opened tables each second
      *
-     * @param Status $status
+     * @param array $status
      * @return array
      */
-    protected function getOpenedTablesEachSecond(Status $status): array
+    protected function getOpenedTablesEachSecond(array $status): array
     {
         $result = [];
-        $openedTables = $status->getOpenedTables() / $status->getUptime();
+        $openedTables = $status['Opened_tables'] / $status['Uptime'];
         if ($openedTables <= 0.6) {
             $result['status'] = 'success';
         } elseif ($openedTables <= 4) {

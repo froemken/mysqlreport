@@ -10,7 +10,7 @@
 			<h3 class="panel-title">InnoDB Buffer Load</h3>
 		</div>
 		<div class="panel-body">
-			<p>Following progressbar shows you how pages (a block with {status.innodbPageSize} Bytes) are currently balanced in InnoDB Buffer</p>
+			<p>Following progressbar shows you how pages (a block with {status.Innodb_page_size} Bytes) are currently balanced in InnoDB Buffer</p>
 			<p>If free InnoDB Buffer is below 15-20% it may indicate that you have to increase your innodb_buffer_pool_size</p>
 			<p>If free InnoDB Buffer is higher than 20-30% it may indicate that you should reduce innodb_buffer_pool_size</p>
 			<div class="progress">
@@ -36,7 +36,7 @@
 			<p>As higher as better.</p>
 			<p>Everything below 90 is really bad. 99 maybe OK, but is not perfect. Everything above 99.9 is great.</p>
 			<f:if condition="{0: hitRatio.status}!={0: 'success'}">
-				<p>Please increase the value of innodb_buffer_pool_size (Current value: <strong>{variables.innodbBufferPoolSize}</strong> Bytes)</p>
+				<p>Please increase the value of innodb_buffer_pool_size (Current value: <strong>{variables.innodb_buffer_pool_size}</strong> Bytes)</p>
 			</f:if>
 		</div>
 	</div>

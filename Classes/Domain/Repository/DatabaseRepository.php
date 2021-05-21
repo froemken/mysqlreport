@@ -68,11 +68,11 @@ class DatabaseRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
-                    $queryBuilder->createNamedParameter($uniqueIdentifier, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($uniqueIdentifier)
                 ),
                 $queryBuilder->expr()->eq(
                     'query_type',
-                    $queryBuilder->createNamedParameter($queryType, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($queryType)
                 )
             )
             ->orderBy('duration', 'DESC')
@@ -106,14 +106,16 @@ class DatabaseRepository extends AbstractRepository
 
     public function findQueriesWithFilesort(): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
-        $statement = $profileRecord = $queryBuilder
+        $queryBuilder = $this
+            ->getConnectionPool()
+            ->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $statement = $queryBuilder
             ->add('select', 'LEFT(query, 255) as query, explain_query, duration')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->like(
                     'explain_query',
-                    $queryBuilder->createNamedParameter('%using filesort%', \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter('%using filesort%')
                 )
             )
             ->orderBy('duration', 'DESC')

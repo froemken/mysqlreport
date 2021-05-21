@@ -6,9 +6,9 @@
 
 <f:section name="content">
 	<f:render partial="Uptime" arguments="{status: status}" />
-	<f:if condition="{variables.queryCacheType}">
+	<f:if condition="{variables.query_cache_type}">
 		<f:then>
-			<f:if condition="{variables.queryCacheSize}">
+			<f:if condition="{variables.query_cache_size}">
 				<f:then>
 					<f:render partial="QueryCache" arguments="{status: status, variables: variables}" />
 				</f:then>

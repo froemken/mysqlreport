@@ -18,6 +18,7 @@
     "source": "https://github.com/froemken/mysqlreport"
   },
   "require": {
+    "ext-pdo": "*",
     "typo3/cms-core": "^10.4.14"
   },
   "require-dev": {

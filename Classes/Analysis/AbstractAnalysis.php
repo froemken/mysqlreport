@@ -126,7 +126,7 @@ abstract class AbstractAnalysis implements AnalysisInterface
         });
 
         // convert sting numbers to real numbers
-        $values = array_filter($values, function ($value) {
+        return array_filter($values, function ($value) {
             if (MathUtility::canBeInterpretedAsInteger($value)) {
                 $value = (int)$value;
             } elseif (MathUtility::canBeInterpretedAsFloat($value)) {
@@ -134,8 +134,6 @@ abstract class AbstractAnalysis implements AnalysisInterface
             }
             return $value;
         });
-
-        return $values;
     }
 
     protected function getConnectionPool(): ConnectionPool

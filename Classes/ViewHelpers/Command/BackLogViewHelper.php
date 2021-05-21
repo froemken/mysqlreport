@@ -36,10 +36,11 @@ class BackLogViewHelper extends AbstractViewHelper
             // maybe we are on a MAC
             $lastLine = CommandUtility::exec($command . ' kern.ipc.somaxconn');
         }
-        if (!empty($lastLine)) {
+        if (!empty($lastLine) && strpos(':', $lastLine) !== false) {
             $parts = GeneralUtility::trimExplode(':', $lastLine);
             $value = $parts[1];
         }
-        return (string)$value;
+
+        return $value;
     }
 }

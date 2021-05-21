@@ -40,41 +40,37 @@ class MySqlController extends AbstractController
      */
     protected $variablesRepository;
 
-    public function injectStatusRepository(StatusRepository $statusRepository)
+    public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
     {
         $this->statusRepository = $statusRepository;
-    }
-
-    public function injectVariablesRepository(VariablesRepository $variablesRepository)
-    {
         $this->variablesRepository = $variablesRepository;
     }
 
-    public function indexAction()
+    public function indexAction(): void
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    public function queryCacheAction()
+    public function queryCacheAction(): void
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    public function innoDbBufferAction()
+    public function innoDbBufferAction(): void
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    public function threadCacheAction()
+    public function threadCacheAction(): void
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
-    public function tableCacheAction()
+    public function tableCacheAction(): void
     {
         $this->view->assign('status', $this->statusRepository->findAll());
         $this->view->assign('variables', $this->variablesRepository->findAll());
