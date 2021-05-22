@@ -173,7 +173,7 @@ class QueryCacheViewHelper extends AbstractViewHelper
         if ($minimumUsedBlocks) {
             $avgUsedBlocks = $usedBlocks / $minimumUsedBlocks;
         }
-        
+
         if ($avgUsedBlocks <= 1.3) {
             $result['status'] = 'very small';
         } elseif ($avgUsedBlocks <= 2) {
