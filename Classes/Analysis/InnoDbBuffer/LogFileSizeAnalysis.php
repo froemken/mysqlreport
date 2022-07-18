@@ -65,10 +65,11 @@ class LogFileSizeAnalysis extends AbstractAnalysis
         return $cssClass;
     }
 
-    public function getPlainResult()
+    public function getPlainResult(): float
     {
         $bytesWrittenEachSecond = $this->getCleanedStatus()['innodb_os_log_written'] / $this->getCleanedStatus()['uptime'];
         $bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
-        return ($bytesWrittenEachHour / $this->getVariables()['innodb_log_files_in_group']);
+
+        return (float)($bytesWrittenEachHour / $this->getVariables()['innodb_log_files_in_group']);
     }
 }
