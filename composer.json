@@ -19,10 +19,11 @@
   },
   "require": {
     "ext-pdo": "*",
-    "typo3/cms-core": "^10.4.14"
+    "typo3/cms-core": "^10.4.29"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.16"
+    "roave/security-advisories": "dev-latest",
+    "friendsofphp/php-cs-fixer": "^3.9"
   },
   "autoload": {
     "psr-4": {
