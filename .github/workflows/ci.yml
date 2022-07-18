@@ -8,8 +8,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        typo3: [^9.5]
-        php: ['7.2', '7.3', '7.4']
+        typo3: [^10.4]
+        php: ['7.3', '7.4']
         os: [ubuntu-latest]
 
     steps:
@@ -27,9 +27,6 @@ jobs:
         run: |
           composer require typo3/cms-core:${{ matrix.typo3 }} --no-progress
           composer require typo3/cms-extensionmanager:${{ matrix.typo3 }} --no-progress
-          # SF: Remove next line, if version 2.13.2 was released
-          # Issue: https://github.com/Nimut/testing-framework/issues/136
-          composer require doctrine/dbal:2.10.4 --no-progress
           git checkout composer.json
 
       - name: php-cs-fixer
