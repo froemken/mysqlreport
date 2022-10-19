@@ -19,7 +19,7 @@
   },
   "require": {
     "ext-pdo": "*",
-    "typo3/cms-core": "^10.4.29"
+    "typo3/cms-core": "^10.4.32 || ^11.5.16"
   },
   "require-dev": {
     "roave/security-advisories": "dev-latest",
