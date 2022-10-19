@@ -6,3 +6,9 @@ services:
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
+
+  StefanFroemken\Mysqlreport\Domain\Factory\PanelFactory:
+    public: true
+
+  StefanFroemken\Mysqlreport\Domain\Model\Page:
+    public: true

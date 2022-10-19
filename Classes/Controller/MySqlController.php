@@ -11,9 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
-use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
+use StefanFroemken\Mysqlreport\Domain\Factory\PanelFactory;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status
@@ -30,49 +31,29 @@ class MySqlController extends AbstractController
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
 
-    /**
-     * @var StatusRepository
-     */
-    protected $statusRepository;
-
-    /**
-     * @var VariablesRepository
-     */
-    protected $variablesRepository;
-
-    public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
-    {
-        $this->statusRepository = $statusRepository;
-        $this->variablesRepository = $variablesRepository;
-    }
-
     public function indexAction(): void
     {
-        $this->view->assign('status', $this->statusRepository->findAll());
-        $this->view->assign('variables', $this->variablesRepository->findAll());
+        /** @var PanelFactory $factory */
+        $factory = GeneralUtility::makeInstance(PanelFactory::class);
+        $view = $factory->getProcessedViewForPage('main');
+        if ($view instanceof StandaloneView) {
+            $this->view->assign('renderedPanels', $view->render());
+        }
     }
 
     public function queryCacheAction(): void
     {
-        $this->view->assign('status', $this->statusRepository->findAll());
-        $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
     public function innoDbBufferAction(): void
     {
-        $this->view->assign('status', $this->statusRepository->findAll());
-        $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
     public function threadCacheAction(): void
     {
-        $this->view->assign('status', $this->statusRepository->findAll());
-        $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 
     public function tableCacheAction(): void
     {
-        $this->view->assign('status', $this->statusRepository->findAll());
-        $this->view->assign('variables', $this->variablesRepository->findAll());
     }
 }

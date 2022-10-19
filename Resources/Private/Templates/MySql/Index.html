@@ -8,6 +8,8 @@
 <f:section name="content">
 	<f:render partial="Uptime" arguments="{status: status}" />
 
+	{renderedPanels -> f:format.raw()}
+
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">Aborted Connects</h3>

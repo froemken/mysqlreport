@@ -11,18 +11,20 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
- * Repository to get the MySQL variables
+ * Repository to get the MySQL/MariaDB variables
  */
 class VariablesRepository extends AbstractRepository
 {
-    public function findAll(): array
+    public function findAll(): Variables
     {
         $connection = $this
             ->getConnectionPool()
             ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+
         $statement = $connection->executeQuery('SHOW GLOBAL VARIABLES');
 
         $rows = [];
@@ -30,6 +32,6 @@ class VariablesRepository extends AbstractRepository
             $rows[$row['Variable_name']] = $row['Value'];
         }
 
-        return $rows;
+        return new Variables($rows);
     }
 }
