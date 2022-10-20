@@ -7,8 +7,8 @@ services:
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
 
-  StefanFroemken\Mysqlreport\Domain\Factory\PanelFactory:
+  StefanFroemken\Mysqlreport\Menu\Page:
     public: true
 
-  StefanFroemken\Mysqlreport\Domain\Model\Page:
+  StefanFroemken\Mysqlreport\Menu\PageFinder:
     public: true

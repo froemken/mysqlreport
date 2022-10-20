@@ -16,8 +16,7 @@ use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use StefanFroemken\Mysqlreport\Panel\AbstractPanel;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
  * Model with properties for panels you can see in BE module
@@ -25,24 +24,14 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 class Page implements \SplSubject
 {
     /**
-     * @var string
-     */
-    protected $pageIdentifier = '';
-
-    /**
      * @var \SplObjectStorage|AbstractPanel[]
      */
     protected $panels;
 
     /**
-     * @var array
+     * @var \SplQueue|ViewInterface[]
      */
-    protected $renderedPanels = [];
-
-    /**
-     * @var StandaloneView
-     */
-    protected $view;
+    protected $panelViews;
 
     /**
      * @var StatusValues
@@ -57,7 +46,7 @@ class Page implements \SplSubject
     public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
     {
         $this->panels = new \SplObjectStorage();
-        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
+        $this->panelViews = new \SplQueue();
 
         $this->statusValues = $statusRepository->findAll();
         $this->variables = $variablesRepository->findAll();
@@ -75,51 +64,26 @@ class Page implements \SplSubject
 
     public function notify(): void
     {
-        if ($this->pageIdentifier !== '') {
-            foreach ($this->panels as $panel) {
-                $panel->update($this);
-            }
+        foreach ($this->panels as $panel) {
+            $panel->update($this);
         }
     }
 
-    public function getProcessedViewForPage(string $pageIdentifier): ?StandaloneView
+    public function getRenderedPanels(): string
     {
-        if ($pageIdentifier === '') {
-            return null;
-        }
-
-        $this->pageIdentifier = $pageIdentifier;
-        $this->setTemplatePath($pageIdentifier);
         $this->notify();
 
-        $this->view->assign('renderedPanels', $this->renderedPanels);
+        $renderedPanels = '';
+        foreach ($this->panelViews as $view) {
+            $renderedPanels .= $view->render();
+        }
 
-        return $this->view;
+        return $renderedPanels;
     }
 
-    protected function setTemplatePath(string $pageIdentifier): void
+    public function addPanelView(ViewInterface $view): void
     {
-        $this->view->setTemplatePathAndFilename(
-            sprintf(
-                'EXT:mysqlreport/Resources/Private/Templates/Page/%s.html',
-                ucfirst($pageIdentifier)
-            )
-        );
-    }
-
-    public function addRenderedPanel(string $content): void
-    {
-        $this->renderedPanels[] = $content;
-    }
-
-    public function getPageIdentifier(): string
-    {
-        return $this->pageIdentifier;
-    }
-
-    public function getView(): StandaloneView
-    {
-        return $this->view;
+        $this->panelViews->enqueue($view);
     }
 
     public function getStatusValues(): StatusValues

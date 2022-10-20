@@ -5,6 +5,7 @@ if (!defined('TYPO3_MODE')) {
 
 return [
     'abortedConnects' => [
-        'class' => \StefanFroemken\Mysqlreport\Panel\Main\AbortedConnectsPanel::class
+        'class' => \StefanFroemken\Mysqlreport\Panel\Main\AbortedConnectsPanel::class,
+        'pageIdentifier' => 'main'
     ]
 ];

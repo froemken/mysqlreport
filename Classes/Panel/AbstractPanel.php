@@ -57,14 +57,11 @@ abstract class AbstractPanel implements \SplObserver
 
     public function update(\SplSubject $subject): void
     {
-        if (
-            $subject instanceof Page
-            && $subject->getPageIdentifier() === $this->pageIdentifier
-        ) {
+        if ($subject instanceof Page) {
             $body = $this->renderBody($subject);
             if ($this->shouldBeRendered) {
                 $this->view->assign('body', $body);
-                $subject->addRenderedPanel($this->view->render());
+                $subject->addPanelView($this->view);
             }
         }
     }

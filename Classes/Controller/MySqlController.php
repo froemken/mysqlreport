@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use StefanFroemken\Mysqlreport\Domain\Factory\PanelFactory;
+use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Menu\PageFinder;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
@@ -33,11 +35,10 @@ class MySqlController extends AbstractController
 
     public function indexAction(): void
     {
-        /** @var PanelFactory $factory */
-        $factory = GeneralUtility::makeInstance(PanelFactory::class);
-        $view = $factory->getProcessedViewForPage('main');
-        if ($view instanceof StandaloneView) {
-            $this->view->assign('renderedPanels', $view->render());
+        $page = $this->pageFinder->getPageByIdentifier('main');
+        if ($page instanceof Page) {
+
+            $this->view->assign('renderedPanels', $page->getRenderedPanels());
         }
     }
 
