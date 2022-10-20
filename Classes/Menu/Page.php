@@ -9,8 +9,10 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\Domain\Model;
+namespace StefanFroemken\Mysqlreport\Menu;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use StefanFroemken\Mysqlreport\Panel\AbstractPanel;

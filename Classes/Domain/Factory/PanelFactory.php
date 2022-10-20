@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Factory;
 
-use StefanFroemken\Mysqlreport\Domain\Model\Page;
+use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Panel\AbstractPanel;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;

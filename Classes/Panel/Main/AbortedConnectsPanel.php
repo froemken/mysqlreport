@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Panel\Main;
 
-use StefanFroemken\Mysqlreport\Domain\Model\Page;
+use StefanFroemken\Mysqlreport\Menu\Page;
 use StefanFroemken\Mysqlreport\Panel\AbstractPanel;
 
 /**
