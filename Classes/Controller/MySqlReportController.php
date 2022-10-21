@@ -20,7 +20,7 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
 /**
  * Controller to show a basic analysis of MySQL variables and status
  */
-class MySqlController extends AbstractController
+class MySqlReportController extends AbstractController
 {
     /**
      * @var BackendTemplateView
@@ -32,11 +32,10 @@ class MySqlController extends AbstractController
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
 
-    public function indexAction(): void
+    public function mainAction(): void
     {
         $page = $this->pageFinder->getPageByIdentifier('main');
         if ($page instanceof Page) {
-
             $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
         }
     }
