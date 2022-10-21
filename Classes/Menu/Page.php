@@ -15,7 +15,7 @@ use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
-use StefanFroemken\Mysqlreport\Panel\AbstractPanel;
+use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use TYPO3Fluid\Fluid\View\ViewInterface;
 
 /**
@@ -24,14 +24,14 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 class Page implements \SplSubject
 {
     /**
-     * @var \SplObjectStorage|AbstractPanel[]
+     * @var \SplObjectStorage|AbstractInfoBox[]
      */
-    protected $panels;
+    protected $infoBoxes;
 
     /**
      * @var \SplQueue|ViewInterface[]
      */
-    protected $panelViews;
+    protected $infoBoxViews;
 
     /**
      * @var StatusValues
@@ -45,8 +45,8 @@ class Page implements \SplSubject
 
     public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
     {
-        $this->panels = new \SplObjectStorage();
-        $this->panelViews = new \SplQueue();
+        $this->infoBoxes = new \SplObjectStorage();
+        $this->infoBoxViews = new \SplQueue();
 
         $this->statusValues = $statusRepository->findAll();
         $this->variables = $variablesRepository->findAll();
@@ -54,36 +54,36 @@ class Page implements \SplSubject
 
     public function attach(\SplObserver $observer): void
     {
-        $this->panels->attach($observer);
+        $this->infoBoxes->attach($observer);
     }
 
     public function detach(\SplObserver $observer): void
     {
-        $this->panels->detach($observer);
+        $this->infoBoxes->detach($observer);
     }
 
     public function notify(): void
     {
-        foreach ($this->panels as $panel) {
+        foreach ($this->infoBoxes as $panel) {
             $panel->update($this);
         }
     }
 
-    public function getRenderedPanels(): string
+    public function getRenderedInfoBoxes(): string
     {
         $this->notify();
 
-        $renderedPanels = '';
-        foreach ($this->panelViews as $view) {
-            $renderedPanels .= $view->render();
+        $renderedInfoBoxes = '';
+        foreach ($this->infoBoxViews as $view) {
+            $renderedInfoBoxes .= $view->render();
         }
 
-        return $renderedPanels;
+        return $renderedInfoBoxes;
     }
 
-    public function addPanelView(ViewInterface $view): void
+    public function addInfoBoxView(ViewInterface $view): void
     {
-        $this->panelViews->enqueue($view);
+        $this->infoBoxViews->enqueue($view);
     }
 
     public function getStatusValues(): StatusValues

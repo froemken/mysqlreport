@@ -9,19 +9,20 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\Panel\Main;
+namespace StefanFroemken\Mysqlreport\InfoBox\Main;
 
+use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use StefanFroemken\Mysqlreport\Panel\AbstractPanel;
+use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 
 /**
- * Panel to inform about aborted connects
+ * InfoBox to inform about aborted connects
  */
-class AbortedConnectsPanel extends AbstractPanel
+class AbortedConnectsInfoBox extends AbstractInfoBox
 {
     protected $pageIdentifier = 'main';
 
-    protected $header = 'Aborted Connects';
+    protected $title = 'Aborted Connects';
 
     public function renderBody(Page $page): string
     {
@@ -29,6 +30,8 @@ class AbortedConnectsPanel extends AbstractPanel
             $this->shouldBeRendered = false;
             return '';
         }
+
+        $this->setState(StateEnumeration::STATE_ERROR);
 
         $content = [];
         $content[] = 'You have %d aborted connects.';

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Menu;
 
-use StefanFroemken\Mysqlreport\Configuration\PanelConfiguration;
-use StefanFroemken\Mysqlreport\Panel\AbstractPanel;
+use StefanFroemken\Mysqlreport\Configuration\InfoBoxConfiguration;
+use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -44,14 +44,14 @@ class PageFinder
         /** @var \ArrayObject|Page[] $pages */
         $pages = new \ArrayObject();
 
-        foreach ($this->getPanelConfigurationFromExtensions() as $panelConfiguration) {
-            if (!isset($pages[$panelConfiguration->getPageIdentifier()])) {
-                $pages[$panelConfiguration->getPageIdentifier()] = GeneralUtility::makeInstance(Page::class);
+        foreach ($this->getInfoBoxConfigurationFromExtensions() as $infoBoxConfiguration) {
+            if (!isset($pages[$infoBoxConfiguration->getPageIdentifier()])) {
+                $pages[$infoBoxConfiguration->getPageIdentifier()] = GeneralUtility::makeInstance(Page::class);
             }
 
-            $panel = $panelConfiguration->getPanel();
-            if ($panel instanceof AbstractPanel) {
-                $pages[$panelConfiguration->getPageIdentifier()]->attach($panel);
+            $infoBox = $infoBoxConfiguration->getInfoBox();
+            if ($infoBox instanceof AbstractInfoBox) {
+                $pages[$infoBoxConfiguration->getPageIdentifier()]->attach($infoBox);
             }
         }
 
@@ -59,37 +59,37 @@ class PageFinder
     }
 
     /**
-     * @return \SplObjectStorage|PanelConfiguration[]
+     * @return \SplObjectStorage|InfoBoxConfiguration[]
      */
-    protected function getPanelConfigurationFromExtensions(): \SplObjectStorage
+    protected function getInfoBoxConfigurationFromExtensions(): \SplObjectStorage
     {
-        $panelConfigurationObjects = new \SplObjectStorage();
+        $infoBoxConfigurationObjects = new \SplObjectStorage();
         foreach ($this->packageManager->getActivePackages() as $activePackage) {
-            $panelConfigurationFile = $activePackage->getPackagePath() . 'Configuration/MySQLPanels.php';
+            $panelConfigurationFile = $activePackage->getPackagePath() . 'Configuration/MySQLReportInfoBoxes.php';
             if (!is_file($panelConfigurationFile)) {
                 continue;
             }
 
-            $panelsConfiguredInPackage = require $panelConfigurationFile;
-            if (!is_array($panelsConfiguredInPackage)) {
+            $infoBoxesConfiguredInPackage = require $panelConfigurationFile;
+            if (!is_array($infoBoxesConfiguredInPackage)) {
                 continue;
             }
 
-            foreach ($panelsConfiguredInPackage as $panelConfiguredInPackage) {
-                $panelConfiguration = $this->getPanelConfiguration($panelConfiguredInPackage);
-                if ($panelConfiguration instanceof PanelConfiguration) {
-                    $panelConfigurationObjects->attach($panelConfiguration);
+            foreach ($infoBoxesConfiguredInPackage as $infoBoxConfiguredInPackage) {
+                $infoBoxConfiguration = $this->getInfoBoxConfiguration($infoBoxConfiguredInPackage);
+                if ($infoBoxConfiguration instanceof InfoBoxConfiguration) {
+                    $infoBoxConfigurationObjects->attach($infoBoxConfiguration);
                 }
             }
         }
 
-        return $panelConfigurationObjects;
+        return $infoBoxConfigurationObjects;
     }
 
-    protected function getPanelConfiguration(array $configuration): ?PanelConfiguration
+    protected function getInfoBoxConfiguration(array $configuration): ?InfoBoxConfiguration
     {
-        /** @var PanelConfiguration $panelConfiguration */
-        $panelConfiguration = GeneralUtility::makeInstance(PanelConfiguration::class, $configuration);
+        /** @var InfoBoxConfiguration $panelConfiguration */
+        $panelConfiguration = GeneralUtility::makeInstance(InfoBoxConfiguration::class, $configuration);
 
         return $panelConfiguration->isValid() ? $panelConfiguration : null;
     }

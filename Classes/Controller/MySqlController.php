@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
-use StefanFroemken\Mysqlreport\Domain\Factory\PanelFactory;
 use StefanFroemken\Mysqlreport\Menu\Page;
 use StefanFroemken\Mysqlreport\Menu\PageFinder;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
@@ -38,7 +37,7 @@ class MySqlController extends AbstractController
         $page = $this->pageFinder->getPageByIdentifier('main');
         if ($page instanceof Page) {
 
-            $this->view->assign('renderedPanels', $page->getRenderedPanels());
+            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
         }
     }
 

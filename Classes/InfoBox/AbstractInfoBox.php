@@ -9,16 +9,18 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\Panel;
+namespace StefanFroemken\Mysqlreport\InfoBox;
 
+use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Menu\Page;
+use TYPO3\CMS\Core\Type\Exception\InvalidEnumerationValueException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Model with properties for panels you can see in BE module
  */
-abstract class AbstractPanel implements \SplObserver
+abstract class AbstractInfoBox implements \SplObserver
 {
     /**
      * @var string
@@ -26,9 +28,18 @@ abstract class AbstractPanel implements \SplObserver
     protected $pageIdentifier = '';
 
     /**
+     * This is the title of the infobox
+     *
      * @var string
      */
-    protected $header = '';
+    protected $title = '';
+
+    /**
+     * You can highlight the infobox with help of the state constants
+     *
+     * @var StateEnumeration
+     */
+    private $state;
 
     /**
      * You can decide, if this panel should be rendered or not.
@@ -41,7 +52,7 @@ abstract class AbstractPanel implements \SplObserver
     /**
      * @var string
      */
-    protected $template = 'EXT:mysqlreport/Resources/Private/Templates/Panel/Default.html';
+    protected $template = 'EXT:mysqlreport/Resources/Private/Templates/InfoBox/Default.html';
 
     /**
      * @var StandaloneView
@@ -50,18 +61,33 @@ abstract class AbstractPanel implements \SplObserver
 
     public function __construct()
     {
+        $this->state = new StateEnumeration();
+
         $this->view = GeneralUtility::makeInstance(StandaloneView::class);
         $this->view->setTemplatePathAndFilename($this->template);
-        $this->view->assign('header', $this->header);
+        $this->view->assign('title', $this->title);
     }
 
     public function update(\SplSubject $subject): void
     {
         if ($subject instanceof Page) {
-            $body = $this->renderBody($subject);
+            $this->view->assign('body', $this->renderBody($subject));
+            $this->view->assign('state', (string)$this->state);
+
+            // $shouldBeRendered can be modified within renderBody() by a developer
             if ($this->shouldBeRendered) {
-                $this->view->assign('body', $body);
-                $subject->addPanelView($this->view);
+                $subject->addInfoBoxView($this->view);
+            }
+        }
+    }
+
+    protected function setState(int $state): void
+    {
+        if (!$this->state->equals($state)) {
+            try {
+                $this->state = new StateEnumeration($state);
+            } catch (InvalidEnumerationValueException $invalidEnumerationValueException) {
+                // Do nothing, keep current color
             }
         }
     }

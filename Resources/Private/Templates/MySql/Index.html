@@ -8,7 +8,7 @@
 <f:section name="content">
     <f:render partial="Uptime" arguments="{status: status}"/>
 
-    {renderedPanels -> f:format.raw()}
+    {renderedInfoBoxes -> f:format.raw()}
 
     <div class="panel panel-default">
         <div class="panel-heading">

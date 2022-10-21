@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Configuration;
 
-use StefanFroemken\Mysqlreport\Panel\AbstractPanel;
+use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Model with properties for panels you can see in BE module
  */
-class PanelConfiguration
+class InfoBoxConfiguration
 {
     /**
      * @var string
@@ -60,7 +60,7 @@ class PanelConfiguration
         return $this->isValid() ? $this->pageIdentifier : '';
     }
 
-    public function getPanel(): ?AbstractPanel
+    public function getInfoBox(): ?AbstractInfoBox
     {
         return $this->isValid() ? GeneralUtility::makeInstance($this->class) : null;
     }
