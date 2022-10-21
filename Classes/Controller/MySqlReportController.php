@@ -12,10 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use StefanFroemken\Mysqlreport\Menu\Page;
-use StefanFroemken\Mysqlreport\Menu\PageFinder;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status

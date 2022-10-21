@@ -45,7 +45,7 @@ class StatusValues implements \ArrayAccess
         return isset($this->storage[$offset]);
     }
 
-    public function offsetUnset($offset) : void
+    public function offsetUnset($offset): void
     {
         unset($this->storage[$offset]);
     }

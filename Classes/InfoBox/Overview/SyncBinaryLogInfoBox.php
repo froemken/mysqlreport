@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Overview;
 
-use StefanFroemken\Mysqlreport\Menu\Page;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\Menu\Page;
 
 /**
  * InfoBox to inform about binary log sync
