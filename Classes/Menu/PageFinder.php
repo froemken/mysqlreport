@@ -65,7 +65,7 @@ class PageFinder
     {
         $infoBoxConfigurationObjects = new \SplObjectStorage();
         foreach ($this->packageManager->getActivePackages() as $activePackage) {
-            $panelConfigurationFile = $activePackage->getPackagePath() . 'Configuration/MySQLReportInfoBoxes.php';
+            $panelConfigurationFile = $activePackage->getPackagePath() . 'Configuration/MySqlReportInfoBoxes.php';
             if (!is_file($panelConfigurationFile)) {
                 continue;
             }
