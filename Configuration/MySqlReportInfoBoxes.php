@@ -7,5 +7,9 @@ return [
     'abortedConnects' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Main\AbortedConnectsInfoBox::class,
         'pageIdentifier' => 'main'
-    ]
+    ],
+    'backLog' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Main\AbortedConnectsInfoBox::class,
+        'pageIdentifier' => 'main'
+    ],
 ];
