@@ -49,7 +49,7 @@ abstract class AbstractController extends ActionController
             [
                 'controller' => 'MySql',
                 'action' => 'index',
-                'label' => 'Introduction'
+                'label' => 'Overview'
             ],
             [
                 'controller' => 'MySql',

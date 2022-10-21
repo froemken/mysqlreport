@@ -32,9 +32,9 @@ class MySqlReportController extends AbstractController
      */
     protected $defaultViewObjectName = BackendTemplateView::class;
 
-    public function mainAction(): void
+    public function overviewAction(): void
     {
-        $page = $this->pageFinder->getPageByIdentifier('main');
+        $page = $this->pageFinder->getPageByIdentifier('overview');
         if ($page instanceof Page) {
             $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
         }

@@ -9,9 +9,8 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\InfoBox\Main;
+namespace StefanFroemken\Mysqlreport\InfoBox\Overview;
 
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Menu\Page;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 
@@ -20,7 +19,7 @@ use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
  */
 class AbortedConnectsInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'main';
+    protected $pageIdentifier = 'overview';
 
     protected $title = 'Aborted Connects';
 
@@ -30,8 +29,6 @@ class AbortedConnectsInfoBox extends AbstractInfoBox
             $this->shouldBeRendered = false;
             return '';
         }
-
-        $this->setState(StateEnumeration::STATE_ERROR);
 
         $content = [];
         $content[] = 'You have %d aborted connects.';
