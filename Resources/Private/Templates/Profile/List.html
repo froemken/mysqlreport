@@ -23,7 +23,8 @@
 						<td>{profile.mode}</td>
 						<td>{profile.amount}</td>
 						<td>
-							<f:link.action action="show" controller="Profile"
+							<f:link.action action="show"
+							               controller="Profile"
 							               arguments="{uniqueIdentifier: profile.unique_call_identifier}">
 								{profile.duration}
 							</f:link.action>
@@ -34,7 +35,12 @@
 			</table>
 		</f:then>
 		<f:else>
-			<p>No profiles collected. Please visit Frontend to collect profiles.</p>
+			<f:be.infobox title="No profiles" state="-1" disableIcon="true">
+				No profiles collected.
+				Please enable profiling for BE and/or FE in extension settings,
+				visit some pages in BE and/or FE
+				and visit this profile section again.
+			</f:be.infobox>
 		</f:else>
 	</f:if>
 </f:section>
