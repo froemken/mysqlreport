@@ -36,12 +36,15 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
     }
 
-    public function processData()
+    public function processData(): void
     {
         if (
             ($this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
             ($this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
         ) {
+            if (!isset($GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['initCommands'])) {
+                $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['initCommands'] = '';
+            }
             $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['initCommands'] .= LF . ' SET profiling = 1;';
 
             $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
