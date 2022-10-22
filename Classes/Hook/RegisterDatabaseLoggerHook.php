@@ -18,6 +18,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Add Logger to database connection to store queries of a request
@@ -71,7 +72,9 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
 
             // A page can be called multiple times each second. So we need an unique identifier.
             $uniqueIdentifier = uniqid();
-            $pid = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
+            $pid = isset($GLOBALS['TSFE']) && $GLOBALS['TSFE'] instanceof TypoScriptFrontendController
+                ? $GLOBALS['TSFE']->id
+                : 0;
 
             if ($sqlLogger instanceof DebugStack) {
                 $queriesToStore = [];
