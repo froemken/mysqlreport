@@ -16,24 +16,32 @@
 	</f:be.infobox>
 
 	<f:if condition="{profiling.profile}">
-		<h1>Profile output</h1>
+		<f:then>
+			<h1>Profile output</h1>
 
-		<table class="table">
-			<thead>
-			<tr>
-				<th>Status</th>
-				<th>Duration</th>
-			</tr>
-			</thead>
-			<tbody>
-			<f:for each="{profiling.profile}" as="status">
+			<table class="table">
+				<thead>
 				<tr>
-					<td>{status.Status}</td>
-					<td>{status.Duration}</td>
+					<th>Status</th>
+					<th>Duration</th>
 				</tr>
-			</f:for>
-			</tbody>
-		</table>
+				</thead>
+				<tbody>
+				<f:for each="{profiling.profile}" as="status">
+					<tr>
+						<td>{status.Status}</td>
+						<td>{status.Duration}</td>
+					</tr>
+				</f:for>
+				</tbody>
+			</table>
+		</f:then>
+		<f:else>
+			<f:be.infobox title="Profile Output" disableIcon="true">
+				You can activate profile output in extension settings of mysqlreport, if
+				you need more information about each query to debug.
+			</f:be.infobox>
+		</f:else>
 	</f:if>
 
 	<f:if condition="{profiling.explain}">
