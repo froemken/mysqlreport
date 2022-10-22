@@ -87,4 +87,13 @@ return [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\ThreadCache\HitRatioInfoBox::class,
         'pageIdentifier' => 'threadCache'
     ],
+
+    'tableCacheOpenedTableDefEachSec' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTableDefinitionsEachSecondInfoBox::class,
+        'pageIdentifier' => 'tableCache'
+    ],
+    'tableCacheOpenedTablesEachSec' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesEachSecondInfoBox::class,
+        'pageIdentifier' => 'tableCache'
+    ],
 ];
