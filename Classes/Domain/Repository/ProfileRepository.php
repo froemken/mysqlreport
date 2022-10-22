@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
 /**
  * Repository to get records to profile the queries of a request
  */
-class DatabaseRepository extends AbstractRepository
+class ProfileRepository extends AbstractRepository
 {
     public function findProfilingsForCall(): array
     {

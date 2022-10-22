@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
-use StefanFroemken\Mysqlreport\Domain\Repository\DatabaseRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 
 /**
@@ -30,11 +30,11 @@ class QueryController extends AbstractController
     protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
-     * @var DatabaseRepository
+     * @var ProfileRepository
      */
     protected $databaseRepository;
 
-    public function __construct(DatabaseRepository $databaseRepository)
+    public function __construct(ProfileRepository $databaseRepository)
     {
         $this->databaseRepository = $databaseRepository;
     }
