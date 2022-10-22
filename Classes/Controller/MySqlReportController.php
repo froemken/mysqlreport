@@ -39,17 +39,33 @@ class MySqlReportController extends AbstractController
 
     public function queryCacheAction(): void
     {
+        $page = $this->pageFinder->getPageByIdentifier('queryCache');
+        if ($page instanceof Page) {
+            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
+        }
     }
 
     public function innoDbBufferAction(): void
     {
+        $page = $this->pageFinder->getPageByIdentifier('innoDb');
+        if ($page instanceof Page) {
+            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
+        }
     }
 
     public function threadCacheAction(): void
     {
+        $page = $this->pageFinder->getPageByIdentifier('threadCache');
+        if ($page instanceof Page) {
+            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
+        }
     }
 
     public function tableCacheAction(): void
     {
+        $page = $this->pageFinder->getPageByIdentifier('tableCache');
+        if ($page instanceof Page) {
+            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
+        }
     }
 }

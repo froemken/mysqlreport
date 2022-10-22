@@ -1,25 +1,10 @@
 <html lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	  data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:layout name="Default" />
+<f:layout name="Default"/>
 
 <f:section name="content">
-	<f:render partial="Uptime" arguments="{status: status}" />
-	<f:if condition="{variables.query_cache_type}">
-		<f:then>
-			<f:if condition="{variables.query_cache_size}">
-				<f:then>
-					<f:render partial="QueryCache" arguments="{status: status, variables: variables}" />
-				</f:then>
-				<f:else>
-					<p>Query Cache is activated, but query_cache_size can not be 0</p>
-				</f:else>
-			</f:if>
-		</f:then>
-		<f:else>
-			<p>Query Cache is not activated</p>
-		</f:else>
-	</f:if>
+	{renderedInfoBoxes -> f:format.raw()}
 </f:section>
 </html>

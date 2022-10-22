@@ -35,6 +35,13 @@ abstract class AbstractInfoBox implements \SplObserver
     protected $title = '';
 
     /**
+     * Use addUnorderedListEntry to add new elements to <ul> output
+     *
+     * @var \SplQueue
+     */
+    private $unorderedList;
+
+    /**
      * You can highlight the infobox with help of the state constants
      *
      * @var StateEnumeration
@@ -61,6 +68,7 @@ abstract class AbstractInfoBox implements \SplObserver
 
     public function __construct()
     {
+        $this->unorderedList = new \SplQueue();
         $this->state = new StateEnumeration();
 
         $this->view = GeneralUtility::makeInstance(StandaloneView::class);
@@ -72,6 +80,7 @@ abstract class AbstractInfoBox implements \SplObserver
     {
         if ($subject instanceof Page) {
             $this->view->assign('body', $this->renderBody($subject));
+            $this->view->assign('unorderedList', $this->unorderedList);
             $this->view->assign('state', (string)$this->state);
 
             // $shouldBeRendered can be modified within renderBody() by a developer
@@ -79,6 +88,14 @@ abstract class AbstractInfoBox implements \SplObserver
                 $subject->addInfoBoxView($this->view);
             }
         }
+    }
+
+    protected function addUnorderedListEntry(string $value, string $title = ''): void
+    {
+        $this->unorderedList->enqueue([
+            'title' => $title,
+            'value' => $value
+        ]);
     }
 
     protected function setState(int $state): void
