@@ -13,10 +13,15 @@
 		</tr>
 		</thead>
 		<tbody>
-		<f:for each="{queries}" as="query">
+		<f:for each="{profileRecords}" as="profileRecord">
 			<tr>
-				<td>{query.query}...</td>
-				<td>{query.duration}</td>
+				<td>{profileRecord.query}...</td>
+				<td>
+					<f:link.action action="profileInfo"
+					               arguments="{actionName: 'filesort', uid: profileRecord.uid}">
+						{profileRecord.duration}
+					</f:link.action>
+				</td>
 			</tr>
 		</f:for>
 		</tbody>

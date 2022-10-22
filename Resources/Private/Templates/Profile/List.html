@@ -5,7 +5,7 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<f:if condition="{profiles}">
+	<f:if condition="{profileRecords}">
 		<f:then>
 			<table class="table">
 				<thead>
@@ -17,16 +17,16 @@
 				</tr>
 				</thead>
 				<tbody>
-				<f:for each="{profiles}" as="profile">
+				<f:for each="{profileRecords}" as="profileRecord">
 					<tr>
-						<td>{profile.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
-						<td>{profile.mode}</td>
-						<td>{profile.amount}</td>
+						<td>{profileRecord.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
+						<td>{profileRecord.mode}</td>
+						<td>{profileRecord.amount}</td>
 						<td>
 							<f:link.action action="show"
 							               controller="Profile"
-							               arguments="{uniqueIdentifier: profile.unique_call_identifier}">
-								{profile.duration}
+							               arguments="{uniqueIdentifier: profileRecord.unique_call_identifier}">
+								{profileRecord.duration}
 							</f:link.action>
 						</td>
 					</tr>
@@ -35,8 +35,8 @@
 			</table>
 		</f:then>
 		<f:else>
-			<f:be.infobox title="No profiles" state="-1" disableIcon="true">
-				No profiles collected.
+			<f:be.infobox title="No profile records" state="-1" disableIcon="true">
+				No profile records collected.
 				Please enable profiling for BE and/or FE in extension settings,
 				visit some pages in BE and/or FE
 				and visit this profile section again.

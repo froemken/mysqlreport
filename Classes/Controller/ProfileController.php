@@ -41,42 +41,27 @@ class ProfileController extends AbstractController
 
     public function listAction(): void
     {
-        $this->view->assign('profiles', $this->profileRepository->findProfilingsForCall());
+        $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsForCall());
     }
 
-    /**
-     * @param string $uniqueIdentifier
-     */
     public function showAction(string $uniqueIdentifier): void
     {
-        $this->view->assign('profileTypes', $this->profileRepository->getProfilingByUniqueIdentifier($uniqueIdentifier));
+        $this->view->assign('profileTypes', $this->profileRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier));
     }
 
-    /**
-     * @param string $uniqueIdentifier
-     * @param string $queryType
-     */
     public function queryTypeAction(string $uniqueIdentifier, string $queryType): void
     {
         $this->view->assign('uniqueIdentifier', $uniqueIdentifier);
         $this->view->assign('queryType', $queryType);
-        $this->view->assign('profilings', $this->profileRepository->getProfilingsByQueryType($uniqueIdentifier, $queryType));
+        $this->view->assign('profileRecords', $this->profileRepository->getProfileRecordsByQueryType($uniqueIdentifier, $queryType));
     }
 
-    /**
-     * @param string $uniqueIdentifier
-     * @param string $queryType
-     * @param int $uid
-     */
-    public function profileInfoAction(string $uniqueIdentifier, string $queryType, int $uid): void
+    public function profileInfoAction(int $uid): void
     {
-        $this->view->assign('uniqueIdentifier', $uniqueIdentifier);
-        $this->view->assign('queryType', $queryType);
+        $profileRecord = $this->profileRepository->getProfileRecordByUid($uid);
+        $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
+        $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
 
-        $profiling = $this->profileRepository->getProfilingByUid($uid);
-        $profiling['profile'] = unserialize($profiling['profile'], ['allowed_classes' => false]);
-        $profiling['explain'] = unserialize($profiling['explain_query'], ['allowed_classes' => false]);
-
-        $this->view->assign('profiling', $profiling);
+        $this->view->assign('profileRecord', $profileRecord);
     }
 }

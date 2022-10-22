@@ -18,15 +18,15 @@
 		</tr>
 		</thead>
 		<tbody>
-		<f:for each="{profilings}" as="profile">
+		<f:for each="{profileRecords}" as="profileRecord">
 			<tr>
-				<td>{profile.query_id}</td>
-				<td>{profile.query}...</td>
-				<td>{profile.not_using_index}</td>
+				<td>{profileRecord.query_id}</td>
+				<td>{profileRecord.query}...</td>
+				<td>{profileRecord.not_using_index}</td>
 				<td>
 					<f:link.action action="profileInfo"
-					               arguments="{uniqueIdentifier: uniqueIdentifier, queryType: queryType, uid: profile.uid}">
-						{profile.duration}
+					               arguments="{uid: profileRecord.uid}">
+						{profileRecord.duration}
 					</f:link.action>
 				</td>
 			</tr>

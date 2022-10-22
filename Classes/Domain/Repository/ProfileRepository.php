@@ -16,7 +16,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
  */
 class ProfileRepository extends AbstractRepository
 {
-    public function findProfilingsForCall(): array
+    public function findProfileRecordsForCall(): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $statement = $queryBuilder
@@ -35,7 +35,7 @@ class ProfileRepository extends AbstractRepository
         return $profileRecords;
     }
 
-    public function getProfilingByUniqueIdentifier(string $uniqueIdentifier): array
+    public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $statement = $queryBuilder
@@ -59,7 +59,7 @@ class ProfileRepository extends AbstractRepository
         return $profileRecords;
     }
 
-    public function getProfilingsByQueryType(string $uniqueIdentifier, string $queryType): array
+    public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $statement = $queryBuilder
@@ -86,11 +86,11 @@ class ProfileRepository extends AbstractRepository
         return $profileRecords;
     }
 
-    public function getProfilingByUid(int $uid): array
+    public function getProfileRecordByUid(int $uid): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $profileRecord = $queryBuilder
-            ->select('query', 'query_type', 'profile', 'explain_query', 'not_using_index', 'duration')
+            ->select('query', 'query_type', 'profile', 'explain_query', 'not_using_index', 'unique_call_identifier', 'duration')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -104,13 +104,13 @@ class ProfileRepository extends AbstractRepository
         return $profileRecord ?: [];
     }
 
-    public function findQueriesWithFilesort(): array
+    public function findProfileRecordsWithFilesort(): array
     {
         $queryBuilder = $this
             ->getConnectionPool()
             ->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $statement = $queryBuilder
-            ->add('select', 'LEFT(query, 255) as query, explain_query, duration')
+            ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->like(
@@ -130,11 +130,11 @@ class ProfileRepository extends AbstractRepository
         return $profileRecords;
     }
 
-    public function findQueriesWithFullTableScan(): array
+    public function findProfileRecordsWithFullTableScan(): array
     {
         $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $statement = $profileRecord = $queryBuilder
-            ->add('select', 'LEFT(query, 255) as query, explain_query, duration')
+            ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(

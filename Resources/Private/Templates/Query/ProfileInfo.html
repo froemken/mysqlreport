@@ -5,10 +5,10 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<f:link.action action="queryType"
-	               controller="Profile"
-	               class="btn btn-primary"
-	               arguments="{uniqueIdentifier: profileRecord.unique_call_identifier, queryType: profileRecord.query_type}">Back
+	<f:link.action action="{actionName}"
+	               controller="Query"
+	               class="btn btn-primary">
+		Back
 	</f:link.action>
 
 	<f:render partial="ProfileInfo" arguments="{_all}"/>

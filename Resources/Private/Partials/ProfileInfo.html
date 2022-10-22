@@ -1,0 +1,52 @@
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:be.infobox title="Query" disableIcon="true">
+	{profileRecord.query}
+</f:be.infobox>
+
+<f:if condition="{profileRecord.profile}">
+	<f:then>
+		<h1>Profile output</h1>
+
+		<table class="table">
+			<thead>
+			<tr>
+				<th>Status</th>
+				<th>Duration</th>
+			</tr>
+			</thead>
+			<tbody>
+			<f:for each="{profileRecord.profile}" as="status">
+				<tr>
+					<td>{status.Status}</td>
+					<td>{status.Duration}</td>
+				</tr>
+			</f:for>
+			</tbody>
+		</table>
+	</f:then>
+	<f:else>
+		<f:be.infobox title="Profile Output" disableIcon="true">
+			You can activate profile output in extension settings of mysqlreport, if
+			you need more information about each query to debug.
+		</f:be.infobox>
+	</f:else>
+</f:if>
+
+<f:if condition="{profileRecord.explain}">
+	<h1>Explain output</h1>
+	<f:for each="{profileRecord.explain}" as="explain">
+		<table class="table">
+			<tbody>
+			<f:for each="{explain}" as="value" key="key">
+				<tr>
+					<td>{key}</td>
+					<td>{value}</td>
+				</tr>
+			</f:for>
+			</tbody>
+		</table>
+	</f:for>
+</f:if>
