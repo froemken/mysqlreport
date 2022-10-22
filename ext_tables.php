@@ -9,7 +9,7 @@ if (!defined('TYPO3_MODE')) {
     'mysql', // Submodule key
     '', // Position
     [
-        \StefanFroemken\Mysqlreport\Controller\MySqlReportController::class => 'overview, queryCache, innoDbBuffer, threadCache, tableCache, report',
+        \StefanFroemken\Mysqlreport\Controller\MySqlReportController::class => 'overview, queryCache, innoDb, threadCache, tableCache, report',
         \StefanFroemken\Mysqlreport\Controller\ProfileController::class => 'list, show, queryType, profileInfo',
         \StefanFroemken\Mysqlreport\Controller\QueryController::class => 'filesort, fullTableScan',
     ],

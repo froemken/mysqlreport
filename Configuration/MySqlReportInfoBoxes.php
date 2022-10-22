@@ -29,11 +29,11 @@ return [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\QueryCacheStatusInfoBox::class,
         'pageIdentifier' => 'queryCache'
     ],
-    'hitRatio' => [
+    'queryCacheHitRatio' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\HitRatioInfoBox::class,
         'pageIdentifier' => 'queryCache'
     ],
-    'insertRatio' => [
+    'queryCacheInsertRatio' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\InsertRatioInfoBox::class,
         'pageIdentifier' => 'queryCache'
     ],
@@ -41,11 +41,11 @@ return [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\QueryCacheSizeTooHighInfoBox::class,
         'pageIdentifier' => 'queryCache'
     ],
-    'pruneRatio' => [
+    'queryCachePruneRatio' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\PruneRatioInfoBox::class,
         'pageIdentifier' => 'queryCache'
     ],
-    'fragmentationRatio' => [
+    'queryCacheFragmentationRatio' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\FragmentationRatioInfoBox::class,
         'pageIdentifier' => 'queryCache'
     ],
@@ -56,5 +56,30 @@ return [
     'averageUsedBlocks' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\AverageUsedBlocksInfoBox::class,
         'pageIdentifier' => 'queryCache'
+    ],
+
+    'innoDbBufferLoad' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\InnoDb\InnoDbBufferLoadInfoBox::class,
+        'pageIdentifier' => 'innoDb'
+    ],
+    'innoDbHitRatio' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\InnoDb\HitRatioInfoBox::class,
+        'pageIdentifier' => 'innoDb'
+    ],
+    'innoDbHitRatioBySF' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\InnoDb\HitRatioBySFInfoBox::class,
+        'pageIdentifier' => 'innoDb'
+    ],
+    'innoDbLogFileSize' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\InnoDb\LogFileSizeInfoBox::class,
+        'pageIdentifier' => 'innoDb'
+    ],
+    'innoDbInstances' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\InnoDb\InstancesInfoBox::class,
+        'pageIdentifier' => 'innoDb'
+    ],
+    'innoDbWriteRatio' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\InnoDb\WriteRatioInfoBox::class,
+        'pageIdentifier' => 'innoDb'
     ],
 ];

@@ -45,7 +45,7 @@ class MySqlReportController extends AbstractController
         }
     }
 
-    public function innoDbBufferAction(): void
+    public function innoDbAction(): void
     {
         $page = $this->pageFinder->getPageByIdentifier('innoDb');
         if ($page instanceof Page) {

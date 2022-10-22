@@ -58,8 +58,8 @@ abstract class AbstractController extends ActionController
             ],
             [
                 'controller' => 'MySqlReport',
-                'action' => 'innoDbBuffer',
-                'label' => 'InnoDB Buffer'
+                'action' => 'innoDb',
+                'label' => 'InnoDB'
             ],
             [
                 'controller' => 'MySqlReport',
