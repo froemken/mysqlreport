@@ -9,6 +9,7 @@ services:
 
   StefanFroemken\Mysqlreport\Menu\Page:
     public: true
+    shared: false
 
   StefanFroemken\Mysqlreport\Menu\PageFinder:
     public: true
