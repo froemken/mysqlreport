@@ -7,6 +7,12 @@ services:
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
 
+  StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper:
+    public: true
+
+  StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger:
+    public: true
+
   StefanFroemken\Mysqlreport\Menu\Page:
     public: true
     shared: false
