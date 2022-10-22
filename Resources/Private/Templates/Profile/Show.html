@@ -1,28 +1,33 @@
 <html lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	  xmlns:m="http://typo3.org/ns/StefanFroemken/Mysqlreport/ViewHelpers"
-	  data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:m="http://typo3.org/ns/StefanFroemken/Mysqlreport/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:layout name="Default" />
+<f:layout name="Default"/>
 
 <f:section name="content">
 	<f:link.action action="list" controller="Profile" class="btn btn-primary">Back</f:link.action>
 	<table class="table">
 		<thead>
-			<tr>
-				<th>Query type</th>
-				<th>Amount of queries</th>
-				<th>Summed Duration</th>
-			</tr>
+		<tr>
+			<th>Query type</th>
+			<th>Amount of queries</th>
+			<th>Summed Duration</th>
+		</tr>
 		</thead>
 		<tbody>
-			<f:for each="{profileTypes}" as="profile">
-				<tr>
-					<td>{profile.query_type}</td>
-					<td>{profile.amount}</td>
-					<td><f:link.action action="queryType" controller="Profile" arguments="{uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type}">{profile.duration}</f:link.action></td>
-				</tr>
-			</f:for>
+		<f:for each="{profileTypes}" as="profile">
+			<tr>
+				<td>{profile.query_type}</td>
+				<td>{profile.amount}</td>
+				<td>
+					<f:link.action action="queryType" controller="Profile"
+					               arguments="{uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type}">
+						{profile.duration}
+					</f:link.action>
+				</td>
+			</tr>
+		</f:for>
 		</tbody>
 	</table>
 </f:section>

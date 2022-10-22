@@ -1,11 +1,15 @@
 <html lang="en"
-	  xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
-	  data-namespace-typo3-fluid="true">
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
 
-<f:layout name="Default" />
+<f:layout name="Default"/>
 
 <f:section name="content">
-	<f:link.action action="queryType" controller="Profile" class="btn btn-primary" arguments="{uniqueIdentifier: uniqueIdentifier, queryType: queryType}">Back</f:link.action>
+	<f:link.action action="queryType"
+	               controller="Profile"
+	               class="btn btn-primary"
+	               arguments="{uniqueIdentifier: uniqueIdentifier, queryType: queryType}">Back
+	</f:link.action>
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h3 class="panel-title">Query</h3>
@@ -15,18 +19,18 @@
 	<h1>Profile output</h1>
 	<table class="table">
 		<thead>
-			<tr>
-				<th>Status</th>
-				<th>Duration</th>
-			</tr>
+		<tr>
+			<th>Status</th>
+			<th>Duration</th>
+		</tr>
 		</thead>
 		<tbody>
-			<f:for each="{profiling.profile}" as="status">
-				<tr>
-					<td>{status.Status}</td>
-					<td>{status.Duration}</td>
-				</tr>
-			</f:for>
+		<f:for each="{profiling.profile}" as="status">
+			<tr>
+				<td>{status.Status}</td>
+				<td>{status.Duration}</td>
+			</tr>
+		</f:for>
 		</tbody>
 	</table>
 	<f:if condition="{profiling.explain->f:count()}">
