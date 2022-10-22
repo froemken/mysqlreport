@@ -5,12 +5,12 @@ $EM_CONF[$_EXTKEY] = [
     'category' => 'module',
     'author' => 'Stefan Froemken',
     'author_email' => 'froemken@gmail.com',
-    'state' => 'beta',
+    'state' => 'stable',
     'author_company' => '',
-    'version' => '0.5.0',
+    'version' => '1.0.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '10.4.14-10.4.99'
+            'typo3' => '10.4.32-11.5.16'
         ],
         'conflicts' => [
         ],

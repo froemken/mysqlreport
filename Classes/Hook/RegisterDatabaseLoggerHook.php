@@ -11,16 +11,24 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Hook;
 
-use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\Exception;
+use StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper;
+use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
 /**
  * Add Logger to database connection to store queries of a request
+ *
+ * Currently, this is the earliest hook I could found in TYPO3 universe.
+ * All queries executed before this hook were not collected.
  */
 class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurationPostProcessingHookInterface
 {
@@ -29,48 +37,68 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
      */
     protected $extConf = [];
 
+    /**
+     * @var SqlLoggerHelper
+     */
+    protected $sqlLoggerHelper;
+
+    /**
+     * @var Connection
+     */
+    protected $connection;
+
+    /**
+     * Do not add any parameters to this constructor.
+     * This class was called too early for DI. BE breaks, if you try to Flush Cache in InstallTool
+     */
     public function __construct()
     {
-        /** @var ExtensionConfiguration $extensionConfiguration */
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
+        try {
+            $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
+        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
+            $this->extConf = [];
+        }
+
+        $this->sqlLoggerHelper = GeneralUtility::makeInstance(SqlLoggerHelper::class);
+        $this->connection = $this->getConnection();
     }
 
-    public function processData()
+    public function processData(): void
     {
-        if (
-            ($this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
-            ($this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
-        ) {
-            $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['initCommands'] .= LF . ' SET profiling = 1;';
+        if (!$this->connection instanceof Connection) {
+            return;
+        }
 
-            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-            // @ToDo: Loop through all Connection names
-            $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-            $connection->getConfiguration()->setSQLLogger(
-                GeneralUtility::makeInstance(DebugStack::class)
-            );
+        if (
+            (isset($this->extConf['profileFrontend']) && $this->extConf['profileFrontend'] && TYPO3_MODE === 'FE')
+            || (isset($this->extConf['profileBackend']) && $this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
+        ) {
+            $this->sqlLoggerHelper->activateSqlLogger($this->connection);
         }
     }
 
     public function __destruct()
     {
-        if (
-            ($this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
-            ($this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
-        ) {
-            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-            $connection = $connectionPool->getConnectionForTable('tx_mysqlreport_domain_model_profile');
+        if (!$this->connection instanceof Connection) {
+            return;
+        }
 
-            // do not log our insert queries
-            $sqlLogger = clone $connection->getConfiguration()->getSQLLogger();
-            $connection->getConfiguration()->setSQLLogger(null);
+        if (
+            (isset($this->extConf['profileFrontend']) && $this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
+            (isset($this->extConf['profileBackend']) && $this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
+        ) {
+            // Do not log our insert queries
+            $sqlLogger = $this->sqlLoggerHelper->getCurrentSqlLogger($this->connection);
+            $this->sqlLoggerHelper->deactivateSqlLogger($this->connection);
 
             // A page can be called multiple times each second. So we need an unique identifier.
-            $uniqueIdentifier = uniqid();
-            $pid = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
+            $uniqueIdentifier = uniqid('', true);
+            $pid = isset($GLOBALS['TSFE']) && $GLOBALS['TSFE'] instanceof TypoScriptFrontendController
+                ? $GLOBALS['TSFE']->id
+                : 0;
 
-            if ($sqlLogger instanceof DebugStack) {
+            if ($sqlLogger instanceof MySqlReportSqlLogger) {
                 $queriesToStore = [];
                 foreach ($sqlLogger->queries as $key => $loggedQuery) {
                     $queryToStore = [
@@ -80,12 +108,12 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
                         'request' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
                         'query_type' => GeneralUtility::trimExplode(' ', $loggedQuery['sql'], true, 2)[0],
                         'duration' => $loggedQuery['executionMS'],
-                        'query' => $connection->quote($loggedQuery['sql']),
-                        'profile' => serialize([]),
+                        'query' => $this->connection->quote($loggedQuery['sql']),
+                        'profile' => serialize($this->getProfileInformation($loggedQuery)),
                         'explain_query' => serialize([]),
                         'not_using_index' => 0,
                         'using_fulltable' => 0,
-                        'mode' => (string)TYPO3_MODE,
+                        'mode' => TYPO3_MODE,
                         'unique_call_identifier' => $uniqueIdentifier,
                         'crdate' => (int)$GLOBALS['EXEC_TIME'],
                         'query_id' => $key
@@ -97,7 +125,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
                 }
 
                 foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
-                    $connection->bulkInsert(
+                    $this->connection->bulkInsert(
                         'tx_mysqlreport_domain_model_profile',
                         $chunkOfQueriesToStore,
                         [
@@ -123,7 +151,20 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         }
     }
 
-    protected function addExplainInformation(array &$queryToStore, array $loggedQuery)
+    private function getProfileInformation(array $loggedQuery): array
+    {
+        if (!isset($loggedQuery['profile'])) {
+            return [];
+        }
+
+        if (!is_array($loggedQuery['profile'])) {
+            return [];
+        }
+
+        return $loggedQuery['profile'];
+    }
+
+    protected function addExplainInformation(array &$queryToStore, array $loggedQuery): void
     {
         $sql = $loggedQuery['sql'];
         $queryType = GeneralUtility::trimExplode(' ', $sql, true, 2)[0];
@@ -139,10 +180,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
             $notUsingIndex = false;
             $usingFullTable = false;
 
-            /** @var ConnectionPool $connectionPool */
-            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-            $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-            $statement = $connection->query($this->buildExplainQuery($sql, $loggedQuery['params'], $loggedQuery['types']));
+            $statement = $this->connection->query($this->buildExplainQuery($sql, $loggedQuery['params'], $loggedQuery['types']));
             while ($explainRow = $statement->fetch()) {
                 if ($notUsingIndex === false && empty($explainRow['key'])) {
                     $notUsingIndex = true;
@@ -158,7 +196,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         }
     }
 
-    protected function buildExplainQuery(string $sql, array $params, array $types)
+    protected function buildExplainQuery(string $sql, array $params, array $types): string
     {
         $namedParameters = [];
         foreach ($params as $key => $param) {
@@ -190,5 +228,25 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
             $namedParameters,
             $sql
         );
+    }
+
+    protected function getConnection(): ?Connection
+    {
+        try {
+            return $this->getConnectionPool()->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        } catch (\UnexpectedValueException $unexpectedValueException) {
+            // Should never be thrown, as a hard-coded name was added as parameter
+        } catch (\RuntimeException $runtimeException) {
+            // Default database of TYPO3 is not configured
+        } catch (Exception $exception) {
+            // Something breaks in DriverManager of Doctrine DBAL
+        }
+
+        return null;
+    }
+
+    protected function getConnectionPool(): ConnectionPool
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

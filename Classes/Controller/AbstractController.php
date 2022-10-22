@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
+use StefanFroemken\Mysqlreport\Menu\PageFinder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
@@ -23,7 +24,17 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 abstract class AbstractController extends ActionController
 {
-    protected function initializeView(ViewInterface $view)
+    /**
+     * @var PageFinder
+     */
+    protected $pageFinder;
+
+    public function injectPageFinder(PageFinder $pageFinder): void
+    {
+        $this->pageFinder = $pageFinder;
+    }
+
+    protected function initializeView(ViewInterface $view): void
     {
         $uriBuilder = $this->objectManager->get(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
@@ -36,27 +47,27 @@ abstract class AbstractController extends ActionController
 
         $actions = [
             [
-                'controller' => 'MySql',
-                'action' => 'index',
-                'label' => 'Introduction'
+                'controller' => 'MySqlReport',
+                'action' => 'overview',
+                'label' => 'Overview'
             ],
             [
-                'controller' => 'MySql',
+                'controller' => 'MySqlReport',
                 'action' => 'queryCache',
                 'label' => 'Query Cache'
             ],
             [
-                'controller' => 'MySql',
-                'action' => 'innoDbBuffer',
-                'label' => 'InnoDB Buffer'
+                'controller' => 'MySqlReport',
+                'action' => 'innoDb',
+                'label' => 'InnoDB'
             ],
             [
-                'controller' => 'MySql',
+                'controller' => 'MySqlReport',
                 'action' => 'threadCache',
                 'label' => 'Threads Cache'
             ],
             [
-                'controller' => 'MySql',
+                'controller' => 'MySqlReport',
                 'action' => 'tableCache',
                 'label' => 'Table Cache'
             ],

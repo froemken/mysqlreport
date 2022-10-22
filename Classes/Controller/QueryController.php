@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
-use StefanFroemken\Mysqlreport\Domain\Repository\DatabaseRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 
 /**
@@ -30,22 +30,31 @@ class QueryController extends AbstractController
     protected $defaultViewObjectName = BackendTemplateView::class;
 
     /**
-     * @var DatabaseRepository
+     * @var ProfileRepository
      */
-    protected $databaseRepository;
+    protected $profileRepository;
 
-    public function __construct(DatabaseRepository $databaseRepository)
+    public function __construct(ProfileRepository $profileRepository)
     {
-        $this->databaseRepository = $databaseRepository;
+        $this->profileRepository = $profileRepository;
     }
 
     public function filesortAction(): void
     {
-        $this->view->assign('queries', $this->databaseRepository->findQueriesWithFilesort());
+        $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFilesort());
     }
 
     public function fullTableScanAction(): void
     {
-        $this->view->assign('queries', $this->databaseRepository->findQueriesWithFullTableScan());
+        $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFullTableScan());
+    }
+
+    public function profileInfoAction(int $uid): void
+    {
+        $profileRecord = $this->profileRepository->getProfileRecordByUid($uid);
+        $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
+        $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
+
+        $this->view->assign('profileRecord', $profileRecord);
     }
 }
