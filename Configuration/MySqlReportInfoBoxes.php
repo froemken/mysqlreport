@@ -82,4 +82,9 @@ return [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\InnoDb\WriteRatioInfoBox::class,
         'pageIdentifier' => 'innoDb'
     ],
+
+    'threadCacheHitRatio' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\ThreadCache\HitRatioInfoBox::class,
+        'pageIdentifier' => 'threadCache'
+    ],
 ];
