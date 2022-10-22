@@ -41,7 +41,6 @@ class QueryCacheStatusInfoBox extends AbstractInfoBox
         return 'Query Cache is activated';
     }
 
-
     protected function getQueryCacheHelper(): QueryCacheHelper
     {
         return GeneralUtility::makeInstance(QueryCacheHelper::class);
