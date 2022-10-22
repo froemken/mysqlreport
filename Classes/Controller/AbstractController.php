@@ -47,27 +47,27 @@ abstract class AbstractController extends ActionController
 
         $actions = [
             [
-                'controller' => 'MySql',
-                'action' => 'index',
+                'controller' => 'MySqlReport',
+                'action' => 'overview',
                 'label' => 'Overview'
             ],
             [
-                'controller' => 'MySql',
+                'controller' => 'MySqlReport',
                 'action' => 'queryCache',
                 'label' => 'Query Cache'
             ],
             [
-                'controller' => 'MySql',
+                'controller' => 'MySqlReport',
                 'action' => 'innoDbBuffer',
                 'label' => 'InnoDB Buffer'
             ],
             [
-                'controller' => 'MySql',
+                'controller' => 'MySqlReport',
                 'action' => 'threadCache',
                 'label' => 'Threads Cache'
             ],
             [
-                'controller' => 'MySql',
+                'controller' => 'MySqlReport',
                 'action' => 'tableCache',
                 'label' => 'Table Cache'
             ],
