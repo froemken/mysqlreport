@@ -88,9 +88,10 @@ class PageFinder
 
     protected function getInfoBoxConfiguration(array $configuration): ?InfoBoxConfiguration
     {
-        /** @var InfoBoxConfiguration $panelConfiguration */
-        $panelConfiguration = GeneralUtility::makeInstance(InfoBoxConfiguration::class, $configuration);
-
-        return $panelConfiguration->isValid() ? $panelConfiguration : null;
+        try {
+            return GeneralUtility::makeInstance(InfoBoxConfiguration::class, $configuration);
+        } catch (\UnexpectedValueException $unexpectedValueException) {
+            return null;
+        }
     }
 }
