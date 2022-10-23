@@ -15,53 +15,69 @@ use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Model with properties for panels you can see in BE module
+ * Model with properties for InfoBoxes you can see in BE module
  */
 class InfoBoxConfiguration
 {
     /**
      * @var string
      */
-    protected $class = '';
+    private $class = '';
 
     /**
      * @var string
      */
-    protected $pageIdentifier = '';
-
-    /**
-     * @var array
-     */
-    protected $configuration = [];
+    private $pageIdentifier = '';
 
     public function __construct(array $configuration)
     {
-        $this->class = $configuration['class'] ?? '';
-        $this->pageIdentifier = $configuration['pageIdentifier'] ?? '';
-
-        $this->configuration = $configuration;
+        if ($this->isValid($configuration)) {
+            $this->class = $configuration['class'];
+            $this->pageIdentifier = $configuration['pageIdentifier'];
+        } else {
+            throw new \UnexpectedValueException('Invalid configuration for InfoBoxConfiguration', 1666533406);
+        }
     }
 
-    public function isValid(): bool
+    private function isValid(array $configuration): bool
     {
-        if ($this->configuration['class'] === '') {
+        if (
+            !isset(
+                $configuration['class'],
+                $configuration['pageIdentifier'],
+            )
+        ) {
             return false;
         }
 
-        if ($this->configuration['pageIdentifier'] === '') {
+        if (
+            !is_string($configuration['class'])
+            || !is_string($configuration['pageIdentifier'])
+        ) {
             return false;
         }
 
-        return class_exists($this->configuration['class']);
+        if (
+            $configuration['class'] === ''
+            || $configuration['pageIdentifier'] === ''
+        ) {
+            return false;
+        }
+
+        if (!class_exists($configuration['class'])) {
+            return false;
+        }
+
+        return is_subclass_of($configuration['class'], AbstractInfoBox::class);
     }
 
     public function getPageIdentifier(): string
     {
-        return $this->isValid() ? $this->pageIdentifier : '';
+        return $this->pageIdentifier;
     }
 
-    public function getInfoBox(): ?AbstractInfoBox
+    public function getInfoBox(): AbstractInfoBox
     {
-        return $this->isValid() ? GeneralUtility::makeInstance($this->class) : null;
+        return GeneralUtility::makeInstance($this->class);
     }
 }
