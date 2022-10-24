@@ -81,11 +81,11 @@ return [
     ],
 
     'tableCacheOpenedTableDefEachSec' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTableDefinitionsEachSecondInfoBox::class,
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTableDefinitionsInfoBox::class,
         'pageIdentifier' => 'tableCache'
     ],
     'tableCacheOpenedTablesEachSec' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesEachSecondInfoBox::class,
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesInfoBox::class,
         'pageIdentifier' => 'tableCache'
     ],
 
