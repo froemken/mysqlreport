@@ -26,7 +26,11 @@ class UptimeInfoBox extends AbstractInfoBox
     public function renderBody(Page $page): string
     {
         if (isset($page->getStatusValues()['Uptime'])) {
-            $this->addUnorderedListEntry($page->getStatusValues()['Uptime'], 'Uptime');
+            $this->addUnorderedListEntry(
+                $page->getStatusValues()['Uptime'] . ' seconds',
+                'Uptime'
+            );
+
             $this->addUnorderedListEntry(
                 $this->convertSecondsToDays((int)$page->getStatusValues()['Uptime']) . ' days',
                 'Uptime in days'
@@ -34,7 +38,11 @@ class UptimeInfoBox extends AbstractInfoBox
         }
 
         if (isset($page->getStatusValues()['Uptime_since_flush_status'])) {
-            $this->addUnorderedListEntry($page->getStatusValues()['Uptime_since_flush_status'], 'Uptime since last flush');
+            $this->addUnorderedListEntry(
+                $page->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
+                'Uptime since last flush'
+            );
+
             $this->addUnorderedListEntry(
                 $this->convertSecondsToDays((int)$page->getStatusValues()['Uptime_since_flush_status']) . ' days',
                 'Uptime since last flush in days'

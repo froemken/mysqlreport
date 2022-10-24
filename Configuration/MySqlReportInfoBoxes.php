@@ -12,6 +12,10 @@ return [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\UptimeInfoBox::class,
         'pageIdentifier' => 'information'
     ],
+    'informationConnection' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\ConnectionInfoBox::class,
+        'pageIdentifier' => 'information'
+    ],
 
     'queryCacheStatus' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\QueryCache\QueryCacheStatusInfoBox::class,
