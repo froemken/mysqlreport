@@ -58,8 +58,8 @@ class OpenedTablesInfoBox extends AbstractInfoBox
             number_format(
                 $page->getVariables()['max_connections'] * (5 + 2),
                 0,
-            ',',
-            '.'
+                ',',
+                '.'
             ),
             'Calculated table_open_cache with 5 tables and 2 reserved file descriptors'
         );
@@ -68,8 +68,8 @@ class OpenedTablesInfoBox extends AbstractInfoBox
             number_format(
                 $page->getVariables()['max_connections'] * (8 + 3),
                 0,
-            ',',
-            '.'
+                ',',
+                '.'
             ),
             'Calculated table_open_cache with 8 tables and 3 reserved file descriptors'
         );
