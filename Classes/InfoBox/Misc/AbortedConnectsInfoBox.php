@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\InfoBox\Overview;
+namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\Menu\Page;
@@ -19,7 +19,7 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class AbortedConnectsInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'overview';
+    protected $pageIdentifier = 'misc';
 
     protected $title = 'Aborted Connects';
 

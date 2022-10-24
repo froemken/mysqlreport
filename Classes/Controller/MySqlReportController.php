@@ -37,9 +37,9 @@ class MySqlReportController extends AbstractController
         }
     }
 
-    public function queryCacheAction(): void
+    public function informationAction(): void
     {
-        $page = $this->pageFinder->getPageByIdentifier('queryCache');
+        $page = $this->pageFinder->getPageByIdentifier('information');
         if ($page instanceof Page) {
             $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
         }
@@ -64,6 +64,22 @@ class MySqlReportController extends AbstractController
     public function tableCacheAction(): void
     {
         $page = $this->pageFinder->getPageByIdentifier('tableCache');
+        if ($page instanceof Page) {
+            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
+        }
+    }
+
+    public function queryCacheAction(): void
+    {
+        $page = $this->pageFinder->getPageByIdentifier('queryCache');
+        if ($page instanceof Page) {
+            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
+        }
+    }
+
+    public function miscAction(): void
+    {
+        $page = $this->pageFinder->getPageByIdentifier('misc');
         if ($page instanceof Page) {
             $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
         }
