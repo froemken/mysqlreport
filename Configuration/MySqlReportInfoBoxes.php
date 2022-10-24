@@ -5,7 +5,15 @@ if (!defined('TYPO3_MODE')) {
 
 return [
     'informationServerVersion' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\ServerInformationInfoBox::class,
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\ServerVersionInfoBox::class,
+        'pageIdentifier' => 'information'
+    ],
+    'informationUptime' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\UptimeInfoBox::class,
+        'pageIdentifier' => 'information'
+    ],
+    'informationConnection' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\ConnectionInfoBox::class,
         'pageIdentifier' => 'information'
     ],
 
@@ -73,11 +81,11 @@ return [
     ],
 
     'tableCacheOpenedTableDefEachSec' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTableDefinitionsEachSecondInfoBox::class,
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTableDefinitionsInfoBox::class,
         'pageIdentifier' => 'tableCache'
     ],
     'tableCacheOpenedTablesEachSec' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesEachSecondInfoBox::class,
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesInfoBox::class,
         'pageIdentifier' => 'tableCache'
     ],
 

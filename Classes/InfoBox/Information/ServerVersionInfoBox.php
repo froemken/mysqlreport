@@ -17,7 +17,7 @@ use StefanFroemken\Mysqlreport\Menu\Page;
 /**
  * InfoBox to inform about Server information like version and uptime
  */
-class ServerInformationInfoBox extends AbstractInfoBox
+class ServerVersionInfoBox extends AbstractInfoBox
 {
     protected $pageIdentifier = 'information';
 
