@@ -5,7 +5,11 @@ if (!defined('TYPO3_MODE')) {
 
 return [
     'informationServerVersion' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\ServerInformationInfoBox::class,
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\ServerVersionInfoBox::class,
+        'pageIdentifier' => 'information'
+    ],
+    'informationUptime' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\UptimeInfoBox::class,
         'pageIdentifier' => 'information'
     ],
 
