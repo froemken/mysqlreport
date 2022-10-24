@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\InfoBox\Overview;
+namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\Menu\Page;
@@ -21,7 +21,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackLogInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'overview';
+    protected $pageIdentifier = 'misc';
 
     protected $title = 'Back Log';
 

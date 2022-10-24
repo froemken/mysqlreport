@@ -4,25 +4,9 @@ if (!defined('TYPO3_MODE')) {
 }
 
 return [
-    'abortedConnects' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\Overview\AbortedConnectsInfoBox::class,
-        'pageIdentifier' => 'overview'
-    ],
-    'backLog' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\Overview\BackLogInfoBox::class,
-        'pageIdentifier' => 'overview'
-    ],
-    'syncBinLog' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\Overview\SyncBinaryLogInfoBox::class,
-        'pageIdentifier' => 'overview'
-    ],
-    'binaryLog' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\Overview\BinaryLogInfoBox::class,
-        'pageIdentifier' => 'overview'
-    ],
-    'standaloneReplication' => [
-        'class' => \StefanFroemken\Mysqlreport\InfoBox\Overview\StandaloneReplicationInfoBox::class,
-        'pageIdentifier' => 'overview'
+    'informationServerVersion' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Information\ServerInformationInfoBox::class,
+        'pageIdentifier' => 'information'
     ],
 
     'queryCacheStatus' => [
@@ -95,5 +79,26 @@ return [
     'tableCacheOpenedTablesEachSec' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesEachSecondInfoBox::class,
         'pageIdentifier' => 'tableCache'
+    ],
+
+    'abortedConnects' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\AbortedConnectsInfoBox::class,
+        'pageIdentifier' => 'misc'
+    ],
+    'backLog' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\BackLogInfoBox::class,
+        'pageIdentifier' => 'misc'
+    ],
+    'syncBinLog' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\SyncBinaryLogInfoBox::class,
+        'pageIdentifier' => 'misc'
+    ],
+    'binaryLog' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\BinaryLogInfoBox::class,
+        'pageIdentifier' => 'misc'
+    ],
+    'standaloneReplication' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\StandaloneReplicationInfoBox::class,
+        'pageIdentifier' => 'misc'
     ],
 ];
