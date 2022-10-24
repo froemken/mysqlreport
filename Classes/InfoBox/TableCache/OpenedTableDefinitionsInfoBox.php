@@ -18,12 +18,14 @@ use StefanFroemken\Mysqlreport\Menu\Page;
 
 /**
  * InfoBox to inform about Table Cache Opened table definitions
+ *
+ * See: https://fromdual.com/how-mysql-behaves-with-many-schemata-tables-and-partitions
  */
-class OpenedTableDefinitionsEachSecondInfoBox extends AbstractInfoBox
+class OpenedTableDefinitionsInfoBox extends AbstractInfoBox
 {
     protected $pageIdentifier = 'tableCache';
 
-    protected $title = 'Opened Table Definitions each second';
+    protected $title = 'Opened Table Definitions';
 
     public function renderBody(Page $page): string
     {
@@ -32,15 +34,33 @@ class OpenedTableDefinitionsEachSecondInfoBox extends AbstractInfoBox
             return '';
         }
 
-        $content = [];
-        $content[] = 'As lower as better';
-        $content[] = "\n\n";
-        $content[] = 'Opened table definitions each second: %f';
-
-        return sprintf(
-            implode(' ', $content),
-            $this->getOpenedTableDefinitionsEachSecond($page->getStatusValues())
+        $this->addUnorderedListEntry(
+            $page->getStatusValues()['Opened_table_definitions'],
+            'Opened tables since server start (Opened_table_definitions)'
         );
+
+        $this->addUnorderedListEntry(
+            $page->getStatusValues()['Open_table_definitions'],
+            'Open tables in cache (Open_table_definitions)'
+        );
+
+        $this->addUnorderedListEntry(
+            $page->getVariables()['table_definition_cache'],
+            'Max allowed tables in cache (table_definition_cache)'
+        );
+
+        $this->addUnorderedListEntry(
+            number_format(
+                $this->getOpenedTableDefinitionsEachSecond($page->getStatusValues()),
+                2,
+                ',',
+                '.'
+            ),
+            'Opened table definitions each second'
+        );
+
+        return 'Number of *.frm files (table definitions) that have been opened and cached. '
+            . 'If Opened_table_definitions grows very fast you should consider to increase table_definition_cache.';
     }
 
     /**
