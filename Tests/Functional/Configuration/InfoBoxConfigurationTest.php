@@ -13,7 +13,7 @@ namespace StefanFroemken\Mysqlreport\Tests\Unit\Configuration;
 
 use Nimut\TestingFramework\TestCase\FunctionalTestCase;
 use StefanFroemken\Mysqlreport\Configuration\InfoBoxConfiguration;
-use StefanFroemken\Mysqlreport\InfoBox\Overview\AbortedConnectsInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\Misc\AbortedConnectsInfoBox;
 
 /**
  * Test case.
