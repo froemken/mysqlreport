@@ -11,7 +11,8 @@
 	<div class="card-container">
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Server information', subtitle: 'Information'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">Show information about your server like version, uptime and current connects</p>
 			</div>
 			<div class="card-footer">
@@ -23,7 +24,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Query Profiling', subtitle: 'Profiling'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">If activated you can read more additional information here about each executed query for each request</p>
 			</div>
 			<div class="card-footer">
@@ -35,7 +37,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'InnoDB', subtitle: 'Engine'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">InnoDB is the default engine of MySQL/MariaDB to store data and tries to keep as much as possible in RAM.</p>
 			</div>
 			<div class="card-footer">
@@ -47,7 +50,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Threads Cache', subtitle: 'Cache'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">Each client connect needs a thread on server side to establish a connection.</p>
 			</div>
 			<div class="card-footer">
@@ -59,7 +63,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Table Cache', subtitle: 'Cache'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">Read more about how often a table or a table definition has been opened.</p>
 			</div>
 			<div class="card-footer">
@@ -71,7 +76,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Query Cache', subtitle: 'Cache'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">If activated, MySQL/MariaDB can store small queries and its result into a query cache.</p>
 			</div>
 			<div class="card-footer">
@@ -83,7 +89,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'File Sorting', subtitle: 'Sorting'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">ORDER statements on huge queries or bad indexes can slow down queries a lot. Shows a list of queries using filesorting.</p>
 			</div>
 			<div class="card-footer">
@@ -95,7 +102,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Full Table Scan', subtitle: 'Scan'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">Tables without an index can be slower, as all rows have to be read one by one. Show a list of queries using a full table scan.</p>
 			</div>
 			<div class="card-footer">
@@ -107,7 +115,8 @@
 
 		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Further Information', subtitle: 'Misc'}" />
-			<div class="card-body">
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
 				<p class="card-text">Here you will find further information which don't match the other categories. This may change in the future.</p>
 			</div>
 			<div class="card-footer">
