@@ -12,20 +12,18 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
- * Repository to get the MySQL/MariaDB status values
+ * Repository to get the MySQL/MariaDB STATUS values
  */
 class StatusRepository extends AbstractRepository
 {
     public function findAll(): StatusValues
     {
-        $connection = $this
-            ->getConnectionPool()
-            ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-
-        $statement = $connection->executeQuery('SHOW GLOBAL STATUS');
+        $statement = $this->connectionHelper->executeQuery('SHOW GLOBAL STATUS');
+        if ($statement === null) {
+            return new StatusValues([]);
+        }
 
         $rows = [];
         while ($row = $statement->fetchAssociative()) {
