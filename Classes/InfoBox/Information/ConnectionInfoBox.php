@@ -44,7 +44,7 @@ class ConnectionInfoBox extends AbstractInfoBox
             );
 
             if (isset($page->getVariables()['max_connections'])) {
-                $percent = (int)$page->getVariables()['max_connections'] / 100 * (int)$page->getStatusValues()['Max_used_connections'];
+                $percent = 100 / (int)$page->getVariables()['max_connections'] * (int)$page->getStatusValues()['Max_used_connections'];
                 if ($percent > 90) {
                     $this->setState(StateEnumeration::STATE_ERROR);
                 } elseif ($percent > 70) {
