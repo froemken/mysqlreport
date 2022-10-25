@@ -11,16 +11,20 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
+use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
 
 /**
  * Abstract Repository
  */
 abstract class AbstractRepository
 {
-    protected function getConnectionPool(): ConnectionPool
+    /**
+     * @var ConnectionHelper
+     */
+    protected $connectionHelper;
+
+    public function __construct(ConnectionHelper $connectionHelper)
     {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
+        $this->connectionHelper = $connectionHelper;
     }
 }
