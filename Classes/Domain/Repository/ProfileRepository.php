@@ -18,14 +18,15 @@ class ProfileRepository extends AbstractRepository
 {
     public function findProfileRecordsForCall(): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
-        $statement = $queryBuilder
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
             ->add('select', 'crdate, unique_call_identifier, mode, SUM(duration) as duration, COUNT(*) as amount')
             ->from('tx_mysqlreport_domain_model_profile')
             ->groupBy('unique_call_identifier')
             ->orderBy('crdate', 'DESC')
-            ->setMaxResults(100)
-            ->execute();
+            ->setMaxResults(100);
+
+        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
         while ($profileRecord = $statement->fetch()) {
@@ -37,8 +38,8 @@ class ProfileRepository extends AbstractRepository
 
     public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
-        $statement = $queryBuilder
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
             ->add('select', 'query_type, unique_call_identifier, SUM(duration) as duration, COUNT(*) as amount')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -48,8 +49,9 @@ class ProfileRepository extends AbstractRepository
                 )
             )
             ->groupBy('query_type')
-            ->orderBy('duration', 'DESC')
-            ->execute();
+            ->orderBy('duration', 'DESC');
+
+        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
         while ($profileRecord = $statement->fetch()) {
@@ -61,8 +63,8 @@ class ProfileRepository extends AbstractRepository
 
     public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
-        $statement = $queryBuilder
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
             ->add('select', 'uid, query_id, LEFT(query, 120) as query, not_using_index, duration')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -75,8 +77,9 @@ class ProfileRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter($queryType)
                 )
             )
-            ->orderBy('duration', 'DESC')
-            ->execute();
+            ->orderBy('duration', 'DESC');
+
+        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
         while ($profileRecord = $statement->fetch()) {
@@ -88,8 +91,8 @@ class ProfileRepository extends AbstractRepository
 
     public function getProfileRecordByUid(int $uid): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
-        $profileRecord = $queryBuilder
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
             ->select('query', 'query_type', 'profile', 'explain_query', 'not_using_index', 'unique_call_identifier', 'duration')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -97,19 +100,15 @@ class ProfileRepository extends AbstractRepository
                     'uid',
                     $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
                 )
-            )
-            ->execute()
-            ->fetch();
+            );
 
-        return $profileRecord ?: [];
+        return $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetch() ?: [];
     }
 
     public function findProfileRecordsWithFilesort(): array
     {
-        $queryBuilder = $this
-            ->getConnectionPool()
-            ->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
-        $statement = $queryBuilder
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
             ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -119,8 +118,9 @@ class ProfileRepository extends AbstractRepository
                 )
             )
             ->orderBy('duration', 'DESC')
-            ->setMaxResults(100)
-            ->execute();
+            ->setMaxResults(100);
+
+        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
         while ($profileRecord = $statement->fetch()) {
@@ -132,8 +132,8 @@ class ProfileRepository extends AbstractRepository
 
     public function findProfileRecordsWithFullTableScan(): array
     {
-        $queryBuilder = $this->getConnectionPool()->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
-        $statement = $profileRecord = $queryBuilder
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
             ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -143,8 +143,9 @@ class ProfileRepository extends AbstractRepository
                 )
             )
             ->orderBy('duration', 'DESC')
-            ->setMaxResults(100)
-            ->execute();
+            ->setMaxResults(100);
+
+        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
         while ($profileRecord = $statement->fetch()) {

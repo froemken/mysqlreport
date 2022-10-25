@@ -14,7 +14,6 @@ namespace StefanFroemken\Mysqlreport\Helper;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Logging\SQLLogger;
 use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -22,38 +21,37 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class SqlLoggerHelper
 {
-    public function activateSqlLogger(?Connection $connection, SQLLogger $sqlLogger = null): void
+    /**
+     * @var Configuration|null
+     */
+    private $configuration;
+
+    public function setConnectionConfiguration(?Configuration $configuration): void
     {
-        if (
-            $connection instanceof Connection
-            && ($configuration = $connection->getConfiguration())
-            && $configuration instanceof Configuration
-        ) {
+        $this->configuration = $configuration;
+    }
+
+    public function activateSqlLogger(SQLLogger $sqlLogger = null): void
+    {
+        if ($configuration = $this->configuration) {
             if ($sqlLogger === null) {
                 $sqlLogger = $this->getSqlLogger();
             }
+
             $configuration->setSQLLogger($sqlLogger);
         }
     }
 
-    public function deactivateSqlLogger(?Connection $connection): void
+    public function deactivateSqlLogger(): void
     {
-        if (
-            $connection instanceof Connection
-            && ($configuration = $connection->getConfiguration())
-            && $configuration instanceof Configuration
-        ) {
+        if ($configuration = $this->configuration) {
             $configuration->setSQLLogger();
         }
     }
 
-    public function getCurrentSqlLogger(?Connection $connection): ?SQLLogger
+    public function getCurrentSqlLogger(): ?SQLLogger
     {
-        if (
-            $connection instanceof Connection
-            && ($configuration = $connection->getConfiguration())
-            && $configuration instanceof Configuration
-        ) {
+        if ($configuration = $this->configuration) {
             return $configuration->getSQLLogger();
         }
 

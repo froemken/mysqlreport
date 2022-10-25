@@ -7,6 +7,20 @@ services:
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
 
+  StefanFroemken\Mysqlreport\Domain\Model\ExplainInformation:
+    public: true
+    shared: false
+
+  StefanFroemken\Mysqlreport\Domain\Model\Profile:
+    public: true
+    shared: false
+
+  StefanFroemken\Mysqlreport\Helper\ConnectionHelper:
+    public: true
+
+  StefanFroemken\Mysqlreport\Helper\QueryCacheHelper:
+    public: true
+
   StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper:
     public: true
 

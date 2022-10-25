@@ -13,13 +13,12 @@ namespace StefanFroemken\Mysqlreport\Logger;
 
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Logging\SQLLogger;
-use StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper;
+use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
+use StefanFroemken\Mysqlreport\Domain\Model\Profile;
+use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This is an extended version of the DebugStack SQL logger
@@ -28,11 +27,21 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class MySqlReportSqlLogger implements SQLLogger
 {
     /**
-     * Collected SQL queries
+     * Collected profiles
      *
-     * @var array<int, array<string, mixed>>
+     * @var \SplQueue|Profile[]
      */
-    public $queries = [];
+    public $profiles;
+
+    /**
+     * @var ConnectionHelper
+     */
+    protected $connectionHelper;
+
+    /**
+     * @var ProfileFactory
+     */
+    protected $profileFactory;
 
     /**
      * If enabled, this class will log queries
@@ -40,16 +49,6 @@ class MySqlReportSqlLogger implements SQLLogger
      * @var bool
      */
     public $enabled = true;
-
-    /**
-     * @var float|null
-     */
-    public $start;
-
-    /**
-     * @var int
-     */
-    public $currentQuery = 0;
 
     /**
      * Value from extension setting
@@ -60,30 +59,33 @@ class MySqlReportSqlLogger implements SQLLogger
     public $addExplain = false;
 
     /**
-     * @var Connection
+     * @var float
      */
-    protected $connection;
+    public $start = 0.0;
 
     /**
-     * @var SqlLoggerHelper
+     * @var int
      */
-    protected $sqlLoggerHelper;
+    public $queryIterator = 0;
 
-    public function __construct()
-    {
-        $this->connection = $this->getConnection();
-        if (!$this->connection instanceof Connection) {
+    public function __construct(
+        ExtensionConfiguration $extensionConfiguration,
+        ConnectionHelper $connectionHelper,
+        ProfileFactory $profileFactory
+    ) {
+        $this->profiles = new \SplQueue();
+        $this->connectionHelper = $connectionHelper;
+        $this->profileFactory = $profileFactory;
+
+        if (!$this->connectionHelper->isConnectionAvailable()) {
             $this->enabled = false;
         }
 
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         try {
             $this->addExplain = (bool)$extensionConfiguration->get('mysqlreport', 'addExplain');
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
             $this->addExplain = false;
         }
-
-        $this->sqlLoggerHelper = GeneralUtility::makeInstance(SqlLoggerHelper::class);
     }
 
     /**
@@ -97,18 +99,15 @@ class MySqlReportSqlLogger implements SQLLogger
 
         $this->start = microtime(true);
 
-        $this->queries[++$this->currentQuery] = [
-            'sql' => $sql,
-            'params' => $params,
-            'types' => $types,
-            'executionMS' => 0,
-        ];
+        $profile = $this->profileFactory->createNewProfile();
+        $profile->setQuery($sql);
+        $profile->setQueryParameters($params);
+        $profile->setQueryParameterTypes($types);
+
+        $this->profiles->add($this->queryIterator, $profile);
 
         if ($this->addExplain) {
-            $currentSqlLogger = $this->sqlLoggerHelper->getCurrentSqlLogger($this->connection);
-            $this->sqlLoggerHelper->deactivateSqlLogger($this->connection);
-            $this->connection->executeQuery('SET profiling = 1');
-            $this->sqlLoggerHelper->activateSqlLogger($this->connection, $currentSqlLogger);
+            $this->connectionHelper->executeQuery('SET profiling = 1');
         }
     }
 
@@ -121,35 +120,44 @@ class MySqlReportSqlLogger implements SQLLogger
             return;
         }
 
-        $this->queries[$this->currentQuery]['executionMS'] = microtime(true) - $this->start;
+        $this->profiles[$this->queryIterator]->setDuration(microtime(true) - $this->start);
 
         if ($this->addExplain) {
-            $currentSqlLogger = $this->sqlLoggerHelper->getCurrentSqlLogger($this->connection);
-            $this->sqlLoggerHelper->deactivateSqlLogger($this->connection);
-            $profileInformation = $this->connection->executeQuery('SHOW profile')->fetchAllAssociative();
-            $this->sqlLoggerHelper->activateSqlLogger($this->connection, $currentSqlLogger);
-
-            $this->queries[$this->currentQuery]['profile'] = $profileInformation;
+            if ($statement = $this->connectionHelper->executeQuery('SHOW profile')) {
+                $this->profiles[$this->queryIterator]->setProfile($statement->fetchAllAssociative());
+            }
+            $this->updateExplainInformation($this->profiles[$this->queryIterator]);
         }
+
+        $this->queryIterator++;
     }
 
-    private function getConnection(): ?Connection
+    private function updateExplainInformation(Profile $profile): void
     {
+        if ($this->addExplain === false) {
+            return;
+        }
+
+        if ($profile->getQueryType() !== 'SELECT') {
+            return;
+        }
+
         try {
-            return $this->getConnectionPool()->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        } catch (\UnexpectedValueException $unexpectedValueException) {
-            // Should never be thrown, as a hard-coded name was added as parameter
-        } catch (\RuntimeException $runtimeException) {
-            // Default database of TYPO3 is not configured
-        } catch (Exception $exception) {
-            // Something breaks in DriverManager of Doctrine DBAL
+            if ($statement = $this->connectionHelper->executeQuery($profile->getQueryForExplain())) {
+                while ($explainResult = $statement->fetchAssociative()) {
+                    if (empty($explainResult['key'])) {
+                        $profile->getExplainInformation()->setIsQueryUsingIndex(false);
+                    }
+
+                    if (strtolower($explainResult['select_type'] ?? '') === 'all') {
+                        $profile->getExplainInformation()->setIsQueryUsingFTS(true);
+                    }
+
+                    $profile->getExplainInformation()->addExplainResult($explainResult);
+                }
+            }
+        } catch (Exception|\Doctrine\DBAL\Driver\Exception $exception) {
+            // Leave ExplainInformation unmodified
         }
-
-        return null;
-    }
-
-    private function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }
