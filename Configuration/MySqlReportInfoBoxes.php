@@ -93,6 +93,10 @@ return [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\AbortedConnectsInfoBox::class,
         'pageIdentifier' => 'misc'
     ],
+    'miscMaxAllowedPacket' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\MaxAllowedPacketInfoBox::class,
+        'pageIdentifier' => 'misc'
+    ],
     'miscTempTables' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\TempTablesInfoBox::class,
         'pageIdentifier' => 'misc'
