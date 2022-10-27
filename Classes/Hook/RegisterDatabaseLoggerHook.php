@@ -95,7 +95,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
                     'request' => $profile->getRequest(),
                     'query_type' => $profile->getQueryType(),
                     'duration' => $profile->getDuration(),
-                    'query' => $this->connectionHelper->quote($profile->getQuery()),
+                    'query' => $profile->getQueryWithReplacedParameters(),
                     'profile' => serialize($profile->getProfile()),
                     'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
                     'not_using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 0 : 1,
