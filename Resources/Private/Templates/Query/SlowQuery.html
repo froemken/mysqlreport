@@ -1,0 +1,40 @@
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Default"/>
+
+<f:section name="content">
+	<h1>List of Slow Queries</h1>
+
+	<f:be:infobox title="Current Configuration" state="-1" disableIcon="false">
+		Mysqlreport does not have access to the "real" slow query logfile of your server. It just list
+		queries whose duration was less than
+		{slowQueryTime -> f:format.number(decimals: 2, decimalSeparator: ',', thousandsSeparator: '.')} seconds.
+		Please visit extension settings to configure another value. Keep in mind that this list is limited to 100
+		records.
+	</f:be:infobox>
+
+	<table class="table">
+		<thead>
+		<tr>
+			<th>Query</th>
+			<th>Duration</th>
+		</tr>
+		</thead>
+		<tbody>
+		<f:for each="{profileRecords}" as="profileRecord">
+			<tr>
+				<td>{profileRecord.query}...</td>
+				<td>
+					<f:link.action action="profileInfo"
+					               arguments="{actionName: 'filesort', uid: profileRecord.uid}">
+						{profileRecord.duration}
+					</f:link.action>
+				</td>
+			</tr>
+		</f:for>
+		</tbody>
+	</table>
+</f:section>
+</html>

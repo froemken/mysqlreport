@@ -15,6 +15,9 @@ services:
     public: true
     shared: false
 
+  StefanFroemken\Mysqlreport\Configuration\ExtConf:
+    public: true
+
   StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository:
     public: true
 
