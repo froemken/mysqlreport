@@ -12,13 +12,13 @@ You may want to remove this file if all important links are already handled in
 Settings.cfg.
 
 :Packagist:
-   https://packagist.org/packages/jweiland/glossary2
+   https://packagist.org/packages/stefanfroemken/mysqlreport
 
 :TER:
-   https://extensions.typo3.org/extension/glossary2/
+   https://extensions.typo3.org/extension/mysqlreport/
 
 :Issues:
-   https://github.com/jweiland-net/glossary2/issues
+   https://github.com/froemken/mysqlreport/issues
 
 :GitHub Repository:
-   https://github.com/jweiland-net/glossary2
+   https://github.com/froemken/mysqlreport
