@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
+use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use StefanFroemken\Mysqlreport\Menu\Page;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status
@@ -31,10 +33,8 @@ class MySqlReportController extends AbstractController
 
     public function overviewAction(): void
     {
-        $page = $this->pageFinder->getPageByIdentifier('overview');
-        if ($page instanceof Page) {
-            $this->view->assign('renderedInfoBoxes', $page->getRenderedInfoBoxes());
-        }
+        $statusRepository = GeneralUtility::makeInstance(StatusRepository::class);
+        $this->view->assign('status', $statusRepository->findAll());
     }
 
     public function informationAction(): void

@@ -15,6 +15,12 @@ services:
     public: true
     shared: false
 
+  StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository:
+    public: true
+
+  StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository:
+    public: true
+
   StefanFroemken\Mysqlreport\Helper\ConnectionHelper:
     public: true
 
