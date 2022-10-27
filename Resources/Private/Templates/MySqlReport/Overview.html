@@ -114,6 +114,19 @@
 		</div>
 
 		<div class="card card-size-fixed-small">
+			<f:render partial="Card/Header" arguments="{ title: 'Slow Queries', subtitle: 'Performance'}" />
+			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
+			<div class="card-content card-body">
+				<p class="card-text">Missing indexes, bad table design, there are a lot of possibilities why a query is slow.</p>
+			</div>
+			<div class="card-footer">
+				<f:link.action action="slowQuery" controller="Query" class="btn btn-primary">
+					Show
+				</f:link.action>
+			</div>
+		</div>
+
+		<div class="card card-size-fixed-small">
 			<f:render partial="Card/Header" arguments="{ title: 'Further Information', subtitle: 'Misc'}" />
 			<f:comment><!-- card-content: TYPO3 10. card-body: TYPO3 11 --></f:comment>
 			<div class="card-content card-body">

@@ -74,6 +74,18 @@ table one row after the other which costs a lot of time.
 Please check the list of queries here to identify queries without a defined index or, where a given index could
 not be used.
 
+Slow Queries
+------------
+
+We have implemented this cool feature with version 1.1.0. Please activate profiling and set slowQueryTime
+in extension settings to your needs. After some queries where logged this view will show you the 100
+slowest queries, if there is any slower than configured.
+
+.. hint::
+
+   `mysqlreport` can not access the original Slow Query Log of your server. This view is just a result of
+   a query of our profile table.
+
 Clear Profiles
 ==============
 

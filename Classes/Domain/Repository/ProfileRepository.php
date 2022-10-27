@@ -154,4 +154,29 @@ class ProfileRepository extends AbstractRepository
 
         return $profileRecords;
     }
+
+    public function findProfileRecordsWithSlowQueries(): array
+    {
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
+            ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
+            ->from('tx_mysqlreport_domain_model_profile')
+            ->where(
+                $queryBuilder->expr()->gte(
+                    'duration',
+                    $queryBuilder->createNamedParameter($this->extConf->getSlowQueryTime(), \PDO::PARAM_LOB)
+                )
+            )
+            ->orderBy('duration', 'DESC')
+            ->setMaxResults(100);
+
+        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+
+        $profileRecords = [];
+        while ($profileRecord = $statement->fetch()) {
+            $profileRecords[] = $profileRecord;
+        }
+
+        return $profileRecords;
+    }
 }

@@ -48,3 +48,12 @@ view of a selected query.
 If this feature is activated it can slow down your TYPO3 system a lot. Please keep that in mind and activate
 that options for some minutes or hours, but not days or weeks. The additional data can grow very fast and can
 exceed your DB storage very fast. A size of over 6 GB is not seldom!
+
+slowQueryTime
+-------------
+
+`mysqlreport` can NOT read the original queries from Slow Query Log of your server. But, as we already have
+collected the duration of all queries, we can show the first 100 queries with a duration higher than the configured
+value here (Default: 10.0 seconds).
+
+If you want to see queries slower that slowQueryTime you have to activate one of these profile checkboxes from above.
