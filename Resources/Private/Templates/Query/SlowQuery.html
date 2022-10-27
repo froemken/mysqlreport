@@ -20,6 +20,7 @@
 		<tr>
 			<th>Query</th>
 			<th>Duration</th>
+			<th>Action</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -27,9 +28,13 @@
 			<tr>
 				<td>{profileRecord.query}...</td>
 				<td>
+					{profileRecord.duration}
+				</td>
+				<td>
 					<f:link.action action="profileInfo"
+					               class="btn btn-default"
 					               arguments="{actionName: 'filesort', uid: profileRecord.uid}">
-						{profileRecord.duration}
+						<core:icon identifier="actions-search" />
 					</f:link.action>
 				</td>
 			</tr>

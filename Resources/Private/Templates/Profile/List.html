@@ -16,6 +16,7 @@
 					<th>Mode</th>
 					<th>Amount of queries in request</th>
 					<th>Summed Duration</th>
+					<th>Action</th>
 				</tr>
 				</thead>
 				<tbody>
@@ -25,10 +26,14 @@
 						<td>{profileRecord.mode}</td>
 						<td>{profileRecord.amount}</td>
 						<td>
+							{profileRecord.duration}
+						</td>
+						<td>
 							<f:link.action action="show"
 							               controller="Profile"
+							               class="btn btn-default"
 							               arguments="{uniqueIdentifier: profileRecord.unique_call_identifier}">
-								{profileRecord.duration}
+								<core:icon identifier="actions-search" />
 							</f:link.action>
 						</td>
 					</tr>
