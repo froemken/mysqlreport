@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
 
 /**
@@ -23,8 +24,14 @@ abstract class AbstractRepository
      */
     protected $connectionHelper;
 
-    public function __construct(ConnectionHelper $connectionHelper)
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    public function __construct(ConnectionHelper $connectionHelper, ExtConf $extConf)
     {
         $this->connectionHelper = $connectionHelper;
+        $this->extConf = $extConf;
     }
 }

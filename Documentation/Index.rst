@@ -47,6 +47,7 @@ in FE and/or BE context.
    DeveloperManual/Index
    KnownProblems/Index
    ChangeLog/Index
+   Links
 
 .. Meta Menu
 

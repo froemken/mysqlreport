@@ -89,23 +89,31 @@ return [
         'pageIdentifier' => 'tableCache'
     ],
 
-    'abortedConnects' => [
+    'miscAbortedConnects' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\AbortedConnectsInfoBox::class,
         'pageIdentifier' => 'misc'
     ],
-    'backLog' => [
+    'miscMaxAllowedPacket' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\MaxAllowedPacketInfoBox::class,
+        'pageIdentifier' => 'misc'
+    ],
+    'miscTempTables' => [
+        'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\TempTablesInfoBox::class,
+        'pageIdentifier' => 'misc'
+    ],
+    'miscBackLog' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\BackLogInfoBox::class,
         'pageIdentifier' => 'misc'
     ],
-    'syncBinLog' => [
+    'miscSyncBinLog' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\SyncBinaryLogInfoBox::class,
         'pageIdentifier' => 'misc'
     ],
-    'binaryLog' => [
+    'miscBinaryLog' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\BinaryLogInfoBox::class,
         'pageIdentifier' => 'misc'
     ],
-    'standaloneReplication' => [
+    'miscStandaloneReplication' => [
         'class' => \StefanFroemken\Mysqlreport\InfoBox\Misc\StandaloneReplicationInfoBox::class,
         'pageIdentifier' => 'misc'
     ],

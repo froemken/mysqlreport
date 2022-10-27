@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
+use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 
@@ -34,9 +35,19 @@ class QueryController extends AbstractController
      */
     protected $profileRepository;
 
-    public function __construct(ProfileRepository $profileRepository)
+    /**
+     * @var ExtConf
+     */
+    protected $extConf;
+
+    public function injectProfileRepository(ProfileRepository $profileRepository): void
     {
         $this->profileRepository = $profileRepository;
+    }
+
+    public function injectExtConf(ExtConf $extConf): void
+    {
+        $this->extConf = $extConf;
     }
 
     public function filesortAction(): void
@@ -47,6 +58,12 @@ class QueryController extends AbstractController
     public function fullTableScanAction(): void
     {
         $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFullTableScan());
+    }
+
+    public function slowQueryAction(): void
+    {
+        $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithSlowQueries());
+        $this->view->assign('slowQueryTime', $this->extConf->getSlowQueryTime());
     }
 
     public function profileInfoAction(int $uid): void

@@ -7,6 +7,13 @@
 Known Problems
 ==============
 
+TYPO3 compatibility
+===================
+
+I have tried to add as many try-catch blocks as possible to nearly every method which was marked with
+@throws. This should prevent throwing exceptions or breaking TYPO3 while using `mysqlreport`. This extension is ready
+for LIVE systems. If there is still a problem, please create an issue at GitHub.
+
 Support of further Database Systems
 ===================================
 

@@ -5,17 +5,20 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Queries of selected type</h1>
+	<h1>List of Slow Queries</h1>
 
-	<f:link.action action="show" controller="Profile" class="btn btn-primary"
-	               arguments="{uniqueIdentifier: uniqueIdentifier}">Back
-	</f:link.action>
+	<f:be:infobox title="Current Configuration" state="-1" disableIcon="false">
+		Mysqlreport does not have access to the "real" slow query logfile of your server. It just list
+		queries whose duration was less than
+		{slowQueryTime -> f:format.number(decimals: 2, decimalSeparator: ',', thousandsSeparator: '.')} seconds.
+		Please visit extension settings to configure another value. Keep in mind that this list is limited to 100
+		records.
+	</f:be:infobox>
+
 	<table class="table">
 		<thead>
 		<tr>
-			<th>ID/Order</th>
 			<th>Query</th>
-			<th>Not using index</th>
 			<th>Duration</th>
 			<th>Action</th>
 		</tr>
@@ -23,16 +26,14 @@
 		<tbody>
 		<f:for each="{profileRecords}" as="profileRecord">
 			<tr>
-				<td>{profileRecord.query_id}</td>
 				<td>{profileRecord.query}...</td>
-				<td>{profileRecord.not_using_index}</td>
 				<td>
 					{profileRecord.duration}
 				</td>
 				<td>
 					<f:link.action action="profileInfo"
 					               class="btn btn-default"
-					               arguments="{uid: profileRecord.uid}">
+					               arguments="{actionName: 'filesort', uid: profileRecord.uid}">
 						<core:icon identifier="actions-search" />
 					</f:link.action>
 				</td>
