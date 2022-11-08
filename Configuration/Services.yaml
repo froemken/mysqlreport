@@ -6,3 +6,39 @@ services:
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
+
+  StefanFroemken\Mysqlreport\Domain\Model\ExplainInformation:
+    public: true
+    shared: false
+
+  StefanFroemken\Mysqlreport\Domain\Model\Profile:
+    public: true
+    shared: false
+
+  StefanFroemken\Mysqlreport\Configuration\ExtConf:
+    public: true
+
+  StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository:
+    public: true
+
+  StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository:
+    public: true
+
+  StefanFroemken\Mysqlreport\Helper\ConnectionHelper:
+    public: true
+
+  StefanFroemken\Mysqlreport\Helper\QueryCacheHelper:
+    public: true
+
+  StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper:
+    public: true
+
+  StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger:
+    public: true
+
+  StefanFroemken\Mysqlreport\Menu\Page:
+    public: true
+    shared: false
+
+  StefanFroemken\Mysqlreport\Menu\PageFinder:
+    public: true

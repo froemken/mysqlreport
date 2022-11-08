@@ -1,18 +1,38 @@
-<f:layout name="Default" />
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Default"/>
 
 <f:section name="content">
+	<h1>Queries using FTS</h1>
+	<h1>Full Table Scan</h1>
+
 	<table class="table">
 		<thead>
+		<tr>
 			<th>Query</th>
 			<th>Duration</th>
+			<th>Action</th>
+		</tr>
 		</thead>
 		<tbody>
-			<f:for each="{queries}" as="query">
-				<tr>
-					<td>{query.query}...</td>
-					<td>{query.duration}</td>
-				</tr>
-			</f:for>
+		<f:for each="{profileRecords}" as="profileRecord">
+			<tr>
+				<td>{profileRecord.query}...</td>
+				<td>
+					{profileRecord.duration}
+				</td>
+				<td>
+					<f:link.action action="profileInfo"
+					               class="btn btn-default"
+					               arguments="{actionName: 'fullTableScan', uid: profileRecord.uid}">
+						<core:icon identifier="actions-search" />
+					</f:link.action>
+				</td>
+			</tr>
+		</f:for>
 		</tbody>
 	</table>
 </f:section>
+</html>

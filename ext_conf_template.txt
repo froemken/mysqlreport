@@ -4,3 +4,5 @@ profileFrontend = 0
 profileBackend = 0
 # cat=profiling/enable; type=boolean; label=Add EXPLAIN for each query. Be careful, this reduces performance a lot.
 addExplain = 0
+# cat=profiling/enable; type=string; label=Define a duration since when a query should be logged as slow query. You have to activate one of these profile settings from above.
+slowQueryTime = 10.0

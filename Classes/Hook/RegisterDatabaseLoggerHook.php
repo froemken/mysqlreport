@@ -11,184 +11,149 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Hook;
 
-use Doctrine\DBAL\Logging\DebugStack;
+use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
+use StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper;
+use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
+use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Add Logger to database connection to store queries of a request
+ *
+ * Currently, this is the earliest hook I could found in TYPO3 universe.
+ * All queries executed before this hook were not collected.
  */
 class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurationPostProcessingHookInterface
 {
     /**
      * @var array
      */
-    protected $extConf = [];
+    private $extConf = [];
 
+    /**
+     * @var ConnectionHelper
+     */
+    private $connectionHelper;
+
+    /**
+     * @var SqlLoggerHelper
+     */
+    private $sqlLoggerHelper;
+
+    /**
+     * Do not add any parameters to this constructor!
+     * This class was called so early that you can not flush cache over BE and Installtool.
+     */
     public function __construct()
     {
-        /** @var ExtensionConfiguration $extensionConfiguration */
         $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
-        $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
+        try {
+            $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
+        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
+            $this->extConf = [];
+        }
+
+        $this->connectionHelper = GeneralUtility::makeInstance(ConnectionHelper::class);
+        $this->sqlLoggerHelper = GeneralUtility::makeInstance(SqlLoggerHelper::class);
+        $this->sqlLoggerHelper->setConnectionConfiguration($this->connectionHelper->getConnectionConfiguration());
     }
 
-    public function processData()
+    public function processData(): void
     {
-        if (
-            ($this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
-            ($this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
-        ) {
-            $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['initCommands'] .= LF . ' SET profiling = 1;';
-
-            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-            // @ToDo: Loop through all Connection names
-            $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-            $connection->getConfiguration()->setSQLLogger(
-                GeneralUtility::makeInstance(DebugStack::class)
-            );
+        if (!$this->connectionHelper->isConnectionAvailable()) {
+            return;
         }
+
+        if (!$this->isFrontendOrBackendProfilingActivated()) {
+            return;
+        }
+
+        $this->sqlLoggerHelper->activateSqlLogger();
     }
 
     public function __destruct()
     {
-        if (
-            ($this->extConf['profileFrontend'] && TYPO3_MODE === 'FE') ||
-            ($this->extConf['profileBackend'] && TYPO3_MODE === 'BE')
-        ) {
-            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-            $connection = $connectionPool->getConnectionForTable('tx_mysqlreport_domain_model_profile');
+        if (!$this->connectionHelper->isConnectionAvailable()) {
+            return;
+        }
 
-            // do not log our insert queries
-            $sqlLogger = clone $connection->getConfiguration()->getSQLLogger();
-            $connection->getConfiguration()->setSQLLogger(null);
+        if (!$this->isFrontendOrBackendProfilingActivated()) {
+            return;
+        }
 
-            // A page can be called multiple times each second. So we need an unique identifier.
-            $uniqueIdentifier = uniqid();
-            $pid = is_object($GLOBALS['TSFE']) ? $GLOBALS['TSFE']->id : 0;
+        $sqlLogger = $this->sqlLoggerHelper->getCurrentSqlLogger();
+        if ($sqlLogger instanceof MySqlReportSqlLogger) {
+            $queriesToStore = [];
+            foreach ($sqlLogger->profiles as $key => $profile) {
+                $queryToStore = [
+                    'pid' => $profile->getPid(),
+                    'ip' => $profile->getIp(),
+                    'referer' => $profile->getReferer(),
+                    'request' => $profile->getRequest(),
+                    'query_type' => $profile->getQueryType(),
+                    'duration' => $profile->getDuration(),
+                    'query' => $profile->getQueryWithReplacedParameters(),
+                    'profile' => serialize($profile->getProfile()),
+                    'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
+                    'not_using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 0 : 1,
+                    'using_fulltable' => $profile->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
+                    'mode' => $profile->getMode(),
+                    'unique_call_identifier' => $profile->getUniqueCallIdentifier(),
+                    'crdate' => $profile->getCrdate(),
+                    'query_id' => $key
+                ];
 
-            if ($sqlLogger instanceof DebugStack) {
-                $queriesToStore = [];
-                foreach ($sqlLogger->queries as $key => $loggedQuery) {
-                    $queryToStore = [
-                        'pid' => $pid,
-                        'ip' => GeneralUtility::getIndpEnv('REMOTE_ADDR'),
-                        'referer' => GeneralUtility::getIndpEnv('HTTP_REFERER'),
-                        'request' => GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL'),
-                        'query_type' => GeneralUtility::trimExplode(' ', $loggedQuery['sql'], true, 2)[0],
-                        'duration' => $loggedQuery['executionMS'],
-                        'query' => $connection->quote($loggedQuery['sql']),
-                        'profile' => serialize([]),
-                        'explain_query' => serialize([]),
-                        'not_using_index' => 0,
-                        'using_fulltable' => 0,
-                        'mode' => (string)TYPO3_MODE,
-                        'unique_call_identifier' => $uniqueIdentifier,
-                        'crdate' => (int)$GLOBALS['EXEC_TIME'],
-                        'query_id' => $key
-                    ];
+                $queriesToStore[] = $queryToStore;
+            }
 
-                    $this->addExplainInformation($queryToStore, $loggedQuery);
-
-                    $queriesToStore[] = $queryToStore;
-                }
-
-                foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
-                    $connection->bulkInsert(
-                        'tx_mysqlreport_domain_model_profile',
-                        $chunkOfQueriesToStore,
-                        [
-                            'pid',
-                            'ip',
-                            'referer',
-                            'request',
-                            'query_type',
-                            'duration',
-                            'query',
-                            'profile',
-                            'explain_query',
-                            'not_using_index',
-                            'using_fulltable',
-                            'mode',
-                            'unique_call_identifier',
-                            'crdate',
-                            'query_id'
-                        ]
-                    );
-                }
+            foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
+                $this->connectionHelper->bulkInsert(
+                    'tx_mysqlreport_domain_model_profile',
+                    $chunkOfQueriesToStore,
+                    [
+                        'pid',
+                        'ip',
+                        'referer',
+                        'request',
+                        'query_type',
+                        'duration',
+                        'query',
+                        'profile',
+                        'explain_query',
+                        'not_using_index',
+                        'using_fulltable',
+                        'mode',
+                        'unique_call_identifier',
+                        'crdate',
+                        'query_id'
+                    ]
+                );
             }
         }
     }
 
-    protected function addExplainInformation(array &$queryToStore, array $loggedQuery)
+    private function isFrontendOrBackendProfilingActivated(): bool
     {
-        $sql = $loggedQuery['sql'];
-        $queryType = GeneralUtility::trimExplode(' ', $sql, true, 2)[0];
-
-        // save explain information of query if activated
-        // EXPLAIN with other types than SELECT works since MySQL 5.6.3 only
-        // EXPLAIN does not work, if we have PreparedStatements (Statements with ?)
         if (
-            $this->extConf['addExplain'] &&
-            strtoupper($queryType) === 'SELECT'
+            isset($this->extConf['profileFrontend'])
+            && $this->extConf['profileFrontend']
+            && TYPO3_MODE === 'FE'
         ) {
-            $explain = [];
-            $notUsingIndex = false;
-            $usingFullTable = false;
-
-            /** @var ConnectionPool $connectionPool */
-            $connectionPool = GeneralUtility::makeInstance(ConnectionPool::class);
-            $connection = $connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-            $statement = $connection->query($this->buildExplainQuery($sql, $loggedQuery['params'], $loggedQuery['types']));
-            while ($explainRow = $statement->fetch()) {
-                if ($notUsingIndex === false && empty($explainRow['key'])) {
-                    $notUsingIndex = true;
-                }
-                if ($usingFullTable === false && strtolower($explainRow['select_type']) === 'all') {
-                    $usingFullTable = true;
-                }
-                $explain[] = $explainRow;
-            }
-            $queryToStore['explain_query'] = serialize($explain);
-            $queryToStore['not_using_index'] = (int)$notUsingIndex;
-            $queryToStore['using_fulltable'] = (int)$usingFullTable;
-        }
-    }
-
-    protected function buildExplainQuery(string $sql, array $params, array $types)
-    {
-        $namedParameters = [];
-        foreach ($params as $key => $param) {
-            switch ($types[$key]) {
-                case \PDO::PARAM_INT:
-                    $param = (int)$param;
-                    break;
-                case \PDO::PARAM_BOOL:
-                    $param = $param === true ? 1 : 0;
-                    break;
-                case \PDO::PARAM_NULL:
-                    $param = null;
-                    break;
-                case Connection::PARAM_INT_ARRAY:
-                    $param = implode(',', $param);
-                    break;
-                case Connection::PARAM_STR_ARRAY:
-                    $param = '\'' . implode(',', $param) . '\'';
-                    break;
-                default:
-                case \PDO::PARAM_STR:
-                    $param = '\'' . (string)$param . '\'';
-            }
-            $namedParameters[':' . $key] = $param;
+            return true;
         }
 
-        return 'EXPLAIN ' . str_replace(
-            array_keys($namedParameters),
-            $namedParameters,
-            $sql
-        );
+        if (
+            isset($this->extConf['profileBackend'])
+            && $this->extConf['profileBackend']
+            && TYPO3_MODE === 'BE'
+        ) {
+            return true;
+        }
+
+        return false;
     }
 }
