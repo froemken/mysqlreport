@@ -1,0 +1,27 @@
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:be.infobox title="{title}" state="{state}" disableIcon="true">
+	<p>{body -> f:format.nl2br()}</p>
+
+	<f:if condition="{unorderedList}">
+		<f:render section="renderUnorderedList" arguments="{unorderedList: unorderedList}"/>
+	</f:if>
+</f:be.infobox>
+
+<f:section name="renderUnorderedList">
+	<ul>
+		<f:for each="{unorderedList}" as="listEntry">
+			<f:if condition="{listEntry.title}">
+				<f:then>
+					<li><strong>{listEntry.title}:</strong> {listEntry.value}</li>
+				</f:then>
+				<f:else>
+					<li>{listEntry.value}</li>
+				</f:else>
+			</f:if>
+		</f:for>
+	</ul>
+</f:section>
+</html>

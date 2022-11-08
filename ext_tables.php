@@ -9,9 +9,9 @@ if (!defined('TYPO3_MODE')) {
     'mysql', // Submodule key
     '', // Position
     [
-        'MySql' => 'index, queryCache, innoDbBuffer, threadCache, tableCache, report',
+        'MySqlReport' => 'overview, information, innoDb, threadCache, tableCache, queryCache, misc',
         'Profile' => 'list, show, queryType, profileInfo',
-        'Query' => 'filesort, fullTableScan',
+        'Query' => 'filesort, fullTableScan, slowQuery, profileInfo',
     ],
     [
         'access' => 'user,group',

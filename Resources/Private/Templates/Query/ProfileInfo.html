@@ -1,0 +1,18 @@
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Default"/>
+
+<f:section name="content">
+	<h1>Query Profiling</h1>
+
+	<f:link.action action="{actionName}"
+	               controller="Query"
+	               class="btn btn-primary">
+		Back
+	</f:link.action>
+
+	<f:render partial="ProfileInfo" arguments="{_all}"/>
+</f:section>
+</html>

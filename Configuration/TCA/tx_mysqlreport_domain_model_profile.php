@@ -1,13 +1,14 @@
 <?php
+if (!defined('TYPO3_MODE')) {
+    die ('Access denied.');
+}
+
 return [
     'ctrl' => [
         'title'	=> 'Profile',
         'label' => 'uid',
         'crdate' => 'crdate',
         'hideTable' => true,
-    ],
-    'interface' => [
-        'showRecordFieldList' => '',
     ],
     'columns' => [
         'query_id' => [

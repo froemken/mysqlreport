@@ -11,9 +11,13 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
+use StefanFroemken\Mysqlreport\Menu\PageFinder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Imaging\Icon;
+use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -23,72 +27,42 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 abstract class AbstractController extends ActionController
 {
-    protected function initializeView(ViewInterface $view)
-    {
-        $uriBuilder = $this->objectManager->get(UriBuilder::class);
-        $uriBuilder->setRequest($this->request);
+    /**
+     * @var PageFinder
+     */
+    protected $pageFinder;
 
+    public function injectPageFinder(PageFinder $pageFinder): void
+    {
+        $this->pageFinder = $pageFinder;
+    }
+
+    protected function initializeView(ViewInterface $view): void
+    {
         /** @var BackendTemplateView $view */
         parent::initializeView($view);
 
-        $menu = $view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->makeMenu();
-        $menu->setIdentifier('mysqlreport');
+        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $uriBuilder->setRequest($this->request);
 
-        $actions = [
-            [
-                'controller' => 'MySql',
-                'action' => 'index',
-                'label' => 'Introduction'
-            ],
-            [
-                'controller' => 'MySql',
-                'action' => 'queryCache',
-                'label' => 'Query Cache'
-            ],
-            [
-                'controller' => 'MySql',
-                'action' => 'innoDbBuffer',
-                'label' => 'InnoDB Buffer'
-            ],
-            [
-                'controller' => 'MySql',
-                'action' => 'threadCache',
-                'label' => 'Threads Cache'
-            ],
-            [
-                'controller' => 'MySql',
-                'action' => 'tableCache',
-                'label' => 'Table Cache'
-            ],
-            [
-                'controller' => 'Profile',
-                'action' => 'list',
-                'label' => 'Profiling'
-            ],
-            [
-                'controller' => 'Query',
-                'action' => 'filesort',
-                'label' => 'Queries using Filesort'
-            ],
-            [
-                'controller' => 'Query',
-                'action' => 'fullTableScan',
-                'label' => 'Queries with FTS'
-            ],
-        ];
+        $buttonBar = $view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
 
-        foreach ($actions as $action) {
-            $item = $menu->makeMenuItem()
-                ->setTitle($action['label'])
-                ->setHref($uriBuilder->reset()->uriFor($action['action'], [], $action['controller']))
-                ->setActive($this->request->getControllerActionName() === $action['action']);
-            $menu->addMenuItem($item);
-        }
-
-        $this->view->getModuleTemplate()->getDocHeaderComponent()->getMenuRegistry()->addMenu($menu);
+        // Overview
+        $overviewButton = $buttonBar
+            ->makeLinkButton()
+            ->setShowLabelText(true)
+            ->setTitle('Overview')
+            ->setIcon($this->getIconFactory()->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
+            ->setHref(
+                $uriBuilder->uriFor(
+                    'overview',
+                    null,
+                    'MySqlReport'
+                )
+            );
+        $buttonBar->addButton($overviewButton, ButtonBar::BUTTON_POSITION_LEFT);
 
         // Shortcut
-        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
         if ($this->getBackendUser()->mayMakeShortcut()) {
             $shortcutButton = $buttonBar->makeShortcutButton()
                 ->setModuleName('system_MysqlreportMysql')
@@ -96,6 +70,11 @@ abstract class AbstractController extends ActionController
                 ->setDisplayName('Shortcut');
             $buttonBar->addButton($shortcutButton, ButtonBar::BUTTON_POSITION_RIGHT);
         }
+    }
+
+    protected function getIconFactory(): IconFactory
+    {
+        return GeneralUtility::makeInstance(IconFactory::class);
     }
 
     protected function getBackendUser(): BackendUserAuthentication

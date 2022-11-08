@@ -1,50 +1,60 @@
-<f:if condition="{status.uptime}=={status.uptimeSinceFlushStatus}">
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:if condition="{status.Uptime}=={status.Uptime_since_flush_status}">
 	<f:then>
-		<f:if condition="{status.uptime}<21600">
+		<f:if condition="{status.Uptime}<21600">
 			<f:then>
-				<div class="alert alert-danger" role="alert">
-					<strong>Alert!</strong> Your server just runs less than 6 hours. It does not make sense to analyze the status variables.
-				</div>
+				<f:be.infobox title="Alert" state="2" disableIcon="true">
+					Your server just runs less than 6 hours. It does not make sense to analyze the status variables.
+				</f:be.infobox>
 			</f:then>
 			<f:else>
-				<f:if condition="{status.uptime}<604800">
+				<f:if condition="{status.Uptime}<604800">
 					<f:then>
-						<div class="alert alert-warning" role="alert">
-							<strong>Warning!</strong> Your server just runs less than a week. This is maybe OK for a first look to your status variables, but a longer run of the server would be much better.
-						</div>
+						<f:be.infobox title="Warning" state="1" disableIcon="true">
+							Your server just runs less than a week. This is maybe OK for a first look to your status
+							variables, but a longer run of the server would be much better.
+						</f:be.infobox>
 					</f:then>
 					<f:else>
-						<div class="alert alert-success" role="alert">
-							<strong>Well done!</strong> Your server runs longer than one week. This should be enough to have good results while analyzing status variables.
-						</div>
+						<f:be.infobox title="Well done!" state="0" disableIcon="true">
+							Your server runs longer than one week. This should be enough to have good results while
+							analyzing status variables.
+						</f:be.infobox>
 					</f:else>
 				</f:if>
 			</f:else>
 		</f:if>
 	</f:then>
 	<f:else>
-		<f:if condition="{status.updateSinceFlushStatus}<21600">
+		<f:if condition="{status.Update_since_flush_status}<21600">
 			<f:then>
-				<div class="alert alert-danger" role="alert">
-					<strong>Alert!</strong> Your status was resetted within the last 6 hours. It does not make sense to analyze the status variables.
+				<f:be.infobox title="Alert" state="2" disableIcon="true">
+					Your status was resetted within the last 6 hours. It does not make sense to analyze the status
+					variables.
 					You can stop flushing the status variables by forbid RELOAD privilege on MySQL-Server
-				</div>
+				</f:be.infobox>
 			</f:then>
 			<f:else>
-				<f:if condition="{status.updateSinceFlushStatus}<604800">
+				<f:if condition="{status.Update_since_flush_status}<604800">
 					<f:then>
-						<div class="alert alert-warning" role="alert">
-							<strong>Warning!</strong> Your status was resetted within the last week. This is maybe OK for a first look to status variables, but it would be much better to have a higher uptime_since_flush_status.
+						<f:be.infobox title="Warning" state="1" disableIcon="true">
+							Your status was resetted within the last week. This is maybe OK for a first look to status
+							variables, but it would be much better to have a higher uptime_since_flush_status.
 							You can stop flushing the status variables by forbid RELOAD privilege on MySQL-Server
-						</div>
+						</f:be.infobox>
 					</f:then>
 					<f:else>
-						<div class="alert alert-success" role="alert">
-							<strong>Well done!</strong> Your status is older than 1 week. That should be enough uptime to have good results for analyzing the status variables.
-						</div>
+						<f:be.infobox title="Well done!" state="0" disableIcon="true">
+							Your status is older than 1 week. That should be enough uptime to have good results for
+							analyzing the status variables.
+						</f:be.infobox>
 					</f:else>
 				</f:if>
 			</f:else>
 		</f:if>
 	</f:else>
 </f:if>
+</html>

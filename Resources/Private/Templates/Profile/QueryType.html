@@ -1,25 +1,44 @@
-<f:layout name="Default" />
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Default"/>
 
 <f:section name="content">
-	<f:link.action action="show" controller="Profile" class="btn btn-primary" arguments="{uniqueIdentifier: uniqueIdentifier}">Back</f:link.action>
+	<h1>Queries of selected type</h1>
+
+	<f:link.action action="show" controller="Profile" class="btn btn-primary"
+	               arguments="{uniqueIdentifier: uniqueIdentifier}">Back
+	</f:link.action>
 	<table class="table">
 		<thead>
-			<tr>
-				<th>ID/Order</th>
-				<th>Query</th>
-				<th>Not using index</th>
-				<th>Duration</th>
-			</tr>
+		<tr>
+			<th>ID/Order</th>
+			<th>Query</th>
+			<th>Not using index</th>
+			<th>Duration</th>
+			<th>Action</th>
+		</tr>
 		</thead>
 		<tbody>
-			<f:for each="{profilings}" as="profile">
-				<tr>
-					<td>{profile.query_id}</td>
-					<td>{profile.query}...</td>
-					<td>{profile.not_using_index}</td>
-					<td><f:link.action action="profileInfo" arguments="{uniqueIdentifier: uniqueIdentifier, queryType: queryType, uid: profile.uid}">{profile.duration}</f:link.action></td>
-				</tr>
-			</f:for>
+		<f:for each="{profileRecords}" as="profileRecord">
+			<tr>
+				<td>{profileRecord.query_id}</td>
+				<td>{profileRecord.query}...</td>
+				<td>{profileRecord.not_using_index}</td>
+				<td>
+					{profileRecord.duration}
+				</td>
+				<td>
+					<f:link.action action="profileInfo"
+					               class="btn btn-default"
+					               arguments="{uid: profileRecord.uid}">
+						<core:icon identifier="actions-search" />
+					</f:link.action>
+				</td>
+			</tr>
+		</f:for>
 		</tbody>
 	</table>
 </f:section>
+</html>
