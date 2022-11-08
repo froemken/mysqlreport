@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+**Version 1.1.1**
+
+Set default value of profile to empty array
+Set connection configuration for SqlLoggerHelper
+Set values to NULL for DBAL type NULL
+
 **Version 1.1.0**
 
 Use ExtConf instead of ExtensionConfiguration class
