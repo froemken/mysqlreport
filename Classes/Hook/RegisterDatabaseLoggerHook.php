@@ -35,14 +35,14 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
     private $extConf = [];
 
     /**
-     * @var SqlLoggerHelper
-     */
-    private $sqlLoggerHelper;
-
-    /**
      * @var ConnectionHelper
      */
     private $connectionHelper;
+
+    /**
+     * @var SqlLoggerHelper
+     */
+    private $sqlLoggerHelper;
 
     /**
      * Do not add any parameters to this constructor!
@@ -57,8 +57,9 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
             $this->extConf = [];
         }
 
-        $this->sqlLoggerHelper = GeneralUtility::makeInstance(SqlLoggerHelper::class);
         $this->connectionHelper = GeneralUtility::makeInstance(ConnectionHelper::class);
+        $this->sqlLoggerHelper = GeneralUtility::makeInstance(SqlLoggerHelper::class);
+        $this->sqlLoggerHelper->setConnectionConfiguration($this->connectionHelper->getConnectionConfiguration());
     }
 
     public function processData(): void

@@ -72,7 +72,7 @@ class Profile
     /**
      * @var array
      */
-    private $profile = '';
+    private $profile = [];
 
     /**
      * @var ExplainInformation
@@ -198,7 +198,7 @@ class Profile
                     $queryParameter = $queryParameter === true ? 1 : 0;
                     break;
                 case \PDO::PARAM_NULL:
-                    $queryParameter = null;
+                    $queryParameter = 'NULL';
                     break;
                 case Connection::PARAM_INT_ARRAY:
                     $queryParameter = implode(',', $queryParameter);
