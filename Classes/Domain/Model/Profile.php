@@ -188,33 +188,46 @@ class Profile
      */
     public function getQueryWithReplacedParameters(): string
     {
+        $query = $this->getQuery();
         $namedParameters = [];
+        $parameterTypes = $this->getQueryParameterTypes();
         foreach ($this->getQueryParameters() as $key => $queryParameter) {
-            switch ($this->getQueryParameterTypes()[$key]) {
-                case \PDO::PARAM_INT:
-                    $queryParameter = (int)$queryParameter;
-                    break;
-                case \PDO::PARAM_BOOL:
-                    $queryParameter = $queryParameter === true ? 1 : 0;
-                    break;
-                case \PDO::PARAM_NULL:
-                    $queryParameter = 'NULL';
-                    break;
-                case Connection::PARAM_INT_ARRAY:
-                    $queryParameter = implode(',', $queryParameter);
-                    break;
-                case Connection::PARAM_STR_ARRAY:
-                    $queryParameter = '\'' . implode(',', $queryParameter) . '\'';
-                    break;
-                default:
-                case \PDO::PARAM_STR:
-                    $queryParameter = '\'' . $queryParameter . '\'';
+            if (isset($parameterTypes[$key])) {
+                switch ($parameterTypes[$key]) {
+                    case \PDO::PARAM_INT:
+                        $queryParameter = (int)$queryParameter;
+                        break;
+                    case \PDO::PARAM_BOOL:
+                        $queryParameter = $queryParameter === true ? 1 : 0;
+                        break;
+                    case \PDO::PARAM_NULL:
+                        $queryParameter = 'NULL';
+                        break;
+                    case Connection::PARAM_INT_ARRAY:
+                        $queryParameter = implode(',', $queryParameter);
+                        break;
+                    case Connection::PARAM_STR_ARRAY:
+                        $queryParameter = '\'' . implode(',', $queryParameter) . '\'';
+                        break;
+                    default:
+                    case \PDO::PARAM_STR:
+                        $queryParameter = '\'' . $queryParameter . '\'';
+                }
+                $query = str_replace(':' . $key, (string)$queryParameter, $query);
+            } else {
+                $pos = strpos($query, '?');
+                if ($pos !== false) {
+                    if (is_string($queryParameter)) {
+                        $queryParameter = '\'' . $queryParameter . '\'';
+                    } else {
+                        $queryParameter = (string)$queryParameter;
+                    }
+                    $query = substr_replace($query, $queryParameter, $pos, strlen('?'));
+                }
             }
-
-            $namedParameters[':' . $key] = $queryParameter;
         }
 
-        return str_replace(array_keys($namedParameters), $namedParameters, $this->getQuery());
+        return $query;
     }
 
     /**
