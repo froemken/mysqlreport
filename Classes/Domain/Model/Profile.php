@@ -72,7 +72,7 @@ class Profile
     /**
      * @var array
      */
-    private $profile = '';
+    private $profile = [];
 
     /**
      * @var ExplainInformation
