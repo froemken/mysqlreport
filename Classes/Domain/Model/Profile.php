@@ -204,10 +204,13 @@ class Profile
                         $queryParameter = 'NULL';
                         break;
                     case Connection::PARAM_INT_ARRAY:
-                        $queryParameter = implode(',', $queryParameter);
+                        $queryParameter = implode(', ', $queryParameter);
                         break;
                     case Connection::PARAM_STR_ARRAY:
-                        $queryParameter = '\'' . implode(',', $queryParameter) . '\'';
+                        $queryParameter = array_map(static function ($value) {
+                            return '\'' . $value . '\'';
+                        }, $queryParameter);
+                        $queryParameter = implode(', ', $queryParameter);
                         break;
                     default:
                     case \PDO::PARAM_STR:
@@ -262,7 +265,7 @@ class Profile
 
     public function setQueryParameterTypes(array $queryParameterTypes): void
     {
-        $this->queryParameterTypes = $queryParameterTypes ?? [];
+        $this->queryParameterTypes = $queryParameterTypes;
     }
 
     public function getProfile(): array
