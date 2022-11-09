@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 1.1.3**
+
+Prevent division by zero at several places
+
 **Version 1.1.2**
 
 Prevent division by zero
