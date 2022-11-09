@@ -72,7 +72,7 @@ class Profile
     /**
      * @var array
      */
-    private $profile = '';
+    private $profile = [];
 
     /**
      * @var ExplainInformation
@@ -188,33 +188,47 @@ class Profile
      */
     public function getQueryWithReplacedParameters(): string
     {
-        $namedParameters = [];
-        foreach ($this->getQueryParameters() as $key => $queryParameter) {
-            switch ($this->getQueryParameterTypes()[$key]) {
-                case \PDO::PARAM_INT:
-                    $queryParameter = (int)$queryParameter;
-                    break;
-                case \PDO::PARAM_BOOL:
-                    $queryParameter = $queryParameter === true ? 1 : 0;
-                    break;
-                case \PDO::PARAM_NULL:
-                    $queryParameter = null;
-                    break;
-                case Connection::PARAM_INT_ARRAY:
-                    $queryParameter = implode(',', $queryParameter);
-                    break;
-                case Connection::PARAM_STR_ARRAY:
-                    $queryParameter = '\'' . implode(',', $queryParameter) . '\'';
-                    break;
-                default:
-                case \PDO::PARAM_STR:
-                    $queryParameter = '\'' . $queryParameter . '\'';
-            }
+        $query = $this->getQuery();
+        $parameterTypes = $this->getQueryParameterTypes();
 
-            $namedParameters[':' . $key] = $queryParameter;
+        foreach ($this->getQueryParameters() as $key => $queryParameter) {
+            if (isset($parameterTypes[$key])) {
+                switch ($parameterTypes[$key]) {
+                    case \PDO::PARAM_INT:
+                        $queryParameter = (int)$queryParameter;
+                        break;
+                    case \PDO::PARAM_BOOL:
+                        $queryParameter = $queryParameter === true ? 1 : 0;
+                        break;
+                    case \PDO::PARAM_NULL:
+                        $queryParameter = 'NULL';
+                        break;
+                    case Connection::PARAM_INT_ARRAY:
+                        $queryParameter = implode(', ', $queryParameter);
+                        break;
+                    case Connection::PARAM_STR_ARRAY:
+                        $queryParameter = array_map(static function ($value) {
+                            return '\'' . $value . '\'';
+                        }, $queryParameter);
+                        $queryParameter = implode(', ', $queryParameter);
+                        break;
+                    default:
+                    case \PDO::PARAM_STR:
+                        $queryParameter = '\'' . $queryParameter . '\'';
+                }
+                $query = str_replace(':' . $key, (string)$queryParameter, $query);
+            } else {
+                $query = implode(
+                    var_export(
+                        is_scalar($queryParameter) ? $queryParameter : (string)$queryParameter,
+                        true
+                    ),
+                    explode('?', $query, 2)
+                );
+            }
         }
 
-        return str_replace(array_keys($namedParameters), $namedParameters, $this->getQuery());
+        return $query;
     }
 
     /**
@@ -251,7 +265,7 @@ class Profile
 
     public function setQueryParameterTypes(array $queryParameterTypes): void
     {
-        $this->queryParameterTypes = $queryParameterTypes ?? [];
+        $this->queryParameterTypes = $queryParameterTypes;
     }
 
     public function getProfile(): array

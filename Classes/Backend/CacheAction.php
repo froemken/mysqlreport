@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Backend;
 
+use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Toolbar\ClearCacheActionsHookInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -26,8 +27,9 @@ class CacheAction implements ClearCacheActionsHookInterface
      *
      * @param array $cacheActions Array of CacheMenuItems
      * @param array $optionValues Array of AccessConfigurations-identifiers (typically used by userTS with options.clearCache.identifier)
+     * @throws RouteNotFoundException
      */
-    public function manipulateCacheActions(&$cacheActions, &$optionValues)
+    public function manipulateCacheActions(&$cacheActions, &$optionValues): void
     {
         $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
 
@@ -43,12 +45,10 @@ class CacheAction implements ClearCacheActionsHookInterface
 
     /**
      * Truncate table tx_mysqlreport_domain_model_profile
-     *
-     * @param array $params
      */
-    public function clearProfiles(array $params = [])
+    public function clearProfiles(array $params = []): void
     {
-        if ($params['cacheCmd'] === 'mysqlprofiles') {
+        if (isset($params['cacheCmd']) &&$params['cacheCmd'] === 'mysqlprofiles') {
             GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getConnectionForTable('tx_mysqlreport_domain_model_profile')
                 ->truncate('tx_mysqlreport_domain_model_profile');
