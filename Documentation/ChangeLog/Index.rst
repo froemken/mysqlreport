@@ -7,6 +7,12 @@
 ChangeLog
 =========
 
+**Version 1.1.2**
+
+Prevent division by zero
+Solve undefined array key cachecmd while storing records in BE
+Add method to replace query questionmarks
+
 **Version 1.1.1**
 
 Set default value of profile to empty array
@@ -37,5 +43,3 @@ Add TYPO3 11 compatibility
 This version is still TYPO3 10 compatible
 No new features, but completely rewritten code
 Much better API to register new Panels/InfoBoxes for BE module
-
-
