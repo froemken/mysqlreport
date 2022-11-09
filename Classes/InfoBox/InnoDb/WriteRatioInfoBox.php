@@ -27,7 +27,14 @@ class WriteRatioInfoBox extends AbstractInfoBox
 
     public function renderBody(Page $page): string
     {
-        if (!isset($page->getStatusValues()['Innodb_page_size'])) {
+        if (
+            !isset(
+                $page->getStatusValues()['Innodb_page_size'],
+                $page->getStatusValues()['Innodb_buffer_pool_write_requests'],
+                $page->getStatusValues()['Innodb_buffer_pool_pages_flushed']
+            )
+            || (int)$page->getStatusValues()['Innodb_buffer_pool_pages_flushed'] === 0
+        ) {
             $this->shouldBeRendered = false;
             return '';
         }
@@ -49,14 +56,6 @@ class WriteRatioInfoBox extends AbstractInfoBox
      */
     protected function getWriteRatio(StatusValues $status): float
     {
-        // Prevent division by zero
-        if (
-            !isset($status['Innodb_buffer_pool_pages_flushed'])
-            || (int)$status['Innodb_buffer_pool_pages_flushed'] === 0
-        ) {
-            $this->shouldBeRendered = false;
-        }
-
         $writeRatio = $status['Innodb_buffer_pool_write_requests'] / $status['Innodb_buffer_pool_pages_flushed'];
         if ($writeRatio <= 2) {
             $this->setState(StateEnumeration::STATE_ERROR);
