@@ -29,7 +29,11 @@ class PruneRatioInfoBox extends AbstractInfoBox
 
     public function renderBody(Page $page): string
     {
-        if (!$this->getQueryCacheHelper()->isQueryCacheEnabled($page)) {
+        if (
+            !isset($page->getStatusValues()['Qcache_inserts'])
+            || (int)$page->getStatusValues()['Qcache_inserts'] === 0
+            || !$this->getQueryCacheHelper()->isQueryCacheEnabled($page)
+        ) {
             $this->shouldBeRendered = false;
             return '';
         }

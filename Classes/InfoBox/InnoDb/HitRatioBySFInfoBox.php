@@ -27,7 +27,13 @@ class HitRatioBySFInfoBox extends AbstractInfoBox
 
     public function renderBody(Page $page): string
     {
-        if (!isset($page->getStatusValues()['Innodb_page_size'])) {
+        if (
+            !isset(
+                $page->getStatusValues()['Innodb_page_size'],
+                $page->getStatusValues()['Innodb_buffer_pool_reads'],
+                $page->getStatusValues()['Innodb_buffer_pool_read_requests']
+            )
+        ) {
             $this->shouldBeRendered = false;
             return '';
         }

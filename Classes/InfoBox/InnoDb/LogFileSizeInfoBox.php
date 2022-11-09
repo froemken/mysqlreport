@@ -28,7 +28,13 @@ class LogFileSizeInfoBox extends AbstractInfoBox
 
     public function renderBody(Page $page): string
     {
-        if (!isset($page->getStatusValues()['Innodb_page_size'])) {
+        if (
+            !isset(
+                $page->getStatusValues()['Innodb_page_size'],
+                $page->getVariables()['innodb_log_files_in_group']
+            )
+            || (int)$page->getVariables()['innodb_log_files_in_group'] === 0
+        ) {
             $this->shouldBeRendered = false;
             return '';
         }
