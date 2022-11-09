@@ -189,8 +189,8 @@ class Profile
     public function getQueryWithReplacedParameters(): string
     {
         $query = $this->getQuery();
-        $namedParameters = [];
         $parameterTypes = $this->getQueryParameterTypes();
+
         foreach ($this->getQueryParameters() as $key => $queryParameter) {
             if (isset($parameterTypes[$key])) {
                 switch ($parameterTypes[$key]) {
@@ -215,15 +215,13 @@ class Profile
                 }
                 $query = str_replace(':' . $key, (string)$queryParameter, $query);
             } else {
-                $pos = strpos($query, '?');
-                if ($pos !== false) {
-                    if (is_string($queryParameter)) {
-                        $queryParameter = '\'' . $queryParameter . '\'';
-                    } else {
-                        $queryParameter = (string)$queryParameter;
-                    }
-                    $query = substr_replace($query, $queryParameter, $pos, strlen('?'));
-                }
+                $query = implode(
+                    var_export(
+                        is_scalar($queryParameter) ? $queryParameter : (string)$queryParameter,
+                        true
+                    ),
+                    explode('?', $query, 2)
+                );
             }
         }
 
