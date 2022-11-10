@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 1.1.4**
+
+Remove hard-coded version from ext_emconf.php
+
 **Version 1.1.3**
 
 Prevent division by zero at several places
