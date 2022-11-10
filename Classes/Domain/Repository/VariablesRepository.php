@@ -26,7 +26,7 @@ class VariablesRepository extends AbstractRepository
         }
 
         $rows = [];
-        while ($row = $statement->fetchAssociative()) {
+        while ($row = $statement->fetch()) {
             $rows[$row['Variable_name']] = $row['Value'];
         }
 

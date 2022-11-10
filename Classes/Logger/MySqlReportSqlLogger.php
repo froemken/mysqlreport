@@ -124,7 +124,7 @@ class MySqlReportSqlLogger implements SQLLogger
 
         if ($this->addExplain) {
             if ($statement = $this->connectionHelper->executeQuery('SHOW profile')) {
-                $this->profiles[$this->queryIterator]->setProfile($statement->fetchAllAssociative());
+                $this->profiles[$this->queryIterator]->setProfile($statement->fetchAll());
             }
             $this->updateExplainInformation($this->profiles[$this->queryIterator]);
         }
@@ -144,7 +144,7 @@ class MySqlReportSqlLogger implements SQLLogger
 
         try {
             if ($statement = $this->connectionHelper->executeQuery($profile->getQueryForExplain())) {
-                while ($explainResult = $statement->fetchAssociative()) {
+                while ($explainResult = $statement->fetch()) {
                     if (empty($explainResult['key'])) {
                         $profile->getExplainInformation()->setIsQueryUsingIndex(false);
                     }
