@@ -7,6 +7,10 @@
 ChangeLog
 =========
 
+**Version 1.1.5**
+
+Use ->fetch() instead of ->fetchAssociative() for TYPO3 10 standalone compatibility
+
 **Version 1.1.4**
 
 Remove hard-coded version from ext_emconf.php
