@@ -26,11 +26,21 @@ class QueryCacheStatusInfoBox extends AbstractInfoBox
 
     protected $title = 'Query Cache Status';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         $this->setState(StateEnumeration::STATE_INFO);
 
-        if (!$this->getQueryCacheHelper()->isQueryCacheEnabled($page)) {
+        if (!$this->queryCacheHelper->isQueryCacheEnabled($page)) {
             return 'Query Cache is not activated';
         }
 
@@ -39,10 +49,5 @@ class QueryCacheStatusInfoBox extends AbstractInfoBox
         }
 
         return 'Query Cache is activated';
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }

@@ -3,42 +3,146 @@ services:
     autowire: true
     autoconfigure: true
     public: false
+    bind:
+      $sqlLogger: '@mysqlreport.sql_logger'
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
 
   StefanFroemken\Mysqlreport\Domain\Model\ExplainInformation:
-    public: true
     shared: false
 
   StefanFroemken\Mysqlreport\Domain\Model\Profile:
-    public: true
     shared: false
 
-  StefanFroemken\Mysqlreport\Configuration\ExtConf:
+  mysqlreport.page.information:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.information' }]
+  mysqlreport.page.innodb:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.innodb' }]
+  mysqlreport.page.misc:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.misc' }]
+  mysqlreport.page.query_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.query_cache' }]
+  mysqlreport.page.table_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.table_cache' }]
+  mysqlreport.page.thread_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.thread_cache' }]
+
+  mysqlreport.repository.status:
+    class: StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository
+    public: true
+  mysqlreport.repository.variables:
+    class: StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository
     public: true
 
-  StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository:
-    public: true
+  mysqlreport.sql_logger:
+    class: StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger
 
-  StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository:
-    public: true
+  # Register InfoBoxes for pages (PageIdentifier)
+  StefanFroemken\Mysqlreport\InfoBox\Information\ConnectionInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.information'
+        priority: 30
+  StefanFroemken\Mysqlreport\InfoBox\Information\ServerVersionInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.information'
+        priority: 90
+  StefanFroemken\Mysqlreport\InfoBox\Information\UptimeInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.information'
+        priority: 80
 
-  StefanFroemken\Mysqlreport\Helper\ConnectionHelper:
-    public: true
+  StefanFroemken\Mysqlreport\InfoBox\InnoDb\HitRatioInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.innodb'
+        priority: 50
+  StefanFroemken\Mysqlreport\InfoBox\InnoDb\HitRatioBySFInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.innodb'
+        priority: 40
+  StefanFroemken\Mysqlreport\InfoBox\InnoDb\InnoDbBufferLoadInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.innodb'
+        priority: 90
+  StefanFroemken\Mysqlreport\InfoBox\InnoDb\InstancesInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.innodb'
+  StefanFroemken\Mysqlreport\InfoBox\InnoDb\LogFileSizeInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.innodb'
+  StefanFroemken\Mysqlreport\InfoBox\InnoDb\WriteRatioInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.innodb'
+        priority: 80
 
-  StefanFroemken\Mysqlreport\Helper\QueryCacheHelper:
-    public: true
+  StefanFroemken\Mysqlreport\InfoBox\Misc\AbortedConnectsInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.misc'
+  StefanFroemken\Mysqlreport\InfoBox\Misc\BackLogInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.misc'
+  StefanFroemken\Mysqlreport\InfoBox\Misc\BinaryLogInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.misc'
+  StefanFroemken\Mysqlreport\InfoBox\Misc\MaxAllowedPacketInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.misc'
+        priority: 90
+  StefanFroemken\Mysqlreport\InfoBox\Misc\StandaloneReplicationInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.misc'
+  StefanFroemken\Mysqlreport\InfoBox\Misc\SyncBinaryLogInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.misc'
+  StefanFroemken\Mysqlreport\InfoBox\Misc\TempTablesInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.misc'
+        priority: 80
 
-  StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper:
-    public: true
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\AverageQuerySizeInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\AverageUsedBlocksInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\FragmentationRatioInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\HitRatioInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+        priority: 80
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\InsertRatioInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+        priority: 80
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\PruneRatioInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+        priority: 80
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\QueryCacheSizeTooHighInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+  StefanFroemken\Mysqlreport\InfoBox\QueryCache\QueryCacheStatusInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.query_cache'
+        priority: 90
 
-  StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger:
-    public: true
+  StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTableDefinitionsInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.table_cache'
+        priority: 80
+  StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.table_cache'
+        priority: 90
 
-  StefanFroemken\Mysqlreport\Menu\Page:
-    public: true
-    shared: false
-
-  StefanFroemken\Mysqlreport\Menu\PageFinder:
-    public: true
+  StefanFroemken\Mysqlreport\InfoBox\ThreadCache\HitRatioInfoBox:
+    tags:
+      - name: 'mysqlreport.infobox.thread_cache'

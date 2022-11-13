@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Menu;
 
+use Psr\Container\ContainerInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
@@ -43,10 +44,17 @@ class Page implements \SplSubject
      */
     protected $variables;
 
-    public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
-    {
+    public function __construct(
+        iterable $infoBoxHandlers,
+        StatusRepository $statusRepository,
+        VariablesRepository $variablesRepository
+    ) {
         $this->infoBoxes = new \SplObjectStorage();
         $this->infoBoxViews = new \SplQueue();
+
+        foreach ($infoBoxHandlers as $infoBoxHandler) {
+            $this->attach($infoBoxHandler);
+        }
 
         $this->statusValues = $statusRepository->findAll();
         $this->variables = $variablesRepository->findAll();

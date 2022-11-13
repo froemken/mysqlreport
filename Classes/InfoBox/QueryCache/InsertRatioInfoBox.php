@@ -27,12 +27,22 @@ class InsertRatioInfoBox extends AbstractInfoBox
 
     protected $title = 'Insert Ratio';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         if (
             !isset($page->getStatusValues()['Qcache_hits'])
             || (int)$page->getStatusValues()['Qcache_hits'] === 0
-            || !$this->getQueryCacheHelper()->isQueryCacheEnabled($page)
+            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
         ) {
             $this->shouldBeRendered = false;
             return '';
@@ -63,10 +73,5 @@ class InsertRatioInfoBox extends AbstractInfoBox
         }
 
         return round($insertRatio, 4);
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }

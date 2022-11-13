@@ -34,7 +34,7 @@ class ProfileController extends AbstractController
      */
     protected $profileRepository;
 
-    public function __construct(ProfileRepository $profileRepository)
+    public function injectProfileRepository(ProfileRepository $profileRepository): void
     {
         $this->profileRepository = $profileRepository;
     }

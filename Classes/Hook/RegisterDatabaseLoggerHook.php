@@ -44,21 +44,23 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
      */
     private $sqlLoggerHelper;
 
-    /**
-     * Do not add any parameters to this constructor!
-     * This class was called so early that you can not flush cache over BE and Installtool.
-     */
-    public function __construct()
+    public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
     {
-        $extensionConfiguration = GeneralUtility::makeInstance(ExtensionConfiguration::class);
         try {
             $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
             $this->extConf = [];
         }
+    }
 
-        $this->connectionHelper = GeneralUtility::makeInstance(ConnectionHelper::class);
-        $this->sqlLoggerHelper = GeneralUtility::makeInstance(SqlLoggerHelper::class);
+    public function injectConnectionHelper(ConnectionHelper $connectionHelper): void
+    {
+        $this->connectionHelper = $connectionHelper;
+    }
+
+    public function injectSqlLoggerHelper(SqlLoggerHelper $sqlLoggerHelper): void
+    {
+        $this->sqlLoggerHelper = $sqlLoggerHelper;
         $this->sqlLoggerHelper->setConnectionConfiguration($this->connectionHelper->getConnectionConfiguration());
     }
 

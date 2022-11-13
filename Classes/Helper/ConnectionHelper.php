@@ -31,19 +31,24 @@ class ConnectionHelper
     private $connection;
 
     /**
+     * @var ConnectionPool
+     */
+    private $connectionPool;
+
+    /**
      * @var SqlLoggerHelper
      */
     private $sqlLoggerHelper;
 
-    /**
-     * Do not add any parameters to this constructor!
-     * This class was called so early that you can not flush cache over BE and Installtool.
-     */
-    public function __construct()
+    public function injectConnectionPool(ConnectionPool $connectionPool): void
     {
+        $this->connectionPool = $connectionPool;
         $this->connection = $this->getConnection();
+    }
 
-        $this->sqlLoggerHelper = GeneralUtility::makeInstance(SqlLoggerHelper::class);
+    public function injectSqlLoggerHelper(SqlLoggerHelper $sqlLoggerHelper): void
+    {
+        $this->sqlLoggerHelper = $sqlLoggerHelper;
         $this->sqlLoggerHelper->setConnectionConfiguration($this->connection->getConfiguration());
     }
 
@@ -114,7 +119,7 @@ class ConnectionHelper
 
     public function getQueryBuilderForTable(string $table): QueryBuilder
     {
-        return $this->getConnectionPool()->getQueryBuilderForTable($table);
+        return $this->connectionPool->getQueryBuilderForTable($table);
     }
 
     public function executeQueryBuilder(QueryBuilder $queryBuilder): Statement
@@ -125,7 +130,7 @@ class ConnectionHelper
     private function getConnection(): ?Connection
     {
         try {
-            return $this->getConnectionPool()->getConnectionByName(
+            return $this->connectionPool->getConnectionByName(
                 ConnectionPool::DEFAULT_CONNECTION_NAME
             );
         } catch (\UnexpectedValueException $unexpectedValueException) {
@@ -137,10 +142,5 @@ class ConnectionHelper
         }
 
         return null;
-    }
-
-    private function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }

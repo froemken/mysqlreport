@@ -27,12 +27,22 @@ class PruneRatioInfoBox extends AbstractInfoBox
 
     protected $title = 'Prune Ratio';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         if (
             !isset($page->getStatusValues()['Qcache_inserts'])
             || (int)$page->getStatusValues()['Qcache_inserts'] === 0
-            || !$this->getQueryCacheHelper()->isQueryCacheEnabled($page)
+            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
         ) {
             $this->shouldBeRendered = false;
             return '';
@@ -75,10 +85,5 @@ class PruneRatioInfoBox extends AbstractInfoBox
         }
 
         return round($pruneRatio, 4);
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }
