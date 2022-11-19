@@ -13,6 +13,7 @@ Registration of InfoBoxes has moved from array syntax into Services.yaml
 PageFinder has been migrated to Symfony Service Locator
 Add new SqlViewHelper to format SQL statements (only composer)
 Update documentation
+Remove all usages of GeneralUtility::makeInstance
 
 **Version 1.1.5**
 
