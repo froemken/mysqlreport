@@ -7,7 +7,7 @@
 MySQL Report API
 ================
 
-Since `mysqlreport` 1.0.0 there is a completely rewritten API to add your own panels/infoboxes
+Since `mysqlreport` 2.0.0 there is a completely rewritten API to add your own panels/infoboxes
 to the backend module.
 
 The infoboxes will be realized with the `f:be.infobox` ViewHelper of TYPO3.
@@ -15,41 +15,32 @@ The infoboxes will be realized with the `f:be.infobox` ViewHelper of TYPO3.
 Infobox Registry
 ================
 
-`mysqlreport` searches for a specific file in each TYPO3 extension:
+If you want to extend pages of `mysqlreport` with further infoboxes you have to add
+some lines to the Service.yaml of your extension.
 
-Path: `[your_ext_key]/Configuration/MySqlReportInfoBoxes.php`
+Example content of the Service.yaml:
 
-You may remember the registration API of TYPO3 for middlewares? Yes, it's the same mechanism.
+.. code-block:: yaml
 
-Example content of the file:
-
-.. code-block:: php
-
-   <?php
-   if (!defined('TYPO3_MODE')) {
-       die ('Access denied.');
-   }
-
-   return [
-       'aUniqueName' => [
-           'class' => \[YourVendor]\[YourExtKey]\InfoBox\Overview\AbortedConnectsInfoBox::class,
-           'pageIdentifier' => 'overview'
-       ]
-   ];
+   services:
+     ...
+     YourVendor\YourExtKey\InfoBox\Information\ConnectionInfoBox:
+       tags:
+         - name: 'mysqlreport.infobox.[pageIdentifier]'
+           priority: 60
 
 As you see, each infobox in the backend module has its own PHP class.
-Please set the `class` attribute and set `pageIdentifier` to the view where your infobox
-should be shown.
+Please attach the tag name for the page you want to modify, to each of your infobox classes.
+With `priority` you can change the loading order of the infoboxes on a specific page.
 
-Currently, following views are available:
+Currently, following tags are available:
 
-*  overview
-*  queryCache
-*  innoDb
-*  threadCache
-*  tableCache
-
-Please have a look into `AbstractController`. There is a list of all available views (all actions of MySqlReport).
+*  mysqlreport.infobox.information
+*  mysqlreport.infobox.innodb
+*  mysqlreport.infobox.misc
+*  mysqlreport.infobox.query_cache
+*  mysqlreport.infobox.table_cache
+*  mysqlreport.infobox.thread_cache
 
 Your own Infobox
 ================

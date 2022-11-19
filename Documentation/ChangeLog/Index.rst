@@ -7,6 +7,13 @@
 ChangeLog
 =========
 
+**Version 2.0.0**
+
+Registration of InfoBoxes has moved from array syntax into Services.yaml
+PageFinder has been migrated to Symfony Service Locator
+Add new SqlViewHelper to format SQL statements (only composer)
+Update documentation
+
 **Version 1.1.5**
 
 Use ->fetch() instead of ->fetchAssociative() for TYPO3 10 standalone compatibility

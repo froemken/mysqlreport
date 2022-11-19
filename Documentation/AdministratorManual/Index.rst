@@ -10,7 +10,7 @@ Administrator manual
 After installation of `mysqlreport` you will see a new backend module `MySQL Report` in `System` section
 of the left menu.
 
-You can navigate throw multiple views over the upper left selectbox.
+Choose a section from one of the topics.
 
 Views
 =====
