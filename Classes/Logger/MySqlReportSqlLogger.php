@@ -68,24 +68,31 @@ class MySqlReportSqlLogger implements SQLLogger
      */
     public $queryIterator = 0;
 
-    public function __construct(
-        ExtensionConfiguration $extensionConfiguration,
-        ConnectionHelper $connectionHelper,
-        ProfileFactory $profileFactory
-    ) {
-        $this->profiles = new \SplQueue();
-        $this->connectionHelper = $connectionHelper;
-        $this->profileFactory = $profileFactory;
-
-        if (!$this->connectionHelper->isConnectionAvailable()) {
-            $this->enabled = false;
-        }
-
+    public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
+    {
         try {
             $this->addExplain = (bool)$extensionConfiguration->get('mysqlreport', 'addExplain');
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
             $this->addExplain = false;
         }
+    }
+
+    public function injectConnectionHelper(ConnectionHelper $connectionHelper): void
+    {
+        $this->connectionHelper = $connectionHelper;
+        if (!$this->connectionHelper->isConnectionAvailable()) {
+            $this->enabled = false;
+        }
+    }
+
+    public function injectProfileFactory(ProfileFactory $profileFactory): void
+    {
+        $this->profileFactory = $profileFactory;
+    }
+
+    public function __construct()
+    {
+        $this->profiles = new \SplQueue();
     }
 
     /**

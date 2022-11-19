@@ -43,10 +43,17 @@ class Page implements \SplSubject
      */
     protected $variables;
 
-    public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
-    {
+    public function __construct(
+        iterable $infoBoxHandlers,
+        StatusRepository $statusRepository,
+        VariablesRepository $variablesRepository
+    ) {
         $this->infoBoxes = new \SplObjectStorage();
         $this->infoBoxViews = new \SplQueue();
+
+        foreach ($infoBoxHandlers as $infoBoxHandler) {
+            $this->attach($infoBoxHandler);
+        }
 
         $this->statusValues = $statusRepository->findAll();
         $this->variables = $variablesRepository->findAll();

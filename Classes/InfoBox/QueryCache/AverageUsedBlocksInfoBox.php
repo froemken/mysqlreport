@@ -15,7 +15,6 @@ use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * InfoBox to inform about current query cache average used blocks
@@ -26,12 +25,22 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox
 
     protected $title = 'Average Used Blocks';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         if (
             !isset($page->getStatusValues()['Qcache_queries_in_cache'])
             || (int)$page->getStatusValues()['Qcache_queries_in_cache'] === 0
-            || !$this->getQueryCacheHelper()->isQueryCacheEnabled($page)
+            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
         ) {
             $this->shouldBeRendered = false;
             return '';
@@ -70,10 +79,5 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox
         }
 
         return round($avgUsedBlocks, 4);
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }

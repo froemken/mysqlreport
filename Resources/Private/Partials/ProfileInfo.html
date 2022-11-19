@@ -1,9 +1,10 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:m="http://typo3.org/ns/StefanFroemken/Mysqlreport/ViewHelper"
       data-namespace-typo3-fluid="true">
 
 <f:be.infobox title="Query" disableIcon="true">
-	{profileRecord.query}
+	{profileRecord.query -> m:format.sql() -> f:format.raw()}
 </f:be.infobox>
 
 <f:if condition="{profileRecord.profile}">

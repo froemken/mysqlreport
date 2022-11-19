@@ -17,7 +17,6 @@ use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * InfoBox to inform about current query cache average query size
@@ -28,12 +27,22 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox
 
     protected $title = 'Average Query Size';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         if (
             !isset($page->getStatusValues()['Qcache_queries_in_cache'])
             || (int)$page->getStatusValues()['Qcache_queries_in_cache'] === 0
-            || !$this->getQueryCacheHelper()->isQueryCacheEnabled($page)
+            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
         ) {
             $this->shouldBeRendered = false;
             return '';
@@ -71,10 +80,5 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox
         $queryCacheSize = $variables['query_cache_size'] - (40 * 1024);
 
         return $queryCacheSize - $status['Qcache_free_memory'];
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }

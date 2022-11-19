@@ -11,13 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
-use StefanFroemken\Mysqlreport\Menu\PageFinder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
@@ -28,13 +26,13 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 abstract class AbstractController extends ActionController
 {
     /**
-     * @var PageFinder
+     * @var IconFactory
      */
-    protected $pageFinder;
+    private $iconFactory;
 
-    public function injectPageFinder(PageFinder $pageFinder): void
+    public function injectIconFactory(IconFactory $iconFactory): void
     {
-        $this->pageFinder = $pageFinder;
+        $this->iconFactory = $iconFactory;
     }
 
     protected function initializeView(ViewInterface $view): void
@@ -52,7 +50,7 @@ abstract class AbstractController extends ActionController
             ->makeLinkButton()
             ->setShowLabelText(true)
             ->setTitle('Overview')
-            ->setIcon($this->getIconFactory()->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
+            ->setIcon($this->iconFactory->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
             ->setHref(
                 $uriBuilder->uriFor(
                     'overview',
@@ -70,11 +68,6 @@ abstract class AbstractController extends ActionController
                 ->setDisplayName('Shortcut');
             $buttonBar->addButton($shortcutButton, ButtonBar::BUTTON_POSITION_RIGHT);
         }
-    }
-
-    protected function getIconFactory(): IconFactory
-    {
-        return GeneralUtility::makeInstance(IconFactory::class);
     }
 
     protected function getBackendUser(): BackendUserAuthentication

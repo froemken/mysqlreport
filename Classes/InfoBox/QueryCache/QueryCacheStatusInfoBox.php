@@ -15,7 +15,6 @@ use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * InfoBox to inform about current query cache
@@ -26,11 +25,21 @@ class QueryCacheStatusInfoBox extends AbstractInfoBox
 
     protected $title = 'Query Cache Status';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         $this->setState(StateEnumeration::STATE_INFO);
 
-        if (!$this->getQueryCacheHelper()->isQueryCacheEnabled($page)) {
+        if (!$this->queryCacheHelper->isQueryCacheEnabled($page)) {
             return 'Query Cache is not activated';
         }
 
@@ -39,10 +48,5 @@ class QueryCacheStatusInfoBox extends AbstractInfoBox
         }
 
         return 'Query Cache is activated';
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }
