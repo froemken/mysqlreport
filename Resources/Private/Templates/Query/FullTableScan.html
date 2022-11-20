@@ -5,9 +5,24 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Queries using FTS</h1>
-	<h1>Full Table Scan</h1>
+	<h1>
+		Queries using FTS
+		<small class="text-muted">Full Table Scan</small>
+	</h1>
 
+	<f:if condition="{profileRecords}">
+		<f:then>
+			<f:render section="renderProfileTable" arguments="{_all}" />
+		</f:then>
+		<f:else>
+			<f:be.infobox title="No Queries Found" state="-1" disableIcon="false">
+				Currently, mysqlreport has not found any queries using full table scans.
+			</f:be.infobox>
+		</f:else>
+	</f:if>
+</f:section>
+
+<f:section name="renderProfileTable">
 	<table class="table">
 		<thead>
 		<tr>
