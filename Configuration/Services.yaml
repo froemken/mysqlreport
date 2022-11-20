@@ -48,6 +48,11 @@ services:
   mysqlreport.sql_logger:
     class: StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger
 
+  StefanFroemken\Mysqlreport\EventListener\RoundDurationOfProfileRecordsEventListener:
+    tags:
+      - name: event.listener
+        event: StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent
+
   # Register InfoBoxes for pages (PageIdentifier)
   StefanFroemken\Mysqlreport\InfoBox\Information\ConnectionInfoBox:
     tags:
