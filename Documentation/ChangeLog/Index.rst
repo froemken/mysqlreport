@@ -12,8 +12,12 @@ ChangeLog
 Registration of InfoBoxes has moved from array syntax into Services.yaml
 PageFinder has been migrated to Symfony Service Locator
 Add new SqlViewHelper to format SQL statements (only composer)
-Update documentation
+Update documentation. Explain new API.
+Update documentation. Add a note about using AdminPanel.
 Remove all usages of GeneralUtility::makeInstance
+Add infobox on empty results in Slow Query LOg, Queries using filesort and FTS
+Add Event to modify profile records
+Add EventListener to reduce precision of duration to 6
 
 **Version 1.1.5**
 
