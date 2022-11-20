@@ -4,7 +4,7 @@
   "description": "Analyze and profile your TYPO3 databases queries",
   "license": "GPL-2.0-or-later",
   "keywords": ["typo3", "TYPO3 CMS", "mysql", "profiling", "report", "mysqlreport"],
-  "homepage": "http://www.typo3lexikon.de",
+  "homepage": "https://www.typo3lexikon.de/",
   "authors": [
     {
       "name": "Stefan Froemken",
