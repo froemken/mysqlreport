@@ -12,23 +12,21 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\ViewHelper\Format;
 
 use Doctrine\SqlFormatter\SqlFormatter;
-use Psr\Container\ContainerInterface;
-use Symfony\Contracts\Service\ServiceSubscriberInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
  * ViewHelper to format a SQL statement, as far as "doctrine/sql-formatter" is available
  */
-class SqlViewHelper extends AbstractViewHelper implements ServiceSubscriberInterface
+class SqlViewHelper extends AbstractViewHelper
 {
     /**
-     * @var ContainerInterface
+     * @var SqlFormatter
      */
-    private $locator;
+    private $sqlFormatter;
 
-    public function __construct(ContainerInterface $locator)
+    public function setSqlFormatter(SqlFormatter $sqlFormatter): void
     {
-        $this->locator = $locator;
+        $this->sqlFormatter = $sqlFormatter;
     }
 
     public function initializeArguments(): void
@@ -42,13 +40,6 @@ class SqlViewHelper extends AbstractViewHelper implements ServiceSubscriberInter
         );
     }
 
-    public static function getSubscribedServices(): array
-    {
-        return [
-            'sql_formatter' => '?' . SqlFormatter::class
-        ];
-    }
-
     public function render(): string
     {
         $query = trim($this->arguments['query'] ?? '');
@@ -60,15 +51,10 @@ class SqlViewHelper extends AbstractViewHelper implements ServiceSubscriberInter
             return '';
         }
 
-        if (!$this->locator->has('sql_formatter')) {
+        if (!$this->sqlFormatter instanceof SqlFormatter) {
             return $query;
         }
 
-        return $this->getSqlFormatter()->format($query);
-    }
-
-    private function getSqlFormatter(): SqlFormatter
-    {
-        return $this->locator->get('sql_formatter');
+        return $this->sqlFormatter->format($query);
     }
 }
