@@ -15,6 +15,10 @@ services:
   StefanFroemken\Mysqlreport\Domain\Model\Profile:
     shared: false
 
+  StefanFroemken\Mysqlreport\ViewHelper\Format\SqlViewHelper:
+    calls:
+      - setSqlFormatter: ['@?Doctrine\SqlFormatter\SqlFormatter']
+
   mysqlreport.page.information:
     class: StefanFroemken\Mysqlreport\Menu\Page
     arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.information' }]
