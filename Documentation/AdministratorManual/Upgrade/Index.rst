@@ -14,6 +14,8 @@ I have moved the array based API to Services.yaml. This is a huge change which w
 systems installed as Standalone (ZIP/TAR). Please remove the old `mysqlreport` extension first and then
 install the new 2.0.0 version of `mysqlreport`. For composer based installations I could not reproduce this error.
 
+If you get an error while upgrading, please remove the `typo3temp/var/cache/code/di/` folder and reload your page.
+
 Migrate array config to Services.yaml
 -------------------------------------
 
