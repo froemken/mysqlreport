@@ -11,6 +11,18 @@ ChangeLog
    :local:
 
 
+Version 2.0.2
+=============
+
+- Use correct include in ChangeLog docs
+- Add space in admin manual to prevent broken parsing
+- Improve ChangeLog
+
+Version 2.0.1
+=============
+
+- Add upgrade section to documentation
+
 Version 2.0.0
 =============
 
