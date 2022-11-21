@@ -11,6 +11,12 @@ ChangeLog
    :local:
 
 
+Version 2.0.3
+=============
+
+- [DOCS] Use packagist package name as package name
+- [DOCS] Remove duplicate section
+
 Version 2.0.2
 =============
 
