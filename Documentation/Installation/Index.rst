@@ -10,7 +10,7 @@ Installation
 Extension Manager
 =================
 
-Install `mysqlreport` in TYPO3 standalone installations with help of Extension Manager:
+Install `mysqlreport` in TYPO3 legacy installations with the help of Extension Manager:
 
 ..  rst-class:: bignums
 
@@ -20,11 +20,11 @@ Install `mysqlreport` in TYPO3 standalone installations with help of Extension M
 
 2. Visit Extension Manager
 
-   Click `Extension Manager` from the left side menu.
+   Click :guilabel:`Extension Manager` from the left side menu.
 
 3. Get Extension
 
-   Choose `Get Extensions` from the upper selectbox.
+   Choose :guilabel:`Get Extensions` from the upper selectbox.
 
 4. Search
 
@@ -34,14 +34,14 @@ Install `mysqlreport` in TYPO3 standalone installations with help of Extension M
 
    Find `mysqlreport` in the list and install the extension with the icon on the left.
 
-5. Wait
+6. Wait
 
    The installation will be confirmed with a blue notification on the upper right.
 
 Composer
 ========
 
-Install `mysqlreport` in TYPO3 composer based installations on the shell:
+Install `mysqlreport` in TYPO3 Composer-based installations on the shell:
 
 ..  rst-class:: bignums
 
@@ -61,9 +61,19 @@ Install `mysqlreport` in TYPO3 composer based installations on the shell:
 
 4. Add `mysqlreport` profile table
 
-   .. code-block:: bash
+   .. tabs::
 
-      vendor/bin/typo3 extension:setup -e mysqlreport
+      .. group-tab:: Composer-based installation
+
+         .. code-block:: bash
+
+            vendor/bin/typo3 extension:setup -e mysqlreport
+
+      .. group-tab:: Legacy installation
+
+         .. code-block:: bash
+
+            typo3/sysext/core/bin/typo3 extension:setup -e mysqlreport
 
 
 Next step
