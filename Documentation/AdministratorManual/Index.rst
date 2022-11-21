@@ -18,7 +18,7 @@ Views
 Overview
 --------
 
-This is the first view you will see after opening the `mysqlreport`backend module. It contains general information
+This is the first view you will see after opening the `mysqlreport` backend module. It contains general information
 about your MySQL/MariaDB server and uptime.
 
 Query Cache
