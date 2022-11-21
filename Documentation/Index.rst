@@ -8,7 +8,7 @@ MySQL Report
    mysqlreport
 
 :Package name:
-   MySQL Report
+   stefanfroemken/mysqlreport
 
 :Version:
    |release|
