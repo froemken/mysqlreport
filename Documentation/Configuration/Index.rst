@@ -20,11 +20,6 @@ profileFrontend
 
 Activate profiling for frontend requests
 
-profileFrontend
----------------
-
-Activate profiling for frontend requests
-
 `mysqlreport` will only collect the queries with there execution times and query type (SELECT/INSERT/UPDATE/DELETE).
 
 profileBackend
