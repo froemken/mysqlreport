@@ -9,7 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\Hook;
+namespace StefanFroemken\Mysqlreport\EventListener;
 
 use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
 use StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper;
@@ -17,8 +17,9 @@ use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\TableConfigurationPostProcessingHookInterface;
-use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Core\Event\BootCompletedEvent;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Add Logger to database connection to store queries of a request
@@ -26,22 +27,13 @@ use TYPO3\CMS\Core\SingletonInterface;
  * Currently, this is the earliest hook I could found in TYPO3 universe.
  * All queries executed before this hook were not collected.
  */
-class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurationPostProcessingHookInterface
+class RegisterDatabaseLoggerEventListener
 {
-    /**
-     * @var array
-     */
-    private $extConf = [];
+    private array $extConf = [];
 
-    /**
-     * @var ConnectionHelper
-     */
-    private $connectionHelper;
+    private SqlLoggerHelper $sqlLoggerHelper;
 
-    /**
-     * @var SqlLoggerHelper
-     */
-    private $sqlLoggerHelper;
+    private ConnectionHelper $connectionHelper;
 
     public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
     {
@@ -63,7 +55,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         $this->sqlLoggerHelper->setConnectionConfiguration($this->connectionHelper->getConnectionConfiguration());
     }
 
-    public function processData(): void
+    public function __invoke(BootCompletedEvent $bootCompletedEvent)
     {
         if (!$this->connectionHelper->isConnectionAvailable()) {
             return;
@@ -142,7 +134,7 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         if (
             isset($this->extConf['profileFrontend'])
             && $this->extConf['profileFrontend']
-            && TYPO3_MODE === 'FE'
+            && $this->getTypo3Mode() === 'FE'
         ) {
             return true;
         }
@@ -150,11 +142,16 @@ class RegisterDatabaseLoggerHook implements SingletonInterface, TableConfigurati
         if (
             isset($this->extConf['profileBackend'])
             && $this->extConf['profileBackend']
-            && TYPO3_MODE === 'BE'
+            && $this->getTypo3Mode() === 'BE'
         ) {
             return true;
         }
 
         return false;
+    }
+
+    private function getTypo3Mode(): string
+    {
+        return GeneralUtility::getIndpEnv('SCRIPT_NAME') === '/typo3/index.php' ? 'BE' : 'FE';
     }
 }
