@@ -1,5 +1,5 @@
 <?php
-if (!defined('TYPO3_MODE')) {
+if (!defined('typo3')) {
     die ('Access denied.');
 }
 
