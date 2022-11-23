@@ -39,10 +39,10 @@ class ProfileRepository extends AbstractRepository
             ->orderBy('crdate', 'DESC')
             ->setMaxResults(100);
 
-        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $statement->fetch()) {
+        while ($profileRecord = $result->fetch()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -67,10 +67,10 @@ class ProfileRepository extends AbstractRepository
             ->groupBy('query_type')
             ->orderBy('duration', 'DESC');
 
-        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $statement->fetch()) {
+        while ($profileRecord = $result->fetch()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -98,10 +98,10 @@ class ProfileRepository extends AbstractRepository
             )
             ->orderBy('duration', 'DESC');
 
-        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $statement->fetch()) {
+        while ($profileRecord = $result->fetch()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -147,10 +147,10 @@ class ProfileRepository extends AbstractRepository
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);
 
-        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $statement->fetch()) {
+        while ($profileRecord = $result->fetch()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -175,10 +175,10 @@ class ProfileRepository extends AbstractRepository
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);
 
-        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $statement->fetch()) {
+        while ($profileRecord = $result->fetch()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -203,10 +203,10 @@ class ProfileRepository extends AbstractRepository
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);
 
-        $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $statement->fetch()) {
+        while ($profileRecord = $result->fetch()) {
             $profileRecords[] = $profileRecord;
         }
 

@@ -20,13 +20,13 @@ class VariablesRepository extends AbstractRepository
 {
     public function findAll(): Variables
     {
-        $statement = $this->connectionHelper->executeQuery('SHOW GLOBAL VARIABLES');
-        if ($statement === null) {
+        $result = $this->connectionHelper->executeQuery('SHOW GLOBAL VARIABLES');
+        if ($result === null) {
             return new Variables([]);
         }
 
         $rows = [];
-        while ($row = $statement->fetch()) {
+        while ($row = $result->fetch()) {
             $rows[$row['Variable_name']] = $row['Value'];
         }
 
