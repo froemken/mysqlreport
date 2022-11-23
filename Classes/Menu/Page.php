@@ -71,8 +71,8 @@ class Page implements \SplSubject
 
     public function notify(): void
     {
-        foreach ($this->infoBoxes as $panel) {
-            $panel->update($this);
+        foreach ($this->infoBoxes as $infoBox) {
+            $infoBox->update($this);
         }
     }
 

@@ -14,6 +14,7 @@ namespace StefanFroemken\Mysqlreport\InfoBox;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Menu\Page;
 use TYPO3\CMS\Core\Type\Exception\InvalidEnumerationValueException;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
@@ -65,17 +66,15 @@ abstract class AbstractInfoBox implements \SplObserver
      */
     protected $view;
 
-    public function injectStandaloneView(StandaloneView $view): void
-    {
-        $this->view = $view;
-        $this->view->setTemplatePathAndFilename($this->template);
-        $this->view->assign('title', $this->title);
-    }
-
     public function __construct()
     {
         $this->unorderedList = new \SplQueue();
         $this->state = new StateEnumeration();
+
+        // Do not load StandaloneView with injectStandaloneView as it is not configured as "shared: false" anymore
+        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
+        $this->view->setTemplatePathAndFilename($this->template);
+        $this->view->assign('title', $this->title);
     }
 
     public function update(\SplSubject $subject): void
