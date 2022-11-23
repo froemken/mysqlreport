@@ -26,7 +26,7 @@ class StatusRepository extends AbstractRepository
         }
 
         $rows = [];
-        while ($row = $result->fetch()) {
+        while ($row = $result->fetchAssociative()) {
             $rows[$row['Variable_name']] = $row['Value'];
         }
 

@@ -42,7 +42,7 @@ class ProfileRepository extends AbstractRepository
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $result->fetch()) {
+        while ($profileRecord = $result->fetchAssociative()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -70,7 +70,7 @@ class ProfileRepository extends AbstractRepository
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $result->fetch()) {
+        while ($profileRecord = $result->fetchAssociative()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -101,7 +101,7 @@ class ProfileRepository extends AbstractRepository
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $result->fetch()) {
+        while ($profileRecord = $result->fetchAssociative()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -124,7 +124,7 @@ class ProfileRepository extends AbstractRepository
                 )
             );
 
-        $profileRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetch() ?: [];
+        $profileRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetchAssociative() ?: [];
 
         /** @var ModifyProfileRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, [$profileRecord]));
@@ -150,7 +150,7 @@ class ProfileRepository extends AbstractRepository
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $result->fetch()) {
+        while ($profileRecord = $result->fetchAssociative()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -178,7 +178,7 @@ class ProfileRepository extends AbstractRepository
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $result->fetch()) {
+        while ($profileRecord = $result->fetchAssociative()) {
             $profileRecords[] = $profileRecord;
         }
 
@@ -206,7 +206,7 @@ class ProfileRepository extends AbstractRepository
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
         $profileRecords = [];
-        while ($profileRecord = $result->fetch()) {
+        while ($profileRecord = $result->fetchAssociative()) {
             $profileRecords[] = $profileRecord;
         }
 

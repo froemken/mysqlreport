@@ -151,7 +151,7 @@ class MySqlReportSqlLogger implements SQLLogger
 
         try {
             if ($result = $this->connectionHelper->executeQuery($profile->getQueryForExplain())) {
-                while ($explainResult = $result->fetch()) {
+                while ($explainResult = $result->fetchAssociative()) {
                     if (empty($explainResult['key'])) {
                         $profile->getExplainInformation()->setIsQueryUsingIndex(false);
                     }
