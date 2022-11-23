@@ -130,8 +130,8 @@ class MySqlReportSqlLogger implements SQLLogger
         $this->profiles[$this->queryIterator]->setDuration(microtime(true) - $this->start);
 
         if ($this->addExplain) {
-            if ($statement = $this->connectionHelper->executeQuery('SHOW profile')) {
-                $this->profiles[$this->queryIterator]->setProfile($statement->fetchAll());
+            if ($result = $this->connectionHelper->executeQuery('SHOW profile')) {
+                $this->profiles[$this->queryIterator]->setProfile($result->fetchAll());
             }
             $this->updateExplainInformation($this->profiles[$this->queryIterator]);
         }
@@ -150,8 +150,8 @@ class MySqlReportSqlLogger implements SQLLogger
         }
 
         try {
-            if ($statement = $this->connectionHelper->executeQuery($profile->getQueryForExplain())) {
-                while ($explainResult = $statement->fetch()) {
+            if ($result = $this->connectionHelper->executeQuery($profile->getQueryForExplain())) {
+                while ($explainResult = $result->fetchAssociative()) {
                     if (empty($explainResult['key'])) {
                         $profile->getExplainInformation()->setIsQueryUsingIndex(false);
                     }

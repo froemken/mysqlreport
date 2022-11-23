@@ -20,13 +20,13 @@ class StatusRepository extends AbstractRepository
 {
     public function findAll(): StatusValues
     {
-        $statement = $this->connectionHelper->executeQuery('SHOW GLOBAL STATUS');
-        if ($statement === null) {
+        $result = $this->connectionHelper->executeQuery('SHOW GLOBAL STATUS');
+        if ($result === null) {
             return new StatusValues([]);
         }
 
         $rows = [];
-        while ($row = $statement->fetch()) {
+        while ($row = $result->fetchAssociative()) {
             $rows[$row['Variable_name']] = $row['Value'];
         }
 
