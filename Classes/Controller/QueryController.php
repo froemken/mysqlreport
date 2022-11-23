@@ -11,25 +11,15 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 
 /**
  * Controller to show results of FTS and filesort
  */
 class QueryController extends AbstractController
 {
-    /**
-     * @var BackendTemplateView
-     */
-    protected $view;
-
-    /**
-     * @var BackendTemplateView
-     */
-    protected $defaultViewObjectName = BackendTemplateView::class;
-
     /**
      * @var ProfileRepository
      */
@@ -50,28 +40,48 @@ class QueryController extends AbstractController
         $this->extConf = $extConf;
     }
 
-    public function filesortAction(): void
+    public function filesortAction(): ResponseInterface
     {
         $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFilesort());
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function fullTableScanAction(): void
+    public function fullTableScanAction(): ResponseInterface
     {
         $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFullTableScan());
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function slowQueryAction(): void
+    public function slowQueryAction(): ResponseInterface
     {
         $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithSlowQueries());
         $this->view->assign('slowQueryTime', $this->extConf->getSlowQueryTime());
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function profileInfoAction(int $uid): void
+    public function profileInfoAction(int $uid): ResponseInterface
     {
         $profileRecord = $this->profileRepository->getProfileRecordByUid($uid);
         $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
         $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
 
         $this->view->assign('profileRecord', $profileRecord);
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 }

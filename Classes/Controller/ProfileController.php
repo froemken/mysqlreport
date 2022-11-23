@@ -11,24 +11,14 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Controller;
 
+use Psr\Http\Message\ResponseInterface;
 use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 
 /**
  * Controller to show and analyze all queries of a request
  */
 class ProfileController extends AbstractController
 {
-    /**
-     * @var BackendTemplateView
-     */
-    protected $view;
-
-    /**
-     * @var BackendTemplateView
-     */
-    protected $defaultViewObjectName = BackendTemplateView::class;
-
     /**
      * @var ProfileRepository
      */
@@ -39,29 +29,49 @@ class ProfileController extends AbstractController
         $this->profileRepository = $profileRepository;
     }
 
-    public function listAction(): void
+    public function listAction(): ResponseInterface
     {
         $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsForCall());
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function showAction(string $uniqueIdentifier): void
+    public function showAction(string $uniqueIdentifier): ResponseInterface
     {
         $this->view->assign('profileTypes', $this->profileRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier));
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function queryTypeAction(string $uniqueIdentifier, string $queryType): void
+    public function queryTypeAction(string $uniqueIdentifier, string $queryType): ResponseInterface
     {
         $this->view->assign('uniqueIdentifier', $uniqueIdentifier);
         $this->view->assign('queryType', $queryType);
         $this->view->assign('profileRecords', $this->profileRepository->getProfileRecordsByQueryType($uniqueIdentifier, $queryType));
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function profileInfoAction(int $uid): void
+    public function profileInfoAction(int $uid): ResponseInterface
     {
         $profileRecord = $this->profileRepository->getProfileRecordByUid($uid);
         $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
         $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
 
         $this->view->assign('profileRecord', $profileRecord);
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 }

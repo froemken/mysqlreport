@@ -12,28 +12,15 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ResponseInterface;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status
  */
 class MySqlReportController extends AbstractController
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $serviceLocator;
-
-    /**
-     * @var BackendTemplateView
-     */
-    protected $view;
-
-    /**
-     * @var BackendTemplateView
-     */
-    protected $defaultViewObjectName = BackendTemplateView::class;
+    private ContainerInterface $serviceLocator;
 
     /**
      * The ServiceLocator loaded here is a container just containing a few objects
@@ -44,60 +31,95 @@ class MySqlReportController extends AbstractController
         $this->serviceLocator = $serviceLocator;
     }
 
-    public function overviewAction(): void
+    public function overviewAction(): ResponseInterface
     {
         $this->view->assign(
             'status',
             $this->serviceLocator->get('repository.status')->findAll()
         );
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function informationAction(): void
+    public function informationAction(): ResponseInterface
     {
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.information')->getRenderedInfoBoxes()
         );
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function innoDbAction(): void
+    public function innoDbAction(): ResponseInterface
     {
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.innodb')->getRenderedInfoBoxes()
         );
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function threadCacheAction(): void
+    public function threadCacheAction(): ResponseInterface
     {
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.thread_cache')->getRenderedInfoBoxes()
         );
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function tableCacheAction(): void
+    public function tableCacheAction(): ResponseInterface
     {
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.table_cache')->getRenderedInfoBoxes()
         );
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function queryCacheAction(): void
+    public function queryCacheAction(): ResponseInterface
     {
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.query_cache')->getRenderedInfoBoxes()
         );
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
-    public function miscAction(): void
+    public function miscAction(): ResponseInterface
     {
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.misc')->getRenderedInfoBoxes()
         );
+
+        $moduleTemplate = $this->getModuleTemplate();
+        $moduleTemplate->setContent($this->view->render());
+
+        return $this->htmlResponse($moduleTemplate->renderContent());
     }
 
     private function getPageByType(string $type): Page

@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
-use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
-use TYPO3\CMS\Extbase\Mvc\View\ViewInterface;
 use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
 
 /**
@@ -25,32 +26,28 @@ use TYPO3\CMS\Extbase\Mvc\Web\Routing\UriBuilder;
  */
 abstract class AbstractController extends ActionController
 {
-    /**
-     * @var IconFactory
-     */
-    private $iconFactory;
+    protected ModuleTemplateFactory $moduleTemplateFactory;
 
-    public function injectIconFactory(IconFactory $iconFactory): void
+    public function injectModuleTemplateFactory(ModuleTemplateFactory $moduleTemplateFactory): void
     {
-        $this->iconFactory = $iconFactory;
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
     }
 
-    protected function initializeView(ViewInterface $view): void
+    protected function getModuleTemplate(): ModuleTemplate
     {
-        /** @var BackendTemplateView $view */
-        parent::initializeView($view);
-
-        $uriBuilder = $this->objectManager->get(UriBuilder::class);
+        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
         $uriBuilder->setRequest($this->request);
 
-        $buttonBar = $view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+
+        $buttonBar = $moduleTemplate->getDocHeaderComponent()->getButtonBar();
 
         // Overview
         $overviewButton = $buttonBar
             ->makeLinkButton()
             ->setShowLabelText(true)
             ->setTitle('Overview')
-            ->setIcon($this->iconFactory->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
+            ->setIcon($this->getIconFactory()->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
             ->setHref(
                 $uriBuilder->uriFor(
                     'overview',
@@ -63,11 +60,17 @@ abstract class AbstractController extends ActionController
         // Shortcut
         if ($this->getBackendUser()->mayMakeShortcut()) {
             $shortcutButton = $buttonBar->makeShortcutButton()
-                ->setModuleName('system_MysqlreportMysql')
-                ->setGetVariables(['route', 'module', 'id'])
+                ->setRouteIdentifier('system_MysqlreportMysql')
                 ->setDisplayName('Shortcut');
             $buttonBar->addButton($shortcutButton, ButtonBar::BUTTON_POSITION_RIGHT);
         }
+
+        return $moduleTemplate;
+    }
+
+    protected function getIconFactory(): IconFactory
+    {
+        return GeneralUtility::makeInstance(IconFactory::class);
     }
 
     protected function getBackendUser(): BackendUserAuthentication
