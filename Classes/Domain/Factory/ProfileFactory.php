@@ -62,7 +62,7 @@ class ProfileFactory
         $this->ip = GeneralUtility::getIndpEnv('REMOTE_ADDR');
         $this->referer = GeneralUtility::getIndpEnv('HTTP_REFERER');
         $this->request = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
-        $this->mode = TYPO3_MODE;
+        $this->mode = $this->getTypo3Mode();
         $this->uniqueCallIdentifier = uniqid('', true);
         $this->crdate = (int)$GLOBALS['EXEC_TIME'];
     }
@@ -86,5 +86,10 @@ class ProfileFactory
         return isset($GLOBALS['TSFE']) && $GLOBALS['TSFE'] instanceof TypoScriptFrontendController
             ? $GLOBALS['TSFE']->id
             : 0;
+    }
+
+    private function getTypo3Mode(): string
+    {
+        return GeneralUtility::getIndpEnv('SCRIPT_NAME') === '/typo3/index.php' ? 'BE' : 'FE';
     }
 }
