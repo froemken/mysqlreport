@@ -7,6 +7,13 @@
 Known Problems
 ==============
 
+AdminPanel
+==========
+
+If you have installed the TYPO3 AdminPanel `mysqlreport` can still be used, but collecting DB queries and profiling
+information will not work anymore, as AdminPanel registers its own SqlLogger and overwrites the SqlLogger
+of `mysqlreport`. Please deinstall AdminPanel, if you want or need full feature set of `mysqlreport`.
+
 TYPO3 compatibility
 ===================
 

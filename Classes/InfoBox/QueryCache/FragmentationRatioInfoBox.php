@@ -16,7 +16,6 @@ use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * InfoBox to inform about current query cache fragmentation ratio
@@ -27,12 +26,22 @@ class FragmentationRatioInfoBox extends AbstractInfoBox
 
     protected $title = 'Fragmentation Ratio';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         if (
             !isset($page->getStatusValues()['Qcache_total_blocks'])
             || (int)$page->getStatusValues()['Qcache_total_blocks'] === 0
-            || !$this->getQueryCacheHelper()->isQueryCacheEnabled($page)
+            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
         ) {
             $this->shouldBeRendered = false;
             return '';
@@ -65,10 +74,5 @@ class FragmentationRatioInfoBox extends AbstractInfoBox
         }
 
         return round($fragmentation, 4);
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }

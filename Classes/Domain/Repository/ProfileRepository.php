@@ -11,11 +11,24 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent;
+use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+
 /**
  * Repository to get records to profile the queries of a request
  */
 class ProfileRepository extends AbstractRepository
 {
+    /**
+     * @var EventDispatcher
+     */
+    private $eventDispatcher;
+
+    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
     public function findProfileRecordsForCall(): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -33,7 +46,10 @@ class ProfileRepository extends AbstractRepository
             $profileRecords[] = $profileRecord;
         }
 
-        return $profileRecords;
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
     }
 
     public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
@@ -58,7 +74,10 @@ class ProfileRepository extends AbstractRepository
             $profileRecords[] = $profileRecord;
         }
 
-        return $profileRecords;
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
     }
 
     public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
@@ -86,7 +105,10 @@ class ProfileRepository extends AbstractRepository
             $profileRecords[] = $profileRecord;
         }
 
-        return $profileRecords;
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
     }
 
     public function getProfileRecordByUid(int $uid): array
@@ -102,7 +124,12 @@ class ProfileRepository extends AbstractRepository
                 )
             );
 
-        return $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetch() ?: [];
+        $profileRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetch() ?: [];
+
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, [$profileRecord]));
+
+        return current($event->getProfileRecords());
     }
 
     public function findProfileRecordsWithFilesort(): array
@@ -127,7 +154,10 @@ class ProfileRepository extends AbstractRepository
             $profileRecords[] = $profileRecord;
         }
 
-        return $profileRecords;
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
     }
 
     public function findProfileRecordsWithFullTableScan(): array
@@ -152,7 +182,10 @@ class ProfileRepository extends AbstractRepository
             $profileRecords[] = $profileRecord;
         }
 
-        return $profileRecords;
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
     }
 
     public function findProfileRecordsWithSlowQueries(): array
@@ -177,6 +210,9 @@ class ProfileRepository extends AbstractRepository
             $profileRecords[] = $profileRecord;
         }
 
-        return $profileRecords;
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
     }
 }

@@ -15,7 +15,6 @@ use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * InfoBox to inform about current query cache too high
@@ -26,11 +25,21 @@ class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox
 
     protected $title = 'Query Cache too high';
 
+    /**
+     * @var QueryCacheHelper
+     */
+    private $queryCacheHelper;
+
+    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    {
+        $this->queryCacheHelper = $queryCacheHelper;
+    }
+
     public function renderBody(Page $page): string
     {
         if (
             !isset($page->getVariables()['query_cache_size'])
-            || !$this->getQueryCacheHelper()->isQueryCacheEnabled($page)
+            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
         ) {
             $this->shouldBeRendered = false;
             return '';
@@ -49,10 +58,5 @@ class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox
         $content[] = 'Try to keep query cache below 256MBAs higher as better.';
 
         return implode(' ', $content);
-    }
-
-    protected function getQueryCacheHelper(): QueryCacheHelper
-    {
-        return GeneralUtility::makeInstance(QueryCacheHelper::class);
     }
 }

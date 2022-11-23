@@ -13,8 +13,6 @@ namespace StefanFroemken\Mysqlreport\Helper;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Logging\SQLLogger;
-use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Helper with useful methods for SQL logger
@@ -26,6 +24,16 @@ class SqlLoggerHelper
      */
     private $configuration;
 
+    /**
+     * @var SQLLogger
+     */
+    private $sqlLogger;
+
+    public function injectSqlLogger(SQLLogger $sqlLogger): void
+    {
+        $this->sqlLogger = $sqlLogger;
+    }
+
     public function setConnectionConfiguration(?Configuration $configuration): void
     {
         $this->configuration = $configuration;
@@ -35,7 +43,7 @@ class SqlLoggerHelper
     {
         if ($configuration = $this->configuration) {
             if ($sqlLogger === null) {
-                $sqlLogger = $this->getSqlLogger();
+                $sqlLogger = $this->sqlLogger;
             }
 
             $configuration->setSQLLogger($sqlLogger);
@@ -56,10 +64,5 @@ class SqlLoggerHelper
         }
 
         return null;
-    }
-
-    private function getSqlLogger(): SQLLogger
-    {
-        return GeneralUtility::makeInstance(MySqlReportSqlLogger::class);
     }
 }

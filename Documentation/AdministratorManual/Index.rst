@@ -10,7 +10,7 @@ Administrator manual
 After installation of `mysqlreport` you will see a new backend module `MySQL Report` in `System` section
 of the left menu.
 
-You can navigate throw multiple views over the upper left selectbox.
+Choose a section from one of the topics.
 
 Views
 =====
@@ -18,7 +18,7 @@ Views
 Overview
 --------
 
-This is the first view you will see after opening the `mysqlreport`backend module. It contains general information
+This is the first view you will see after opening the `mysqlreport` backend module. It contains general information
 about your MySQL/MariaDB server and uptime.
 
 Query Cache
@@ -94,3 +94,10 @@ table `tx_mysqlreport_domain_model_profile`. As big as your TYPO3 could be, this
 slow down your TYPO3 system a lot. Please keep an eye on that table.
 `mysqlreport` comes with a new entry in Clear Cache menu of TYPO3 (icon at the upper right)
 called `Clear MySQL Profiles`. A click will clear (TRUNCATE) the complete profile table.
+
+
+.. toctree::
+   :maxdepth: 2
+   :titlesonly:
+
+   Upgrade/Index
