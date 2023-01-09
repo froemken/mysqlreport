@@ -36,7 +36,7 @@ class ProfileRepository extends AbstractRepository
             ->select('unique_call_identifier', 'crdate', 'mode')
             ->add('select', 'SUM(duration) as duration, COUNT(*) as amount', true)
             ->from('tx_mysqlreport_domain_model_profile')
-            ->groupBy('unique_call_identifier', 'crdate' , 'mode')
+            ->groupBy('unique_call_identifier', 'crdate', 'mode')
             ->orderBy('crdate', 'DESC')
             ->setMaxResults(100);
 
