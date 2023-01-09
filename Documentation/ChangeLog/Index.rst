@@ -11,6 +11,11 @@ ChangeLog
    :local:
 
 
+Version 2.0.4
+=============
+
+- [BUGFIX] #78 Incompatible queries with mysql only-full-group-by
+
 Version 2.0.3
 =============
 
