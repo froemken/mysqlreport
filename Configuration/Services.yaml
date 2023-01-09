@@ -48,6 +48,14 @@ services:
   mysqlreport.sql_logger:
     class: StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger
 
+  StefanFroemken\Mysqlreport\EventListener\CacheAction:
+    tags:
+      - name: event.listener
+        event: TYPO3\CMS\Backend\Backend\Event\ModifyClearCacheActionsEvent
+  StefanFroemken\Mysqlreport\EventListener\RegisterDatabaseLoggerEventListener:
+    tags:
+      - name: event.listener
+        event: TYPO3\CMS\Core\Core\Event\BootCompletedEvent
   StefanFroemken\Mysqlreport\EventListener\RoundDurationOfProfileRecordsEventListener:
     tags:
       - name: event.listener
