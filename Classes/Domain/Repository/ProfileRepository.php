@@ -33,9 +33,10 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->add('select', 'crdate, unique_call_identifier, mode, SUM(duration) as duration, COUNT(*) as amount')
+            ->select('unique_call_identifier', 'crdate', 'mode')
+            ->add('select', 'SUM(duration) as duration, COUNT(*) as amount', true)
             ->from('tx_mysqlreport_domain_model_profile')
-            ->groupBy('unique_call_identifier')
+            ->groupBy('unique_call_identifier', 'crdate' , 'mode')
             ->orderBy('crdate', 'DESC')
             ->setMaxResults(100);
 
@@ -56,7 +57,8 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->add('select', 'query_type, unique_call_identifier, SUM(duration) as duration, COUNT(*) as amount')
+            ->select('query_type', 'unique_call_identifier')
+            ->add('select', 'SUM(duration) as duration, COUNT(*) as amount', true)
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -64,7 +66,7 @@ class ProfileRepository extends AbstractRepository
                     $queryBuilder->createNamedParameter($uniqueIdentifier, \PDO::PARAM_STR)
                 )
             )
-            ->groupBy('query_type')
+            ->groupBy('query_type', 'unique_call_identifier')
             ->orderBy('duration', 'DESC');
 
         $statement = $this->connectionHelper->executeQueryBuilder($queryBuilder);
