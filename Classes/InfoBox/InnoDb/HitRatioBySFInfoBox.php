@@ -21,9 +21,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class HitRatioBySFInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'innoDb';
+    protected string $pageIdentifier = 'innoDb';
 
-    protected $title = 'Hit Ratio by SF';
+    protected string $title = 'Hit Ratio by SF';
 
     public function renderBody(Page $page): string
     {

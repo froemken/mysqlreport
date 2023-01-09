@@ -22,49 +22,32 @@ use TYPO3\CMS\Fluid\View\StandaloneView;
  */
 abstract class AbstractInfoBox implements \SplObserver
 {
-    /**
-     * @var string
-     */
-    protected $pageIdentifier = '';
+    protected string $pageIdentifier = '';
 
     /**
      * This is the title of the infobox
-     *
-     * @var string
      */
-    protected $title = '';
+    protected string $title = '';
 
     /**
      * Use addUnorderedListEntry to add new elements to <ul> output
-     *
-     * @var \SplQueue
      */
-    private $unorderedList;
+    private \SplQueue $unorderedList;
 
     /**
      * You can highlight the infobox with help of the state constants
-     *
-     * @var StateEnumeration
      */
-    private $state;
+    private StateEnumeration $state;
 
     /**
      * You can decide, if this panel should be rendered or not.
      * Useful, if a MySQL status/variable does not exist.
-     *
-     * @var bool
      */
-    protected $shouldBeRendered = true;
+    protected bool $shouldBeRendered = true;
 
-    /**
-     * @var string
-     */
-    protected $template = 'EXT:mysqlreport/Resources/Private/Templates/InfoBox/Default.html';
+    protected string $template = 'EXT:mysqlreport/Resources/Private/Templates/InfoBox/Default.html';
 
-    /**
-     * @var StandaloneView
-     */
-    protected $view;
+    protected StandaloneView $view;
 
     public function __construct()
     {

@@ -22,9 +22,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class LogFileSizeInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'innoDb';
+    protected string $pageIdentifier = 'innoDb';
 
-    protected $title = 'Log File Size';
+    protected string $title = 'Log File Size';
 
     public function renderBody(Page $page): string
     {

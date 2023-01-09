@@ -21,9 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class InnoDbBufferLoadInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'innoDb';
+    protected string $pageIdentifier = 'innoDb';
 
-    protected $title = 'InnoDB Buffer Load';
+    protected string $title = 'InnoDB Buffer Load';
 
     public function renderBody(Page $page): string
     {

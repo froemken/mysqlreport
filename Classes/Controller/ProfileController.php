@@ -19,10 +19,7 @@ use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
  */
 class ProfileController extends AbstractController
 {
-    /**
-     * @var ProfileRepository
-     */
-    protected $profileRepository;
+    protected ProfileRepository $profileRepository;
 
     public function injectProfileRepository(ProfileRepository $profileRepository): void
     {

@@ -22,14 +22,11 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class HitRatioInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'queryCache';
+    protected string $pageIdentifier = 'queryCache';
 
-    protected $title = 'Hit Ratio';
+    protected string $title = 'Hit Ratio';
 
-    /**
-     * @var QueryCacheHelper
-     */
-    private $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

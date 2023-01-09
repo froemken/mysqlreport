@@ -21,40 +21,19 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class ProfileFactory
 {
-    /**
-     * @var int
-     */
-    private $pageUid;
+    private int $pageUid;
 
-    /**
-     * @var string
-     */
-    private $ip;
+    private string $ip;
 
-    /**
-     * @var string
-     */
-    private $referer;
+    private string $referer;
 
-    /**
-     * @var string
-     */
-    private $request;
+    private string $request;
 
-    /**
-     * @var string
-     */
-    private $mode;
+    private string $mode;
 
-    /**
-     * @var string
-     */
-    private $uniqueCallIdentifier;
+    private string $uniqueCallIdentifier;
 
-    /**
-     * @var int
-     */
-    private $crdate;
+    private int $crdate;
 
     public function __construct()
     {

@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class AbortedConnectsInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'misc';
+    protected string $pageIdentifier = 'misc';
 
-    protected $title = 'Aborted Connects';
+    protected string $title = 'Aborted Connects';
 
     public function renderBody(Page $page): string
     {

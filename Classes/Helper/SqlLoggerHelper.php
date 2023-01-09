@@ -19,15 +19,9 @@ use Doctrine\DBAL\Logging\SQLLogger;
  */
 class SqlLoggerHelper
 {
-    /**
-     * @var Configuration|null
-     */
-    private $configuration;
+    private ?Configuration $configuration = null;
 
-    /**
-     * @var SQLLogger
-     */
-    private $sqlLogger;
+    private SQLLogger $sqlLogger;
 
     public function injectSqlLogger(SQLLogger $sqlLogger): void
     {

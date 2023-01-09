@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class BinaryLogInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'misc';
+    protected string $pageIdentifier = 'misc';
 
-    protected $title = 'Binary Log';
+    protected string $title = 'Binary Log';
 
     public function renderBody(Page $page): string
     {

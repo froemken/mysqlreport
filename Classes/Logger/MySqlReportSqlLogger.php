@@ -31,42 +31,26 @@ class MySqlReportSqlLogger implements SQLLogger
      *
      * @var \SplQueue|Profile[]
      */
-    public $profiles;
+    public \SplQueue $profiles;
 
-    /**
-     * @var ConnectionHelper
-     */
-    protected $connectionHelper;
+    protected ConnectionHelper $connectionHelper;
 
-    /**
-     * @var ProfileFactory
-     */
-    protected $profileFactory;
+    protected ProfileFactory $profileFactory;
 
     /**
      * If enabled, this class will log queries
-     *
-     * @var bool
      */
-    public $enabled = true;
+    public bool $enabled = true;
 
     /**
      * Value from extension setting
      * Default to false, because "true" can reduce query execution a lot
-     *
-     * @var bool
      */
-    public $addExplain = false;
+    public bool $addExplain = false;
 
-    /**
-     * @var float
-     */
-    public $start = 0.0;
+    public float $start = 0.0;
 
-    /**
-     * @var int
-     */
-    public $queryIterator = 0;
+    public int $queryIterator = 0;
 
     public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
     {

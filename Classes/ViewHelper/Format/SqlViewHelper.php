@@ -19,10 +19,7 @@ use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
  */
 class SqlViewHelper extends AbstractViewHelper
 {
-    /**
-     * @var SqlFormatter
-     */
-    private $sqlFormatter;
+    private ?SqlFormatter $sqlFormatter = null;
 
     public function setSqlFormatter(SqlFormatter $sqlFormatter): void
     {

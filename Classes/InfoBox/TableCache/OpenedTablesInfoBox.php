@@ -23,9 +23,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class OpenedTablesInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'tableCache';
+    protected string $pageIdentifier = 'tableCache';
 
-    protected $title = 'Opened Tables';
+    protected string $title = 'Opened Tables';
 
     public function renderBody(Page $page): string
     {

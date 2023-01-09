@@ -21,9 +21,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class HitRatioInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'threadCache';
+    protected string $pageIdentifier = 'threadCache';
 
-    protected $title = 'Hit Ratio';
+    protected string $title = 'Hit Ratio';
 
     public function renderBody(Page $page): string
     {

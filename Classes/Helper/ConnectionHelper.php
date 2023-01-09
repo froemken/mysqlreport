@@ -24,20 +24,11 @@ use TYPO3\CMS\Core\Database\Query\QueryBuilder;
  */
 class ConnectionHelper
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private ?Connection $connection = null;
 
-    /**
-     * @var ConnectionPool
-     */
-    private $connectionPool;
+    private ConnectionPool $connectionPool;
 
-    /**
-     * @var SqlLoggerHelper
-     */
-    private $sqlLoggerHelper;
+    private SqlLoggerHelper $sqlLoggerHelper;
 
     public function injectConnectionPool(ConnectionPool $connectionPool): void
     {

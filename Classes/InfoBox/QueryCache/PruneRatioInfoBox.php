@@ -22,14 +22,11 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class PruneRatioInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'queryCache';
+    protected string $pageIdentifier = 'queryCache';
 
-    protected $title = 'Prune Ratio';
+    protected string $title = 'Prune Ratio';
 
-    /**
-     * @var QueryCacheHelper
-     */
-    private $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

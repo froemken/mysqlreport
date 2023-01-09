@@ -23,14 +23,11 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class AverageQuerySizeInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'queryCache';
+    protected string $pageIdentifier = 'queryCache';
 
-    protected $title = 'Average Query Size';
+    protected string $title = 'Average Query Size';
 
-    /**
-     * @var QueryCacheHelper
-     */
-    private $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

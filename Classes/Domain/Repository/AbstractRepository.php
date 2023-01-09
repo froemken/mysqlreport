@@ -19,15 +19,9 @@ use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
  */
 abstract class AbstractRepository
 {
-    /**
-     * @var ConnectionHelper
-     */
-    protected $connectionHelper;
+    protected ConnectionHelper $connectionHelper;
 
-    /**
-     * @var ExtConf
-     */
-    protected $extConf;
+    protected ExtConf $extConf;
 
     public function __construct(ConnectionHelper $connectionHelper, ExtConf $extConf)
     {

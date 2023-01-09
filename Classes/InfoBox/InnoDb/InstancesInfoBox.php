@@ -21,9 +21,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class InstancesInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'innoDb';
+    protected string $pageIdentifier = 'innoDb';
 
-    protected $title = 'Instances';
+    protected string $title = 'Instances';
 
     public function renderBody(Page $page): string
     {

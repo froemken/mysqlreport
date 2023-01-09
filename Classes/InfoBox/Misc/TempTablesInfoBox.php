@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class TempTablesInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'misc';
+    protected string $pageIdentifier = 'misc';
 
-    protected $title = 'Temporary Tables';
+    protected string $title = 'Temporary Tables';
 
     public function renderBody(Page $page): string
     {

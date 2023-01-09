@@ -20,9 +20,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class ConnectionInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'information';
+    protected string $pageIdentifier = 'information';
 
-    protected $title = 'Connections';
+    protected string $title = 'Connections';
 
     public function renderBody(Page $page): string
     {

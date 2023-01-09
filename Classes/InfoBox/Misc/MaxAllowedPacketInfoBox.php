@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class MaxAllowedPacketInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'misc';
+    protected string $pageIdentifier = 'misc';
 
-    protected $title = 'Max Packet Size';
+    protected string $title = 'Max Packet Size';
 
     public function renderBody(Page $page): string
     {

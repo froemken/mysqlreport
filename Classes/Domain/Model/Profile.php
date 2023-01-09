@@ -19,80 +19,35 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class Profile
 {
-    /**
-     * @var int
-     */
-    private $uid = 0;
+    private int $uid = 0;
 
-    /**
-     * @var int
-     */
-    private $pid = 0;
+    private int $pid = 0;
 
-    /**
-     * @var string
-     */
-    private $ip = '';
+    private string $ip = '';
 
-    /**
-     * @var string
-     */
-    private $referer = '';
+    private string $referer = '';
 
-    /**
-     * @var string
-     */
-    private $request = '';
+    private string $request = '';
 
-    /**
-     * @var string
-     */
-    private $queryType = '';
+    private string $queryType = '';
 
-    /**
-     * @var float
-     */
-    private $duration = 0.0;
+    private float $duration = 0.0;
 
-    /**
-     * @var string
-     */
-    private $query = '';
+    private string $query = '';
 
-    /**
-     * @var array
-     */
-    private $queryParameters = [];
+    private array $queryParameters = [];
 
-    /**
-     * @var array
-     */
-    private $queryParameterTypes = [];
+    private array $queryParameterTypes = [];
 
-    /**
-     * @var array
-     */
-    private $profile = [];
+    private array $profile = [];
 
-    /**
-     * @var ExplainInformation
-     */
-    private $explainInformation;
+    private ExplainInformation $explainInformation;
 
-    /**
-     * @var string
-     */
-    private $mode = '';
+    private string $mode = '';
 
-    /**
-     * @var string
-     */
-    private $uniqueCallIdentifier = '';
+    private string $uniqueCallIdentifier = '';
 
-    /**
-     * @var int
-     */
-    private $crdate = 0;
+    private int $crdate = 0;
 
     public function __construct()
     {

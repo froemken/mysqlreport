@@ -21,9 +21,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class BackLogInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'misc';
+    protected string $pageIdentifier = 'misc';
 
-    protected $title = 'Back Log';
+    protected string $title = 'Back Log';
 
     public function renderBody(Page $page): string
     {

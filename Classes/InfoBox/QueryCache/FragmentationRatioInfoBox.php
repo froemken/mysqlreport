@@ -22,14 +22,11 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class FragmentationRatioInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'queryCache';
+    protected string $pageIdentifier = 'queryCache';
 
-    protected $title = 'Fragmentation Ratio';
+    protected string $title = 'Fragmentation Ratio';
 
-    /**
-     * @var QueryCacheHelper
-     */
-    private $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

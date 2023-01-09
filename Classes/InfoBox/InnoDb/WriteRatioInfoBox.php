@@ -21,9 +21,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class WriteRatioInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'innoDb';
+    protected string $pageIdentifier = 'innoDb';
 
-    protected $title = 'Write Ratio';
+    protected string $title = 'Write Ratio';
 
     public function renderBody(Page $page): string
     {

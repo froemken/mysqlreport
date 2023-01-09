@@ -16,20 +16,11 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
  */
 class ExplainInformation
 {
-    /**
-     * @var array
-     */
-    private $explainResults = [];
+    private array $explainResults = [];
 
-    /**
-     * @var bool
-     */
-    private $isQueryUsingIndex = true;
+    private bool $isQueryUsingIndex = true;
 
-    /**
-     * @var bool
-     */
-    private $isQueryUsingFTS = false;
+    private bool $isQueryUsingFTS = false;
 
     public function getExplainResults(): array
     {

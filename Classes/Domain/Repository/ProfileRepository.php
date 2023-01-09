@@ -19,10 +19,7 @@ use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
  */
 class ProfileRepository extends AbstractRepository
 {
-    /**
-     * @var EventDispatcher
-     */
-    private $eventDispatcher;
+    private EventDispatcher $eventDispatcher;
 
     public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
     {

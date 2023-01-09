@@ -21,14 +21,11 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class AverageUsedBlocksInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'queryCache';
+    protected string $pageIdentifier = 'queryCache';
 
-    protected $title = 'Average Used Blocks';
+    protected string $title = 'Average Used Blocks';
 
-    /**
-     * @var QueryCacheHelper
-     */
-    private $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

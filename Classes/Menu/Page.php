@@ -26,22 +26,16 @@ class Page implements \SplSubject
     /**
      * @var \SplObjectStorage|AbstractInfoBox[]
      */
-    protected $infoBoxes;
+    protected \SplObjectStorage $infoBoxes;
 
     /**
      * @var \SplQueue|ViewInterface[]
      */
-    protected $infoBoxViews;
+    protected \SplQueue $infoBoxViews;
 
-    /**
-     * @var StatusValues
-     */
-    protected $statusValues;
+    protected StatusValues $statusValues;
 
-    /**
-     * @var Variables
-     */
-    protected $variables;
+    protected Variables $variables;
 
     public function __construct(
         iterable $infoBoxHandlers,

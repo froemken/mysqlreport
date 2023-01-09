@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class StandaloneReplicationInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'misc';
+    protected string $pageIdentifier = 'misc';
 
-    protected $title = 'Standalone or Replication';
+    protected string $title = 'Standalone or Replication';
 
     public function renderBody(Page $page): string
     {

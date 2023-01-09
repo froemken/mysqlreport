@@ -21,14 +21,11 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class QueryCacheStatusInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'queryCache';
+    protected string $pageIdentifier = 'queryCache';
 
-    protected $title = 'Query Cache Status';
+    protected string $title = 'Query Cache Status';
 
-    /**
-     * @var QueryCacheHelper
-     */
-    private $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class SyncBinaryLogInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'misc';
+    protected string $pageIdentifier = 'misc';
 
-    protected $title = 'Sync Binary Log';
+    protected string $title = 'Sync Binary Log';
 
     public function renderBody(Page $page): string
     {

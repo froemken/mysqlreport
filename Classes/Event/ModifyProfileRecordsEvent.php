@@ -17,15 +17,9 @@ namespace StefanFroemken\Mysqlreport\Event;
  */
 class ModifyProfileRecordsEvent
 {
-    /**
-     * @var string
-     */
-    private $methodName;
+    private string $methodName;
 
-    /**
-     * @var array
-     */
-    private $profileRecords;
+    private array $profileRecords;
 
     public function __construct(string $methodName, array $profileRecords)
     {

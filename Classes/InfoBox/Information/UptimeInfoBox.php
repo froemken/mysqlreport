@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class UptimeInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'information';
+    protected string $pageIdentifier = 'information';
 
-    protected $title = 'Uptime';
+    protected string $title = 'Uptime';
 
     public function renderBody(Page $page): string
     {

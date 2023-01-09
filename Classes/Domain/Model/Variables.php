@@ -17,10 +17,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
  */
 class Variables implements \ArrayAccess
 {
-    /**
-     * @var array
-     */
-    private $storage;
+    private array $storage;
 
     public function __construct(array $storage)
     {

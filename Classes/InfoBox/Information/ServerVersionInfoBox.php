@@ -19,9 +19,9 @@ use StefanFroemken\Mysqlreport\Menu\Page;
  */
 class ServerVersionInfoBox extends AbstractInfoBox
 {
-    protected $pageIdentifier = 'information';
+    protected string $pageIdentifier = 'information';
 
-    protected $title = 'Server Information';
+    protected string $title = 'Server Information';
 
     public function renderBody(Page $page): string
     {
