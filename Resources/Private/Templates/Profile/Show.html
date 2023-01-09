@@ -7,7 +7,14 @@
 <f:section name="content">
 	<h1>Queries grouped by type</h1>
 
-	<f:link.action action="list" controller="Profile" class="btn btn-primary">Back</f:link.action>
+	<f:be.infobox title="Request" disableIcon="true">
+		<pre><code>{profileTypes.0.request}</code></pre>
+	</f:be.infobox>
+
+	<p>
+		<f:link.action action="list" controller="Profile" class="btn btn-primary">Back</f:link.action>
+	</p>
+
 	<table class="table">
 		<thead>
 		<tr>

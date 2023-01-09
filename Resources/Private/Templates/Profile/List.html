@@ -35,6 +35,15 @@
 							               arguments="{uniqueIdentifier: profileRecord.unique_call_identifier}">
 								<core:icon identifier="actions-search" />
 							</f:link.action>
+							<f:link.external uri="{profileRecord.request}" target="_blank">
+								<span data-bs-toggle="tooltip"
+								      title="{profileRecord.request}"
+								      class="btn btn-default"
+								      data-bs-html="true"
+								      data-bs-placement="right">
+									<core:icon identifier="actions-document-share" />
+								</span>
+							</f:link.external>
 						</td>
 					</tr>
 				</f:for>
