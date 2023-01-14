@@ -16,7 +16,7 @@
 				<p class="card-text">Show information about your server like version, uptime and current connects</p>
 			</div>
 			<div class="card-footer">
-				<a href="{be:moduleLink(route: 'mysqlreport', arguments={action: 'information'})}" class="btn btn-primary">
+				<a href="{be:moduleLink(route: 'system_mysqlreport', arguments={action: 'information'})}" class="btn btn-primary">
 					Show
 				</a>
 			</div>
@@ -42,7 +42,7 @@
 				<p class="card-text">InnoDB is the default engine of MySQL/MariaDB to store data and tries to keep as much as possible in RAM.</p>
 			</div>
 			<div class="card-footer">
-				<a href="{be:moduleLink(route: 'mysqlreport', arguments={action: 'innoDb'})}" class="btn btn-primary">
+				<a href="{be:moduleLink(route: 'system_mysqlreport', arguments={action: 'innoDb'})}" class="btn btn-primary">
 					Show
 				</a>
 			</div>
@@ -55,7 +55,7 @@
 				<p class="card-text">Each client connect needs a thread on server side to establish a connection.</p>
 			</div>
 			<div class="card-footer">
-				<a href="{be:moduleLink(route: 'mysqlreport', arguments={action: 'threadCache'})}" class="btn btn-primary">
+				<a href="{be:moduleLink(route: 'system_mysqlreport', arguments={action: 'threadCache'})}" class="btn btn-primary">
 					Show
 				</a>
 			</div>
@@ -68,7 +68,7 @@
 				<p class="card-text">Read more about how often a table or a table definition has been opened.</p>
 			</div>
 			<div class="card-footer">
-				<a href="{be:moduleLink(route: 'mysqlreport', arguments={action: 'tableCache'})}" class="btn btn-primary">
+				<a href="{be:moduleLink(route: 'system_mysqlreport', arguments={action: 'tableCache'})}" class="btn btn-primary">
 					Show
 				</a>
 			</div>
@@ -81,7 +81,7 @@
 				<p class="card-text">If activated, MySQL/MariaDB can store small queries and its result into a query cache.</p>
 			</div>
 			<div class="card-footer">
-				<a href="{be:moduleLink(route: 'mysqlreport', arguments={action: 'queryCache'})}" class="btn btn-primary">
+				<a href="{be:moduleLink(route: 'system_mysqlreport', arguments={action: 'queryCache'})}" class="btn btn-primary">
 					Show
 				</a>
 			</div>
@@ -133,7 +133,7 @@
 				<p class="card-text">Here you will find further information which don't match the other categories. This may change in the future.</p>
 			</div>
 			<div class="card-footer">
-				<a href="{be:moduleLink(route: 'mysqlreport', arguments={action: 'misc'})}" class="btn btn-primary">
+				<a href="{be:moduleLink(route: 'system_mysqlreport', arguments={action: 'misc'})}" class="btn btn-primary">
 					Show
 				</a>
 			</div>

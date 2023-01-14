@@ -23,7 +23,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ModuleTemplateHelper
 {
     private UriBuilder $uriBuilder;
-
     public function __construct(UriBuilder $uriBuilder)
     {
         $this->uriBuilder = $uriBuilder;
@@ -37,7 +36,7 @@ class ModuleTemplateHelper
             ->setTitle('Overview')
             ->setIcon($this->getIconFactory()->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
             ->setHref(
-                $this->uriBuilder->buildUriFromRoute('mysqlreport')
+                $this->uriBuilder->buildUriFromRoute('system_mysqlreport')
             );
 
         $buttonBar->addButton($overviewButton, ButtonBar::BUTTON_POSITION_LEFT);
