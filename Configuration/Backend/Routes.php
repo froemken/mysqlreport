@@ -6,7 +6,7 @@
  */
 return [
     // MySqlReport Overview
-    'mysqlreport' => [
+    'system_mysqlreport' => [
         'path' => '/mysqlreport/overview',
         'target' => \StefanFroemken\Mysqlreport\Controller\MySqlReportController::class . '::handleRequest',
     ],

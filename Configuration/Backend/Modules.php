@@ -4,7 +4,7 @@
  * Definitions for modules provided by EXT:mysqlreport
  */
 return [
-    'mysqlreport' => [
+    'system_mysqlreport' => [
         'parent' => 'system',
         'position' => ['after' => '*'],
         'access' => 'admin',

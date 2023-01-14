@@ -73,7 +73,7 @@ class MySqlReportController
     {
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport',
+            'system_mysqlreport',
             'MySqlReport Overview'
         );
 
@@ -90,7 +90,7 @@ class MySqlReportController
     {
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport',
+            'system_mysqlreport',
             'MySqlReport Information',
             ['action' => 'information']
         );
@@ -108,7 +108,7 @@ class MySqlReportController
     {
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport',
+            'system_mysqlreport',
             'MySqlReport InnoDB',
             ['action' => 'innoDb']
         );
@@ -126,7 +126,7 @@ class MySqlReportController
     {
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport',
+            'system_mysqlreport',
             'MySqlReport Thread Cache',
             ['action' => 'threadCache']
         );
@@ -144,7 +144,7 @@ class MySqlReportController
     {
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport',
+            'system_mysqlreport',
             'MySqlReport Table Cache',
             ['action' => 'tableCache']
         );
@@ -162,7 +162,7 @@ class MySqlReportController
     {
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport',
+            'system_mysqlreport',
             'MySqlReport Query Cache',
             ['action' => 'queryCache']
         );
@@ -180,7 +180,7 @@ class MySqlReportController
     {
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport',
+            'system_mysqlreport',
             'MySqlReport Misc',
             ['action' => 'misc']
         );
