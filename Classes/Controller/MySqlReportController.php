@@ -13,113 +13,185 @@ namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use StefanFroemken\Mysqlreport\Menu\Page;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status
  */
-class MySqlReportController extends AbstractController
+class MySqlReportController
 {
-    private ContainerInterface $serviceLocator;
-
     /**
      * The ServiceLocator loaded here is a container just containing a few objects
      * available for this controller
      */
-    public function injectServiceLocator(ContainerInterface $serviceLocator): void
-    {
+    private ContainerInterface $serviceLocator;
+
+    private ModuleTemplateFactory $moduleTemplateFactory;
+
+    private ModuleTemplateHelper $moduleTemplateHelper;
+
+    public function __construct(
+        ContainerInterface $serviceLocator,
+        ModuleTemplateFactory $moduleTemplateFactory,
+        ModuleTemplateHelper $moduleTemplateHelper
+    ) {
         $this->serviceLocator = $serviceLocator;
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
+        $this->moduleTemplateHelper = $moduleTemplateHelper;
     }
 
-    public function overviewAction(): ResponseInterface
+    public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        $this->view->assign(
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
+
+        $queryParameters = $request->getQueryParams();
+        $actionMethod = ($queryParameters['action'] ?? '') . 'Action';
+
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
+        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
+        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
+
+        if (method_exists($this, $actionMethod)) {
+            $moduleTemplate->setContent(call_user_func([$this, $actionMethod], $moduleTemplate, $view));
+        } else {
+            $moduleTemplate->setContent($this->overviewAction($moduleTemplate, $view));
+        }
+
+        return new HtmlResponse($moduleTemplate->renderContent());
+    }
+
+    private function overviewAction(ModuleTemplate $moduleTemplate, StandaloneView $view): string
+    {
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport',
+            'MySqlReport Overview'
+        );
+
+        $view->setTemplate('MySqlReport/Overview');
+        $view->assign(
             'status',
             $this->serviceLocator->get('repository.status')->findAll()
         );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return $view->render();
     }
 
-    public function informationAction(): ResponseInterface
+    private function informationAction(ModuleTemplate $moduleTemplate, StandaloneView $view): string
     {
-        $this->view->assign(
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport',
+            'MySqlReport Information',
+            ['action' => 'information']
+        );
+
+        $view->setTemplate('MySqlReport/Information');
+        $view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.information')->getRenderedInfoBoxes()
         );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return $view->render();
     }
 
-    public function innoDbAction(): ResponseInterface
+    private function innoDbAction(ModuleTemplate $moduleTemplate, StandaloneView $view): string
     {
-        $this->view->assign(
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport',
+            'MySqlReport InnoDB',
+            ['action' => 'innoDb']
+        );
+
+        $view->setTemplate('MySqlReport/Information');
+        $view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.innodb')->getRenderedInfoBoxes()
         );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return $view->render();
     }
 
-    public function threadCacheAction(): ResponseInterface
+    private function threadCacheAction(ModuleTemplate $moduleTemplate, StandaloneView $view): string
     {
-        $this->view->assign(
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport',
+            'MySqlReport Thread Cache',
+            ['action' => 'threadCache']
+        );
+
+        $view->setTemplate('MySqlReport/Information');
+        $view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.thread_cache')->getRenderedInfoBoxes()
         );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return $view->render();
     }
 
-    public function tableCacheAction(): ResponseInterface
+    private function tableCacheAction(ModuleTemplate $moduleTemplate, StandaloneView $view): string
     {
-        $this->view->assign(
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport',
+            'MySqlReport Table Cache',
+            ['action' => 'tableCache']
+        );
+
+        $view->setTemplate('MySqlReport/Information');
+        $view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.table_cache')->getRenderedInfoBoxes()
         );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return $view->render();
     }
 
-    public function queryCacheAction(): ResponseInterface
+    private function queryCacheAction(ModuleTemplate $moduleTemplate, StandaloneView $view): string
     {
-        $this->view->assign(
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport',
+            'MySqlReport Query Cache',
+            ['action' => 'queryCache']
+        );
+
+        $view->setTemplate('MySqlReport/Information');
+        $view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.query_cache')->getRenderedInfoBoxes()
         );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return $view->render();
     }
 
-    public function miscAction(): ResponseInterface
+    private function miscAction(ModuleTemplate $moduleTemplate, StandaloneView $view): string
     {
-        $this->view->assign(
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport',
+            'MySqlReport Misc',
+            ['action' => 'misc']
+        );
+
+        $view->setTemplate('MySqlReport/Information');
+        $view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.misc')->getRenderedInfoBoxes()
         );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
-
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return $view->render();
     }
 
     private function getPageByType(string $type): Page

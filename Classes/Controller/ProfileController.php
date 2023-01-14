@@ -12,63 +12,146 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
+use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
+use TYPO3\CMS\Backend\Template\ModuleTemplate;
+use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Controller to show and analyze all queries of a request
  */
-class ProfileController extends AbstractController
+class ProfileController
 {
-    protected ProfileRepository $profileRepository;
+    private ProfileRepository $profileRepository;
 
-    public function injectProfileRepository(ProfileRepository $profileRepository): void
-    {
+    private ModuleTemplateFactory $moduleTemplateFactory;
+
+    private ModuleTemplateHelper $moduleTemplateHelper;
+
+    public function __construct(
+        ProfileRepository $profileRepository,
+        ModuleTemplateFactory $moduleTemplateFactory,
+        ModuleTemplateHelper $moduleTemplateHelper
+    ) {
         $this->profileRepository = $profileRepository;
+        $this->moduleTemplateFactory = $moduleTemplateFactory;
+        $this->moduleTemplateHelper = $moduleTemplateHelper;
     }
 
-    public function listAction(): ResponseInterface
+    public function listAction(ServerRequestInterface $request): ResponseInterface
     {
-        $this->view->assign('profileRecords', $this->profileRepository->findProfileRecordsForCall());
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport_profile_list',
+            'MySqlReport Profiles'
+        );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
+        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
+        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
+        $view->setTemplate('Profile/List');
 
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        $view->assign('profileRecords', $this->profileRepository->findProfileRecordsForCall());
+
+        $moduleTemplate->setContent($view->render());
+
+        return new HtmlResponse($moduleTemplate->renderContent());
     }
 
-    public function showAction(string $uniqueIdentifier): ResponseInterface
+    public function showAction(ServerRequestInterface $request): ResponseInterface
     {
-        $this->view->assign('profileTypes', $this->profileRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier));
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport_profile_show',
+            'MySqlReport Show Profile'
+        );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
+        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
+        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
+        $view->setTemplate('Profile/Show');
 
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        $queryParameters = $request->getQueryParams();
+        $view->assign(
+            'profileTypes',
+            $this->profileRepository->getProfileRecordsByUniqueIdentifier(
+                $queryParameters['uniqueIdentifier'] ?? ''
+            )
+        );
+
+        $moduleTemplate->setContent($view->render());
+
+        return new HtmlResponse($moduleTemplate->renderContent());
     }
 
-    public function queryTypeAction(string $uniqueIdentifier, string $queryType): ResponseInterface
+    public function queryTypeAction(ServerRequestInterface $request): ResponseInterface
     {
-        $this->view->assign('uniqueIdentifier', $uniqueIdentifier);
-        $this->view->assign('queryType', $queryType);
-        $this->view->assign('profileRecords', $this->profileRepository->getProfileRecordsByQueryType($uniqueIdentifier, $queryType));
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport_profile_querytype',
+            'MySqlReport Show Profile'
+        );
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
+        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
+        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
+        $view->setTemplate('Profile/QueryType');
 
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        $queryParameters = $request->getQueryParams();
+        $uniqueIdentifier = $queryParameters['uniqueIdentifier'] ?? '';
+        $queryType = $queryParameters['queryType'] ?? '';
+
+        $view->assignMultiple([
+            'uniqueIdentifier' => $uniqueIdentifier,
+            'queryType' => $queryType,
+            'profileRecords' => $this->profileRepository->getProfileRecordsByQueryType($uniqueIdentifier, $queryType),
+        ]);
+
+        $moduleTemplate->setContent($view->render());
+
+        return new HtmlResponse($moduleTemplate->renderContent());
     }
 
-    public function profileInfoAction(int $uid): ResponseInterface
+    public function infoAction(ServerRequestInterface $request): ResponseInterface
     {
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport_profile_info',
+            'MySqlReport Show Profile'
+        );
+
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
+        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
+        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
+        $view->setTemplate('Profile/Info');
+
+        $queryParameters = $request->getQueryParams();
+        $uid = (int)($queryParameters['uid'] ?? 0);
+
         $profileRecord = $this->profileRepository->getProfileRecordByUid($uid);
         $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
         $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
 
-        $this->view->assign('profileRecord', $profileRecord);
+        $view->assign('profileRecord', $profileRecord);
 
-        $moduleTemplate = $this->getModuleTemplate();
-        $moduleTemplate->setContent($this->view->render());
+        $moduleTemplate->setContent($view->render());
 
-        return $this->htmlResponse($moduleTemplate->renderContent());
+        return new HtmlResponse($moduleTemplate->renderContent());
     }
 }
