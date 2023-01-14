@@ -25,8 +25,9 @@ return static function (ContainerConfigurator $container, ContainerBuilder $cont
         public function process(ContainerBuilder $container): void
         {
             $mySqlReportControllerDefinition = $container->findDefinition(MySqlReportController::class);
-            $mySqlReportControllerDefinition->addMethodCall('injectServiceLocator', [
-                ServiceLocatorTagPass::register(
+            $mySqlReportControllerDefinition
+                ->setPublic(true)
+                ->setArgument('$serviceLocator', ServiceLocatorTagPass::register(
                     $container,
                     [
                         'page.information' => new Reference('mysqlreport.page.information'),
@@ -38,8 +39,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $cont
                         'repository.status' => new Reference('mysqlreport.repository.status'),
                         'repository.variables' => new Reference('mysqlreport.repository.variables'),
                     ]
-                )
-            ]);
+                ));
         }
     });
 };

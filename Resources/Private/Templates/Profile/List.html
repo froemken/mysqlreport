@@ -1,5 +1,6 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Default"/>
@@ -29,13 +30,10 @@
 							{profileRecord.duration}
 						</td>
 						<td>
-							<f:link.action action="show"
-							               controller="Profile"
-							               class="btn btn-default"
-							               arguments="{uniqueIdentifier: profileRecord.unique_call_identifier}">
+							<a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: profileRecord.unique_call_identifier})}" class="btn btn-primary">
 								<core:icon identifier="actions-search" />
-							</f:link.action>
-							<f:link.external uri="{profileRecord.request}" target="_blank">
+							</a>
+							<a href="{profileRecord.request}" target="_blank">
 								<span data-bs-toggle="tooltip"
 								      title="{profileRecord.request}"
 								      class="btn btn-default"
@@ -43,7 +41,7 @@
 								      data-bs-placement="right">
 									<core:icon identifier="actions-document-share" />
 								</span>
-							</f:link.external>
+							</a>
 						</td>
 					</tr>
 				</f:for>

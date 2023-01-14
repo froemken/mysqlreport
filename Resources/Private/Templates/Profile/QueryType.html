@@ -1,5 +1,6 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Default"/>
@@ -7,9 +8,9 @@
 <f:section name="content">
 	<h1>Queries of selected type</h1>
 
-	<f:link.action action="show" controller="Profile" class="btn btn-primary"
-	               arguments="{uniqueIdentifier: uniqueIdentifier}">Back
-	</f:link.action>
+	<a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: uniqueIdentifier})}" class="btn btn-primary">
+		Back
+	</a>
 	<table class="table">
 		<thead>
 		<tr>
@@ -30,11 +31,9 @@
 					{profileRecord.duration}
 				</td>
 				<td>
-					<f:link.action action="profileInfo"
-					               class="btn btn-default"
-					               arguments="{uid: profileRecord.uid}">
+					<a href="{be:moduleLink(route: 'mysqlreport_profile_info', arguments: {uid: profileRecord.uid})}" class="btn btn-default">
 						<core:icon identifier="actions-search" />
-					</f:link.action>
+					</a>
 				</td>
 			</tr>
 		</f:for>

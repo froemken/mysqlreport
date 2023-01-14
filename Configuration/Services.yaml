@@ -9,6 +9,12 @@ services:
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
 
+  StefanFroemken\Mysqlreport\Controller\ProfileController:
+    public: true
+
+  StefanFroemken\Mysqlreport\Controller\QueryController:
+    public: true
+
   StefanFroemken\Mysqlreport\Domain\Model\ExplainInformation:
     shared: false
 

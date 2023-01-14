@@ -1,5 +1,6 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Default"/>
@@ -7,13 +8,15 @@
 <f:section name="content">
 	<h1>Queries grouped by type</h1>
 
+	<p>
+		<a href="{be:moduleLink(route: 'mysqlreport_profile_list')}" class="btn btn-primary">
+			Back
+		</a>
+	</p>
+
 	<f:be.infobox title="Request" disableIcon="true">
 		<pre><code>{profileTypes.0.request}</code></pre>
 	</f:be.infobox>
-
-	<p>
-		<f:link.action action="list" controller="Profile" class="btn btn-primary">Back</f:link.action>
-	</p>
 
 	<table class="table">
 		<thead>
@@ -33,11 +36,9 @@
 					{profile.duration}
 				</td>
 				<td>
-					<f:link.action action="queryType" controller="Profile"
-					               class="btn btn-default"
-					               arguments="{uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type}">
+					<a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type})}" class="btn btn-default">
 						<core:icon identifier="actions-search" />
-					</f:link.action>
+					</a>
 				</td>
 			</tr>
 		</f:for>
