@@ -12,18 +12,25 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Container\ContainerInterface;
+use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use StefanFroemken\Mysqlreport\Menu\Page;
 use TYPO3\CMS\Backend\View\BackendTemplateView;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status
  */
-class MySqlReportController extends AbstractController
+class MySqlReportController extends ActionController
 {
     /**
      * @var ContainerInterface
      */
     private $serviceLocator;
+
+    /**
+     * @var ModuleTemplateHelper
+     */
+    private $moduleTemplateHelper;
 
     /**
      * @var BackendTemplateView
@@ -44,8 +51,22 @@ class MySqlReportController extends AbstractController
         $this->serviceLocator = $serviceLocator;
     }
 
+    public function injectModuleTemplateHelper(ModuleTemplateHelper $moduleTemplateHelper): void
+    {
+        $this->moduleTemplateHelper = $moduleTemplateHelper;
+    }
+
+    public function initializeAction(): void
+    {
+        $this->moduleTemplateHelper->setRequest($this->request);
+    }
+
     public function overviewAction(): void
     {
+        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $this->moduleTemplateHelper->addOverviewButton($buttonBar);
+        $this->moduleTemplateHelper->addShortcutButton($buttonBar);
+
         $this->view->assign(
             'status',
             $this->serviceLocator->get('repository.status')->findAll()
@@ -54,6 +75,10 @@ class MySqlReportController extends AbstractController
 
     public function informationAction(): void
     {
+        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $this->moduleTemplateHelper->addOverviewButton($buttonBar);
+        $this->moduleTemplateHelper->addShortcutButton($buttonBar);
+
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.information')->getRenderedInfoBoxes()
@@ -62,6 +87,10 @@ class MySqlReportController extends AbstractController
 
     public function innoDbAction(): void
     {
+        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $this->moduleTemplateHelper->addOverviewButton($buttonBar);
+        $this->moduleTemplateHelper->addShortcutButton($buttonBar);
+
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.innodb')->getRenderedInfoBoxes()
@@ -70,6 +99,10 @@ class MySqlReportController extends AbstractController
 
     public function threadCacheAction(): void
     {
+        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $this->moduleTemplateHelper->addOverviewButton($buttonBar);
+        $this->moduleTemplateHelper->addShortcutButton($buttonBar);
+
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.thread_cache')->getRenderedInfoBoxes()
@@ -78,6 +111,10 @@ class MySqlReportController extends AbstractController
 
     public function tableCacheAction(): void
     {
+        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $this->moduleTemplateHelper->addOverviewButton($buttonBar);
+        $this->moduleTemplateHelper->addShortcutButton($buttonBar);
+
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.table_cache')->getRenderedInfoBoxes()
@@ -86,6 +123,10 @@ class MySqlReportController extends AbstractController
 
     public function queryCacheAction(): void
     {
+        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $this->moduleTemplateHelper->addOverviewButton($buttonBar);
+        $this->moduleTemplateHelper->addShortcutButton($buttonBar);
+
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.query_cache')->getRenderedInfoBoxes()
@@ -94,6 +135,10 @@ class MySqlReportController extends AbstractController
 
     public function miscAction(): void
     {
+        $buttonBar = $this->view->getModuleTemplate()->getDocHeaderComponent()->getButtonBar();
+        $this->moduleTemplateHelper->addOverviewButton($buttonBar);
+        $this->moduleTemplateHelper->addShortcutButton($buttonBar);
+
         $this->view->assign(
             'renderedInfoBoxes',
             $this->getPageByType('page.misc')->getRenderedInfoBoxes()
