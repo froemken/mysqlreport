@@ -10,7 +10,7 @@ if (!defined('TYPO3_MODE')) {
     '', // Position
     [
         \StefanFroemken\Mysqlreport\Controller\MySqlReportController::class => 'overview, information, innoDb, threadCache, tableCache, queryCache, misc',
-        \StefanFroemken\Mysqlreport\Controller\ProfileController::class => 'list, show, queryType, profileInfo',
+        \StefanFroemken\Mysqlreport\Controller\ProfileController::class => 'list, show, queryType, profileInfo, download',
         \StefanFroemken\Mysqlreport\Controller\QueryController::class => 'filesort, fullTableScan, slowQuery, profileInfo',
     ],
     [

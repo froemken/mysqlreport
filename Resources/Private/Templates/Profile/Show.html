@@ -8,7 +8,23 @@
 	<h1>Queries grouped by type</h1>
 
 	<p>
-		<f:link.action action="list" controller="Profile" class="btn btn-primary">Back</f:link.action>
+		<f:link.action action="list"
+		               controller="Profile"
+		               class="btn btn-primary">
+			Back
+		</f:link.action>
+		<f:link.action action="download"
+		               controller="Profile"
+		               class="btn btn-primary"
+		               arguments="{uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'}">
+			Download CSV
+		</f:link.action>
+		<f:link.action action="download"
+		               controller="Profile"
+		               class="btn btn-primary"
+		               arguments="{uniqueIdentifier: uniqueIdentifier, downloadType: 'json'}">
+			Download JSON
+		</f:link.action>
 	</p>
 
 	<table class="table">
