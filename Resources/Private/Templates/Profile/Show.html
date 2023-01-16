@@ -12,6 +12,12 @@
 		<a href="{be:moduleLink(route: 'mysqlreport_profile_list')}" class="btn btn-primary">
 			Back
 		</a>
+		<a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'})}" class="btn btn-primary">
+			Download CSV
+		</a>
+		<a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'json'})}" class="btn btn-primary">
+			Download JSON
+		</a>
 	</p>
 
 	<f:be.infobox title="Request" disableIcon="true">

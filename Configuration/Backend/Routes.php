@@ -35,6 +35,12 @@ return [
         'target' => \StefanFroemken\Mysqlreport\Controller\ProfileController::class . '::infoAction',
     ],
 
+    // MySqlReport Profile Download
+    'mysqlreport_profile_download' => [
+        'path' => '/mysqlreport/profile/download',
+        'target' => \StefanFroemken\Mysqlreport\Controller\ProfileController::class . '::downloadAction',
+    ],
+
     // MySqlReport Query Filesort
     'mysqlreport_query_filesort' => [
         'path' => '/mysqlreport/query/filesort',

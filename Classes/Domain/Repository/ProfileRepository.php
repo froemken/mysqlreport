@@ -31,7 +31,7 @@ class ProfileRepository extends AbstractRepository
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
             ->select('unique_call_identifier', 'crdate', 'mode', 'request')
-            ->add('select', 'SUM(duration) as duration, COUNT(*) as amount', true)
+            ->addSelectLiteral('SUM(duration) as duration, COUNT(*) as amount')
             ->from('tx_mysqlreport_domain_model_profile')
             ->groupBy('unique_call_identifier', 'crdate', 'mode', 'request')
             ->orderBy('crdate', 'DESC')
@@ -50,12 +50,15 @@ class ProfileRepository extends AbstractRepository
         return $event->getProfileRecords();
     }
 
+    /**
+     * To differ between the requests I have implemented the unique identifier
+     */
     public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
             ->select('query_type', 'unique_call_identifier', 'request')
-            ->add('select', 'SUM(duration) as duration, COUNT(*) as amount', true)
+            ->addSelectLiteral('SUM(duration) as duration, COUNT(*) as amount')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -79,11 +82,41 @@ class ProfileRepository extends AbstractRepository
         return $event->getProfileRecords();
     }
 
+    /**
+     * To differ between the requests I have implemented the unique identifier
+     */
+    public function getProfileRecordsForDownloadByUniqueIdentifier(string $uniqueIdentifier, array $columns): array
+    {
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
+            ->select(...$columns)
+            ->from('tx_mysqlreport_domain_model_profile')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'unique_call_identifier',
+                    $queryBuilder->createNamedParameter($uniqueIdentifier, \PDO::PARAM_STR)
+                )
+            );
+
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+
+        $profileRecords = [];
+        while ($profileRecord = $result->fetchAssociative()) {
+            $profileRecords[] = $profileRecord;
+        }
+
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
+    }
+
     public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->add('select', 'uid, query_id, LEFT(query, 120) as query, not_using_index, duration')
+            ->select('uid, query_id, not_using_index, duration')
+            ->addSelectLiteral('LEFT(query, 120) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -135,7 +168,8 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
+            ->select('uid, explain_query, duration, unique_call_identifier')
+            ->addSelectLiteral('LEFT(query, 255) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->like(
@@ -163,7 +197,8 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
+            ->select('uid, explain_query, duration, unique_call_identifier')
+            ->addSelectLiteral('LEFT(query, 255) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -191,7 +226,8 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->add('select', 'uid, LEFT(query, 255) as query, explain_query, duration, unique_call_identifier')
+            ->select('uid, explain_query, duration, unique_call_identifier')
+            ->addSelectLiteral('LEFT(query, 255) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->gte(
