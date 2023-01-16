@@ -11,6 +11,12 @@ ChangeLog
    :local:
 
 
+Version 2.1.0
+=============
+
+- [FEATURE] #80 Download all queries for each request (CSV/JSON)
+- [TASK] Remove AbstractController
+
 Version 2.0.4
 =============
 
