@@ -7,11 +7,14 @@
 <f:section name="content">
 	<h1>Query Profiling</h1>
 
-	<f:link.action action="queryType"
-	               controller="Profile"
-	               class="btn btn-primary"
-	               arguments="{uniqueIdentifier: profileRecord.unique_call_identifier, queryType: profileRecord.query_type}">Back
-	</f:link.action>
+	<p>
+		<f:link.action action="queryType"
+		               controller="Profile"
+		               class="btn btn-primary"
+		               arguments="{uniqueIdentifier: profileRecord.unique_call_identifier, queryType: profileRecord.query_type}">
+			Back
+		</f:link.action>
+	</p>
 
 	<f:render partial="ProfileInfo" arguments="{_all}"/>
 </f:section>
