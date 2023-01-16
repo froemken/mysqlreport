@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Helper;
 
-use Psr\Http\Message\ResponseFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
 use TYPO3\CMS\Core\Utility\CsvUtility;
 
 /**
