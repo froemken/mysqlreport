@@ -14,6 +14,7 @@ namespace StefanFroemken\Mysqlreport\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
+use StefanFroemken\Mysqlreport\Helper\DownloadHelper;
 use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Core\Http\HtmlResponse;
@@ -31,14 +32,18 @@ class ProfileController
 
     private ModuleTemplateHelper $moduleTemplateHelper;
 
+    private DownloadHelper $downloadHelper;
+
     public function __construct(
         ProfileRepository $profileRepository,
         ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleTemplateHelper $moduleTemplateHelper
+        ModuleTemplateHelper $moduleTemplateHelper,
+        DownloadHelper $downloadHelper
     ) {
         $this->profileRepository = $profileRepository;
         $this->moduleTemplateFactory = $moduleTemplateFactory;
         $this->moduleTemplateHelper = $moduleTemplateHelper;
+        $this->downloadHelper = $downloadHelper;
     }
 
     public function listAction(ServerRequestInterface $request): ResponseInterface
@@ -81,12 +86,12 @@ class ProfileController
         $view->setTemplate('Profile/Show');
 
         $queryParameters = $request->getQueryParams();
-        $view->assign(
-            'profileTypes',
-            $this->profileRepository->getProfileRecordsByUniqueIdentifier(
-                $queryParameters['uniqueIdentifier'] ?? ''
-            )
-        );
+        $uniqueIdentifier = $queryParameters['uniqueIdentifier'] ?? '';
+
+        $view->assignMultiple([
+            'uniqueIdentifier' => $uniqueIdentifier,
+            'profileTypes' => $this->profileRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier)
+        ]);
 
         $moduleTemplate->setContent($view->render());
 
@@ -152,5 +157,47 @@ class ProfileController
         $moduleTemplate->setContent($view->render());
 
         return new HtmlResponse($moduleTemplate->renderContent());
+    }
+
+    public function downloadAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $queryParameters = $request->getQueryParams();
+
+        if (empty($queryParameters['downloadType'])) {
+            throw new \RuntimeException('downloadType was not given in request', 1673904554);
+        }
+        if (!in_array($queryParameters['downloadType'], ['csv', 'json'], true)) {
+            throw new \RuntimeException('Given downloadType is not allowed', 1673904777);
+        }
+
+        $columns = [
+            'uid' => 'UID',
+            'query_type' => 'Query Type',
+            'unique_call_identifier' => 'Request ID',
+            'request' => 'HTTP Request',
+            'query_id' => 'Query ID',
+            'query' => 'Query'
+        ];
+
+        $records = $this->profileRepository->getProfileRecordsForDownloadByUniqueIdentifier(
+            $queryParameters['uniqueIdentifier'] ?? '',
+            array_keys($columns)
+        );
+
+        if ($queryParameters['downloadType'] === 'csv') {
+            return $this->downloadAsCsv(array_values($columns), $records);
+        }
+
+        return $this->downloadAsJson($records);
+    }
+
+    private function downloadAsCsv($headerColumns, array $records): ResponseInterface
+    {
+        return $this->downloadHelper->asCSV($headerColumns, $records);
+    }
+
+    private function downloadAsJson(array $records): ResponseInterface
+    {
+        return $this->downloadHelper->asJSON($records);
     }
 }

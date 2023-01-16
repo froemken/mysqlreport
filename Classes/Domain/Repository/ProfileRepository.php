@@ -50,6 +50,9 @@ class ProfileRepository extends AbstractRepository
         return $event->getProfileRecords();
     }
 
+    /**
+     * To differ between the requests I have implemented the unique identifier
+     */
     public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -65,6 +68,35 @@ class ProfileRepository extends AbstractRepository
             )
             ->groupBy('query_type', 'unique_call_identifier', 'request')
             ->orderBy('duration', 'DESC');
+
+        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+
+        $profileRecords = [];
+        while ($profileRecord = $result->fetchAssociative()) {
+            $profileRecords[] = $profileRecord;
+        }
+
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+
+        return $event->getProfileRecords();
+    }
+
+    /**
+     * To differ between the requests I have implemented the unique identifier
+     */
+    public function getProfileRecordsForDownloadByUniqueIdentifier(string $uniqueIdentifier, array $columns): array
+    {
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder
+            ->select(...$columns)
+            ->from('tx_mysqlreport_domain_model_profile')
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'unique_call_identifier',
+                    $queryBuilder->createNamedParameter($uniqueIdentifier, \PDO::PARAM_STR)
+                )
+            );
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 

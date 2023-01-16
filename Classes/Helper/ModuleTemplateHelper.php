@@ -23,6 +23,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 class ModuleTemplateHelper
 {
     private UriBuilder $uriBuilder;
+
     public function __construct(UriBuilder $uriBuilder)
     {
         $this->uriBuilder = $uriBuilder;
