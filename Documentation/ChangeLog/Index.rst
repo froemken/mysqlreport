@@ -10,14 +10,28 @@ ChangeLog
 ..  contents::
     :local:
 
-Version 2.1.0
+Version 3.0.0
 =============
 
+*   Remove TYPO3 10 compatibility
+*   Add TYPO3 12 compatibility
 *   [FEATURE] Implement a lot of dashboard widgets
 *   [BUGFIX] Repair queries in ProfileRepository
 *   [BUGFIX] Repair analyzing queries with FTS
 *   [TASK] Apply new php-cs-fixer configuration
 *   [DOCS] Set indents to 4 spaces
+
+Version 2.1.0
+=============
+
+*   [FEATURE] Add Download Option for JSON and CSV
+*   [BUGFIX] Further adjustments for queries with FULL GROUP
+*   [TESTS] Remove PHP 7.3 tests
+
+Version 2.0.4
+=============
+
+*   [BUGFIX] Incompatible queries in case of FULL GROUP
 
 Version 2.0.3
 =============
