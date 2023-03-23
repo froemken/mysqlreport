@@ -23,8 +23,7 @@
     "doctrine/sql-formatter": "^1.1"
   },
   "require-dev": {
-    "roave/security-advisories": "dev-latest",
-    "friendsofphp/php-cs-fixer": "3.15.0",
+    "friendsofphp/php-cs-fixer": "3.14.0",
     "nimut/testing-framework": "^6.0",
     "phpunit/phpunit": "^9.5"
   },
