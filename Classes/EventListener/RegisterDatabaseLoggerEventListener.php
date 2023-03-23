@@ -81,6 +81,11 @@ class RegisterDatabaseLoggerEventListener
         if ($sqlLogger instanceof MySqlReportSqlLogger) {
             $queriesToStore = [];
             foreach ($sqlLogger->profiles as $key => $profile) {
+                // Do not log our own queries
+                if (strpos($profile->getQuery(), 'tx_mysqlreport_domain_model_profile') !== false) {
+                    continue;
+                }
+
                 $queryToStore = [
                     'pid' => $profile->getPid(),
                     'ip' => $profile->getIp(),
