@@ -43,7 +43,7 @@ in FE and/or BE context.
    Introduction/Index
    Installation/Index
    Configuration/Index
-   AdministratorManual/Index
+   Administrator/Index
    DeveloperManual/Index
    KnownProblems/Index
    ChangeLog/Index
