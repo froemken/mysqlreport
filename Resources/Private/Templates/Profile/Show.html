@@ -6,49 +6,52 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Queries grouped by type</h1>
+    <h1>Queries grouped by type</h1>
 
-	<p>
-		<a href="{be:moduleLink(route: 'mysqlreport_profile_list')}" class="btn btn-primary">
-			Back
-		</a>
-		<a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'})}" class="btn btn-primary">
-			Download CSV
-		</a>
-		<a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'json'})}" class="btn btn-primary">
-			Download JSON
-		</a>
-	</p>
+    <p>
+        <a href="{be:moduleLink(route: 'mysqlreport_profile_list')}" class="btn btn-primary">
+            Back
+        </a>
+        <a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'})}"
+           class="btn btn-primary">
+            Download CSV
+        </a>
+        <a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'json'})}"
+           class="btn btn-primary">
+            Download JSON
+        </a>
+    </p>
 
-	<f:be.infobox title="Request" disableIcon="true">
-		<pre><code>{profileTypes.0.request}</code></pre>
-	</f:be.infobox>
+    <f:be.infobox title="Request" disableIcon="true">
+        <pre><code>{profileTypes.0.request}</code></pre>
+    </f:be.infobox>
 
-	<table class="table">
-		<thead>
-		<tr>
-			<th>Query type</th>
-			<th>Amount of queries</th>
-			<th>Summed Duration</th>
-			<th>Action</th>
-		</tr>
-		</thead>
-		<tbody>
-		<f:for each="{profileTypes}" as="profile">
-			<tr>
-				<td>{profile.query_type}</td>
-				<td>{profile.amount}</td>
-				<td>
-					{profile.duration}
-				</td>
-				<td>
-					<a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type})}" class="btn btn-default">
-						<core:icon identifier="actions-search" />
-					</a>
-				</td>
-			</tr>
-		</f:for>
-		</tbody>
-	</table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Query type</th>
+            <th>Amount of queries</th>
+            <th>Summed Duration</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <f:for each="{profileTypes}" as="profile">
+            <tr>
+                <td>{profile.query_type}</td>
+                <td>{profile.amount}</td>
+                <td>
+                    {profile.duration}
+                </td>
+                <td>
+                    <a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type})}"
+                       class="btn btn-default">
+                        <core:icon identifier="actions-search"/>
+                    </a>
+                </td>
+            </tr>
+        </f:for>
+        </tbody>
+    </table>
 </f:section>
 </html>

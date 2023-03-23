@@ -6,44 +6,45 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Queries using filesort</h1>
+    <h1>Queries using filesort</h1>
 
-	<f:if condition="{profileRecords}">
-		<f:then>
-			<f:render section="renderProfileTable" arguments="{_all}" />
-		</f:then>
-		<f:else>
-			<f:be.infobox title="No Queries Found" state="-1" disableIcon="false">
-				Currently, mysqlreport has not found any queries using filesort.
-			</f:be.infobox>
-		</f:else>
-	</f:if>
+    <f:if condition="{profileRecords}">
+        <f:then>
+            <f:render section="renderProfileTable" arguments="{_all}"/>
+        </f:then>
+        <f:else>
+            <f:be.infobox title="No Queries Found" state="-1" disableIcon="false">
+                Currently, mysqlreport has not found any queries using filesort.
+            </f:be.infobox>
+        </f:else>
+    </f:if>
 </f:section>
 
 <f:section name="renderProfileTable">
-	<table class="table">
-		<thead>
-		<tr>
-			<th>Query</th>
-			<th>Duration</th>
-			<th>Action</th>
-		</tr>
-		</thead>
-		<tbody>
-		<f:for each="{profileRecords}" as="profileRecord">
-			<tr>
-				<td>{profileRecord.query}...</td>
-				<td>
-					{profileRecord.duration}
-				</td>
-				<td>
-					<a href="{be:moduleLink(route: 'mysqlreport_query_profileinfo', arguments: {prevRouteIdentifier: 'mysqlreport_query_filesort', uid: profileRecord.uid})}" class="btn btn-default">
-						<core:icon identifier="actions-search" />
-					</a>
-				</td>
-			</tr>
-		</f:for>
-		</tbody>
-	</table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Query</th>
+            <th>Duration</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <f:for each="{profileRecords}" as="profileRecord">
+            <tr>
+                <td>{profileRecord.query}...</td>
+                <td>
+                    {profileRecord.duration}
+                </td>
+                <td>
+                    <a href="{be:moduleLink(route: 'mysqlreport_query_profileinfo', arguments: {prevRouteIdentifier: 'mysqlreport_query_filesort', uid: profileRecord.uid})}"
+                       class="btn btn-default">
+                        <core:icon identifier="actions-search"/>
+                    </a>
+                </td>
+            </tr>
+        </f:for>
+        </tbody>
+    </table>
 </f:section>
 </html>

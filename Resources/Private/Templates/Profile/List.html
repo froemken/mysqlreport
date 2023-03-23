@@ -6,56 +6,57 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Queries grouped by request</h1>
+    <h1>Queries grouped by request</h1>
 
-	<f:if condition="{profileRecords}">
-		<f:then>
-			<table class="table">
-				<thead>
-				<tr>
-					<th>Execution time</th>
-					<th>Mode</th>
-					<th>Amount of queries in request</th>
-					<th>Summed Duration</th>
-					<th>Action</th>
-				</tr>
-				</thead>
-				<tbody>
-				<f:for each="{profileRecords}" as="profileRecord">
-					<tr>
-						<td>{profileRecord.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
-						<td>{profileRecord.mode}</td>
-						<td>{profileRecord.amount}</td>
-						<td>
-							{profileRecord.duration}
-						</td>
-						<td>
-							<a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: profileRecord.unique_call_identifier})}" class="btn btn-primary">
-								<core:icon identifier="actions-search" />
-							</a>
-							<a href="{profileRecord.request}" target="_blank">
+    <f:if condition="{profileRecords}">
+        <f:then>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Execution time</th>
+                    <th>Mode</th>
+                    <th>Amount of queries in request</th>
+                    <th>Summed Duration</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{profileRecords}" as="profileRecord">
+                    <tr>
+                        <td>{profileRecord.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
+                        <td>{profileRecord.mode}</td>
+                        <td>{profileRecord.amount}</td>
+                        <td>
+                            {profileRecord.duration}
+                        </td>
+                        <td>
+                            <a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: profileRecord.unique_call_identifier})}"
+                               class="btn btn-primary">
+                                <core:icon identifier="actions-search"/>
+                            </a>
+                            <a href="{profileRecord.request}" target="_blank">
 								<span data-bs-toggle="tooltip"
-								      title="{profileRecord.request}"
-								      class="btn btn-default"
-								      data-bs-html="true"
-								      data-bs-placement="right">
-									<core:icon identifier="actions-document-share" />
+                                      title="{profileRecord.request}"
+                                      class="btn btn-default"
+                                      data-bs-html="true"
+                                      data-bs-placement="right">
+									<core:icon identifier="actions-document-share"/>
 								</span>
-							</a>
-						</td>
-					</tr>
-				</f:for>
-				</tbody>
-			</table>
-		</f:then>
-		<f:else>
-			<f:be.infobox title="No profile records" state="-1" disableIcon="true">
-				No profile records collected.
-				Please enable profiling for BE and/or FE in extension settings,
-				visit some pages in BE and/or FE
-				and visit this profile section again.
-			</f:be.infobox>
-		</f:else>
-	</f:if>
+                            </a>
+                        </td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </f:then>
+        <f:else>
+            <f:be.infobox title="No profile records" state="-1" disableIcon="true">
+                No profile records collected.
+                Please enable profiling for BE and/or FE in extension settings,
+                visit some pages in BE and/or FE
+                and visit this profile section again.
+            </f:be.infobox>
+        </f:else>
+    </f:if>
 </f:section>
 </html>

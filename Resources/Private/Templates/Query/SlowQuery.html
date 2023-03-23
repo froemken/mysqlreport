@@ -6,54 +6,55 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>List of Slow Queries</h1>
+    <h1>List of Slow Queries</h1>
 
-	<f:be.infobox title="Current Configuration" state="-1" disableIcon="false">
-		Mysqlreport does not have access to the "real" slow query logfile of your server. It just list
-		queries whose duration was less than
-		{slowQueryTime -> f:format.number(decimals: 2, decimalSeparator: '.', thousandsSeparator: '')} seconds.
-		Please visit extension settings to configure another value. Keep in mind that this list is limited to 100
-		records.
-	</f:be.infobox>
+    <f:be.infobox title="Current Configuration" state="-1" disableIcon="false">
+        Mysqlreport does not have access to the "real" slow query logfile of your server. It just list
+        queries whose duration was less than
+        {slowQueryTime -> f:format.number(decimals: 2, decimalSeparator: '.', thousandsSeparator: '')} seconds.
+        Please visit extension settings to configure another value. Keep in mind that this list is limited to 100
+        records.
+    </f:be.infobox>
 
-	<f:if condition="{profileRecords}">
-		<f:then>
-			<f:render section="renderProfileTable" arguments="{_all}" />
-		</f:then>
-		<f:else>
-			<f:be.infobox title="No Slow Query Entries" state="-1" disableIcon="false">
-				Currently, mysqlreport has not found any slow queries. If you expect some records here please check
-				if profiling is activated in Extension Settings of mysqlreport. If it is already activated please
-				check the max allowed duration of slow queries in Extension Settings. Reduce that value to your needs.
-			</f:be.infobox>
-		</f:else>
-	</f:if>
+    <f:if condition="{profileRecords}">
+        <f:then>
+            <f:render section="renderProfileTable" arguments="{_all}"/>
+        </f:then>
+        <f:else>
+            <f:be.infobox title="No Slow Query Entries" state="-1" disableIcon="false">
+                Currently, mysqlreport has not found any slow queries. If you expect some records here please check
+                if profiling is activated in Extension Settings of mysqlreport. If it is already activated please
+                check the max allowed duration of slow queries in Extension Settings. Reduce that value to your needs.
+            </f:be.infobox>
+        </f:else>
+    </f:if>
 </f:section>
 
 <f:section name="renderProfileTable">
-	<table class="table">
-		<thead>
-		<tr>
-			<th>Query</th>
-			<th>Duration</th>
-			<th>Action</th>
-		</tr>
-		</thead>
-		<tbody>
-		<f:for each="{profileRecords}" as="profileRecord">
-			<tr>
-				<td>{profileRecord.query}...</td>
-				<td>
-					{profileRecord.duration}
-				</td>
-				<td>
-					<a href="{be:moduleLink(route: 'mysqlreport_query_profileinfo', arguments: {prevRouteIdentifier: 'mysqlreport_query_slowquery', uid: profileRecord.uid})}" class="btn btn-default">
-						<core:icon identifier="actions-search" />
-					</a>
-				</td>
-			</tr>
-		</f:for>
-		</tbody>
-	</table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Query</th>
+            <th>Duration</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <f:for each="{profileRecords}" as="profileRecord">
+            <tr>
+                <td>{profileRecord.query}...</td>
+                <td>
+                    {profileRecord.duration}
+                </td>
+                <td>
+                    <a href="{be:moduleLink(route: 'mysqlreport_query_profileinfo', arguments: {prevRouteIdentifier: 'mysqlreport_query_slowquery', uid: profileRecord.uid})}"
+                       class="btn btn-default">
+                        <core:icon identifier="actions-search"/>
+                    </a>
+                </td>
+            </tr>
+        </f:for>
+        </tbody>
+    </table>
 </f:section>
 </html>
