@@ -115,7 +115,7 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('uid, query_id, not_using_index, duration')
+            ->select('uid', 'query_id', 'not_using_index', 'duration')
             ->addSelectLiteral('LEFT(query, 120) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -168,7 +168,7 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('uid, explain_query, duration, unique_call_identifier')
+            ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -197,7 +197,7 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('uid, explain_query, duration, unique_call_identifier')
+            ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -226,7 +226,7 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('uid, explain_query, duration, unique_call_identifier')
+            ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
