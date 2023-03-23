@@ -6,14 +6,15 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Query Profiling</h1>
+    <h1>Query Profiling</h1>
 
-	<p>
-		<a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: profileRecord.unique_call_identifier, queryType: profileRecord.query_type})}" class="btn btn-primary">
-			Back
-		</a>
-	</p>
+    <p>
+        <a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: profileRecord.unique_call_identifier, queryType: profileRecord.query_type})}"
+           class="btn btn-primary">
+            Back
+        </a>
+    </p>
 
-	<f:render partial="ProfileInfo" arguments="{_all}"/>
+    <f:render partial="ProfileInfo" arguments="{_all}"/>
 </f:section>
 </html>

@@ -1,0 +1,88 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  StefanFroemken\Mysqlreport\Dashboard\Widget\:
+    resource: '../Classes/Dashboard/Widget/*'
+
+  dashboard.widget.mysql-max-used-connections:
+    class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
+    arguments:
+      $view: '@dashboard.views.widget'
+      $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\MaxUsedConnectionsDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'mysql-max-used-connections'
+        groupNames: 'mysqlreport'
+        title: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.maxUsedConnections.title'
+        description: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.maxUsedConnections.description'
+        iconIdentifier: 'ext-mysqlreport'
+        height: 'medium'
+
+  dashboard.widget.mysql-inno-db-buffer:
+    class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
+    arguments:
+      $view: '@dashboard.views.widget'
+      $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\InnoDbBufferDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'mysql-inno-db-buffer'
+        groupNames: 'mysqlreport'
+        title: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.innoDbBuffer.title'
+        description: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.innoDbBuffer.description'
+        iconIdentifier: 'ext-mysqlreport'
+        height: 'medium'
+
+  dashboard.widget.mysql-query-types:
+    class: 'TYPO3\CMS\Dashboard\Widgets\BarChartWidget'
+    arguments:
+      $view: '@dashboard.views.widget'
+      $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\QueryTypesDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'mysql-query-types'
+        groupNames: 'mysqlreport'
+        title: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.queryTypes.title'
+        description: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.queryTypes.description'
+        iconIdentifier: 'ext-mysqlreport'
+        height: 'medium'
+
+  dashboard.widget.mysql-created-temp-tables:
+    class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
+    arguments:
+      $view: '@dashboard.views.widget'
+      $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\CreatedTempTablesDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'mysql-created-temp-tables'
+        groupNames: 'mysqlreport'
+        title: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.createdTempTables.title'
+        description: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.createdTempTables.description'
+        iconIdentifier: 'ext-mysqlreport'
+        height: 'medium'
+
+  dashboard.widget.mysql-handler-read-next:
+    class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
+    arguments:
+      $view: '@dashboard.views.widget'
+      $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\HandlerReadNextDataProvider'
+      $options:
+        refreshAvailable: true
+    tags:
+      - name: dashboard.widget
+        identifier: 'mysql-handler-read-next'
+        groupNames: 'mysqlreport'
+        title: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.handlerReadNext.title'
+        description: 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:widget.handlerReadNext.description'
+        iconIdentifier: 'ext-mysqlreport'
+        height: 'medium'

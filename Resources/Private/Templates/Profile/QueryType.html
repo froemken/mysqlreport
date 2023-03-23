@@ -6,41 +6,43 @@
 <f:layout name="Default"/>
 
 <f:section name="content">
-	<h1>Queries of selected type</h1>
+    <h1>Queries of selected type</h1>
 
-	<p>
-		<a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: uniqueIdentifier})}" class="btn btn-primary">
-			Back
-		</a>
-	</p>
+    <p>
+        <a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: uniqueIdentifier})}"
+           class="btn btn-primary">
+            Back
+        </a>
+    </p>
 
-	<table class="table">
-		<thead>
-		<tr>
-			<th>ID/Order</th>
-			<th>Query</th>
-			<th>Not using index</th>
-			<th>Duration</th>
-			<th>Action</th>
-		</tr>
-		</thead>
-		<tbody>
-		<f:for each="{profileRecords}" as="profileRecord">
-			<tr>
-				<td>{profileRecord.query_id}</td>
-				<td>{profileRecord.query}...</td>
-				<td>{profileRecord.not_using_index}</td>
-				<td>
-					{profileRecord.duration}
-				</td>
-				<td>
-					<a href="{be:moduleLink(route: 'mysqlreport_profile_info', arguments: {uid: profileRecord.uid})}" class="btn btn-default">
-						<core:icon identifier="actions-search" />
-					</a>
-				</td>
-			</tr>
-		</f:for>
-		</tbody>
-	</table>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>ID/Order</th>
+            <th>Query</th>
+            <th>Not using index</th>
+            <th>Duration</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <f:for each="{profileRecords}" as="profileRecord">
+            <tr>
+                <td>{profileRecord.query_id}</td>
+                <td>{profileRecord.query}...</td>
+                <td>{profileRecord.not_using_index}</td>
+                <td>
+                    {profileRecord.duration}
+                </td>
+                <td>
+                    <a href="{be:moduleLink(route: 'mysqlreport_profile_info', arguments: {uid: profileRecord.uid})}"
+                       class="btn btn-default">
+                        <core:icon identifier="actions-search"/>
+                    </a>
+                </td>
+            </tr>
+        </f:for>
+        </tbody>
+    </table>
 </f:section>
 </html>
