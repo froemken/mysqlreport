@@ -140,7 +140,7 @@ class MySqlReportSqlLogger implements SQLLogger
                         $profile->getExplainInformation()->setIsQueryUsingIndex(false);
                     }
 
-                    if (strtolower($explainResult['select_type'] ?? '') === 'all') {
+                    if (strtolower($explainResult['type'] ?? '') === 'all') {
                         $profile->getExplainInformation()->setIsQueryUsingFTS(true);
                     }
 
