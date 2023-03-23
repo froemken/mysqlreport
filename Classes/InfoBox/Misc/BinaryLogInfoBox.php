@@ -36,7 +36,7 @@ class BinaryLogInfoBox extends AbstractInfoBox
             $content[] = 'Your server runs in standalone-mode.';
             $content[] = 'You don\'t need replication. So you can deactivate binary logging';
             $content[] = "\n\n";
-            $content[] = 'Link: http://dev.mysql.com/doc/refman/5.6/en/glossary.html#glos_binary_log';
+            $content[] = 'Link: https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_binary_log';
             $content[] = "\n\n";
             $content[] = 'Quote: "The binary logging feature can be turned on and off, although Oracle recommends always';
             $content[] = 'enabling it if you use replication or perform backups."';

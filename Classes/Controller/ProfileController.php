@@ -90,7 +90,7 @@ class ProfileController
 
         $view->assignMultiple([
             'uniqueIdentifier' => $uniqueIdentifier,
-            'profileTypes' => $this->profileRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier)
+            'profileTypes' => $this->profileRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier),
         ]);
 
         $moduleTemplate->setContent($view->render());
@@ -176,7 +176,7 @@ class ProfileController
             'unique_call_identifier' => 'Request ID',
             'request' => 'HTTP Request',
             'query_id' => 'Query ID',
-            'query' => 'Query'
+            'query' => 'Query',
         ];
 
         $records = $this->profileRepository->getProfileRecordsForDownloadByUniqueIdentifier(

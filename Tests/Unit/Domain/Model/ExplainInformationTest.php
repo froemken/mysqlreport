@@ -53,7 +53,7 @@ class ExplainInformationTest extends UnitTestCase
     public function setExplainResultsSetsExplainResults(): void
     {
         $arr = [
-            'foo' => 'bar'
+            'foo' => 'bar',
         ];
 
         $this->subject->setExplainResults($arr);

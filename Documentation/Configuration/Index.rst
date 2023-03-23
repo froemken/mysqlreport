@@ -1,13 +1,13 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
 
-.. _configuration:
+..  _configuration:
 
 =============
 Configuration
 =============
 
-.. _extensionSettings:
+..  _extensionSettings:
 
 Extension Settings
 ==================

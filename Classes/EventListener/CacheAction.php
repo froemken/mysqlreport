@@ -37,7 +37,7 @@ class CacheAction
             'title' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.title',
             'description' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.description',
             'href' => (string)$uriBuilder->buildUriFromRoute('tce_db', ['cacheCmd' => 'mysqlprofiles']),
-            'iconIdentifier' => 'actions-system-cache-clear-impact-high'
+            'iconIdentifier' => 'actions-system-cache-clear-impact-high',
         ]);
     }
 

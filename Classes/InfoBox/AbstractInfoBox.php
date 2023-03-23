@@ -85,7 +85,7 @@ abstract class AbstractInfoBox implements \SplObserver
     {
         $this->unorderedList->enqueue([
             'title' => $title,
-            'value' => $value
+            'value' => $value,
         ]);
     }
 
