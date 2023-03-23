@@ -1,7 +1,7 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
 
-.. _links:
+..  _links:
 
 Links
 -----
@@ -12,13 +12,13 @@ You may want to remove this file if all important links are already handled in
 Settings.cfg.
 
 :Packagist:
-   https://packagist.org/packages/stefanfroemken/mysqlreport
+    https://packagist.org/packages/stefanfroemken/mysqlreport
 
 :TER:
-   https://extensions.typo3.org/extension/mysqlreport/
+    https://extensions.typo3.org/extension/mysqlreport/
 
 :Issues:
-   https://github.com/froemken/mysqlreport/issues
+    https://github.com/froemken/mysqlreport/issues
 
 :GitHub Repository:
-   https://github.com/froemken/mysqlreport
+    https://github.com/froemken/mysqlreport

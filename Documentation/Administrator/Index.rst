@@ -1,7 +1,7 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
 
-.. _admin-manual:
+..  _admin-manual:
 
 ====================
 Administrator manual
@@ -81,10 +81,10 @@ We have implemented this cool feature with version 1.1.0. Please activate profil
 in extension settings to your needs. After some queries where logged this view will show you the 100
 slowest queries, if there is any slower than configured.
 
-.. hint::
+..  hint::
 
-   `mysqlreport` can not access the original Slow Query Log of your server. This view is just a result of
-   a query of our profile table.
+    `mysqlreport` can not access the original Slow Query Log of your server. This view is just a result of
+    a query of our profile table.
 
 Clear Profiles
 ==============
@@ -96,8 +96,8 @@ slow down your TYPO3 system a lot. Please keep an eye on that table.
 called `Clear MySQL Profiles`. A click will clear (TRUNCATE) the complete profile table.
 
 
-.. toctree::
-   :maxdepth: 2
-   :titlesonly:
+..  toctree::
+    :maxdepth: 2
+    :titlesonly:
 
-   Upgrade/Index
+    Upgrade/Index

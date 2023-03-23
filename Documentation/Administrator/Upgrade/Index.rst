@@ -1,7 +1,7 @@
-.. include:: /Includes.rst.txt
+..  include:: /Includes.rst.txt
 
 
-.. _upgrades:
+..  _upgrades:
 
 ========
 Upgrades
@@ -24,24 +24,24 @@ If you have added your own infoboxes to `mysqlreport` you have to migrate your i
 
 Old version:
 
-.. code-block:: php
+..  code-block:: php
 
-   return [
-       'aUniqueName' => [
-           'class' => \[YourVendor]\[YourExtKey]\InfoBox\Overview\AbortedConnectsInfoBox::class,
-           'pageIdentifier' => 'overview'
-       ]
-   ];
+    return [
+        'aUniqueName' => [
+            'class' => \[YourVendor]\[YourExtKey]\InfoBox\Overview\AbortedConnectsInfoBox::class,
+            'pageIdentifier' => 'overview'
+        ]
+    ];
 
 New version:
 
-.. code-block:: yaml
+..  code-block:: yaml
 
-   services:
-     ...
-     [YourVendor]\[YourExtKey]\InfoBox\Overview\AbortedConnectsInfoBox:
-       tags:
-         - name: 'mysqlreport.infobox.overview'
-           priority: 60
+    services:
+      ...
+      [YourVendor]\[YourExtKey]\InfoBox\Overview\AbortedConnectsInfoBox:
+        tags:
+          - name: 'mysqlreport.infobox.overview'
+            priority: 60
 
 Please have a look into the Developer API to get a list of all allowed tags.
