@@ -62,10 +62,10 @@ class BackLogInfoBox extends AbstractInfoBox
             $lastLine = CommandUtility::exec($command . ' kern.ipc.somaxconn');
         }
 
-        if ($lastLine !== '' && str_contains($lastLine, ':')) {
+        if ($lastLine !== '' && strpos($lastLine, ':') !== false) {
             $parts = GeneralUtility::trimExplode(':', $lastLine);
             $value = $parts[1];
-        } elseif ($lastLine !== '' && str_contains($lastLine, '=')) {
+        } elseif ($lastLine !== '' && strpos($lastLine, '=') !== false) {
             $parts = GeneralUtility::trimExplode('=', $lastLine);
             $value = $parts[1];
         }
