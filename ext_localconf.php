@@ -1,6 +1,6 @@
 <?php
 if (!defined('TYPO3')) {
-    die ('Access denied.');
+    die('Access denied.');
 }
 
 // TRUNCATE table tx_mysqlreport_domain_model_profile on clear cache action

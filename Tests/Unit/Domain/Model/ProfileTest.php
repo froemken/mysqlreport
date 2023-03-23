@@ -228,84 +228,84 @@ class ProfileTest extends UnitTestCase
                 'SELECT * FROM pages',
                 [],
                 [],
-                'SELECT * FROM pages'
+                'SELECT * FROM pages',
             ],
 
             'Query with named int parameter' => [
                 'SELECT * FROM pages WHERE crdate = :dcValue1',
                 ['dcValue1' => 123],
                 ['dcValue1' => \PDO::PARAM_INT],
-                'SELECT * FROM pages WHERE crdate = 123'
+                'SELECT * FROM pages WHERE crdate = 123',
             ],
 
             'Query with named bool parameter' => [
                 'SELECT * FROM pages WHERE hidden = :dcValue1',
                 ['dcValue1' => true],
                 ['dcValue1' => \PDO::PARAM_BOOL],
-                'SELECT * FROM pages WHERE hidden = 1'
+                'SELECT * FROM pages WHERE hidden = 1',
             ],
 
             'Query with named null parameter' => [
                 'SELECT * FROM pages WHERE bodytext IS :dcValue1',
                 ['dcValue1' => null],
                 ['dcValue1' => \PDO::PARAM_NULL],
-                'SELECT * FROM pages WHERE bodytext IS NULL'
+                'SELECT * FROM pages WHERE bodytext IS NULL',
             ],
 
             'Query with named int array parameter' => [
                 'SELECT * FROM pages WHERE pid IN (:dcValue1)',
                 ['dcValue1' => [1, 3, 5]],
                 ['dcValue1' => Connection::PARAM_INT_ARRAY],
-                'SELECT * FROM pages WHERE pid IN (1, 3, 5)'
+                'SELECT * FROM pages WHERE pid IN (1, 3, 5)',
             ],
 
             'Query with named string array parameter' => [
                 'SELECT * FROM pages WHERE title IN (:dcValue1)',
                 ['dcValue1' => ['Stefan', 'Petra', 'Lars']],
                 ['dcValue1' => Connection::PARAM_STR_ARRAY],
-                'SELECT * FROM pages WHERE title IN (\'Stefan\', \'Petra\', \'Lars\')'
+                'SELECT * FROM pages WHERE title IN (\'Stefan\', \'Petra\', \'Lars\')',
             ],
 
             'Query with named string parameter' => [
                 'SELECT * FROM pages WHERE title = :dcValue1',
                 ['dcValue1' => 'Stefan'],
                 ['dcValue1' => \PDO::PARAM_STR],
-                'SELECT * FROM pages WHERE title = \'Stefan\''
+                'SELECT * FROM pages WHERE title = \'Stefan\'',
             ],
 
             'Query with multiple parameter' => [
                 'SELECT * FROM pages WHERE title = :dcValue1 AND crdate = :dcValue2',
                 ['dcValue1' => 'Stefan', 'dcValue2' => 123],
                 ['dcValue1' => \PDO::PARAM_STR, 'dcValue2' => \PDO::PARAM_INT],
-                'SELECT * FROM pages WHERE title = \'Stefan\' AND crdate = 123'
+                'SELECT * FROM pages WHERE title = \'Stefan\' AND crdate = 123',
             ],
 
             'Query with questionmark as string' => [
                 'DELETE FROM cache_hash WHERE identifier = ?',
                 [0 => 'trh74823nthgdm8g'],
                 [],
-                'DELETE FROM cache_hash WHERE identifier = \'trh74823nthgdm8g\''
+                'DELETE FROM cache_hash WHERE identifier = \'trh74823nthgdm8g\'',
             ],
 
             'Query with questionmark as int' => [
                 'DELETE FROM cache_hash WHERE uid = ?',
                 [0 => 467218],
                 [],
-                'DELETE FROM cache_hash WHERE uid = 467218'
+                'DELETE FROM cache_hash WHERE uid = 467218',
             ],
 
             'Query with questionmarks' => [
                 'SELECT * FROM pages WHERE title = ? AND crdate = ?',
                 [0 => 'Stefan', 1 => 123],
                 [],
-                'SELECT * FROM pages WHERE title = \'Stefan\' AND crdate = 123'
+                'SELECT * FROM pages WHERE title = \'Stefan\' AND crdate = 123',
             ],
 
             'Query with multiple IN questionmarks' => [
                 'SELECT * FROM pages WHERE pid IN (?, ?, ?)',
                 [0 => 1, 1 => 3, 2 => 5],
                 [],
-                'SELECT * FROM pages WHERE pid IN (1, 3, 5)'
+                'SELECT * FROM pages WHERE pid IN (1, 3, 5)',
             ],
         ];
     }

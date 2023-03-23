@@ -96,7 +96,7 @@ class RegisterDatabaseLoggerEventListener
                     'mode' => $profile->getMode(),
                     'unique_call_identifier' => $profile->getUniqueCallIdentifier(),
                     'crdate' => $profile->getCrdate(),
-                    'query_id' => $key
+                    'query_id' => $key,
                 ];
 
                 $queriesToStore[] = $queryToStore;
@@ -121,7 +121,7 @@ class RegisterDatabaseLoggerEventListener
                         'mode',
                         'unique_call_identifier',
                         'crdate',
-                        'query_id'
+                        'query_id',
                     ]
                 );
             }
