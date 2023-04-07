@@ -11,6 +11,13 @@ services:
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
+    exclude:
+    - '../Classes/Domain/Model/*'
+    - '../Classes/Backend/ToolbarItem/MySqlReportToolbarItem.php'
+
+  # Will be called by GeneralUtility::makeInstance in BackendController
+  StefanFroemken\Mysqlreport\Backend\ToolbarItem\MySqlReportToolbarItemV11:
+    public: true
 
   StefanFroemken\Mysqlreport\Controller\ProfileController:
     public: true

@@ -13,26 +13,21 @@ namespace StefanFroemken\Mysqlreport\Backend\ToolbarItem;
 
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use TYPO3\CMS\Backend\Toolbar\RequestAwareToolbarItemInterface;
 use TYPO3\CMS\Backend\Toolbar\ToolbarItemInterface;
-use TYPO3\CMS\Backend\View\BackendViewFactory;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Toolbar item to inform admins about activated "Add EXPLAIN" option in
  * extension settings of EXT:mysqlreport
  */
-class MySqlReportToolbarItem implements ToolbarItemInterface, RequestAwareToolbarItemInterface
+class MySqlReportToolbarItemV11 implements ToolbarItemInterface
 {
-    private BackendViewFactory $backendViewFactory;
-
-    private ServerRequestInterface $request;
-
     private ExtConf $extConf;
 
-    public function __construct(BackendViewFactory $backendViewFactory, ExtConf $extConf)
+    public function __construct(ExtConf $extConf)
     {
-        $this->backendViewFactory = $backendViewFactory;
         $this->extConf = $extConf;
     }
 
@@ -54,10 +49,10 @@ class MySqlReportToolbarItem implements ToolbarItemInterface, RequestAwareToolba
      */
     public function getItem(): string
     {
-        $view = $this->backendViewFactory->create($this->request, ['stefanfroemken/mysqlreport']);
-        $view->assign('addExplain', $this->extConf->isAddExplain());
-
-        return $view->render('ToolbarItem/MySqlReportToolbarItem');
+        return $this
+            ->getFluidTemplateObject('MySqlReportToolbarItem.html')
+            ->assign('addExplain', $this->extConf->isAddExplain())
+            ->render();
     }
 
     /**
@@ -75,7 +70,7 @@ class MySqlReportToolbarItem implements ToolbarItemInterface, RequestAwareToolba
     {
         if ($this->extConf->isAddExplain()) {
             return '<h3 class="dropdown-headline">MySQL Report</h3>'
-                . '<p class="dropdown-item-text">'
+                . '<p class="dropdown-text">'
                 . 'In extension settings of EXT:mysqlreport the option "Add EXPLAIN" is active!'
                 . ' As that option will reset mysqli information like insert_id and affected_rows of previous queries'
                 . ' it may break your TYPO3 system. F.E you can not create new scheduler tasks.'
@@ -84,7 +79,7 @@ class MySqlReportToolbarItem implements ToolbarItemInterface, RequestAwareToolba
         }
 
         return '<h3 class="dropdown-headline">MySQL Report</h3>'
-            . '<p class="dropdown-item-text">'
+            . '<p class="dropdown-text">'
             . 'No problems with EXT:mysqlreport detected.'
             . '</p>';
     }
@@ -109,5 +104,18 @@ class MySqlReportToolbarItem implements ToolbarItemInterface, RequestAwareToolba
     protected function getBackendUser(): BackendUserAuthentication
     {
         return $GLOBALS['BE_USER'];
+    }
+
+    /**
+     * Returns a new standalone view, shorthand function
+     */
+    protected function getFluidTemplateObject(string $filename): StandaloneView
+    {
+        $view = GeneralUtility::makeInstance(StandaloneView::class);
+        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates/ToolbarItem']);
+        $view->setTemplate($filename);
+
+        $view->getRequest()->setControllerExtensionName('Mysqlreport');
+        return $view;
     }
 }
