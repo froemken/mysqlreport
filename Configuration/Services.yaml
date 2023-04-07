@@ -24,6 +24,10 @@ services:
   StefanFroemken\Mysqlreport\Domain\Model\Profile:
     shared: false
 
+  StefanFroemken\Mysqlreport\Report\StatusReport:
+    tags:
+      - name: reports.status
+
   StefanFroemken\Mysqlreport\ViewHelper\Format\SqlViewHelper:
     calls:
       - setSqlFormatter: ['@?Doctrine\SqlFormatter\SqlFormatter']
