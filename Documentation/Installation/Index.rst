@@ -10,7 +10,8 @@ Installation
 Extension Manager
 =================
 
-Install `mysqlreport` in TYPO3 legacy installations with the help of Extension Manager:
+Install `mysqlreport` in TYPO3 legacy installations with the help of
+Extension Manager:
 
 ..  rst-class:: bignums
 
@@ -32,11 +33,13 @@ Install `mysqlreport` in TYPO3 legacy installations with the help of Extension M
 
 5.  Install
 
-    Find `mysqlreport` in the list and install the extension with the icon on the left.
+    Find `mysqlreport` in the list and install the extension with the icon on
+    the left.
 
 6.  Wait
 
-    The installation will be confirmed with a blue notification on the upper right.
+    The installation will be confirmed with a blue notification on the upper
+    right.
 
 Composer
 ========

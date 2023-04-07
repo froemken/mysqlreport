@@ -30,8 +30,8 @@ MySQL Report
 
 ----
 
-With `mysqlreport` you can analyze and profile all SQL queries executed by TYPO3s ConnectionPool API
-in FE and/or BE context.
+With `mysqlreport` you can analyze and profile all SQL queries executed by
+TYPO3s ConnectionPool API in FE and/or BE context.
 
 ----
 

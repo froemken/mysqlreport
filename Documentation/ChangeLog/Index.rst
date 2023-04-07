@@ -10,6 +10,14 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 3.0.1
+=============
+
+*   [DOCS] Reduce line length to max. 80 chars
+*   [DOCS] Add a note about problems with "Add EXPLAIN" option
+*   [TASK] Add status report about activated "Add EXPLAIN" option
+*   [TASK] Add toolbar item to notify about activated "Add EXPLAIN" option
+
 Version 3.0.0
 =============
 
@@ -67,7 +75,8 @@ Version 2.0.0
 Version 1.1.5
 =============
 
-*   Use :php:`->fetch()` instead of :php:`->fetchAssociative()` for TYPO3 v10 standalone compatibility
+*   Use :php:`->fetch()` instead of :php:`->fetchAssociative()` for TYPO3 v10
+    standalone compatibility
 
 Version 1.1.4
 =============

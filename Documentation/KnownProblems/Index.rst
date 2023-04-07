@@ -10,16 +10,20 @@ Known Problems
 AdminPanel
 ==========
 
-If you have installed the TYPO3 AdminPanel `mysqlreport` can still be used, but collecting DB queries and profiling
-information will not work anymore, as AdminPanel registers its own SqlLogger and overwrites the SqlLogger
-of `mysqlreport`. Please deinstall AdminPanel, if you want or need full feature set of `mysqlreport`.
+If you have installed the TYPO3 AdminPanel `mysqlreport` can still be used, but
+collecting DB queries and profiling information will not work anymore, as
+AdminPanel registers its own SqlLogger and overwrites the SqlLogger
+of `mysqlreport`. Please deinstall AdminPanel, if you want or need full feature
+set of `mysqlreport`.
 
 TYPO3 compatibility
 ===================
 
-I have tried to add as many try-catch blocks as possible to nearly every method which was marked with
-@throws. This should prevent throwing exceptions or breaking TYPO3 while using `mysqlreport`. This extension is ready
-for LIVE systems. If there is still a problem, please create an issue at GitHub.
+I have tried to add as many try-catch blocks as possible to nearly every method
+which was marked with @throws. This should prevent throwing exceptions or
+break TYPO3 while using `mysqlreport`. This extension is ready for LIVE
+systems. If there is still a problem, please create an issue at
+`MySQL Report at GitHub <https://github.com/froemken/mysqlreport/issues>`__
 
 Support of further Database Systems
 ===================================
@@ -29,16 +33,31 @@ Currently, `mysqlreport` just supports MySQL and MariaDB only.
 Support of further Connections
 ==============================
 
-Currently, `mysqlreport` just supports the DEFAULT Database Connection of TYPO3 only.
+Currently, `mysqlreport` just supports the DEFAULT Database Connection of
+TYPO3 only.
 
 SQL Logger
 ==========
 
-`mysqlreport` comes with its own SQL Logger. If you have implemented your own SQL Logger
-`mysqlreport` will overwrite SQL Logger with its own version.
+`mysqlreport` comes with its own SQL Logger. If you have implemented your own
+SQL Logger `mysqlreport` will overwrite SQL Logger with its own version.
+
+Empty insert_id
+===============
+
+That will only happen, if you have activated "Add EXPLAIN" in Extension
+Settings. The additional "SHOW profile;" query of `mysqlreport` will
+reset the internal information (insert_id and affected_rows) of the previous
+query.
+
+You will find further information about that in `configuration` section
+of this documentation.
+
+Please inform me, if you have a hint how to solve that problem.
 
 Missing Queries in profiling
 ============================
 
-`mysqlreport` is not a TYPO3 system extension. That's why `mysqlreport` has to wait until the first official hook
-or event to inject its own SQL Logger into the TYPO3 system. All queries before that event can therefore not be logged.
+`mysqlreport` is not a TYPO3 system extension. That's why `mysqlreport` has to
+wait until the first official hook or event to inject its own SQL Logger into
+the TYPO3 system. All queries before that event can therefore not be logged.

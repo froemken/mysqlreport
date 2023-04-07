@@ -11,6 +11,14 @@ services:
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
+    exclude:
+    - '../Classes/Domain/Model/*'
+    # Remove while removing TYPO3 11 compatibility
+    - '../Classes/Backend/ToolbarItem/*'
+
+  # Will be called by GeneralUtility::makeInstance in BackendController
+  #StefanFroemken\Mysqlreport\Backend\ToolbarItem\MySqlReportToolbarItemV11:
+  #  public: true
 
   StefanFroemken\Mysqlreport\Controller\ProfileController:
     public: true
@@ -23,6 +31,10 @@ services:
 
   StefanFroemken\Mysqlreport\Domain\Model\Profile:
     shared: false
+
+  StefanFroemken\Mysqlreport\Report\StatusReport:
+    tags:
+      - name: reports.status
 
   StefanFroemken\Mysqlreport\ViewHelper\Format\SqlViewHelper:
     calls:
