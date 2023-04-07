@@ -1,0 +1,16 @@
+<html lang="en"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<span class="toolbar-item-icon dropdown-item" title="EXT:mysqlreport">
+    <f:if condition="{addExplain}">
+        <f:then>
+            <core:icon identifier="ext-mysqlreport" overlay="overlay-missing" size="small" alternativeMarkupIdentifier="inline" />
+        </f:then>
+        <f:else>
+            <core:icon identifier="ext-mysqlreport" overlay="overlay-approved" size="small" alternativeMarkupIdentifier="inline" />
+        </f:else>
+    </f:if>
+</span>
+<span class="toolbar-item-title">EXT:mysqlreport</span>
+</html>
