@@ -10,6 +10,14 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 3.0.1
+=============
+
+*   [DOCS] Reduce line length to max. 80 chars
+*   [DOCS] Add a note about problems with "Add EXPLAIN" option
+*   [TASK] Add status report about activated "Add EXPLAIN" option
+*   [TASK] Add toolbar item to notify about activated "Add EXPLAIN" option
+
 Version 3.0.0
 =============
 
