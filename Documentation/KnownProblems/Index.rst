@@ -21,8 +21,9 @@ TYPO3 compatibility
 
 I have tried to add as many try-catch blocks as possible to nearly every method
 which was marked with @throws. This should prevent throwing exceptions or
-breaking TYPO3 while using `mysqlreport`. This extension is ready for LIVE
-systems. If there is still a problem, please create an issue at GitHub.
+break TYPO3 while using `mysqlreport`. This extension is ready for LIVE
+systems. If there is still a problem, please create an issue at
+`MySQL Report at GitHub <https://github.com/froemken/mysqlreport/issues>`__
 
 Support of further Database Systems
 ===================================
@@ -40,6 +41,19 @@ SQL Logger
 
 `mysqlreport` comes with its own SQL Logger. If you have implemented your own
 SQL Logger `mysqlreport` will overwrite SQL Logger with its own version.
+
+Empty insert_id
+===============
+
+That will only happen, if you have activated "Add EXPLAIN" in Extension
+Settings. The additional "SHOW profile;" query of `mysqlreport` will
+reset the internal information (insert_id and affected_rows) of the previous
+query.
+
+You will find further information about that in `configuration` section
+of this documentation.
+
+Please inform me, if you have a hint how to solve that problem.
 
 Missing Queries in profiling
 ============================

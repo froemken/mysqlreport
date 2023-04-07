@@ -20,7 +20,7 @@ profileFrontend
 
 Activate profiling for frontend requests
 
-`mysqlreport` will only collect the queries with there execution times and
+`mysqlreport` will only collect the queries with their execution times and
 query type (SELECT/INSERT/UPDATE/DELETE).
 
 profileBackend
@@ -28,7 +28,7 @@ profileBackend
 
 Activate profiling for backend requests
 
-`mysqlreport` will only collect the queries with there execution times and
+`mysqlreport` will only collect the queries with their execution times and
 query type (SELECT/INSERT/UPDATE/DELETE).
 
 addExplain
@@ -42,10 +42,24 @@ with a prefixed `EXPLAIN` to retrieve detailed index and performance
 information. You will see these additional information in backend module
 of `mysqlreport` in section `Profiling` in the detail view of a selected query.
 
-If this feature is activated it can slow down your TYPO3 system a lot. Please
-keep that in mind and activate that options for some minutes or hours, but
-not days or weeks. The additional data can grow very fast and can exceed your
-DB storage very fast. A size of over 6 GB is not seldom!
+..  note::
+
+    If this feature is activated it can slow down your TYPO3 system a lot.
+    Please keep that in mind and activate that options for some minutes or
+    few hours, but not days or weeks. The additional data can grow very fast
+    and can exceed your DB storage very fast. A size of over 6 GB is not
+    seldom!
+
+..  warning::
+
+    With help of the integrated SqlLogger for Doctrine the additional
+    `SHOW profile;` query will be executed immediatly after the original query.
+    As that additional query does not have an autoincrement, it will reset
+    the internal `mysqli` information of the last query. That means: If
+    the PHP code needs the `insert_id` after an INSERT or `affected_rows`
+    after an UPDATE query, these infomation are lost (0). F.E. saving
+    new scheduler tasks will throw an exception.
+
 
 slowQueryTime
 -------------
