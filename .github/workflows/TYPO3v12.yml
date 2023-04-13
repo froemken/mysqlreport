@@ -3,7 +3,32 @@ name: CI
 on: [pull_request]
 
 jobs:
-  build:
+  cgl:
+    name: CGL on TYPO3 v12
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Composer Validate
+        run: Build/Scripts/runTests.sh -p 8.1 -t 12 -s composer -e 'validate'
+
+      - name: Composer Install
+        run: Build/Scripts/runTests.sh -p 8.1 -t 12 -s composerInstall
+
+      - name: Lint PHP
+        run: Build/Scripts/runTests.sh -p 8.1 -t 12 -s lint
+
+      - name: Validate code against CGL
+        run: PHP_CS_FIXER_IGNORE_ENV=1 Build/Scripts/runTests.sh -p 8.1 -t 12 -s cgl -n
+
+  tests:
+    name: Test on TYPO3 v12
+    needs: cgl
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,17 +41,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - name: Composer Validate
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t 12 -s composer -e 'validate'
-
       - name: Composer Install
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t 12 -s composerInstall
-
-      - name: Lint PHP
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t 12 -s lint
-
-      - name: Validate code against CGL
-        run: PHP_CS_FIXER_IGNORE_ENV=1 Build/Scripts/runTests.sh -p 8.1 -t 12 -s cgl -n
 
       - name: Unit tests
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t 12 -s unit
