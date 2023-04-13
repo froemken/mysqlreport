@@ -20,7 +20,7 @@ jobs:
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -t 12 -s composerUpdate
 
       - name: Composer validate
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerValidate
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composer -e 'validate'
 
       - name: Lint PHP
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
