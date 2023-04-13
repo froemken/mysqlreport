@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Model;
 
-use Nimut\TestingFramework\TestCase\UnitTestCase;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
