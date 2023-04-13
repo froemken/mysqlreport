@@ -21,9 +21,14 @@ LICENSE file that was distributed with this source code.
 COMMENT;
 
 $finder = PhpCsFixer\Finder::create()
-    ->name('*.php')
-    ->exclude('.build')
-    ->in(__DIR__);
+    ->in(realpath(__DIR__ . '/../../'))
+    ->ignoreVCSIgnored(true)
+    ->notPath('/^.Build\//')
+    ->notPath('/^Build\/php-cs-fixer\/config.php/')
+    ->notPath('/^Build\/phpunit\/(UnitTestsBootstrap|FunctionalTestsBootstrap).php/')
+    ->notPath('/^Configuration\//')
+    ->notPath('/^Documentation\//')
+    ->notName('/^ext_(emconf|localconf|tables).php/');
 
 return (new \PhpCsFixer\Config())
     ->setFinder($finder)
