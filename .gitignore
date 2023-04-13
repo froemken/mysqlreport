@@ -19,10 +19,11 @@ nbproject
 *.idea
 *.project
 .buildpath
+.ddev
+.fleet
 .settings
 .TemporaryItems
 .webprj
-.fleet
 
 # Temporary files and folders
 /.cache
