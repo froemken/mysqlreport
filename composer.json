@@ -58,9 +58,11 @@
 		}
 	},
 	"extra": {
+		"installer-paths": {
+			"trallala": ["stefanfroemken/mysqlreport"]
+		},
 		"typo3/cms": {
 			"extension-key": "mysqlreport",
-			"app-dir": ".Build",
 			"web-dir": ".Build/public"
 		}
 	},
