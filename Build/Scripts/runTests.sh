@@ -223,7 +223,7 @@ POSTGRES_VERSION="10"
 USED_XDEBUG_MODES="debug,develop"
 #@todo the $$ would add the current process id to the name, keeping as plan b
 #PROJECT_NAME="runTests-$(basename $(dirname $ROOT_DIR))-$(basename $ROOT_DIR)-$$"
-PROJECT_NAME="runTests-$(basename $(dirname $ROOT_DIR))-$(basename $ROOT_DIR)"
+PROJECT_NAME="run_tests-$(basename $(dirname $ROOT_DIR))-$(basename $ROOT_DIR)"
 PROJECT_NAME="${PROJECT_NAME//[[:blank:]]/}"
 echo $PROJECT_NAME
 
