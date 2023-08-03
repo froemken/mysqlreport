@@ -12,7 +12,7 @@ setUpDockerComposeDotEnv() {
     [ -e .env ] && rm .env
     # Set up a new .env file for docker-compose
     {
-        echo "COMPOSE_PROJECT_NAME=${PROJECT_NAME}"
+        echo "COMPOSE_PROJECT_NAME=local"
         # To prevent access rights of files created by the testing, the docker image later
         # runs with the same user that is currently executing the script. docker-compose can't
         # use $UID directly itself since it is a shell variable and not an env variable, so
@@ -24,16 +24,11 @@ setUpDockerComposeDotEnv() {
         echo "TEST_FILE=${TEST_FILE}"
         echo "TYPO3_VERSION=${TYPO3_VERSION}"
         echo "PHP_XDEBUG_ON=${PHP_XDEBUG_ON}"
-        echo "PHP_XDEBUG_PORT=${PHP_XDEBUG_PORT}"
         echo "DOCKER_PHP_IMAGE=${DOCKER_PHP_IMAGE}"
         echo "EXTRA_TEST_OPTIONS=${EXTRA_TEST_OPTIONS}"
         echo "SCRIPT_VERBOSE=${SCRIPT_VERBOSE}"
         echo "CGLCHECK_DRY_RUN=${CGLCHECK_DRY_RUN}"
         echo "DATABASE_DRIVER=${DATABASE_DRIVER}"
-        echo "MARIADB_VERSION=${MARIADB_VERSION}"
-        echo "MYSQL_VERSION=${MYSQL_VERSION}"
-        echo "POSTGRES_VERSION=${POSTGRES_VERSION}"
-        echo "USED_XDEBUG_MODES=${USED_XDEBUG_MODES}"
     } > .env
 }
 
@@ -63,7 +58,7 @@ handleDbmsAndDriverOptions() {
 
 # Load help text into $HELP
 read -r -d '' HELP <<EOF
-stefanfroemken/mysqlreport test runner. Execute unit test suite and some other details.
+mysqlreport test runner. Execute unit test suite and some other details.
 Also used by github for test execution.
 
 Recommended docker version is >=20.10 for xdebug break pointing to work reliably, and
@@ -76,15 +71,15 @@ No arguments: Run all unit tests with PHP 7.4
 Options:
     -s <...>
         Specifies which test suite to run
+            - acceptance: backend acceptance tests
             - cgl: cgl test and fix all php files
             - clean: clean up build and testing related files
-            - composer: Execute "composer" command, using -e for command arguments pass-through, ex. -e "ci:php:stan"
-            - composerInstall: "composer update", handy if host has no PHP
-            - composerInstallLowest: "composer update", handy if host has no PHP
-            - composerInstallHighest: "composer update", handy if host has no PHP
+            - composerUpdate: "composer update", handy if host has no PHP
             - functional: functional tests
             - lint: PHP linting
-            - unit: PHP unit tests
+            - phpstan: phpstan analyze
+            - phpstanGenerateBaseline: regenerate phpstan baseline, handy after phpstan updates
+            - unit (default): PHP unit tests
 
     -a <mysqli|pdo_mysql>
         Only with -s acceptance,functional
@@ -104,32 +99,6 @@ Options:
             - mysql: use mysql
             - postgres: use postgres
 
-    -i <10.2|10.3|10.4|10.5|10.6|10.7>
-        Only with -d mariadb
-        Specifies on which version of mariadb tests are performed
-            - 10.2 (default)
-            - 10.3
-            - 10.4
-            - 10.5
-            - 10.6
-            - 10.7
-
-    -j <5.5|5.6|5.7|8.0>
-        Only with -d mysql
-        Specifies on which version of mysql tests are performed
-            - 5.5 (default)
-            - 5.6
-            - 5.7
-            - 8.0
-
-    -k <10|11|12|13|14>
-        Only with -d postgres
-        Specifies on which version of postgres tests are performed
-            - 10 (default)
-            - 11
-            - 12
-            - 13
-            - 14
 
     -p <7.4|8.0|8.1|8.2>
         Specifies the PHP minor version to be used
@@ -142,28 +111,20 @@ Options:
         Only with -s composerUpdate
         Specifies the TYPO3 core major version to be used
             - 11 (default): use TYPO3 core v11
-            - 12: use TYPO3 core v12
+            - 12: Use TYPO3 core v12
 
-    -e "<composer, phpunit or codeception options>"
-        Only with -s functional|unit|composer
+    -e "<phpunit or codeception options>"
+        Only with -s acceptance|functional|unit
         Additional options to send to phpunit (unit & functional tests) or codeception (acceptance
         tests). For phpunit, options starting with "--" must be added after options starting with "-".
         Example -e "-v --filter canRetrieveValueWithGP" to enable verbose output AND filter tests
         named "canRetrieveValueWithGP"
 
     -x
-        Only with -s functional|unit
+        Only with -s functional|unit|acceptance
         Send information to host instance for test or system under test break points. This is especially
         useful if a local PhpStorm instance is listening on default xdebug port 9003. A different port
         can be selected with -y
-
-    -y <port>
-        Send xdebug information to a different port than default 9003 if an IDE like PhpStorm
-        is not listening on default port.
-
-    -z <xdebug modes>
-        Only with -x and -s functional|unit|acceptance
-        This sets the used xdebug modes. Defaults to 'debug,develop'
 
     -n
         Only with -s cgl
@@ -183,7 +144,7 @@ Options:
 
 Examples:
     # Run unit tests using PHP 7.4
-    ./Build/Scripts/runTests.sh -s unit
+    ./Build/Scripts/runTests.sh
 EOF
 
 # Test if docker-compose exists, else exit out with error
@@ -207,25 +168,15 @@ if ! command -v realpath &> /dev/null; then
 else
   ROOT_DIR=`realpath ${PWD}/../../`
 fi
-TEST_SUITE=""
+TEST_SUITE="unit"
 DBMS="sqlite"
 PHP_VERSION="7.4"
 TYPO3_VERSION="11"
 PHP_XDEBUG_ON=0
-PHP_XDEBUG_PORT=9003
 EXTRA_TEST_OPTIONS=""
 SCRIPT_VERBOSE=0
 CGLCHECK_DRY_RUN=""
 DATABASE_DRIVER=""
-MARIADB_VERSION="10.2"
-MYSQL_VERSION="5.5"
-POSTGRES_VERSION="10"
-USED_XDEBUG_MODES="debug,develop"
-#@todo the $$ would add the current process id to the name, keeping as plan b
-#PROJECT_NAME="runTests-$(basename $(dirname $ROOT_DIR))-$(basename $ROOT_DIR)-$$"
-PROJECT_NAME="run_tests-$(basename $(dirname $ROOT_DIR))-$(basename $ROOT_DIR)"
-PROJECT_NAME="${PROJECT_NAME//[[:blank:]]/}"
-echo $PROJECT_NAME
 
 # Option parsing
 # Reset in case getopts has been used previously in the shell
@@ -233,7 +184,7 @@ OPTIND=1
 # Array for invalid options
 INVALID_OPTIONS=();
 # Simple option parsing based on getopts (! not getopt)
-while getopts ":s:a:d:i:j:k:p:t:e:xy:z:nhuv" OPT; do
+while getopts ":s:a:d:p:t:e:xnhuv" OPT; do
     case ${OPT} in
         s)
             TEST_SUITE=${OPTARG}
@@ -243,24 +194,6 @@ while getopts ":s:a:d:i:j:k:p:t:e:xy:z:nhuv" OPT; do
             ;;
         d)
             DBMS=${OPTARG}
-            ;;
-        i)
-            MARIADB_VERSION=${OPTARG}
-            if ! [[ ${MARIADB_VERSION} =~ ^(10.2|10.3|10.4|10.5|10.6|10.7)$ ]]; then
-                INVALID_OPTIONS+=("${OPTARG}")
-            fi
-            ;;
-        j)
-            MYSQL_VERSION=${OPTARG}
-            if ! [[ ${MYSQL_VERSION} =~ ^(5.5|5.6|5.7|8.0)$ ]]; then
-                INVALID_OPTIONS+=("${OPTARG}")
-            fi
-            ;;
-        k)
-            POSTGRES_VERSION=${OPTARG}
-            if ! [[ ${POSTGRES_VERSION} =~ ^(10|11|12|13|14)$ ]]; then
-                INVALID_OPTIONS+=("${OPTARG}")
-            fi
             ;;
         p)
             PHP_VERSION=${OPTARG}
@@ -279,12 +212,6 @@ while getopts ":s:a:d:i:j:k:p:t:e:xy:z:nhuv" OPT; do
             ;;
         x)
             PHP_XDEBUG_ON=1
-            ;;
-        y)
-            PHP_XDEBUG_PORT=${OPTARG}
-            ;;
-        z)
-            USED_XDEBUG_MODES=${OPTARG}
             ;;
         h)
             echo "${HELP}"
@@ -319,27 +246,50 @@ if [ ${#INVALID_OPTIONS[@]} -ne 0 ]; then
     exit 1
 fi
 
-# Move "7.2" to "php72", the latter is the docker container name
+# Move "7.4" to "php74", the latter is the docker container name
 DOCKER_PHP_IMAGE=`echo "php${PHP_VERSION}" | sed -e 's/\.//'`
 
 # Set $1 to first mass argument, this is the optional test file or test directory to execute
 shift $((OPTIND - 1))
 TEST_FILE=${1}
-if [ -n "${1}" ]; then
-    TEST_FILE=".Build/public/typo3conf/ext/mysqlreport/${1}"
-fi
 
 if [ ${SCRIPT_VERBOSE} -eq 1 ]; then
     set -x
 fi
 
-if [ -z ${TEST_SUITE} ]; then
-    echo "${HELP}"
-    exit 0
-fi
-
 # Suite execution
 case ${TEST_SUITE} in
+    acceptance)
+        handleDbmsAndDriverOptions
+        setUpDockerComposeDotEnv
+        case ${DBMS} in
+            sqlite)
+                echo "Using driver: ${DATABASE_DRIVER}"
+                docker-compose run acceptance_cli_sqlite
+                SUITE_EXIT_CODE=$?
+                ;;
+            mysql)
+                echo "Using driver: ${DATABASE_DRIVER}"
+                docker-compose run acceptance_cli_mysql80
+                SUITE_EXIT_CODE=$?
+                ;;
+            mariadb)
+                echo "Using driver: ${DATABASE_DRIVER}"
+                docker-compose run acceptance_cli_mariadb10
+                SUITE_EXIT_CODE=$?
+                ;;
+            postgres)
+                docker-compose run acceptance_cli_postgres10
+                SUITE_EXIT_CODE=$?
+                ;;
+            *)
+                echo "Acceptance tests don't run with DBMS ${DBMS}" >&2
+                echo >&2
+                echo "call \"./Build/Scripts/runTests.sh -h\" to display help and valid options" >&2
+                exit 1
+        esac
+        docker-compose down
+        ;;
     cgl)
         # Active dry-run for cgl needs not "-n" but specific options
         if [[ ! -z ${CGLCHECK_DRY_RUN} ]]; then
@@ -351,59 +301,17 @@ case ${TEST_SUITE} in
         docker-compose down
         ;;
     clean)
-        rm -rf \
-          ../../var/ \
-          ../../.cache \
-          ../../composer.lock \
-          ../../.Build/ \
-          ../../Tests/Acceptance/Support/_generated/ \
-          ../../composer.json.testing
+        rm -rf ../../composer.lock ../../.Build/ ../../Tests/Acceptance/Support/_generated/ ../../composer.json.testing
         ;;
-    composer)
-        setUpDockerComposeDotEnv
-        docker-compose run composer
-        SUITE_EXIT_CODE=$?
-        docker-compose down
-        ;;
-    composerInstall)
+    composerUpdate)
         setUpDockerComposeDotEnv
         cp ../../composer.json ../../composer.json.orig
         if [ -f "../../composer.json.testing" ]; then
             cp ../../composer.json ../../composer.json.orig
         fi
-        docker-compose run composer_install
+        docker-compose run composer_update
         cp ../../composer.json ../../composer.json.testing
         mv ../../composer.json.orig ../../composer.json
-        SUITE_EXIT_CODE=$?
-        docker-compose down
-        ;;
-    composerInstallLowest)
-        setUpDockerComposeDotEnv
-        cp ../../composer.json ../../composer.json.orig
-        if [ -f "../../composer.json.testing" ]; then
-            cp ../../composer.json ../../composer.json.orig
-        fi
-        docker-compose run composer_install_lowest
-        cp ../../composer.json ../../composer.json.testing
-        mv ../../composer.json.orig ../../composer.json
-        SUITE_EXIT_CODE=$?
-        docker-compose down
-        ;;
-    composerInstallHighest)
-        setUpDockerComposeDotEnv
-        cp ../../composer.json ../../composer.json.orig
-        if [ -f "../../composer.json.testing" ]; then
-            cp ../../composer.json ../../composer.json.orig
-        fi
-        docker-compose run composer_install_highest
-        cp ../../composer.json ../../composer.json.testing
-        mv ../../composer.json.orig ../../composer.json
-        SUITE_EXIT_CODE=$?
-        docker-compose down
-        ;;
-    coveralls)
-        setUpDockerComposeDotEnv
-        docker-compose run coveralls
         SUITE_EXIT_CODE=$?
         docker-compose down
         ;;
@@ -413,16 +321,16 @@ case ${TEST_SUITE} in
         case ${DBMS} in
             mariadb)
                 echo "Using driver: ${DATABASE_DRIVER}"
-                docker-compose run functional_mariadb
+                docker-compose run functional_mariadb10
                 SUITE_EXIT_CODE=$?
                 ;;
             mysql)
                 echo "Using driver: ${DATABASE_DRIVER}"
-                docker-compose run functional_mysql
+                docker-compose run functional_mysql80
                 SUITE_EXIT_CODE=$?
                 ;;
             postgres)
-                docker-compose run functional_postgres
+                docker-compose run functional_postgres10
                 SUITE_EXIT_CODE=$?
                 ;;
             sqlite)
@@ -430,7 +338,7 @@ case ${TEST_SUITE} in
                 # Since docker is executed as root (yay!), the path to this dir is owned by
                 # root if docker creates it. Thank you, docker. We create the path beforehand
                 # to avoid permission issues.
-                mkdir -p ${ROOT_DIR}/public/typo3temp/var/tests/functional-sqlite-dbs/
+                mkdir -p ${ROOT_DIR}/Web/typo3temp/var/tests/functional-sqlite-dbs/
                 docker-compose run functional_sqlite
                 SUITE_EXIT_CODE=$?
                 ;;
