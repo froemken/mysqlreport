@@ -10,6 +10,11 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 3.0.2
+=============
+
+*   [DOCS] Add Screenshots
+
 Version 3.0.1
 =============
 
