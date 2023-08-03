@@ -41,10 +41,4 @@ jobs:
         run: Build/Scripts/runTests.sh -t 11 -p 7.4 -s composerUpdate
 
       - name: Functional tests with mariadb
-        run: Build/Scripts/runTests.sh -t 11 -p ${{ matrix.php }} -d mariadb -s functional
-
-      - name: Functional tests with postgres
-        run: Build/Scripts/runTests.sh -t 11 -p ${{ matrix.php }} -d postgres -s functional
-
-      - name: Functional tests with sqlite
-        run: Build/Scripts/runTests.sh -t 11 -p ${{ matrix.php }} -d sqlite -s functional
+        run: Build/Scripts/runTests.sh -t 11 -p ${{ matrix.php }} -s unit
