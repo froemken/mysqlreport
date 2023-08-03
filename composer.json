@@ -31,11 +31,10 @@
 		"doctrine/sql-formatter": "^1.1"
 	},
 	"require-dev": {
-		"typo3/testing-framework": "~7.0@dev",
-		"sbuerk/typo3-cmscomposerinstallers-testingframework-bridge": "^0.1",
+		"typo3/testing-framework": "^7.0.2",
 		"phpunit/phpunit": "^9.6",
-		"typo3/coding-standards": "^0.6.1",
-		"friendsofphp/php-cs-fixer": "^3.14.0"
+		"typo3/coding-standards": "^0.6",
+		"friendsofphp/php-cs-fixer": "^3.14"
 	},
 	"autoload": {
 		"psr-4": {
