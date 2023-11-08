@@ -10,7 +10,7 @@
 
     <f:be.infobox title="Current Configuration" state="-1" disableIcon="false">
         Mysqlreport does not have access to the "real" slow query logfile of your server. It just list
-        queries whose duration was less than
+        queries whose duration was greater than
         {slowQueryTime -> f:format.number(decimals: 2, decimalSeparator: '.', thousandsSeparator: '')} seconds.
         Please visit extension settings to configure another value. Keep in mind that this list is limited to 100
         records.
