@@ -5,6 +5,7 @@ declare(strict_types=1);
 use StefanFroemken\Mysqlreport\Backend\ToolbarItem\MySqlReportToolbarItem;
 use StefanFroemken\Mysqlreport\Backend\ToolbarItem\MySqlReportToolbarItemV11;
 use StefanFroemken\Mysqlreport\Controller\MySqlReportController;
+use StefanFroemken\Mysqlreport\DependencyInjection;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Compiler\ServiceLocatorTagPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -14,6 +15,8 @@ use TYPO3\CMS\Core\Information\Typo3Version;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 return static function (ContainerConfigurator $container, ContainerBuilder $containerBuilder) {
+    $containerBuilder->addCompilerPass(new DependencyInjection\DashboardPass('dashboard.widget'));
+
     $typo3Version = GeneralUtility::makeInstance(Typo3Version::class);
     $composerResource = new \Symfony\Component\Config\Resource\ComposerResource();
     foreach ($composerResource->getVendors() as $vendorPath) {
