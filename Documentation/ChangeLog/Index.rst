@@ -10,6 +10,11 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 3.0.3
+=============
+
+*   [BUGFIX] Allow installation of mysqlreport without installed dashboard
+
 Version 3.0.2
 =============
 
