@@ -9,18 +9,22 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-return [
-    'mysqlreport' => [
-        'title' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:dashboard.mysqlreport.title',
-        'description' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:dashboard.mysqlreport.description',
-        'iconIdentifier' => 'ext-mysqlreport',
-        'defaultWidgets' => [
-            'mysql-max-used-connections',
-            'mysql-inno-db-buffer',
-            'mysql-query-types',
-            'mysql-created-temp-tables',
-            'mysql-handler-read-next',
+if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('dashboard')) {
+    return [
+        'mysqlreport' => [
+            'title' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:dashboard.mysqlreport.title',
+            'description' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:dashboard.mysqlreport.description',
+            'iconIdentifier' => 'ext-mysqlreport',
+            'defaultWidgets' => [
+                'mysql-max-used-connections',
+                'mysql-inno-db-buffer',
+                'mysql-query-types',
+                'mysql-created-temp-tables',
+                'mysql-handler-read-next',
+            ],
+            'showInWizard' => true,
         ],
-        'showInWizard' => true,
-    ],
-];
+    ];
+} else {
+    return [];
+}
