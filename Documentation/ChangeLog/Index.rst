@@ -10,6 +10,11 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 3.0.4
+=============
+
+*   [BUGFIX] Update to correct TYPO3 version in composer.json
+
 Version 3.0.3
 =============
 
