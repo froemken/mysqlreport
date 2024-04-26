@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
 /**
@@ -63,7 +64,7 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
-                    $queryBuilder->createNamedParameter($uniqueIdentifier, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($uniqueIdentifier)
                 )
             )
             ->groupBy('query_type', 'unique_call_identifier', 'request')
@@ -94,7 +95,7 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
-                    $queryBuilder->createNamedParameter($uniqueIdentifier, \PDO::PARAM_STR)
+                    $queryBuilder->createNamedParameter($uniqueIdentifier)
                 )
             );
 
@@ -152,7 +153,7 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($uid, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
                 )
             );
 
@@ -203,7 +204,7 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'using_fulltable',
-                    $queryBuilder->createNamedParameter(1, \PDO::PARAM_INT)
+                    $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)
                 )
             )
             ->orderBy('duration', 'DESC')
@@ -232,7 +233,7 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->gte(
                     'duration',
-                    $queryBuilder->createNamedParameter($this->extConf->getSlowQueryTime(), \PDO::PARAM_LOB)
+                    $queryBuilder->createNamedParameter($this->extConf->getSlowQueryTime(), Connection::PARAM_LOB)
                 )
             )
             ->orderBy('duration', 'DESC')

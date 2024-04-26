@@ -3,7 +3,7 @@ if (!defined('TYPO3')) {
     die('Access denied.');
 }
 
-call_user_func(static function () {
+call_user_func(static function (): void {
     // TRUNCATE table tx_mysqlreport_domain_model_profile on clear cache action
     $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['t3lib/class.t3lib_tcemain.php']['clearCachePostProc'][]
         = \StefanFroemken\Mysqlreport\EventListener\CacheAction::class . '->clearProfiles';
@@ -15,4 +15,7 @@ call_user_func(static function () {
         $GLOBALS['TYPO3_CONF_VARS']['BE']['toolbarItems'][1680905260]
             = \StefanFroemken\Mysqlreport\Backend\ToolbarItem\MySqlReportToolbarItemV11::class;
     }
+
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['driverMiddlewares']['mysqlreport-dbal-middleware']
+        = \StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeMiddleware::class;
 });

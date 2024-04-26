@@ -9,62 +9,143 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace StefanFroemken\Mysqlreport\EventListener;
+namespace StefanFroemken\Mysqlreport\Logger;
 
+use Doctrine\DBAL\Driver as DriverInterface;
+use Doctrine\DBAL\Driver\Middleware;
+use Doctrine\DBAL\Exception;
+use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
+use StefanFroemken\Mysqlreport\Domain\Model\Profile;
 use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
-use StefanFroemken\Mysqlreport\Helper\SqlLoggerHelper;
-use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Core\Event\BootCompletedEvent;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Add Logger to database connection to store queries of a request
- *
- * Currently, this is the earliest hook I could found in TYPO3 universe.
- * All queries executed before this hook were not collected.
+ * This is an extended version of the DebugStack SQL logger
+ * I have added profiling information
  */
-class RegisterDatabaseLoggerEventListener
+class MySqlReportSqlLoggerOld implements Middleware
 {
-    private array $extConf = [];
+    /**
+     * Collected profiles
+     *
+     * @var \SplQueue|Profile[]
+     */
+    public \SplQueue $profiles;
 
-    private SqlLoggerHelper $sqlLoggerHelper;
+    protected ConnectionHelper $connectionHelper;
 
-    private ConnectionHelper $connectionHelper;
+    protected ProfileFactory $profileFactory;
 
-    public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
-    {
-        try {
-            $this->extConf = (array)$extensionConfiguration->get('mysqlreport');
-        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
-            $this->extConf = [];
-        }
-    }
+    /**
+     * If enabled, this class will log queries
+     */
+    public bool $enabled = true;
 
-    public function injectConnectionHelper(ConnectionHelper $connectionHelper): void
-    {
+    /**
+     * Value from extension setting
+     * Default to false, because "true" can reduce query execution a lot
+     */
+    public bool $addExplain = false;
+
+    public float $start = 0.0;
+
+    public int $queryIterator = 0;
+
+    public function __construct(
+        ProfileFactory $profileFactory,
+        ConnectionHelper $connectionHelper,
+        ExtensionConfiguration $extensionConfiguration
+    ) {
+        $this->profiles = new \SplQueue();
+
+        $this->profileFactory = $profileFactory;
+
         $this->connectionHelper = $connectionHelper;
-    }
-
-    public function injectSqlLoggerHelper(SqlLoggerHelper $sqlLoggerHelper): void
-    {
-        $this->sqlLoggerHelper = $sqlLoggerHelper;
-        $this->sqlLoggerHelper->setConnectionConfiguration($this->connectionHelper->getConnectionConfiguration());
-    }
-
-    public function __invoke(BootCompletedEvent $bootCompletedEvent)
-    {
         if (!$this->connectionHelper->isConnectionAvailable()) {
+            $this->enabled = false;
+        }
+
+        try {
+            $this->addExplain = (bool)$extensionConfiguration->get('mysqlreport', 'addExplain');
+        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
+            $this->addExplain = false;
+        }
+    }
+
+    /**
+     * Logs a SQL statement
+     */
+    public function startQuery($sql, ?array $params = null, ?array $types = null): void
+    {
+        if (!$this->enabled) {
             return;
         }
 
-        if (!$this->isFrontendOrBackendProfilingActivated()) {
+        $this->start = microtime(true);
+
+        $profile = $this->profileFactory->createNewProfile();
+        $profile->setQuery($sql);
+        $profile->setQueryParameters($params);
+        $profile->setQueryParameterTypes($types);
+
+        $this->profiles->add($this->queryIterator, $profile);
+
+        if ($this->addExplain) {
+            $this->connectionHelper->executeQuery('SET profiling = 1');
+        }
+    }
+
+    /**
+     * Marks the last started query as stopped. This can be used for timing of queries.
+     */
+    public function stopQuery(): void
+    {
+        if (!$this->enabled) {
             return;
         }
 
-        $this->sqlLoggerHelper->activateSqlLogger();
+        $this->profiles[$this->queryIterator]->setDuration(microtime(true) - $this->start);
+
+        if ($this->addExplain) {
+            if ($result = $this->connectionHelper->executeQuery('SHOW profile')) {
+                $this->profiles[$this->queryIterator]->setProfile($result->fetchAll());
+            }
+            $this->updateExplainInformation($this->profiles[$this->queryIterator]);
+        }
+
+        $this->queryIterator++;
+    }
+
+    private function updateExplainInformation(Profile $profile): void
+    {
+        if ($this->addExplain === false) {
+            return;
+        }
+
+        if ($profile->getQueryType() !== 'SELECT') {
+            return;
+        }
+
+        try {
+            if ($result = $this->connectionHelper->executeQuery($profile->getQueryForExplain())) {
+                while ($explainResult = $result->fetchAssociative()) {
+                    if (empty($explainResult['key'])) {
+                        $profile->getExplainInformation()->setIsQueryUsingIndex(false);
+                    }
+
+                    if (strtolower($explainResult['type'] ?? '') === 'all') {
+                        $profile->getExplainInformation()->setIsQueryUsingFTS(true);
+                    }
+
+                    $profile->getExplainInformation()->addExplainResult($explainResult);
+                }
+            }
+        } catch (Exception|\Doctrine\DBAL\Driver\Exception $exception) {
+            // Leave ExplainInformation unmodified
+        }
     }
 
     public function __destruct()
@@ -76,6 +157,8 @@ class RegisterDatabaseLoggerEventListener
         if (!$this->isFrontendOrBackendProfilingActivated()) {
             return;
         }
+
+        $this->sqlLoggerHelper->activateSqlLogger();
 
         $sqlLogger = $this->sqlLoggerHelper->getCurrentSqlLogger();
         if ($sqlLogger instanceof MySqlReportSqlLogger) {

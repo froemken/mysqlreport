@@ -10,7 +10,6 @@ services:
   dashboard.widget.mysql-max-used-connections:
     class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
     arguments:
-      $view: '@dashboard.views.widget'
       $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\MaxUsedConnectionsDataProvider'
       $options:
         refreshAvailable: true
@@ -26,7 +25,6 @@ services:
   dashboard.widget.mysql-inno-db-buffer:
     class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
     arguments:
-      $view: '@dashboard.views.widget'
       $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\InnoDbBufferDataProvider'
       $options:
         refreshAvailable: true
@@ -42,7 +40,6 @@ services:
   dashboard.widget.mysql-query-types:
     class: 'TYPO3\CMS\Dashboard\Widgets\BarChartWidget'
     arguments:
-      $view: '@dashboard.views.widget'
       $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\QueryTypesDataProvider'
       $options:
         refreshAvailable: true
@@ -58,7 +55,6 @@ services:
   dashboard.widget.mysql-created-temp-tables:
     class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
     arguments:
-      $view: '@dashboard.views.widget'
       $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\CreatedTempTablesDataProvider'
       $options:
         refreshAvailable: true
@@ -74,7 +70,6 @@ services:
   dashboard.widget.mysql-handler-read-next:
     class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
     arguments:
-      $view: '@dashboard.views.widget'
       $dataProvider: '@StefanFroemken\Mysqlreport\Dashboard\Provider\HandlerReadNextDataProvider'
       $options:
         refreshAvailable: true

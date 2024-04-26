@@ -56,17 +56,9 @@ class QueryController
             'MySqlReport Filesort'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Query/Filesort');
+        $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFilesort());
 
-        $view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFilesort());
-
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Query/Filesort');
     }
 
     public function fullTableScanAction(ServerRequestInterface $request): ResponseInterface
@@ -79,17 +71,9 @@ class QueryController
             'MySqlReport Full Table Scan'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Query/FullTableScan');
+        $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFullTableScan());
 
-        $view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFullTableScan());
-
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Query/FullTableScan');
     }
 
     public function slowQueryAction(ServerRequestInterface $request): ResponseInterface
@@ -102,18 +86,10 @@ class QueryController
             'MySqlReport Slow Query'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Query/SlowQuery');
+        $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithSlowQueries());
+        $moduleTemplate->assign('slowQueryTime', $this->extConf->getSlowQueryTime());
 
-        $view->assign('profileRecords', $this->profileRepository->findProfileRecordsWithSlowQueries());
-        $view->assign('slowQueryTime', $this->extConf->getSlowQueryTime());
-
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Query/SlowQuery');
     }
 
     public function profileInfoAction(ServerRequestInterface $request): ResponseInterface
@@ -126,23 +102,15 @@ class QueryController
             'MySqlReport Profile Info'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Query/ProfileInfo');
-
         $queryParameters = $request->getQueryParams();
 
         $profileRecord = $this->profileRepository->getProfileRecordByUid((int)($queryParameters['uid'] ?? 0));
         $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
         $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
 
-        $view->assign('profileRecord', $profileRecord);
-        $view->assign('prevRouteIdentifier', $queryParameters['prevRouteIdentifier'] ?? '');
+        $moduleTemplate->assign('profileRecord', $profileRecord);
+        $moduleTemplate->assign('prevRouteIdentifier', $queryParameters['prevRouteIdentifier'] ?? '');
 
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Query/ProfileInfo');
     }
 }

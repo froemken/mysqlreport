@@ -17,9 +17,6 @@ use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
 use StefanFroemken\Mysqlreport\Helper\DownloadHelper;
 use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Controller to show and analyze all queries of a request
@@ -56,17 +53,9 @@ class ProfileController
             'MySqlReport Profiles'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Profile/List');
+        $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsForCall());
 
-        $view->assign('profileRecords', $this->profileRepository->findProfileRecordsForCall());
-
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Profile/List');
     }
 
     public function showAction(ServerRequestInterface $request): ResponseInterface
@@ -79,23 +68,15 @@ class ProfileController
             'MySqlReport Show Profile'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Profile/Show');
-
         $queryParameters = $request->getQueryParams();
         $uniqueIdentifier = $queryParameters['uniqueIdentifier'] ?? '';
 
-        $view->assignMultiple([
+        $moduleTemplate->assignMultiple([
             'uniqueIdentifier' => $uniqueIdentifier,
             'profileTypes' => $this->profileRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier),
         ]);
 
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Profile/Show');
     }
 
     public function queryTypeAction(ServerRequestInterface $request): ResponseInterface
@@ -108,25 +89,17 @@ class ProfileController
             'MySqlReport Show Profile'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Profile/QueryType');
-
         $queryParameters = $request->getQueryParams();
         $uniqueIdentifier = $queryParameters['uniqueIdentifier'] ?? '';
         $queryType = $queryParameters['queryType'] ?? '';
 
-        $view->assignMultiple([
+        $moduleTemplate->assignMultiple([
             'uniqueIdentifier' => $uniqueIdentifier,
             'queryType' => $queryType,
             'profileRecords' => $this->profileRepository->getProfileRecordsByQueryType($uniqueIdentifier, $queryType),
         ]);
 
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Profile/QueryType');
     }
 
     public function infoAction(ServerRequestInterface $request): ResponseInterface
@@ -139,12 +112,6 @@ class ProfileController
             'MySqlReport Show Profile'
         );
 
-        $view = GeneralUtility::makeInstance(StandaloneView::class);
-        $view->setTemplateRootPaths(['EXT:mysqlreport/Resources/Private/Templates']);
-        $view->setPartialRootPaths(['EXT:mysqlreport/Resources/Private/Partials']);
-        $view->setLayoutRootPaths(['EXT:mysqlreport/Resources/Private/Layouts']);
-        $view->setTemplate('Profile/Info');
-
         $queryParameters = $request->getQueryParams();
         $uid = (int)($queryParameters['uid'] ?? 0);
 
@@ -152,11 +119,9 @@ class ProfileController
         $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
         $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
 
-        $view->assign('profileRecord', $profileRecord);
+        $moduleTemplate->assign('profileRecord', $profileRecord);
 
-        $moduleTemplate->setContent($view->render());
-
-        return new HtmlResponse($moduleTemplate->renderContent());
+        return $moduleTemplate->renderResponse('Profile/Info');
     }
 
     public function downloadAction(ServerRequestInterface $request): ResponseInterface

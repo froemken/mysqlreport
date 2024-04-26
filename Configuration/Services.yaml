@@ -6,8 +6,6 @@ services:
     autowire: true
     autoconfigure: true
     public: false
-    bind:
-      $sqlLogger: '@mysqlreport.sql_logger'
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
@@ -15,10 +13,6 @@ services:
     - '../Classes/Domain/Model/*'
     # Remove while removing TYPO3 11 compatibility
     - '../Classes/Backend/ToolbarItem/*'
-
-  # Will be called by GeneralUtility::makeInstance in BackendController
-  #StefanFroemken\Mysqlreport\Backend\ToolbarItem\MySqlReportToolbarItemV11:
-  #  public: true
 
   StefanFroemken\Mysqlreport\Controller\ProfileController:
     public: true
@@ -66,17 +60,13 @@ services:
     class: StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository
     public: true
 
-  mysqlreport.sql_logger:
-    class: StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger
+  StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger:
+    public: true
 
   StefanFroemken\Mysqlreport\EventListener\CacheAction:
     tags:
       - name: event.listener
         event: TYPO3\CMS\Backend\Backend\Event\ModifyClearCacheActionsEvent
-  StefanFroemken\Mysqlreport\EventListener\RegisterDatabaseLoggerEventListener:
-    tags:
-      - name: event.listener
-        event: TYPO3\CMS\Core\Core\Event\BootCompletedEvent
   StefanFroemken\Mysqlreport\EventListener\RoundDurationOfProfileRecordsEventListener:
     tags:
       - name: event.listener

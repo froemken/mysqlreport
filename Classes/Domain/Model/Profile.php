@@ -149,13 +149,13 @@ class Profile
         foreach ($this->getQueryParameters() as $key => $queryParameter) {
             if (isset($parameterTypes[$key])) {
                 switch ($parameterTypes[$key]) {
-                    case \PDO::PARAM_INT:
+                    case Connection::PARAM_INT:
                         $queryParameter = (int)$queryParameter;
                         break;
-                    case \PDO::PARAM_BOOL:
+                    case Connection::PARAM_BOOL:
                         $queryParameter = $queryParameter === true ? 1 : 0;
                         break;
-                    case \PDO::PARAM_NULL:
+                    case Connection::PARAM_NULL:
                         $queryParameter = 'NULL';
                         break;
                     case Connection::PARAM_INT_ARRAY:
@@ -168,7 +168,7 @@ class Profile
                         $queryParameter = implode(', ', $queryParameter);
                         break;
                     default:
-                    case \PDO::PARAM_STR:
+                    case Connection::PARAM_STR:
                         $queryParameter = '\'' . $queryParameter . '\'';
                 }
                 $query = str_replace(':' . $key, (string)$queryParameter, $query);
@@ -218,9 +218,9 @@ class Profile
         return $this->queryParameterTypes;
     }
 
-    public function setQueryParameterTypes(array $queryParameterTypes): void
+    public function setQueryParameterTypes(?array $queryParameterTypes): void
     {
-        $this->queryParameterTypes = $queryParameterTypes;
+        $this->queryParameterTypes = $queryParameterTypes ?? [];
     }
 
     public function getProfile(): array

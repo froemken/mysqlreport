@@ -234,21 +234,21 @@ class ProfileTest extends UnitTestCase
             'Query with named int parameter' => [
                 'SELECT * FROM pages WHERE crdate = :dcValue1',
                 ['dcValue1' => 123],
-                ['dcValue1' => \PDO::PARAM_INT],
+                ['dcValue1' => Connection::PARAM_INT],
                 'SELECT * FROM pages WHERE crdate = 123',
             ],
 
             'Query with named bool parameter' => [
                 'SELECT * FROM pages WHERE hidden = :dcValue1',
                 ['dcValue1' => true],
-                ['dcValue1' => \PDO::PARAM_BOOL],
+                ['dcValue1' => Connection::PARAM_BOOL],
                 'SELECT * FROM pages WHERE hidden = 1',
             ],
 
             'Query with named null parameter' => [
                 'SELECT * FROM pages WHERE bodytext IS :dcValue1',
                 ['dcValue1' => null],
-                ['dcValue1' => \PDO::PARAM_NULL],
+                ['dcValue1' => Connection::PARAM_NULL],
                 'SELECT * FROM pages WHERE bodytext IS NULL',
             ],
 
@@ -269,14 +269,14 @@ class ProfileTest extends UnitTestCase
             'Query with named string parameter' => [
                 'SELECT * FROM pages WHERE title = :dcValue1',
                 ['dcValue1' => 'Stefan'],
-                ['dcValue1' => \PDO::PARAM_STR],
+                ['dcValue1' => Connection::PARAM_STR],
                 'SELECT * FROM pages WHERE title = \'Stefan\'',
             ],
 
             'Query with multiple parameter' => [
                 'SELECT * FROM pages WHERE title = :dcValue1 AND crdate = :dcValue2',
                 ['dcValue1' => 'Stefan', 'dcValue2' => 123],
-                ['dcValue1' => \PDO::PARAM_STR, 'dcValue2' => \PDO::PARAM_INT],
+                ['dcValue1' => Connection::PARAM_STR, 'dcValue2' => Connection::PARAM_INT],
                 'SELECT * FROM pages WHERE title = \'Stefan\' AND crdate = 123',
             ],
 
