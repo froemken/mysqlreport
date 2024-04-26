@@ -12,143 +12,216 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Logger;
 
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Logging\SQLLogger;
+use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
-use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Http\ApplicationType;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * This is an extended version of the DebugStack SQL logger
- * I have added profiling information
+ * This logger is wrapped around the query and command execution of doctrine to collect duration and
+ * other query information.
  */
-class MySqlReportSqlLogger implements SQLLogger
+class MySqlReportSqlLogger
 {
     /**
      * Collected profiles
      *
      * @var \SplQueue|Profile[]
      */
-    public \SplQueue $profiles;
+    private \SplQueue $profiles;
 
-    protected ConnectionHelper $connectionHelper;
+    private ProfileFactory $profileFactory;
 
-    protected ProfileFactory $profileFactory;
-
-    /**
-     * If enabled, this class will log queries
-     */
-    public bool $enabled = true;
+    private ExtConf $extConf;
 
     /**
-     * Value from extension setting
-     * Default to false, because "true" can reduce query execution a lot
+     * If activated, we will execute each query additional with prepended EXPLAIN
+     * to get more information about indexing and FTS.
+     * Default is false, to prevent memory usage and performance.
+     * This value can be set in extension settings
      */
-    public bool $addExplain = false;
+    private bool $addAdditionalQueryExplain = false;
 
-    public float $start = 0.0;
+    /**
+     * This value will be set for each query to current micro-time.
+     * Needed to calculate the query duration.
+     * Must be a class property to transfer micro-time from startQuery to stopQuery.
+     *
+     * @var float
+     */
+    private float $queryStartTime = 0.0;
 
-    public int $queryIterator = 0;
+    /**
+     * It looks like a counter, but will be used to order the queries into correct execution position
+     * while listing them in BE module.
+     */
+    private int $queryIterator = 0;
 
-    public function injectExtensionConfiguration(ExtensionConfiguration $extensionConfiguration): void
-    {
-        try {
-            $this->addExplain = (bool)$extensionConfiguration->get('mysqlreport', 'addExplain');
-        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
-            $this->addExplain = false;
-        }
-    }
+    /**
+     * Every query which contains one of these parts will be skipped.
+     */
+    private array $skipQueries = [
+        'show global status',
+        'show global variables',
+        'tx_mysqlreport_domain_model_profile',
+    ];
 
-    public function injectConnectionHelper(ConnectionHelper $connectionHelper): void
-    {
-        $this->connectionHelper = $connectionHelper;
-        if (!$this->connectionHelper->isConnectionAvailable()) {
-            $this->enabled = false;
-        }
-    }
-
-    public function injectProfileFactory(ProfileFactory $profileFactory): void
-    {
-        $this->profileFactory = $profileFactory;
-    }
-
-    public function __construct()
-    {
+    public function __construct(
+        ProfileFactory $profileFactory,
+        ExtConf $extConf
+    ) {
         $this->profiles = new \SplQueue();
+
+        $this->profileFactory = $profileFactory;
+        $this->extConf = $extConf;
     }
 
     /**
-     * Logs a SQL statement
+     * This method will be called just before the query will be executed by doctrine.
+     * Prepare query profiling.
      */
-    public function startQuery($sql, ?array $params = null, ?array $types = null): void
+    public function startQuery(): void
     {
-        if (!$this->enabled) {
+        $this->queryStartTime = microtime(true);
+    }
+
+    /**
+     * This method will be called just after the query has been executed by doctrine.
+     * Start collecting duration and other stuff.
+     */
+    public function stopQuery($query): void
+    {
+        if (!$this->isValidQuery($query)) {
             return;
         }
-
-        $this->start = microtime(true);
 
         $profile = $this->profileFactory->createNewProfile();
-        $profile->setQuery($sql);
-        $profile->setQueryParameters($params);
-        $profile->setQueryParameterTypes($types);
+        $profile->setQuery($query);
+        $profile->setDuration(microtime(true) - $this->queryStartTime);
+        // $profile->setQueryParameters($params);
+        // $profile->setQueryParameterTypes($types);
 
         $this->profiles->add($this->queryIterator, $profile);
-
-        if ($this->addExplain) {
-            $this->connectionHelper->executeQuery('SET profiling = 1');
-        }
-    }
-
-    /**
-     * Marks the last started query as stopped. This can be used for timing of queries.
-     */
-    public function stopQuery(): void
-    {
-        if (!$this->enabled) {
-            return;
-        }
-
-        $this->profiles[$this->queryIterator]->setDuration(microtime(true) - $this->start);
-
-        if ($this->addExplain) {
-            if ($result = $this->connectionHelper->executeQuery('SHOW profile')) {
-                $this->profiles[$this->queryIterator]->setProfile($result->fetchAll());
-            }
-            $this->updateExplainInformation($this->profiles[$this->queryIterator]);
-        }
 
         $this->queryIterator++;
     }
 
-    private function updateExplainInformation(Profile $profile): void
+    private function isValidQuery(string $query): bool
     {
-        if ($this->addExplain === false) {
-            return;
-        }
-
-        if ($profile->getQueryType() !== 'SELECT') {
-            return;
-        }
-
-        try {
-            if ($result = $this->connectionHelper->executeQuery($profile->getQueryForExplain())) {
-                while ($explainResult = $result->fetchAssociative()) {
-                    if (empty($explainResult['key'])) {
-                        $profile->getExplainInformation()->setIsQueryUsingIndex(false);
-                    }
-
-                    if (strtolower($explainResult['type'] ?? '') === 'all') {
-                        $profile->getExplainInformation()->setIsQueryUsingFTS(true);
-                    }
-
-                    $profile->getExplainInformation()->addExplainResult($explainResult);
-                }
+        foreach ($this->skipQueries as $skipQuery) {
+            if (str_contains(strtolower($query), $skipQuery)) {
+                return false;
             }
-        } catch (Exception|\Doctrine\DBAL\Driver\Exception $exception) {
-            // Leave ExplainInformation unmodified
+        }
+
+        return true;
+    }
+
+    public function __destruct()
+    {
+        if (!$this->isFrontendOrBackendProfilingActivated()) {
+            return;
+        }
+
+        $queriesToStore = [];
+        foreach ($this->profiles as $key => $profile) {
+            // Do not log our own queries
+            if (str_contains($profile->getQuery(), 'tx_mysqlreport_domain_model_profile')) {
+                continue;
+            }
+
+            $queryToStore = [
+                'pid' => $profile->getPid(),
+                'ip' => $profile->getIp(),
+                'referer' => $profile->getReferer(),
+                'request' => $profile->getRequest(),
+                'query_type' => $profile->getQueryType(),
+                'duration' => $profile->getDuration(),
+                'query' => $profile->getQueryWithReplacedParameters(),
+                'profile' => serialize($profile->getProfile()),
+                'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
+                'not_using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 0 : 1,
+                'using_fulltable' => $profile->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
+                'mode' => $profile->getMode(),
+                'unique_call_identifier' => $profile->getUniqueCallIdentifier(),
+                'crdate' => $profile->getCrdate(),
+                'query_id' => $key,
+            ];
+
+            $queriesToStore[] = $queryToStore;
+        }
+
+        foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
+            $this->bulkInsert(
+                $chunkOfQueriesToStore,
+                [
+                    'pid',
+                    'ip',
+                    'referer',
+                    'request',
+                    'query_type',
+                    'duration',
+                    'query',
+                    'profile',
+                    'explain_query',
+                    'not_using_index',
+                    'using_fulltable',
+                    'mode',
+                    'unique_call_identifier',
+                    'crdate',
+                    'query_id',
+                ]
+            );
+        }
+    }
+
+    private function isFrontendOrBackendProfilingActivated(): bool
+    {
+        $applicationType = $this->getApplicationType();
+        if ($applicationType === null) {
+            return false;
+        }
+
+        if (
+            $this->extConf->isProfileFrontend()
+            && $applicationType->isFrontend()
+        ) {
+            return true;
+        }
+
+        if (
+            $this->extConf->isProfileBackend()
+            && $applicationType->isBackend()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function getApplicationType(): ?ApplicationType
+    {
+        // In case of InstallTool TYPO3_REQUEST can be empty.
+        // That's the case while executing some of the AJAX requests in InstallTool
+        if (isset($GLOBALS['TYPO3_REQUEST'])) {
+            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST']);
+        }
+
+        return null;
+    }
+
+    /**
+     * Executes a bulk insert which will not be logged by our SQL logger
+     */
+    private function bulkInsert(array $data, array $columns = []): void
+    {
+        try {
+            GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME)
+                ->bulkInsert('tx_mysqlreport_domain_model_profile', $data, $columns);
+        } catch (Exception $e) {
         }
     }
 }

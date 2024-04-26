@@ -28,18 +28,10 @@ class ConnectionHelper
 
     private ConnectionPool $connectionPool;
 
-    private SqlLoggerHelper $sqlLoggerHelper;
-
     public function injectConnectionPool(ConnectionPool $connectionPool): void
     {
         $this->connectionPool = $connectionPool;
         $this->connection = $this->getConnection();
-    }
-
-    public function injectSqlLoggerHelper(SqlLoggerHelper $sqlLoggerHelper): void
-    {
-        $this->sqlLoggerHelper = $sqlLoggerHelper;
-        $this->sqlLoggerHelper->setConnectionConfiguration($this->connection->getConfiguration());
     }
 
     /**
@@ -51,37 +43,13 @@ class ConnectionHelper
             return null;
         }
 
-        $currentSqlLogger = $this->sqlLoggerHelper->getCurrentSqlLogger();
-        $this->sqlLoggerHelper->deactivateSqlLogger();
-
         try {
             $result = $this->connection->executeQuery($query);
         } catch (Exception $exception) {
             $result = null;
         }
 
-        $this->sqlLoggerHelper->activateSqlLogger($currentSqlLogger);
-
         return $result;
-    }
-
-    /**
-     * Executes a bulk insert which will not be logged by our SQL logger
-     */
-    public function bulkInsert(string $tableName, array $data, array $columns = [], array $types = []): int
-    {
-        if (!$this->isConnectionAvailable()) {
-            return 0;
-        }
-
-        $currentSqlLogger = $this->sqlLoggerHelper->getCurrentSqlLogger();
-        $this->sqlLoggerHelper->deactivateSqlLogger();
-
-        $affectedRows = $this->connection->bulkInsert($tableName, $data, $columns, $types);
-
-        $this->sqlLoggerHelper->activateSqlLogger($currentSqlLogger);
-
-        return $affectedRows;
     }
 
     public function quote(string $value): string
@@ -114,7 +82,7 @@ class ConnectionHelper
 
     public function executeQueryBuilder(QueryBuilder $queryBuilder): Result
     {
-        return $queryBuilder->execute();
+        return $queryBuilder->executeQuery();
     }
 
     private function getConnection(): ?Connection

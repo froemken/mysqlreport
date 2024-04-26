@@ -27,7 +27,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $cont
     }
 
     // Because of RequestAwareToolbarItemInterface is not known in TYPO3 11,
-    // we have two different Toolbar classes which have to be handeled differently
+    // we have two different Toolbar classes which have to be handled differently
     $container->services()->load(
         'StefanFroemken\\Mysqlreport\\Backend\\ToolbarItem\\',
         '../Classes/Backend/ToolbarItem/*'
