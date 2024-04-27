@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Factory;
 
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -69,6 +70,13 @@ class ProfileFactory
 
     private function getTypo3Mode(): string
     {
-        return GeneralUtility::getIndpEnv('SCRIPT_NAME') === '/typo3/index.php' ? 'BE' : 'FE';
+        if (isset($GLOBALS['TYPO3_REQUEST'])) {
+            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend() ? 'FE' : 'BE';
+        }
+
+        // In case of InstallTool TYPO3_REQUEST can be empty.
+        // That's the case while executing some of the AJAX requests in InstallTool
+
+        return 'BE';
     }
 }
