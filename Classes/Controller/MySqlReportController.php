@@ -22,26 +22,16 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 /**
  * Controller to show a basic analysis of MySQL variables and status
  */
-class MySqlReportController
+readonly class MySqlReportController
 {
     /**
-     * The ServiceLocator loaded here is a container just containing a few objects
-     * available for this controller
+     * @param ContainerInterface $serviceLocator A container just containing a few objects available for this controller
      */
-    private ContainerInterface $serviceLocator;
-
-    private ModuleTemplateFactory $moduleTemplateFactory;
-
-    private ModuleTemplateHelper $moduleTemplateHelper;
-
     public function __construct(
-        ContainerInterface $serviceLocator,
-        ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleTemplateHelper $moduleTemplateHelper
+        private ContainerInterface    $serviceLocator,
+        private ModuleTemplateFactory $moduleTemplateFactory,
+        private ModuleTemplateHelper  $moduleTemplateHelper
     ) {
-        $this->serviceLocator = $serviceLocator;
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-        $this->moduleTemplateHelper = $moduleTemplateHelper;
     }
 
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
