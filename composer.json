@@ -27,7 +27,7 @@
 	},
 	"require": {
 		"ext-pdo": "*",
-		"typo3/cms-core": "^12.4.8 || ^13.0",
+		"typo3/cms-core": "^13.0",
 		"doctrine/sql-formatter": "^1.1"
 	},
 	"require-dev": {
