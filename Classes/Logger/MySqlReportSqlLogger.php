@@ -213,7 +213,8 @@ class MySqlReportSqlLogger
     }
 
     /**
-     * Executes a bulk insert which will not be logged by our SQL logger
+     * Bulk insert. This method will also be caught by our logger, but as it was called
+     * at last position of __destruct, it will not be stored in profile table.
      */
     private function bulkInsert(array $data, array $columns = []): void
     {
