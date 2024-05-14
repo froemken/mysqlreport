@@ -16,7 +16,7 @@ call_user_func(static function (): void {
             = \StefanFroemken\Mysqlreport\Backend\ToolbarItem\MySqlReportToolbarItemV11::class;
     }
 
-    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['SecondDatabase']['driverMiddlewares']['mysqlreport-dbal-middleware'] = [
+    $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['driverMiddlewares']['mysqlreport-dbal-middleware'] = [
         'target' => \StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeMiddleware::class,
         'after' => [
             'typo3/core/custom-platform-driver-middleware',
