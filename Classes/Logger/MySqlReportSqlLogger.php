@@ -35,10 +35,6 @@ class MySqlReportSqlLogger
      */
     private \SplQueue $profiles;
 
-    private ProfileFactory $profileFactory;
-
-    private ExtConf $extConf;
-
     /**
      * If activated, we will execute each query additional with prepended EXPLAIN
      * to get more information about indexing and FTS.
@@ -72,13 +68,10 @@ class MySqlReportSqlLogger
     ];
 
     public function __construct(
-        ProfileFactory $profileFactory,
-        ExtConf $extConf
+        private readonly ProfileFactory $profileFactory,
+        private readonly ExtConf $extConf,
     ) {
         $this->profiles = new \SplQueue();
-
-        $this->profileFactory = $profileFactory;
-        $this->extConf = $extConf;
     }
 
     /**
@@ -130,11 +123,6 @@ class MySqlReportSqlLogger
 
         $queriesToStore = [];
         foreach ($this->profiles as $key => $profile) {
-            // Do not log our own queries
-            if (str_contains($profile->getQuery(), 'tx_mysqlreport_domain_model_profile')) {
-                continue;
-            }
-
             $queryToStore = [
                 'pid' => $profile->getPid(),
                 'ip' => $profile->getIp(),
