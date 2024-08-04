@@ -12,6 +12,9 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Factory;
 
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
+use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
@@ -22,6 +25,8 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  */
 class ProfileFactory
 {
+    use Typo3RequestTrait;
+
     private int $pageUid;
 
     private string $ip;
@@ -70,13 +75,10 @@ class ProfileFactory
 
     private function getTypo3Mode(): string
     {
-        if (isset($GLOBALS['TYPO3_REQUEST'])) {
-            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend() ? 'FE' : 'BE';
+        if (Environment::isCli()) {
+            return 'CLI';
         }
 
-        // In case of InstallTool TYPO3_REQUEST can be empty.
-        // That's the case while executing some of the AJAX requests in InstallTool
-
-        return 'BE';
+        return $this->isBackendRequest() ? 'BE' : 'FE';
     }
 }
