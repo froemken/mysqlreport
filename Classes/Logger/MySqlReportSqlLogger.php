@@ -15,6 +15,9 @@ use Doctrine\DBAL\Exception;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
+use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,6 +28,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class MySqlReportSqlLogger
 {
+    use Typo3RequestTrait;
+
     /**
      * Collected profiles
      *
@@ -179,37 +184,19 @@ class MySqlReportSqlLogger
 
     private function isFrontendOrBackendProfilingActivated(): bool
     {
-        $applicationType = $this->getApplicationType();
-        if ($applicationType === null) {
+        if (Environment::isCli()) {
             return false;
         }
 
-        if (
-            $this->extConf->isProfileFrontend()
-            && $applicationType->isFrontend()
-        ) {
+        if ($this->extConf->isProfileBackend() && !$this->isBackendRequest()) {
             return true;
         }
 
-        if (
-            $this->extConf->isProfileBackend()
-            && $applicationType->isBackend()
-        ) {
+        if ($this->extConf->isProfileBackend() && $this->isBackendRequest()) {
             return true;
         }
 
         return false;
-    }
-
-    private function getApplicationType(): ?ApplicationType
-    {
-        // In case of InstallTool TYPO3_REQUEST can be empty.
-        // That's the case while executing some of the AJAX requests in InstallTool
-        if (isset($GLOBALS['TYPO3_REQUEST'])) {
-            return ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST']);
-        }
-
-        return null;
     }
 
     /**
