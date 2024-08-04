@@ -7,6 +7,15 @@
 Upgrades
 ========
 
+Upgrade to version 4.0.0
+========================
+
+Please visit and execute "DB compare" to add new column "using_index" and
+remove old column "not_using_index".
+
+Make sure TYPO3 "adminpanel" is not installed. This system extension
+interferes with our own SQL logger.
+
 Upgrade to version 2.0.0
 ========================
 

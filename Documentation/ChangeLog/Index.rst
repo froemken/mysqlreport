@@ -10,6 +10,16 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 4.0.0
+=============
+
+*   [TASK] Remove toolbar icon
+*   [TASK] Replace placeholders in SQL to build read SQL for EXPLAIN
+*   [TASK] Move EXPLAIN query in logger to destruct
+*   [TASK] Add LoggingStatement to log bindValue und execute method
+*   [TASK] Completely rework registering of logger
+*   [TASK] Remove TYPO3 11 and TYPO3 12 compatibility
+
 Version 3.0.4
 =============
 

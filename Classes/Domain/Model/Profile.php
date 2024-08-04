@@ -138,62 +138,6 @@ class Profile
         return $this->query;
     }
 
-    /**
-     * Returns query with replaced :placeholders
-     */
-    public function getQueryWithReplacedParameters(): string
-    {
-        $query = $this->getQuery();
-        $parameterTypes = $this->getQueryParameterTypes();
-
-        foreach ($this->getQueryParameters() as $key => $queryParameter) {
-            if (isset($parameterTypes[$key])) {
-                switch ($parameterTypes[$key]) {
-                    case Connection::PARAM_INT:
-                        $queryParameter = (int)$queryParameter;
-                        break;
-                    case Connection::PARAM_BOOL:
-                        $queryParameter = $queryParameter === true ? 1 : 0;
-                        break;
-                    case Connection::PARAM_NULL:
-                        $queryParameter = 'NULL';
-                        break;
-                    case Connection::PARAM_INT_ARRAY:
-                        $queryParameter = implode(', ', $queryParameter);
-                        break;
-                    case Connection::PARAM_STR_ARRAY:
-                        $queryParameter = array_map(static function ($value) {
-                            return '\'' . $value . '\'';
-                        }, $queryParameter);
-                        $queryParameter = implode(', ', $queryParameter);
-                        break;
-                    default:
-                    case Connection::PARAM_STR:
-                        $queryParameter = '\'' . $queryParameter . '\'';
-                }
-                $query = str_replace(':' . $key, (string)$queryParameter, $query);
-            } else {
-                $query = implode(
-                    var_export(
-                        is_scalar($queryParameter) ? $queryParameter : (string)$queryParameter,
-                        true
-                    ),
-                    explode('?', $query, 2)
-                );
-            }
-        }
-
-        return $query;
-    }
-
-    /**
-     * Returns an EXPLAIN statement for query with replaced placeholders
-     */
-    public function getQueryForExplain(): string
-    {
-        return 'EXPLAIN ' . $this->getQueryWithReplacedParameters();
-    }
-
     public function setQuery(string $query): void
     {
         $this->query = $query;
@@ -208,9 +152,9 @@ class Profile
         return $this->queryParameters;
     }
 
-    public function setQueryParameters(?array $queryParameters): void
+    public function setQueryParameters(array $queryParameters): void
     {
-        $this->queryParameters = $queryParameters ?? [];
+        $this->queryParameters = $queryParameters;
     }
 
     public function getQueryParameterTypes(): array
@@ -218,9 +162,9 @@ class Profile
         return $this->queryParameterTypes;
     }
 
-    public function setQueryParameterTypes(?array $queryParameterTypes): void
+    public function setQueryParameterTypes(array $queryParameterTypes): void
     {
-        $this->queryParameterTypes = $queryParameterTypes ?? [];
+        $this->queryParameterTypes = $queryParameterTypes;
     }
 
     public function getProfile(): array

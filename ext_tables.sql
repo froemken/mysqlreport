@@ -14,7 +14,7 @@ CREATE TABLE tx_mysqlreport_domain_model_profile
 	query_type             varchar(20)  DEFAULT ''           NOT NULL,
 	profile                text                              NOT NULL,
 	explain_query          text                              NOT NULL,
-	not_using_index        tinyint(1)   DEFAULT '0'          NOT NULL,
+	using_index            tinyint(1)   DEFAULT '0'          NOT NULL,
 	using_fulltable        tinyint(1)   DEFAULT '0'          NOT NULL,
 
 	KEY                    profileCalls (unique_call_identifier,crdate,mode,duration)
