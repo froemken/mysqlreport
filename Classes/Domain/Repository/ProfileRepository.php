@@ -116,7 +116,7 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('uid', 'query_id', 'not_using_index', 'duration')
+            ->select('uid', 'query_id', 'using_index', 'duration')
             ->addSelectLiteral('LEFT(query, 120) as query')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
@@ -148,7 +148,7 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('query', 'query_type', 'profile', 'explain_query', 'not_using_index', 'unique_call_identifier', 'duration')
+            ->select('query', 'query_type', 'profile', 'explain_query', 'using_index', 'unique_call_identifier', 'duration')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(

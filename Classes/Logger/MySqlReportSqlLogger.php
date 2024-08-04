@@ -15,6 +15,8 @@ use Doctrine\DBAL\Exception;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
+use StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper;
+use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -65,11 +67,14 @@ class MySqlReportSqlLogger
         'show global status',
         'show global variables',
         'tx_mysqlreport_domain_model_profile',
+        'information_schema',
     ];
 
     public function __construct(
         private readonly ProfileFactory $profileFactory,
         private readonly ExtConf $extConf,
+        private readonly QueryParamsHelper $queryParamsHelper,
+        private readonly ExplainQueryHelper $explainQueryHelper,
     ) {
         $this->profiles = new \SplQueue();
     }
@@ -87,17 +92,19 @@ class MySqlReportSqlLogger
      * This method will be called just after the query has been executed by doctrine.
      * Start collecting duration and other stuff.
      */
-    public function stopQuery($query): void
+    public function stopQuery(string $query, array $params = [], array $types = []): void
     {
         if (!$this->isValidQuery($query)) {
             return;
         }
 
         $profile = $this->profileFactory->createNewProfile();
-        $profile->setQuery($query);
+        $profile->setQuery($this->queryParamsHelper->getQueryWithReplacedParams(
+            $query,
+            $params,
+            $types,
+        ));
         $profile->setDuration(microtime(true) - $this->queryStartTime);
-        // $profile->setQueryParameters($params);
-        // $profile->setQueryParameterTypes($types);
 
         $this->profiles->add($this->queryIterator, $profile);
 
@@ -106,6 +113,10 @@ class MySqlReportSqlLogger
 
     private function isValidQuery(string $query): bool
     {
+        if (str_starts_with($query, 'EXPLAIN')) {
+            return false;
+        }
+
         foreach ($this->skipQueries as $skipQuery) {
             if (str_contains(strtolower($query), $skipQuery)) {
                 return false;
@@ -121,8 +132,23 @@ class MySqlReportSqlLogger
             return;
         }
 
+        $executeExplainQuery = $this->extConf->isAddExplain();
+        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+            ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+
         $queriesToStore = [];
         foreach ($this->profiles as $key => $profile) {
+            if ($executeExplainQuery && $profile->getQueryType() === 'SELECT') {
+                try {
+                    $queryResult = $connection->executeQuery('EXPLAIN ' . $profile->getQuery());
+                    while ($explainRow = $queryResult->fetchAssociative()) {
+                        $this->explainQueryHelper->updateProfile($profile, $explainRow);
+                    }
+                } catch (Exception $e) {
+                    continue;
+                }
+            }
+
             $queryToStore = [
                 'pid' => $profile->getPid(),
                 'ip' => $profile->getIp(),
@@ -130,10 +156,10 @@ class MySqlReportSqlLogger
                 'request' => $profile->getRequest(),
                 'query_type' => $profile->getQueryType(),
                 'duration' => $profile->getDuration(),
-                'query' => $profile->getQueryWithReplacedParameters(),
+                'query' => $profile->getQuery(),
                 'profile' => serialize($profile->getProfile()),
                 'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
-                'not_using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 0 : 1,
+                'using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 1 : 0,
                 'using_fulltable' => $profile->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
                 'mode' => $profile->getMode(),
                 'unique_call_identifier' => $profile->getUniqueCallIdentifier(),
@@ -157,7 +183,7 @@ class MySqlReportSqlLogger
                     'query',
                     'profile',
                     'explain_query',
-                    'not_using_index',
+                    'using_index',
                     'using_fulltable',
                     'mode',
                     'unique_call_identifier',
@@ -174,7 +200,7 @@ class MySqlReportSqlLogger
             return false;
         }
 
-        if ($this->extConf->isProfileBackend() && !$this->isBackendRequest()) {
+        if ($this->extConf->isProfileFrontend() && !$this->isBackendRequest()) {
             return true;
         }
 

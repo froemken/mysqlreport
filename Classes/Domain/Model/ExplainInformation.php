@@ -27,11 +27,6 @@ class ExplainInformation
         return $this->explainResults;
     }
 
-    public function setExplainResults(array $explainResults): void
-    {
-        $this->explainResults = $explainResults;
-    }
-
     public function addExplainResult(array $explainResult): void
     {
         $this->explainResults[] = $explainResult;

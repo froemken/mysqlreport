@@ -39,6 +39,9 @@
 	"suggest": {
 		"typo3/cms-dashboard": "MySQL Report comes with some pretty cool widgets for TYPO3 Dashboard."
 	},
+	"conflict": {
+		"typo3/cms-adminpanel": "*"
+	},
 	"autoload": {
 		"psr-4": {
 			"StefanFroemken\\Mysqlreport\\": "Classes"

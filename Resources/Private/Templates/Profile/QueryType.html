@@ -1,6 +1,7 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Module"/>
@@ -20,7 +21,7 @@
         <tr>
             <th>ID/Order</th>
             <th>Query</th>
-            <th>Not using index</th>
+            <th>Using index</th>
             <th>Duration</th>
             <th>Action</th>
         </tr>
@@ -30,7 +31,16 @@
             <tr>
                 <td>{profileRecord.query_id}</td>
                 <td>{profileRecord.query}...</td>
-                <td>{profileRecord.not_using_index}</td>
+                <td>
+                    <f:if condition="{profileRecord.using_index}">
+                        <f:then>
+                            <core:icon identifier="actions-check"/>
+                        </f:then>
+                        <f:else>
+                            <core:icon identifier="actions-message-ok-close"/>
+                        </f:else>
+                    </f:if>
+                </td>
                 <td>
                     {profileRecord.duration}
                 </td>

@@ -38,16 +38,23 @@
 
 <f:if condition="{profileRecord.explain}">
     <h1>Explain output</h1>
-    <f:for each="{profileRecord.explain}" as="explain">
-        <table class="table">
-            <tbody>
-            <f:for each="{explain}" as="value" key="key">
-                <tr>
-                    <td>{key}</td>
-                    <td>{value}</td>
-                </tr>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <f:for each="{profileRecord.explain.0}" as="value" key="key">
+                <th>{key}</th>
             </f:for>
-            </tbody>
-        </table>
-    </f:for>
+        </tr>
+        </thead>
+        <tbody>
+        <f:for each="{profileRecord.explain}" as="explain">
+            <tr>
+                <f:for each="{explain}" as="value">
+                    <td>{value}</td>
+                </f:for>
+            </tr>
+        </f:for>
+        </tbody>
+    </table>
 </f:if>
