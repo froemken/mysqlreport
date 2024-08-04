@@ -16,10 +16,8 @@ use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
-use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
