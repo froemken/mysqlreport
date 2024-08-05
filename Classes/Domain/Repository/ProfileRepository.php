@@ -163,15 +163,13 @@ class ProfileRepository extends AbstractRepository
     }
 
     /**
-     * @param int $uid
      * @return array<string, mixed>
-     * @throws Exception
      */
     public function getProfileRecordByUid(int $uid): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('query', 'query_type', 'profile', 'explain_query', 'using_index', 'unique_call_identifier', 'duration')
+            ->select('query', 'query_type', 'explain_query', 'using_index', 'unique_call_identifier', 'duration')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -180,7 +178,11 @@ class ProfileRepository extends AbstractRepository
                 ),
             );
 
-        $profileRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetchAssociative() ?: [];
+        try {
+            $profileRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetchAssociative() ?: [];
+        } catch (Exception $e) {
+            return [];
+        }
 
         /** @var ModifyProfileRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, [$profileRecord]));

@@ -116,7 +116,6 @@ class ProfileController
         $uid = (int)($queryParameters['uid'] ?? 0);
 
         $profileRecord = $this->profileRepository->getProfileRecordByUid($uid);
-        $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
         $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
 
         $moduleTemplate->assign('profileRecord', $profileRecord);
