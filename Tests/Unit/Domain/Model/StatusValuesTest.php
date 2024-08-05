@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -31,9 +32,7 @@ class StatusValuesTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function givenArrayIsAccessibleOverProperties(): void
     {
         $data = [
@@ -53,9 +52,7 @@ class StatusValuesTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function arrayIsAccessibleWithIsset(): void
     {
         $data = [
@@ -73,9 +70,7 @@ class StatusValuesTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function propertyIsWriteable(): void
     {
         $data = [
@@ -92,9 +87,7 @@ class StatusValuesTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function propertyIsRemovable(): void
     {
         $data = [
@@ -114,9 +107,7 @@ class StatusValuesTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function objectIsNotCountable(): void
     {
         $data = [
@@ -132,9 +123,7 @@ class StatusValuesTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function objectIsNotTraversable(): void
     {
         $data = [

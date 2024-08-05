@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
@@ -37,9 +38,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUidInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -48,9 +47,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setUidSetsUid(): void
     {
         $this->subject->setUid(123);
@@ -61,9 +58,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getPidInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -72,9 +67,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setPidSetsPid(): void
     {
         $this->subject->setPid(123);
@@ -85,9 +78,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getIpInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -96,9 +87,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setIpSetsIp(): void
     {
         $this->subject->setIp('127.0.0.1');
@@ -109,9 +98,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRefererInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -120,9 +107,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRefererSetsReferer(): void
     {
         $this->subject->setReferer('www.typo3lexikon.de');
@@ -133,9 +118,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getRequestInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -144,9 +127,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setRequestSetsRequest(): void
     {
         $this->subject->setRequest('www.typo3lexikon.de');
@@ -157,9 +138,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getQueryTypeInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -168,9 +147,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getDurationInitiallyReturnsEmptyFloat(): void
     {
         self::assertSame(
@@ -179,9 +156,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setDurationSetsDuration(): void
     {
         $this->subject->setDuration(12.34);
@@ -192,9 +167,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getQueryInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -203,9 +176,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setQuerySetsQueryAndType(): void
     {
         $this->subject->setQuery('SELECT * FROM pages;');
@@ -221,115 +192,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    public function queryDataProvider(): array
-    {
-        return [
-            'Simple query' => [
-                'SELECT * FROM pages',
-                [],
-                [],
-                'SELECT * FROM pages',
-            ],
-
-            'Query with named int parameter' => [
-                'SELECT * FROM pages WHERE crdate = :dcValue1',
-                ['dcValue1' => 123],
-                ['dcValue1' => Connection::PARAM_INT],
-                'SELECT * FROM pages WHERE crdate = 123',
-            ],
-
-            'Query with named bool parameter' => [
-                'SELECT * FROM pages WHERE hidden = :dcValue1',
-                ['dcValue1' => true],
-                ['dcValue1' => Connection::PARAM_BOOL],
-                'SELECT * FROM pages WHERE hidden = 1',
-            ],
-
-            'Query with named null parameter' => [
-                'SELECT * FROM pages WHERE bodytext IS :dcValue1',
-                ['dcValue1' => null],
-                ['dcValue1' => Connection::PARAM_NULL],
-                'SELECT * FROM pages WHERE bodytext IS NULL',
-            ],
-
-            'Query with named int array parameter' => [
-                'SELECT * FROM pages WHERE pid IN (:dcValue1)',
-                ['dcValue1' => [1, 3, 5]],
-                ['dcValue1' => Connection::PARAM_INT_ARRAY],
-                'SELECT * FROM pages WHERE pid IN (1, 3, 5)',
-            ],
-
-            'Query with named string array parameter' => [
-                'SELECT * FROM pages WHERE title IN (:dcValue1)',
-                ['dcValue1' => ['Stefan', 'Petra', 'Lars']],
-                ['dcValue1' => Connection::PARAM_STR_ARRAY],
-                'SELECT * FROM pages WHERE title IN (\'Stefan\', \'Petra\', \'Lars\')',
-            ],
-
-            'Query with named string parameter' => [
-                'SELECT * FROM pages WHERE title = :dcValue1',
-                ['dcValue1' => 'Stefan'],
-                ['dcValue1' => Connection::PARAM_STR],
-                'SELECT * FROM pages WHERE title = \'Stefan\'',
-            ],
-
-            'Query with multiple parameter' => [
-                'SELECT * FROM pages WHERE title = :dcValue1 AND crdate = :dcValue2',
-                ['dcValue1' => 'Stefan', 'dcValue2' => 123],
-                ['dcValue1' => Connection::PARAM_STR, 'dcValue2' => Connection::PARAM_INT],
-                'SELECT * FROM pages WHERE title = \'Stefan\' AND crdate = 123',
-            ],
-
-            'Query with questionmark as string' => [
-                'DELETE FROM cache_hash WHERE identifier = ?',
-                [0 => 'trh74823nthgdm8g'],
-                [],
-                'DELETE FROM cache_hash WHERE identifier = \'trh74823nthgdm8g\'',
-            ],
-
-            'Query with questionmark as int' => [
-                'DELETE FROM cache_hash WHERE uid = ?',
-                [0 => 467218],
-                [],
-                'DELETE FROM cache_hash WHERE uid = 467218',
-            ],
-
-            'Query with questionmarks' => [
-                'SELECT * FROM pages WHERE title = ? AND crdate = ?',
-                [0 => 'Stefan', 1 => 123],
-                [],
-                'SELECT * FROM pages WHERE title = \'Stefan\' AND crdate = 123',
-            ],
-
-            'Query with multiple IN questionmarks' => [
-                'SELECT * FROM pages WHERE pid IN (?, ?, ?)',
-                [0 => 1, 1 => 3, 2 => 5],
-                [],
-                'SELECT * FROM pages WHERE pid IN (1, 3, 5)',
-            ],
-        ];
-    }
-
-    /**
-     * @test
-     *
-     * @dataProvider queryDataProvider
-     */
-    public function getQueryWithReplacedParameters(string $query, array $parameters, array $types, string $expectedQuery): void
-    {
-        $this->subject->setQuery($query);
-        $this->subject->setQueryParameters($parameters);
-        $this->subject->setQueryParameterTypes($types);
-
-        self::assertSame(
-            $expectedQuery,
-            $this->subject->getQueryWithReplacedParameters(),
-        );
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function getQueryParametersInitiallyReturnsEmptyArray(): void
     {
         self::assertSame(
@@ -338,9 +201,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setQueryParametersSetsQueryParameters(): void
     {
         $this->subject->setQueryParameters([':dcValue1' => 'Stefan']);
@@ -351,22 +212,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function setQueryParametersWithNullSetsQueryParameters(): void
-    {
-        $this->subject->setQueryParameters(null);
-
-        self::assertSame(
-            [],
-            $this->subject->getQueryParameters(),
-        );
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function getQueryParameterTypesInitiallyReturnsEmptyArray(): void
     {
         self::assertSame(
@@ -375,9 +221,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setQueryParameterTypesSetsQueryParameterTypes(): void
     {
         $this->subject->setQueryParameterTypes([':dcValue1' => 'string']);
@@ -388,59 +232,20 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function getProfileInitiallyReturnsEmptyArray(): void
-    {
-        self::assertSame(
-            [],
-            $this->subject->getProfile(),
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setProfileSetsProfiles(): void
-    {
-        $this->subject->setProfile(['name' => 'Stefan']);
-
-        self::assertSame(
-            ['name' => 'Stefan'],
-            $this->subject->getProfile(),
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function setProfileWithNullSetsProfile(): void
-    {
-        $this->subject->setProfile(null);
-
-        self::assertSame(
-            [],
-            $this->subject->getProfile(),
-        );
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function modifyingExplainInformationModifiesExplainInformation(): void
     {
-        $this->subject->getExplainInformation()->setExplainResults(['name' => 'Stefan']);
+        $this->subject->getExplainInformation()->addExplainResult(['name' => 'Stefan']);
 
         self::assertSame(
-            ['name' => 'Stefan'],
+            [
+                0 => ['name' => 'Stefan'],
+            ],
             $this->subject->getExplainInformation()->getExplainResults(),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getModeInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -449,9 +254,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setModeSetsMode(): void
     {
         $this->subject->setMode('BE');
@@ -462,9 +265,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getUniqueCallIdentifierInitiallyReturnsEmptyString(): void
     {
         self::assertSame(
@@ -473,9 +274,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setUniqueCallIdentifierSetsUniqueCallIdentifier(): void
     {
         $this->subject->setUniqueCallIdentifier('cn7g483ng.r4832zt');
@@ -486,9 +285,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getCrdateInitiallyReturnsZero(): void
     {
         self::assertSame(
@@ -497,9 +294,7 @@ class ProfileTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setCrdateSetsCrdate(): void
     {
         $this->subject->setCrdate(46373728);

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Model;
 
+use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Domain\Model\ExplainInformation;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
@@ -36,9 +37,7 @@ class ExplainInformationTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function getExplainResultsInitiallyReturnsEmptyArray(): void
     {
         self::assertSame(
@@ -47,43 +46,20 @@ class ExplainInformationTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function setExplainResultsSetsExplainResults(): void
-    {
-        $arr = [
-            'foo' => 'bar',
-        ];
-
-        $this->subject->setExplainResults($arr);
-
-        self::assertSame(
-            $arr,
-            $this->subject->getExplainResults(),
-        );
-    }
-
-    /**
-     * @test
-     */
+    #[Test]
     public function addExplainResultAddsExplainResult(): void
     {
-        $this->subject->setExplainResults([0 => ['name' => 'Stefan']]);
         $this->subject->addExplainResult(['name' => 'Petra']);
 
         self::assertSame(
             [
-                0 => ['name' => 'Stefan'],
-                1 => ['name' => 'Petra'],
+                0 => ['name' => 'Petra'],
             ],
             $this->subject->getExplainResults(),
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isQueryUsingIndexInitiallyReturnsTrue(): void
     {
         self::assertTrue(
@@ -91,9 +67,7 @@ class ExplainInformationTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setIsQueryUsingIndexSetsQueryUsingIndex(): void
     {
         $this->subject->setIsQueryUsingIndex(false);
@@ -103,9 +77,7 @@ class ExplainInformationTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function isQueryUsingFTSInitiallyReturnsTrue(): void
     {
         self::assertFalse(
@@ -113,9 +85,7 @@ class ExplainInformationTest extends UnitTestCase
         );
     }
 
-    /**
-     * @test
-     */
+    #[Test]
     public function setIsQueryUsingFTSSetsQueryUsingFTS(): void
     {
         $this->subject->setIsQueryUsingFTS(true);
