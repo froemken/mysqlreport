@@ -1,5 +1,6 @@
 ..  include:: /Includes.rst.txt
 
+..  _start:
 
 ============
 MySQL Report
@@ -56,4 +57,3 @@ TYPO3s ConnectionPool API in FE and/or BE context.
     :hidden:
 
     Sitemap
-    genindex
