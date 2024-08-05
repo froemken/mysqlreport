@@ -4,9 +4,6 @@ services:
     autoconfigure: true
     public: false
 
-  StefanFroemken\Mysqlreport\Dashboard\Widget\:
-    resource: '../Classes/Dashboard/Widget/*'
-
   dashboard.widget.mysql-max-used-connections:
     class: 'TYPO3\CMS\Dashboard\Widgets\DoughnutChartWidget'
     arguments:
