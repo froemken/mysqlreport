@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Model;
 
 use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
-use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**

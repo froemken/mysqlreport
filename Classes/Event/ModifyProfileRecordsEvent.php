@@ -50,7 +50,6 @@ class ModifyProfileRecordsEvent
     /**
      * @param int $key
      * @param array<string, mixed> $profileRecord
-     * @return void
      */
     public function updateProfileRecord(int $key, array $profileRecord): void
     {
