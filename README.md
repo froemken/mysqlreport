@@ -1,8 +1,13 @@
 # MySQL Report
 
-![Build Status](https://github.com/froemken/mysqlreport/workflows/CI/badge.svg)
+[![Latest Stable Version](https://poser.pugx.org/stefanfroemken/mysqlreport/v/stable.svg)](https://packagist.org/packages/stefanfroemken/mysqlreport)
+[![TYPO3 13.2](https://img.shields.io/badge/TYPO3-13.2-green.svg)](https://get.typo3.org/version/13)
+[![License](https://poser.pugx.org/stefanfroemken/mysqlreport/license)](https://packagist.org/packages/stefanfroemken/mysqlreport)
+[![Total Downloads](https://poser.pugx.org/stefanfroemken/mysqlreport/downloads.svg)](https://packagist.org/packages/stefanfroemken/mysqlreport)
+[![Monthly Downloads](https://poser.pugx.org/stefanfroemken/mysqlreport/d/monthly)](https://packagist.org/packages/stefanfroemken/mysqlreport)
+![Build Status](https://github.com/froemken/mysqlreport/actions/workflows/typo3_13.yml/badge.svg)
 
-With `mysqlreport` you can analyze and profile all SQL queries created by 
+With `mysqlreport` you can analyze and profile all SQL queries created by
 `ConnectionPool` and Doctrine `QueryBuilder`.
 
 After installation, you should visit the extension configuration in extension manager.

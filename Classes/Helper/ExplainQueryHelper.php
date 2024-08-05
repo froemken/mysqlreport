@@ -21,7 +21,6 @@ readonly class ExplainQueryHelper
     /**
      * @param Profile $profile
      * @param array<string, mixed> $explainRow
-     * @return void
      */
     public function updateProfile(Profile $profile, array $explainRow): void
     {

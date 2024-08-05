@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Model;
 
-use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
