@@ -26,6 +26,7 @@ readonly class ExplainQueryHelper
     public function updateProfile(Profile $profile, array $explainRow): void
     {
         $profile->getExplainInformation()->addExplainResult($explainRow);
+
         if ($explainRow === []) {
             return;
         }

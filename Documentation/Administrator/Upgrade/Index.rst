@@ -13,6 +13,8 @@ Upgrade to version 4.0.0
 Please visit and execute "DB compare" to add new column "using_index" and
 remove old column "not_using_index".
 
+Please visit and execute "DB compare" to remove old column "profile".
+
 Make sure TYPO3 "adminpanel" is not installed. This system extension
 interferes with our own SQL logger.
 
