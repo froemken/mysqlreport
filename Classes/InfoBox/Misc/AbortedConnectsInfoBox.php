@@ -37,7 +37,7 @@ class AbortedConnectsInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $page->getStatusValues()['Aborted_connects']
+            $page->getStatusValues()['Aborted_connects'],
         );
     }
 }

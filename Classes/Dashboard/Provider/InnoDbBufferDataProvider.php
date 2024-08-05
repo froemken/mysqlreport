@@ -30,6 +30,9 @@ class InnoDbBufferDataProvider implements ChartDataProviderInterface
         $this->variables = $variablesRepository->findAll();
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public function getChartData(): array
     {
         return [

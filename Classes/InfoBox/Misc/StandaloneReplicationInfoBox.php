@@ -38,7 +38,7 @@ class StandaloneReplicationInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $page->getStatusValues()['Slave_running']
+            $page->getStatusValues()['Slave_running'],
         );
     }
 }

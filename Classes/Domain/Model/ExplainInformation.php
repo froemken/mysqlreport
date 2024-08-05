@@ -16,17 +16,26 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
  */
 class ExplainInformation
 {
+    /**
+     * @var array<int, mixed>
+     */
     private array $explainResults = [];
 
     private bool $isQueryUsingIndex = true;
 
     private bool $isQueryUsingFTS = false;
 
+    /**
+     * @return array<int, mixed>
+     */
     public function getExplainResults(): array
     {
         return $this->explainResults;
     }
 
+    /**
+     * @param array<string, mixed> $explainResult
+     */
     public function addExplainResult(array $explainResult): void
     {
         $this->explainResults[] = $explainResult;

@@ -55,7 +55,7 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox
         return sprintf(
             implode(' ', $content),
             $this->getAvgUsedBlocks($page->getStatusValues()),
-            $page->getVariables()['query_cache_limit']
+            $page->getVariables()['query_cache_limit'],
         );
     }
 

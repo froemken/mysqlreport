@@ -31,7 +31,7 @@ class WriteRatioInfoBox extends AbstractInfoBox
             !isset(
                 $page->getStatusValues()['Innodb_page_size'],
                 $page->getStatusValues()['Innodb_buffer_pool_write_requests'],
-                $page->getStatusValues()['Innodb_buffer_pool_pages_flushed']
+                $page->getStatusValues()['Innodb_buffer_pool_pages_flushed'],
             )
             || (int)$page->getStatusValues()['Innodb_buffer_pool_pages_flushed'] === 0
         ) {
@@ -46,7 +46,7 @@ class WriteRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getWriteRatio($page->getStatusValues())
+            $this->getWriteRatio($page->getStatusValues()),
         );
     }
 

@@ -54,7 +54,7 @@ class FragmentationRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getFragmentationRatio($page->getStatusValues())
+            $this->getFragmentationRatio($page->getStatusValues()),
         );
     }
 

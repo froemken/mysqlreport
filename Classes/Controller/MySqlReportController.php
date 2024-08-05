@@ -28,11 +28,10 @@ readonly class MySqlReportController
      * @param ContainerInterface $serviceLocator A container just containing a few objects available for this controller
      */
     public function __construct(
-        private ContainerInterface    $serviceLocator,
+        private ContainerInterface $serviceLocator,
         private ModuleTemplateFactory $moduleTemplateFactory,
-        private ModuleTemplateHelper  $moduleTemplateHelper
-    ) {
-    }
+        private ModuleTemplateHelper $moduleTemplateHelper,
+    ) {}
 
     public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
@@ -54,7 +53,7 @@ readonly class MySqlReportController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'system_mysqlreport',
-            'MySqlReport Overview'
+            'MySqlReport Overview',
         );
 
         $moduleTemplate->assign('status', $this->serviceLocator->get('repository.status')->findAll());
@@ -68,12 +67,12 @@ readonly class MySqlReportController
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'system_mysqlreport',
             'MySqlReport Information',
-            ['action' => 'information']
+            ['action' => 'information'],
         );
 
         $moduleTemplate->assign(
             'renderedInfoBoxes',
-            $this->getPageByType('page.information')->getRenderedInfoBoxes()
+            $this->getPageByType('page.information')->getRenderedInfoBoxes(),
         );
 
         return $moduleTemplate->renderResponse('MySqlReport/Information');
@@ -85,12 +84,12 @@ readonly class MySqlReportController
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'system_mysqlreport',
             'MySqlReport InnoDB',
-            ['action' => 'innoDb']
+            ['action' => 'innoDb'],
         );
 
         $moduleTemplate->assign(
             'renderedInfoBoxes',
-            $this->getPageByType('page.innodb')->getRenderedInfoBoxes()
+            $this->getPageByType('page.innodb')->getRenderedInfoBoxes(),
         );
 
         return $moduleTemplate->renderResponse('MySqlReport/Information');
@@ -102,12 +101,12 @@ readonly class MySqlReportController
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'system_mysqlreport',
             'MySqlReport Thread Cache',
-            ['action' => 'threadCache']
+            ['action' => 'threadCache'],
         );
 
         $moduleTemplate->assign(
             'renderedInfoBoxes',
-            $this->getPageByType('page.thread_cache')->getRenderedInfoBoxes()
+            $this->getPageByType('page.thread_cache')->getRenderedInfoBoxes(),
         );
 
         return $moduleTemplate->renderResponse('MySqlReport/Information');
@@ -119,12 +118,12 @@ readonly class MySqlReportController
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'system_mysqlreport',
             'MySqlReport Table Cache',
-            ['action' => 'tableCache']
+            ['action' => 'tableCache'],
         );
 
         $moduleTemplate->assign(
             'renderedInfoBoxes',
-            $this->getPageByType('page.table_cache')->getRenderedInfoBoxes()
+            $this->getPageByType('page.table_cache')->getRenderedInfoBoxes(),
         );
 
         return $moduleTemplate->renderResponse('MySqlReport/Information');
@@ -136,12 +135,12 @@ readonly class MySqlReportController
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'system_mysqlreport',
             'MySqlReport Query Cache',
-            ['action' => 'queryCache']
+            ['action' => 'queryCache'],
         );
 
         $moduleTemplate->assign(
             'renderedInfoBoxes',
-            $this->getPageByType('page.query_cache')->getRenderedInfoBoxes()
+            $this->getPageByType('page.query_cache')->getRenderedInfoBoxes(),
         );
 
         return $moduleTemplate->renderResponse('MySqlReport/Information');
@@ -153,12 +152,12 @@ readonly class MySqlReportController
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'system_mysqlreport',
             'MySqlReport Misc',
-            ['action' => 'misc']
+            ['action' => 'misc'],
         );
 
         $moduleTemplate->assign(
             'renderedInfoBoxes',
-            $this->getPageByType('page.misc')->getRenderedInfoBoxes()
+            $this->getPageByType('page.misc')->getRenderedInfoBoxes(),
         );
 
         return $moduleTemplate->renderResponse('MySqlReport/Information');

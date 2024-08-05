@@ -24,6 +24,9 @@ class HandlerReadNextDataProvider implements ChartDataProviderInterface
         $this->statusValues = $statusRepository->findAll();
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public function getChartData(): array
     {
         return [
@@ -49,6 +52,9 @@ class HandlerReadNextDataProvider implements ChartDataProviderInterface
         return (int)($this->statusValues['Handler_read_next'] ?? 0);
     }
 
+    /**
+     * @return string[]
+     */
     private function getChartColors(): array
     {
         return [

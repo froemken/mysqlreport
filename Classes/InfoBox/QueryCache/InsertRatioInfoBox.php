@@ -53,7 +53,7 @@ class InsertRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getInsertRatio($page->getStatusValues())
+            $this->getInsertRatio($page->getStatusValues()),
         );
     }
 

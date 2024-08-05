@@ -36,22 +36,22 @@ class OpenedTablesInfoBox extends AbstractInfoBox
 
         $this->addUnorderedListEntry(
             $page->getStatusValues()['Opened_tables'],
-            'Opened tables since server start (Opened_tables)'
+            'Opened tables since server start (Opened_tables)',
         );
 
         $this->addUnorderedListEntry(
             $page->getStatusValues()['Open_tables'],
-            'Open tables in cache (Open_tables)'
+            'Open tables in cache (Open_tables)',
         );
 
         $this->addUnorderedListEntry(
             $page->getVariables()['table_open_cache'],
-            'Max allowed tables in cache (table_open_cache)'
+            'Max allowed tables in cache (table_open_cache)',
         );
 
         $this->addUnorderedListEntry(
             $page->getVariables()['open_files_limit'],
-            'Max file descriptors the mysqld process can use (open_files_limit)'
+            'Max file descriptors the mysqld process can use (open_files_limit)',
         );
 
         $this->addUnorderedListEntry(
@@ -59,9 +59,9 @@ class OpenedTablesInfoBox extends AbstractInfoBox
                 $page->getVariables()['max_connections'] * (5 + 2),
                 0,
                 ',',
-                '.'
+                '.',
             ),
-            'Calculated table_open_cache with 5 tables and 2 reserved file descriptors'
+            'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
         );
 
         $this->addUnorderedListEntry(
@@ -69,9 +69,9 @@ class OpenedTablesInfoBox extends AbstractInfoBox
                 $page->getVariables()['max_connections'] * (8 + 3),
                 0,
                 ',',
-                '.'
+                '.',
             ),
-            'Calculated table_open_cache with 8 tables and 3 reserved file descriptors'
+            'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
         );
 
         $this->addUnorderedListEntry(
@@ -79,9 +79,9 @@ class OpenedTablesInfoBox extends AbstractInfoBox
                 $this->getOpenedTablesEachSecond($page->getStatusValues()),
                 2,
                 ',',
-                '.'
+                '.',
             ),
-            'Opened tables each second'
+            'Opened tables each second',
         );
 
         return 'To increase performance, MySQL includes a mechanism to access a table simultaneously. '

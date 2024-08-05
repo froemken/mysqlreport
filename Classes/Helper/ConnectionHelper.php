@@ -89,7 +89,7 @@ class ConnectionHelper
     {
         try {
             return $this->connectionPool->getConnectionByName(
-                ConnectionPool::DEFAULT_CONNECTION_NAME
+                ConnectionPool::DEFAULT_CONNECTION_NAME,
             );
         } catch (\UnexpectedValueException $unexpectedValueException) {
             // Should never be thrown, as a hard-coded name was added as parameter

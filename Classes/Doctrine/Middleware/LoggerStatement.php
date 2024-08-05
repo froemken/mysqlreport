@@ -22,13 +22,20 @@ use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
  */
 class LoggerStatement implements Statement
 {
+    /**
+     * @var array<int, string>
+     */
     private array $params = [];
+
+    /**
+     * @var array<int, ParameterType>
+     */
     private array $types = [];
 
     public function __construct(
         readonly private StatementInterface $wrappedStatement,
         readonly private MySqlReportSqlLogger $logger,
-        readonly private string $sql
+        readonly private string $sql,
     ) {}
 
     public function bindValue(int|string $param, mixed $value, ParameterType $type = ParameterType::STRING): void

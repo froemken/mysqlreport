@@ -31,7 +31,7 @@ class LogFileSizeInfoBox extends AbstractInfoBox
         if (
             !isset(
                 $page->getStatusValues()['Innodb_page_size'],
-                $page->getVariables()['innodb_log_files_in_group']
+                $page->getVariables()['innodb_log_files_in_group'],
             )
             || (int)$page->getVariables()['innodb_log_files_in_group'] === 0
         ) {
@@ -52,7 +52,7 @@ class LogFileSizeInfoBox extends AbstractInfoBox
         return sprintf(
             implode(' ', $content),
             $logFileSize['value'],
-            $logFileSize['niceToHave']
+            $logFileSize['niceToHave'],
         );
     }
 
@@ -60,6 +60,8 @@ class LogFileSizeInfoBox extends AbstractInfoBox
      * find a good size for log files
      *
      * @link http://www.psce.com/blog/2012/04/10/what-is-the-proper-size-of-innodb-logs/
+     *
+     * @return array<string, int>
      */
     protected function getLogFileSize(StatusValues $status, Variables $variables): array
     {

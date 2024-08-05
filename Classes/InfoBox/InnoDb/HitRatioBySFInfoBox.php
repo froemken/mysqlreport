@@ -31,7 +31,7 @@ class HitRatioBySFInfoBox extends AbstractInfoBox
             !isset(
                 $page->getStatusValues()['Innodb_page_size'],
                 $page->getStatusValues()['Innodb_buffer_pool_reads'],
-                $page->getStatusValues()['Innodb_buffer_pool_read_requests']
+                $page->getStatusValues()['Innodb_buffer_pool_read_requests'],
             )
         ) {
             $this->shouldBeRendered = false;
@@ -47,7 +47,7 @@ class HitRatioBySFInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getHitRatioBySF($page->getStatusValues())
+            $this->getHitRatioBySF($page->getStatusValues()),
         );
     }
 

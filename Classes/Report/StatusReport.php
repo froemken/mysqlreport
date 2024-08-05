@@ -47,7 +47,7 @@ class StatusReport implements StatusProviderInterface
                 'Add EXPLAIN',
                 $this->getAddExplainValue() ? 'Active' : 'Deactivated',
                 'If active, it slows down your system. Further it may break queries which relates to insert_id and affected_rows',
-                $this->getAddExplainValue() ? ContextualFeedbackSeverity::WARNING : ContextualFeedbackSeverity::OK
+                $this->getAddExplainValue() ? ContextualFeedbackSeverity::WARNING : ContextualFeedbackSeverity::OK,
             ),
         ];
     }

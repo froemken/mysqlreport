@@ -32,7 +32,7 @@ class ExplainInformationTest extends UnitTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
     }
 
@@ -43,7 +43,7 @@ class ExplainInformationTest extends UnitTestCase
     {
         self::assertSame(
             [],
-            $this->subject->getExplainResults()
+            $this->subject->getExplainResults(),
         );
     }
 
@@ -60,7 +60,7 @@ class ExplainInformationTest extends UnitTestCase
 
         self::assertSame(
             $arr,
-            $this->subject->getExplainResults()
+            $this->subject->getExplainResults(),
         );
     }
 
@@ -77,7 +77,7 @@ class ExplainInformationTest extends UnitTestCase
                 0 => ['name' => 'Stefan'],
                 1 => ['name' => 'Petra'],
             ],
-            $this->subject->getExplainResults()
+            $this->subject->getExplainResults(),
         );
     }
 
@@ -87,7 +87,7 @@ class ExplainInformationTest extends UnitTestCase
     public function isQueryUsingIndexInitiallyReturnsTrue(): void
     {
         self::assertTrue(
-            $this->subject->isQueryUsingIndex()
+            $this->subject->isQueryUsingIndex(),
         );
     }
 
@@ -99,7 +99,7 @@ class ExplainInformationTest extends UnitTestCase
         $this->subject->setIsQueryUsingIndex(false);
 
         self::assertFalse(
-            $this->subject->isQueryUsingIndex()
+            $this->subject->isQueryUsingIndex(),
         );
     }
 
@@ -109,7 +109,7 @@ class ExplainInformationTest extends UnitTestCase
     public function isQueryUsingFTSInitiallyReturnsTrue(): void
     {
         self::assertFalse(
-            $this->subject->isQueryUsingFTS()
+            $this->subject->isQueryUsingFTS(),
         );
     }
 
@@ -121,7 +121,7 @@ class ExplainInformationTest extends UnitTestCase
         $this->subject->setIsQueryUsingFTS(true);
 
         self::assertTrue(
-            $this->subject->isQueryUsingFTS()
+            $this->subject->isQueryUsingFTS(),
         );
     }
 }

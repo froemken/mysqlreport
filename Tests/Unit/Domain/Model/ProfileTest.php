@@ -33,7 +33,7 @@ class ProfileTest extends UnitTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
     }
 
@@ -44,7 +44,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getUid()
+            $this->subject->getUid(),
         );
     }
 
@@ -57,7 +57,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             123,
-            $this->subject->getUid()
+            $this->subject->getUid(),
         );
     }
 
@@ -68,7 +68,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getPid()
+            $this->subject->getPid(),
         );
     }
 
@@ -81,7 +81,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             123,
-            $this->subject->getPid()
+            $this->subject->getPid(),
         );
     }
 
@@ -92,7 +92,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getIp()
+            $this->subject->getIp(),
         );
     }
 
@@ -105,7 +105,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             '127.0.0.1',
-            $this->subject->getIp()
+            $this->subject->getIp(),
         );
     }
 
@@ -116,7 +116,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getReferer()
+            $this->subject->getReferer(),
         );
     }
 
@@ -129,7 +129,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             'www.typo3lexikon.de',
-            $this->subject->getReferer()
+            $this->subject->getReferer(),
         );
     }
 
@@ -140,7 +140,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getRequest()
+            $this->subject->getRequest(),
         );
     }
 
@@ -153,7 +153,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             'www.typo3lexikon.de',
-            $this->subject->getRequest()
+            $this->subject->getRequest(),
         );
     }
 
@@ -164,7 +164,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getQueryType()
+            $this->subject->getQueryType(),
         );
     }
 
@@ -175,7 +175,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             0.0,
-            $this->subject->getDuration()
+            $this->subject->getDuration(),
         );
     }
 
@@ -188,7 +188,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             12.34,
-            $this->subject->getDuration()
+            $this->subject->getDuration(),
         );
     }
 
@@ -199,7 +199,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getQuery()
+            $this->subject->getQuery(),
         );
     }
 
@@ -212,12 +212,12 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             'SELECT * FROM pages;',
-            $this->subject->getQuery()
+            $this->subject->getQuery(),
         );
 
         self::assertSame(
             'SELECT',
-            $this->subject->getQueryType()
+            $this->subject->getQueryType(),
         );
     }
 
@@ -323,7 +323,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             $expectedQuery,
-            $this->subject->getQueryWithReplacedParameters()
+            $this->subject->getQueryWithReplacedParameters(),
         );
     }
 
@@ -334,7 +334,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             [],
-            $this->subject->getQueryParameters()
+            $this->subject->getQueryParameters(),
         );
     }
 
@@ -347,7 +347,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             [':dcValue1' => 'Stefan'],
-            $this->subject->getQueryParameters()
+            $this->subject->getQueryParameters(),
         );
     }
 
@@ -360,7 +360,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             [],
-            $this->subject->getQueryParameters()
+            $this->subject->getQueryParameters(),
         );
     }
 
@@ -371,7 +371,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             [],
-            $this->subject->getQueryParameterTypes()
+            $this->subject->getQueryParameterTypes(),
         );
     }
 
@@ -384,7 +384,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             [':dcValue1' => 'string'],
-            $this->subject->getQueryParameterTypes()
+            $this->subject->getQueryParameterTypes(),
         );
     }
 
@@ -395,7 +395,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             [],
-            $this->subject->getProfile()
+            $this->subject->getProfile(),
         );
     }
 
@@ -408,7 +408,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             ['name' => 'Stefan'],
-            $this->subject->getProfile()
+            $this->subject->getProfile(),
         );
     }
 
@@ -421,7 +421,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             [],
-            $this->subject->getProfile()
+            $this->subject->getProfile(),
         );
     }
 
@@ -434,7 +434,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             ['name' => 'Stefan'],
-            $this->subject->getExplainInformation()->getExplainResults()
+            $this->subject->getExplainInformation()->getExplainResults(),
         );
     }
 
@@ -445,7 +445,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getMode()
+            $this->subject->getMode(),
         );
     }
 
@@ -458,7 +458,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             'BE',
-            $this->subject->getMode()
+            $this->subject->getMode(),
         );
     }
 
@@ -469,7 +469,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             '',
-            $this->subject->getUniqueCallIdentifier()
+            $this->subject->getUniqueCallIdentifier(),
         );
     }
 
@@ -482,7 +482,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             'cn7g483ng.r4832zt',
-            $this->subject->getUniqueCallIdentifier()
+            $this->subject->getUniqueCallIdentifier(),
         );
     }
 
@@ -493,7 +493,7 @@ class ProfileTest extends UnitTestCase
     {
         self::assertSame(
             0,
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 
@@ -506,7 +506,7 @@ class ProfileTest extends UnitTestCase
 
         self::assertSame(
             46373728,
-            $this->subject->getCrdate()
+            $this->subject->getCrdate(),
         );
     }
 }

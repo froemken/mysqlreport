@@ -27,7 +27,7 @@ class VariablesTest extends UnitTestCase
     protected function tearDown(): void
     {
         unset(
-            $this->subject
+            $this->subject,
         );
     }
 
@@ -45,11 +45,11 @@ class VariablesTest extends UnitTestCase
 
         self::assertSame(
             'Stefan',
-            $this->subject['firstName']
+            $this->subject['firstName'],
         );
         self::assertSame(
             'Froemken',
-            $this->subject['lastName']
+            $this->subject['lastName'],
         );
     }
 
@@ -66,10 +66,10 @@ class VariablesTest extends UnitTestCase
         $this->subject = new Variables($data);
 
         self::assertTrue(
-            isset($this->subject['firstName'])
+            isset($this->subject['firstName']),
         );
         self::assertFalse(
-            isset($this->subject['middleName'])
+            isset($this->subject['middleName']),
         );
     }
 
@@ -88,7 +88,7 @@ class VariablesTest extends UnitTestCase
 
         self::assertSame(
             'Bughunter',
-            $this->subject['title']
+            $this->subject['title'],
         );
     }
 
@@ -107,10 +107,10 @@ class VariablesTest extends UnitTestCase
 
         self::assertSame(
             'Stefan',
-            $this->subject['firstName']
+            $this->subject['firstName'],
         );
         self::assertFalse(
-            isset($this->subject['lastName'])
+            isset($this->subject['lastName']),
         );
     }
 
@@ -128,7 +128,7 @@ class VariablesTest extends UnitTestCase
 
         self::assertNotInstanceOf(
             \Countable::class,
-            $this->subject
+            $this->subject,
         );
     }
 
@@ -146,7 +146,7 @@ class VariablesTest extends UnitTestCase
 
         self::assertNotInstanceOf(
             \Traversable::class,
-            $this->subject
+            $this->subject,
         );
     }
 }

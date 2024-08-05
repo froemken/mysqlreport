@@ -50,7 +50,7 @@ class HitRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getHitRatio($page->getStatusValues())
+            $this->getHitRatio($page->getStatusValues()),
         );
     }
 

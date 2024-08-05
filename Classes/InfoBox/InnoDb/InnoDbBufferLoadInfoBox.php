@@ -46,12 +46,14 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $page->getStatusValues()['Innodb_page_size']
+            $page->getStatusValues()['Innodb_page_size'],
         );
     }
 
     /**
      * Get load of InnoDB Buffer
+     *
+     * @return array<string, string|int>
      */
     protected function getLoad(StatusValues $status): array
     {

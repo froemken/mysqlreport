@@ -27,66 +27,66 @@ class TempTablesInfoBox extends AbstractInfoBox
     {
         if (isset(
             $page->getVariables()['tmp_table_size'],
-            $page->getVariables()['max_heap_table_size']
+            $page->getVariables()['max_heap_table_size'],
         )) {
             $this->addUnorderedListEntry(
                 $page->getVariables()['tmp_table_size'],
-                'Configured max size of temp table while query (tmp_table_size)'
+                'Configured max size of temp table while query (tmp_table_size)',
             );
             $this->addUnorderedListEntry(
                 $page->getVariables()['max_heap_table_size'],
-                'Configured max size of in-memory table YOU can create (max_heap_table_size)'
+                'Configured max size of in-memory table YOU can create (max_heap_table_size)',
             );
             $this->addUnorderedListEntry(
                 $page->getVariables()['max_heap_table_size'] < $page->getVariables()['tmp_table_size']
                     ? $page->getVariables()['max_heap_table_size']
                     : $page->getVariables()['tmp_table_size'],
-                'Real max size. Lowest value of tmp_table_size/max_heap_table_size wins'
+                'Real max size. Lowest value of tmp_table_size/max_heap_table_size wins',
             );
         }
 
         if (isset($page->getStatusValues()['Created_tmp_disk_tables'])) {
             $this->addUnorderedListEntry(
                 $page->getStatusValues()['Created_tmp_disk_tables'],
-                'Created temporary tables on disk since server start'
+                'Created temporary tables on disk since server start',
             );
             $this->addUnorderedListEntry(
                 number_format(
                     $page->getStatusValues()['Created_tmp_disk_tables'] / $page->getStatusValues()['Uptime'],
                     2,
                     ',',
-                    '.'
+                    '.',
                 ),
-                'Created temporary tables on disk in seconds'
+                'Created temporary tables on disk in seconds',
             );
         }
 
         if (isset($page->getStatusValues()['Created_tmp_tables'])) {
             $this->addUnorderedListEntry(
                 $page->getStatusValues()['Created_tmp_tables'],
-                'Created temporary tables on disk and ram since server start'
+                'Created temporary tables on disk and ram since server start',
             );
             $this->addUnorderedListEntry(
                 number_format(
                     $page->getStatusValues()['Created_tmp_tables'] / $page->getStatusValues()['Uptime'],
                     2,
                     ',',
-                    '.'
+                    '.',
                 ),
-                'Created temporary tables on disk and ram in seconds'
+                'Created temporary tables on disk and ram in seconds',
             );
         }
 
         // If not set, InnoDB is the new default
         $this->addUnorderedListEntry(
             $page->getVariables()['internal_tmp_disk_storage_engine'] ?? 'InnoDB',
-            'Storage engine for temp. tables on disk'
+            'Storage engine for temp. tables on disk',
         );
 
         // If not set, MEMORY was the old default
         $this->addUnorderedListEntry(
             $page->getVariables()['internal_tmp_mem_storage_engine'] ?? 'MEMORY',
-            'Storage engine for temp. tables in ram'
+            'Storage engine for temp. tables in ram',
         );
 
         $content = [];

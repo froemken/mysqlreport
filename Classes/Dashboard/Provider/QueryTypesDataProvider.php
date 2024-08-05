@@ -25,6 +25,9 @@ class QueryTypesDataProvider implements ChartDataProviderInterface
         $this->statusValues = $statusRepository->findAll();
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public function getChartData(): array
     {
         return [
