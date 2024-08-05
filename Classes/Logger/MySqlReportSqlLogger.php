@@ -20,6 +20,7 @@ use StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper;
 use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -92,17 +93,19 @@ class MySqlReportSqlLogger
      */
     public function stopQuery(string $query, array $params = [], array $types = []): void
     {
+        $duration = microtime(true) - $this->queryStartTime;
+
         if (!$this->isValidQuery($query)) {
             return;
         }
 
         $profile = $this->profileFactory->createNewProfile();
+        $profile->setDuration($duration);
         $profile->setQuery($this->queryParamsHelper->getQueryWithReplacedParams(
             $query,
             $params,
             $types,
         ));
-        $profile->setDuration(microtime(true) - $this->queryStartTime);
 
         $this->profiles->add($this->queryIterator, $profile);
 
@@ -130,15 +133,14 @@ class MySqlReportSqlLogger
             return;
         }
 
-        $executeExplainQuery = $this->extConf->isAddExplain();
-        $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        $defaultConnection = $this->getTypo3DefaultConnection();
+        $executeExplainQuery = $this->extConf->isAddExplain() && $defaultConnection instanceof Connection;
 
         $queriesToStore = [];
         foreach ($this->profiles as $key => $profile) {
             if ($executeExplainQuery && $profile->getQueryType() === 'SELECT') {
                 try {
-                    $queryResult = $connection->executeQuery('EXPLAIN ' . $profile->getQuery());
+                    $queryResult = $defaultConnection->executeQuery('EXPLAIN ' . $profile->getQuery());
                     while ($explainRow = $queryResult->fetchAssociative()) {
                         $this->explainQueryHelper->updateProfile($profile, $explainRow);
                     }
@@ -178,7 +180,6 @@ class MySqlReportSqlLogger
                     'query_type',
                     'duration',
                     'query',
-                    'profile',
                     'explain_query',
                     'using_index',
                     'using_fulltable',
@@ -189,6 +190,17 @@ class MySqlReportSqlLogger
                 ],
             );
         }
+    }
+
+    private function getTypo3DefaultConnection(): ?Connection
+    {
+        try {
+            return GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+        } catch (Exception $e) {
+        }
+
+        return null;
     }
 
     private function isFrontendOrBackendProfilingActivated(): bool
