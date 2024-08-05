@@ -1,7 +1,6 @@
 name: test mysqlreport against TYPO3 13
 
 on:
-  push:
   pull_request:
 
 jobs:
