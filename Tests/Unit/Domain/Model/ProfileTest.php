@@ -192,46 +192,6 @@ class ProfileTest extends UnitTestCase
     }
 
     #[Test]
-    public function getQueryParametersInitiallyReturnsEmptyArray(): void
-    {
-        self::assertSame(
-            [],
-            $this->subject->getQueryParameters(),
-        );
-    }
-
-    #[Test]
-    public function setQueryParametersSetsQueryParameters(): void
-    {
-        $this->subject->setQueryParameters([':dcValue1' => 'Stefan']);
-
-        self::assertSame(
-            [':dcValue1' => 'Stefan'],
-            $this->subject->getQueryParameters(),
-        );
-    }
-
-    #[Test]
-    public function getQueryParameterTypesInitiallyReturnsEmptyArray(): void
-    {
-        self::assertSame(
-            [],
-            $this->subject->getQueryParameterTypes(),
-        );
-    }
-
-    #[Test]
-    public function setQueryParameterTypesSetsQueryParameterTypes(): void
-    {
-        $this->subject->setQueryParameterTypes([':dcValue1' => 'string']);
-
-        self::assertSame(
-            [':dcValue1' => 'string'],
-            $this->subject->getQueryParameterTypes(),
-        );
-    }
-
-    #[Test]
     public function modifyingExplainInformationModifiesExplainInformation(): void
     {
         $this->subject->getExplainInformation()->addExplainResult(['name' => 'Stefan']);
