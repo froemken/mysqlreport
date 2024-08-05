@@ -11,8 +11,6 @@ services:
     resource: '../Classes/*'
     exclude:
     - '../Classes/Domain/Model/*'
-    # Remove while removing TYPO3 11 compatibility
-    - '../Classes/Backend/ToolbarItem/*'
 
   StefanFroemken\Mysqlreport\Controller\ProfileController:
     public: true
