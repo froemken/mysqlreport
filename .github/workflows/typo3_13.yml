@@ -1,11 +1,11 @@
-name: tests
+name: TYPO3 13
 
 on: [pull_request]
 
 jobs:
   lint:
     name: Linting
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     strategy:
       fail-fast: true
       matrix:
