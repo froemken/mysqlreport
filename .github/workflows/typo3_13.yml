@@ -1,4 +1,4 @@
-name: test mysqlreport against TYPO3 13
+name: tests
 
 on:
   pull_request:
