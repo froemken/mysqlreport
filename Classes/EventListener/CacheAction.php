@@ -43,6 +43,8 @@ class CacheAction
 
     /**
      * Truncate table tx_mysqlreport_domain_model_profile
+     *
+     * @param array<string, string> $params
      */
     public function clearProfiles(array $params = []): void
     {

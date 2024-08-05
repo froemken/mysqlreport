@@ -1,4 +1,5 @@
 <?php
+
 $EM_CONF[$_EXTKEY] = [
     'title' => 'MySQL Report',
     'description' => 'Analyze and profile your TYPO3 database queries',

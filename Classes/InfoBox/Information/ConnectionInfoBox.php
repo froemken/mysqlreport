@@ -31,16 +31,16 @@ class ConnectionInfoBox extends AbstractInfoBox
             $this->addUnorderedListEntry(
                 $this->getAverage(
                     (int)$page->getStatusValues()['Connections'],
-                    (int)$page->getStatusValues()['Uptime']
+                    (int)$page->getStatusValues()['Uptime'],
                 ),
-                'Average connections each second'
+                'Average connections each second',
             );
         }
 
         if (isset($page->getStatusValues()['Max_used_connections'])) {
             $this->addUnorderedListEntry(
                 $page->getStatusValues()['Max_used_connections'],
-                'Max used simultaneous connections (Max_used_connections)'
+                'Max used simultaneous connections (Max_used_connections)',
             );
 
             if (isset($page->getVariables()['max_connections'])) {
@@ -53,7 +53,7 @@ class ConnectionInfoBox extends AbstractInfoBox
 
                 $this->addUnorderedListEntry(
                     number_format($percent, 2, ',', '.') . '%',
-                    'Max used simultaneous connections in percent'
+                    'Max used simultaneous connections in percent',
                 );
             }
         }
@@ -61,14 +61,14 @@ class ConnectionInfoBox extends AbstractInfoBox
         if (isset($page->getVariables()['max_connections'])) {
             $this->addUnorderedListEntry(
                 $page->getVariables()['max_connections'],
-                'Max allowed simultaneous connections (max_connections)'
+                'Max allowed simultaneous connections (max_connections)',
             );
         }
 
         if (isset($page->getVariables()['extra_max_connections'])) {
             $this->addUnorderedListEntry(
                 $page->getVariables()['extra_max_connections'],
-                'Extra connections (extra_max_connections)'
+                'Extra connections (extra_max_connections)',
             );
         }
 
@@ -76,12 +76,12 @@ class ConnectionInfoBox extends AbstractInfoBox
             if ((int)$page->getVariables()['max_user_connections'] === 0) {
                 $this->addUnorderedListEntry(
                     'No limit. Using value from max_connections',
-                    'Max allowed user connections (max_user_connections)'
+                    'Max allowed user connections (max_user_connections)',
                 );
             } else {
                 $this->addUnorderedListEntry(
                     $page->getVariables()['max_user_connections'],
-                    'Max allowed user connections (max_user_connections)'
+                    'Max allowed user connections (max_user_connections)',
                 );
             }
         }

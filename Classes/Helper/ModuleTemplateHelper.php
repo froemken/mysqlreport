@@ -37,17 +37,24 @@ class ModuleTemplateHelper
             ->setTitle('Overview')
             ->setIcon($this->getIconFactory()->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
             ->setHref(
-                $this->uriBuilder->buildUriFromRoute('system_mysqlreport')
+                (string)$this->uriBuilder->buildUriFromRoute('system_mysqlreport'),
             );
 
         $buttonBar->addButton($overviewButton, ButtonBar::BUTTON_POSITION_LEFT);
     }
 
+    /**
+     * @param ButtonBar $buttonBar
+     * @param string $routeIdentifier
+     * @param string $displayName
+     * @param array<string, string> $arguments
+     * @return void
+     */
     public function addShortcutButton(
         ButtonBar $buttonBar,
         string $routeIdentifier,
         string $displayName,
-        array $arguments = []
+        array $arguments = [],
     ): void {
         $shortcutButton = $buttonBar->makeShortcutButton()
             ->setRouteIdentifier($routeIdentifier)

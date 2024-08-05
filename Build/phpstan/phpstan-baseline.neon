@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			messages:
+			  - '#Action\(\)#'
+			identifier: method.unused
+			path: ../../Classes/Controller/MySqlReportController.php

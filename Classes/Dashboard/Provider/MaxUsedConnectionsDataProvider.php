@@ -29,6 +29,9 @@ class MaxUsedConnectionsDataProvider implements ChartDataProviderInterface
         $this->variables = $variablesRepository->findAll();
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public function getChartData(): array
     {
         return [
@@ -58,6 +61,9 @@ class MaxUsedConnectionsDataProvider implements ChartDataProviderInterface
         return (int)($this->statusValues['Max_used_connections'] ?? 0);
     }
 
+    /**
+     * @return string[]
+     */
     private function getChartColors(): array
     {
         return [

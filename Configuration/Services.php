@@ -41,7 +41,7 @@ return static function (ContainerConfigurator $container, ContainerBuilder $cont
                         'page.thread_cache' => new Reference('mysqlreport.page.thread_cache'),
                         'repository.status' => new Reference('mysqlreport.repository.status'),
                         'repository.variables' => new Reference('mysqlreport.repository.variables'),
-                    ]
+                    ],
                 ));
         }
     });

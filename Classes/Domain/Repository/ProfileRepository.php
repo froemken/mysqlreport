@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use Doctrine\DBAL\Exception;
 use StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
@@ -27,6 +28,10 @@ class ProfileRepository extends AbstractRepository
         $this->eventDispatcher = $eventDispatcher;
     }
 
+    /**
+     * @return array<int, mixed>
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function findProfileRecordsForCall(): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -53,6 +58,9 @@ class ProfileRepository extends AbstractRepository
 
     /**
      * To differ between the requests I have implemented the unique identifier
+     *
+     * @return array<int, mixed>
+     * @throws Exception
      */
     public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
@@ -64,8 +72,8 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
-                    $queryBuilder->createNamedParameter($uniqueIdentifier)
-                )
+                    $queryBuilder->createNamedParameter($uniqueIdentifier),
+                ),
             )
             ->groupBy('query_type', 'unique_call_identifier', 'request')
             ->orderBy('duration', 'DESC');
@@ -85,6 +93,10 @@ class ProfileRepository extends AbstractRepository
 
     /**
      * To differ between the requests I have implemented the unique identifier
+     *
+     * @param array<int, string> $columns
+     * @return array<int, mixed>
+     * @throws Exception
      */
     public function getProfileRecordsForDownloadByUniqueIdentifier(string $uniqueIdentifier, array $columns): array
     {
@@ -95,8 +107,8 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
-                    $queryBuilder->createNamedParameter($uniqueIdentifier)
-                )
+                    $queryBuilder->createNamedParameter($uniqueIdentifier),
+                ),
             );
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
@@ -112,6 +124,12 @@ class ProfileRepository extends AbstractRepository
         return $event->getProfileRecords();
     }
 
+    /**
+     * @param string $uniqueIdentifier
+     * @param string $queryType
+     * @return array<int, string>
+     * @throws Exception
+     */
     public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -122,12 +140,12 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
-                    $queryBuilder->createNamedParameter($uniqueIdentifier)
+                    $queryBuilder->createNamedParameter($uniqueIdentifier),
                 ),
                 $queryBuilder->expr()->eq(
                     'query_type',
-                    $queryBuilder->createNamedParameter($queryType)
-                )
+                    $queryBuilder->createNamedParameter($queryType),
+                ),
             )
             ->orderBy('duration', 'DESC');
 
@@ -144,6 +162,11 @@ class ProfileRepository extends AbstractRepository
         return $event->getProfileRecords();
     }
 
+    /**
+     * @param int $uid
+     * @return array<string, mixed>
+     * @throws Exception
+     */
     public function getProfileRecordByUid(int $uid): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -153,8 +176,8 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
-                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter($uid, Connection::PARAM_INT),
+                ),
             );
 
         $profileRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetchAssociative() ?: [];
@@ -165,6 +188,10 @@ class ProfileRepository extends AbstractRepository
         return current($event->getProfileRecords());
     }
 
+    /**
+     * @return array<int, mixed>
+     * @throws Exception
+     */
     public function findProfileRecordsWithFilesort(): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -175,8 +202,8 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->like(
                     'explain_query',
-                    $queryBuilder->createNamedParameter('%using filesort%')
-                )
+                    $queryBuilder->createNamedParameter('%using filesort%'),
+                ),
             )
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);
@@ -194,6 +221,10 @@ class ProfileRepository extends AbstractRepository
         return $event->getProfileRecords();
     }
 
+    /**
+     * @return array<int, mixed>
+     * @throws Exception
+     */
     public function findProfileRecordsWithFullTableScan(): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -204,8 +235,8 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->eq(
                     'using_fulltable',
-                    $queryBuilder->createNamedParameter(1, Connection::PARAM_INT)
-                )
+                    $queryBuilder->createNamedParameter(1, Connection::PARAM_INT),
+                ),
             )
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);
@@ -223,6 +254,10 @@ class ProfileRepository extends AbstractRepository
         return $event->getProfileRecords();
     }
 
+    /**
+     * @return array<int, mixed>
+     * @throws Exception
+     */
     public function findProfileRecordsWithSlowQueries(): array
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
@@ -233,8 +268,8 @@ class ProfileRepository extends AbstractRepository
             ->where(
                 $queryBuilder->expr()->gte(
                     'duration',
-                    $queryBuilder->createNamedParameter($this->extConf->getSlowQueryTime(), Connection::PARAM_LOB)
-                )
+                    $queryBuilder->createNamedParameter($this->extConf->getSlowQueryTime(), Connection::PARAM_LOB),
+                ),
             )
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);

@@ -31,6 +31,8 @@ abstract class AbstractInfoBox implements \SplObserver
 
     /**
      * Use addUnorderedListEntry to add new elements to <ul> output
+     *
+     * @var \SplQueue<array<string, string>>
      */
     private \SplQueue $unorderedList;
 

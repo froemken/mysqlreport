@@ -25,27 +25,28 @@ readonly class QueryParamsHelper
     public function __construct(private ConnectionPool $connectionPool) {}
 
     /**
-     * @param ParameterType[] $types
+     * @param string $sql
+     * @param array<int, string> $params
+     * @param array<int, ParameterType> $types
      * @return string
      */
     public function getQueryWithReplacedParams(
         string $sql,
         array $params = [],
         array $types = [],
-    ): string
-    {
+    ): string {
         try {
             if ($params !== []) {
                 $dbPlatform = $this->connectionPool->getConnectionByName(
-                    ConnectionPool::DEFAULT_CONNECTION_NAME
+                    ConnectionPool::DEFAULT_CONNECTION_NAME,
                 )->getDatabasePlatform();
 
                 foreach ($params as $key => $param) {
                     $type = Type::getType(strtolower($types[$key]->name));
                     $value = $type->convertToDatabaseValue($param, $dbPlatform);
-                    $sql = join(
+                    $sql = implode(
                         var_export($value, true),
-                        explode('?', $sql, 2)
+                        explode('?', $sql, 2),
                     );
                 }
             }

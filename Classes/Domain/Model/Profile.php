@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Model;
 
-use TYPO3\CMS\Core\Database\Connection;
+use Doctrine\DBAL\ParameterType;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,11 +35,15 @@ class Profile
 
     private string $query = '';
 
+    /**
+     * @var array<int, string>
+     */
     private array $queryParameters = [];
 
+    /**
+     * @var array<int, ParameterType>
+     */
     private array $queryParameterTypes = [];
-
-    private array $profile = [];
 
     private ExplainInformation $explainInformation;
 
@@ -143,38 +147,40 @@ class Profile
         $this->query = $query;
 
         $this->setQueryType(
-            GeneralUtility::trimExplode(' ', $query, true, 2)[0]
+            GeneralUtility::trimExplode(' ', $query, true, 2)[0],
         );
     }
 
+    /**
+     * @return array<int, string>
+     */
     public function getQueryParameters(): array
     {
         return $this->queryParameters;
     }
 
+    /**
+     * @param array<int, string> $queryParameters
+     */
     public function setQueryParameters(array $queryParameters): void
     {
         $this->queryParameters = $queryParameters;
     }
 
+    /**
+     * @return array<int, ParameterType>
+     */
     public function getQueryParameterTypes(): array
     {
         return $this->queryParameterTypes;
     }
 
+    /**
+     * @param array<int, ParameterType> $queryParameterTypes
+     */
     public function setQueryParameterTypes(array $queryParameterTypes): void
     {
         $this->queryParameterTypes = $queryParameterTypes;
-    }
-
-    public function getProfile(): array
-    {
-        return $this->profile;
-    }
-
-    public function setProfile(?array $profile): void
-    {
-        $this->profile = $profile ?? [];
     }
 
     public function getExplainInformation(): ExplainInformation

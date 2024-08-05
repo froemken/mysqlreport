@@ -24,12 +24,12 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 class Page implements \SplSubject
 {
     /**
-     * @var \SplObjectStorage|AbstractInfoBox[]
+     * @var \SplObjectStorage<\SplObserver, AbstractInfoBox>
      */
     protected \SplObjectStorage $infoBoxes;
 
     /**
-     * @var \SplQueue|ViewInterface[]
+     * @var \SplQueue<ViewInterface>
      */
     protected \SplQueue $infoBoxViews;
 
@@ -37,10 +37,13 @@ class Page implements \SplSubject
 
     protected Variables $variables;
 
+    /**
+     * @param iterable<AbstractInfoBox> $infoBoxHandlers
+     */
     public function __construct(
         iterable $infoBoxHandlers,
         StatusRepository $statusRepository,
-        VariablesRepository $variablesRepository
+        VariablesRepository $variablesRepository,
     ) {
         $this->infoBoxes = new \SplObjectStorage();
         $this->infoBoxViews = new \SplQueue();

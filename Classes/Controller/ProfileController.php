@@ -35,7 +35,7 @@ class ProfileController
         ProfileRepository $profileRepository,
         ModuleTemplateFactory $moduleTemplateFactory,
         ModuleTemplateHelper $moduleTemplateHelper,
-        DownloadHelper $downloadHelper
+        DownloadHelper $downloadHelper,
     ) {
         $this->profileRepository = $profileRepository;
         $this->moduleTemplateFactory = $moduleTemplateFactory;
@@ -50,7 +50,7 @@ class ProfileController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_profile_list',
-            'MySqlReport Profiles'
+            'MySqlReport Profiles',
         );
 
         $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsForCall());
@@ -65,7 +65,7 @@ class ProfileController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_profile_show',
-            'MySqlReport Show Profile'
+            'MySqlReport Show Profile',
         );
 
         $queryParameters = $request->getQueryParams();
@@ -86,7 +86,7 @@ class ProfileController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_profile_querytype',
-            'MySqlReport Show Profile'
+            'MySqlReport Show Profile',
         );
 
         $queryParameters = $request->getQueryParams();
@@ -109,7 +109,7 @@ class ProfileController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_profile_info',
-            'MySqlReport Show Profile'
+            'MySqlReport Show Profile',
         );
 
         $queryParameters = $request->getQueryParams();
@@ -146,7 +146,7 @@ class ProfileController
 
         $records = $this->profileRepository->getProfileRecordsForDownloadByUniqueIdentifier(
             $queryParameters['uniqueIdentifier'] ?? '',
-            array_keys($columns)
+            array_keys($columns),
         );
 
         if ($queryParameters['downloadType'] === 'csv') {
@@ -156,11 +156,20 @@ class ProfileController
         return $this->downloadAsJson($records);
     }
 
-    private function downloadAsCsv($headerColumns, array $records): ResponseInterface
+    /**
+     * @param array<string> $headerColumns
+     * @param array<mixed> $records
+     * @return ResponseInterface
+     */
+    private function downloadAsCsv(array $headerColumns, array $records): ResponseInterface
     {
         return $this->downloadHelper->asCSV($headerColumns, $records);
     }
 
+    /**
+     * @param array<mixed> $records
+     * @return ResponseInterface
+     */
     private function downloadAsJson(array $records): ResponseInterface
     {
         return $this->downloadHelper->asJSON($records);

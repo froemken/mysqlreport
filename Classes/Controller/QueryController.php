@@ -17,9 +17,6 @@ use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
 use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Core\Http\HtmlResponse;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
 
 /**
  * Controller to show results of FTS and filesort
@@ -38,7 +35,7 @@ class QueryController
         ProfileRepository $profileRepository,
         ExtConf $extConf,
         ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleTemplateHelper $moduleTemplateHelper
+        ModuleTemplateHelper $moduleTemplateHelper,
     ) {
         $this->profileRepository = $profileRepository;
         $this->extConf = $extConf;
@@ -53,7 +50,7 @@ class QueryController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_query_filesort',
-            'MySqlReport Filesort'
+            'MySqlReport Filesort',
         );
 
         $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFilesort());
@@ -68,7 +65,7 @@ class QueryController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_query_fulltablescan',
-            'MySqlReport Full Table Scan'
+            'MySqlReport Full Table Scan',
         );
 
         $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFullTableScan());
@@ -83,7 +80,7 @@ class QueryController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_query_slowquery',
-            'MySqlReport Slow Query'
+            'MySqlReport Slow Query',
         );
 
         $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithSlowQueries());
@@ -99,7 +96,7 @@ class QueryController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_query_profileinfo',
-            'MySqlReport Profile Info'
+            'MySqlReport Profile Info',
         );
 
         $queryParameters = $request->getQueryParams();

@@ -31,6 +31,11 @@ class DownloadHelper
         $this->responseFactory = $responseFactory;
     }
 
+    /**
+     * @param array<int, string> $headerRow
+     * @param array<string, mixed> $records
+     * @return ResponseInterface
+     */
     public function asCSV(array $headerRow, array $records): ResponseInterface
     {
         // Create result
@@ -42,6 +47,10 @@ class DownloadHelper
         return $this->generateDownloadResponse(implode(CRLF, $result), 'csv');
     }
 
+    /**
+     * @param array<string, mixed> $records
+     * @return ResponseInterface
+     */
     public function asJSON(array $records): ResponseInterface
     {
         try {

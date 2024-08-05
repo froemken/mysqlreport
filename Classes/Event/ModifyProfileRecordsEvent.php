@@ -19,8 +19,15 @@ class ModifyProfileRecordsEvent
 {
     private string $methodName;
 
+    /**
+     * @var array<int, mixed>
+     */
     private array $profileRecords;
 
+    /**
+     * @param string $methodName
+     * @param array<int, mixed> $profileRecords
+     */
     public function __construct(string $methodName, array $profileRecords)
     {
         $this->methodName = $methodName;
@@ -32,11 +39,19 @@ class ModifyProfileRecordsEvent
         return $this->methodName;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     public function getProfileRecords(): array
     {
         return $this->profileRecords;
     }
 
+    /**
+     * @param int $key
+     * @param array<string, mixed> $profileRecord
+     * @return void
+     */
     public function updateProfileRecord(int $key, array $profileRecord): void
     {
         $this->profileRecords[$key] = $profileRecord;

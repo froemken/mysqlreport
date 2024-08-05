@@ -32,7 +32,7 @@ class MaxAllowedPacketInfoBox extends AbstractInfoBox
 
         $this->addUnorderedListEntry(
             $page->getVariables()['max_allowed_packet'],
-            'Max allowed packet size in bytes (max_allowed_packet)'
+            'Max allowed packet size in bytes (max_allowed_packet)',
         );
 
         $content = [];
@@ -41,9 +41,6 @@ class MaxAllowedPacketInfoBox extends AbstractInfoBox
         $content[] = 'If you have a lot of huge BLOB columns or your server fails with ER_NET_PACKET_TOO_LARGE you should increase this value to maybe 256 MB.';
         $content[] = 'Hint: 1 GB is the largest allowed size.';
 
-        return sprintf(
-            implode(' ', $content),
-            $page->getStatusValues()['Aborted_connects']
-        );
+        return implode(' ', $content);
     }
 }

@@ -43,7 +43,7 @@ class InstancesInfoBox extends AbstractInfoBox
         return sprintf(
             implode(' ', $content),
             $instances,
-            $instances
+            $instances,
         );
     }
 

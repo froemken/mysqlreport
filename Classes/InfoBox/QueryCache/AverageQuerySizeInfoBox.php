@@ -51,7 +51,7 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox
         return sprintf(
             implode(' ', $content),
             $this->getAvgQuerySize($page->getStatusValues(), $page->getVariables()),
-            $page->getVariables()['query_cache_min_res_unit']
+            $page->getVariables()['query_cache_min_res_unit'],
         );
     }
 

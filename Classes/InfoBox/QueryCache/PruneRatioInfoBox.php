@@ -61,7 +61,7 @@ class PruneRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getPruneRatio($page->getStatusValues())
+            $this->getPruneRatio($page->getStatusValues()),
         );
     }
 

@@ -14,11 +14,19 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
 /**
  * Storage for MySQL|MariaDB variables
  * It is just a storage. So no traversable, countable, ...
+ *
+ * @implements \ArrayAccess<int|string|null, mixed>
  */
 class Variables implements \ArrayAccess
 {
+    /**
+     * @var array<int|string|null, mixed>
+     */
     private array $storage;
 
+    /**
+     * @param array<int|string|null, mixed> $storage
+     */
     public function __construct(array $storage)
     {
         $this->storage = $storage;

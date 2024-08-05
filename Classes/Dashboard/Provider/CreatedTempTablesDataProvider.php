@@ -24,6 +24,9 @@ class CreatedTempTablesDataProvider implements ChartDataProviderInterface
         $this->statusValues = $statusRepository->findAll();
     }
 
+    /**
+     * @return array<string, array<mixed>>
+     */
     public function getChartData(): array
     {
         return [
@@ -53,6 +56,9 @@ class CreatedTempTablesDataProvider implements ChartDataProviderInterface
         return (int)($this->statusValues['Created_tmp_tables'] ?? 0);
     }
 
+    /**
+     * @return string[]
+     */
     private function getChartColors(): array
     {
         return [

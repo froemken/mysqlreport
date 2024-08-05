@@ -36,17 +36,17 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox
 
         $this->addUnorderedListEntry(
             $page->getStatusValues()['Opened_table_definitions'],
-            'Opened tables since server start (Opened_table_definitions)'
+            'Opened tables since server start (Opened_table_definitions)',
         );
 
         $this->addUnorderedListEntry(
             $page->getStatusValues()['Open_table_definitions'],
-            'Open tables in cache (Open_table_definitions)'
+            'Open tables in cache (Open_table_definitions)',
         );
 
         $this->addUnorderedListEntry(
             $page->getVariables()['table_definition_cache'],
-            'Max allowed tables in cache (table_definition_cache)'
+            'Max allowed tables in cache (table_definition_cache)',
         );
 
         $this->addUnorderedListEntry(
@@ -54,9 +54,9 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox
                 $this->getOpenedTableDefinitionsEachSecond($page->getStatusValues()),
                 2,
                 ',',
-                '.'
+                '.',
             ),
-            'Opened table definitions each second'
+            'Opened table definitions each second',
         );
 
         return 'Number of *.frm files (table definitions) that have been opened and cached. '

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Logger;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\ParameterType;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
@@ -33,17 +34,9 @@ class MySqlReportSqlLogger
     /**
      * Collected profiles
      *
-     * @var \SplQueue|Profile[]
+     * @var \SplQueue<Profile>|Profile[]
      */
     private \SplQueue $profiles;
-
-    /**
-     * If activated, we will execute each query additional with prepended EXPLAIN
-     * to get more information about indexing and FTS.
-     * Default is false, to prevent memory usage and performance.
-     * This value can be set in extension settings
-     */
-    private bool $addAdditionalQueryExplain = false;
 
     /**
      * This value will be set for each query to current micro-time.
@@ -62,6 +55,8 @@ class MySqlReportSqlLogger
 
     /**
      * Every query which contains one of these parts will be skipped.
+     *
+     * @var string[]
      */
     private array $skipQueries = [
         'show global status',
@@ -91,6 +86,9 @@ class MySqlReportSqlLogger
     /**
      * This method will be called just after the query has been executed by doctrine.
      * Start collecting duration and other stuff.
+     *
+     * @param array<int, string> $params
+     * @param array<int, ParameterType> $types
      */
     public function stopQuery(string $query, array $params = [], array $types = []): void
     {
@@ -157,7 +155,6 @@ class MySqlReportSqlLogger
                 'query_type' => $profile->getQueryType(),
                 'duration' => $profile->getDuration(),
                 'query' => $profile->getQuery(),
-                'profile' => serialize($profile->getProfile()),
                 'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
                 'using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 1 : 0,
                 'using_fulltable' => $profile->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
@@ -189,7 +186,7 @@ class MySqlReportSqlLogger
                     'unique_call_identifier',
                     'crdate',
                     'query_id',
-                ]
+                ],
             );
         }
     }
@@ -214,6 +211,9 @@ class MySqlReportSqlLogger
     /**
      * Bulk insert. This method will also be caught by our logger, but as it was called
      * at last position of __destruct, it will not be stored in profile table.
+     *
+     * @param array<int, array<mixed>> $data
+     * @param array<int, string> $columns
      */
     private function bulkInsert(array $data, array $columns = []): void
     {

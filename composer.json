@@ -1,8 +1,8 @@
 {
 	"name": "stefanfroemken/mysqlreport",
-	"type": "typo3-cms-extension",
 	"description": "Analyze and profile your TYPO3 databases queries",
 	"license": "GPL-2.0-or-later",
+	"type": "typo3-cms-extension",
 	"keywords": [
 		"typo3",
 		"TYPO3 CMS",
@@ -12,7 +12,6 @@
 		"report",
 		"mysqlreport"
 	],
-	"homepage": "https://www.typo3lexikon.de/",
 	"authors": [
 		{
 			"name": "Stefan Froemken",
@@ -20,27 +19,37 @@
 			"role": "Lead Developer"
 		}
 	],
+	"homepage": "https://www.typo3lexikon.de/",
 	"support": {
 		"email": "froemken@gmail.com",
 		"issues": "https://github.com/froemken/mysqlreport/issues",
 		"source": "https://github.com/froemken/mysqlreport"
 	},
 	"require": {
-		"ext-pdo": "*",
-		"typo3/cms-core": "^13.0",
-		"doctrine/sql-formatter": "^1.1"
+		"doctrine/sql-formatter": "^1.1",
+		"typo3/cms-backend": "^13.2",
+		"typo3/cms-core": "^13.2",
+		"typo3/cms-extbase": "^13.2",
+		"typo3/cms-fluid": "^13.2"
 	},
 	"require-dev": {
-		"typo3/testing-framework": "^7.0.2",
-		"phpunit/phpunit": "^9.6",
-		"typo3/coding-standards": "^0.6",
-		"friendsofphp/php-cs-fixer": "^3.14"
+		"ergebnis/composer-normalize": "~2.42.0",
+		"friendsofphp/php-cs-fixer": "^3.52",
+		"phpstan/phpstan": "^1.10",
+		"phpunit/phpunit": "^11.0.3",
+		"typo3/cms-dashboard": "^13.2",
+		"typo3/cms-install": "^13.2",
+		"typo3/cms-reports": "^13.2",
+		"typo3/testing-framework": "dev-main"
 	},
-	"suggest": {
-		"typo3/cms-dashboard": "MySQL Report comes with some pretty cool widgets for TYPO3 Dashboard."
+	"replace": {
+		"typo3-ter/mysqlreport": "self.version"
 	},
 	"conflict": {
 		"typo3/cms-adminpanel": "*"
+	},
+	"suggest": {
+		"typo3/cms-dashboard": "MySQL Report comes with some pretty cool widgets for TYPO3 Dashboard."
 	},
 	"autoload": {
 		"psr-4": {
@@ -52,32 +61,20 @@
 			"StefanFroemken\\Mysqlreport\\Tests\\": "Tests"
 		}
 	},
-	"replace": {
-		"typo3-ter/mysqlreport": "self.version"
-	},
 	"config": {
-		"vendor-dir": ".Build/vendor",
-		"bin-dir": ".Build/bin",
 		"allow-plugins": {
-			"sbuerk/typo3-cmscomposerinstallers-testingframework-bridge": true,
+			"ergebnis/composer-normalize": true,
 			"typo3/class-alias-loader": true,
 			"typo3/cms-composer-installers": true
-		}
+		},
+		"bin-dir": ".Build/bin",
+		"sort-packages": true,
+		"vendor-dir": ".Build/vendor"
 	},
 	"extra": {
-		"installer-paths": {
-			"trallala": ["stefanfroemken/mysqlreport"]
-		},
 		"typo3/cms": {
 			"extension-key": "mysqlreport",
-			"web-dir": ".Build/public"
+			"web-dir": ".Build/web"
 		}
-	},
-	"scripts": {
-		"php:fix": ".build/vendor/bin/php-cs-fixer --config=Build/php-cs-fixer/config.php fix Classes Tests",
-		"ci:php:lint": "find *.php Classes Configuration Tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
-		"ci:php:fixer": ".build/vendor/bin/php-cs-fixer --config=Build/php-cs-fixer/config.php fix --dry-run -v --show-progress=dots --diff Classes Tests",
-		"ci:tests:unit": "php -d date.timezone=Europe/Berlin .build/vendor/bin/phpunit -c .build/vendor/nimut/testing-framework/res/Configuration/UnitTests.xml Tests/Unit",
-		"ci:tests:functional": "find 'Tests/Functional' -wholename '*Test.php' | parallel --gnu 'echo; echo \"Running functional test suite {}\"; php -d date.timezone=Europe/Berlin .build/vendor/bin/phpunit -c .build/vendor/nimut/testing-framework/res/Configuration/FunctionalTests.xml {}';"
 	}
 }

@@ -40,7 +40,7 @@ class SyncBinaryLogInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $page->getStatusValues()['Sync_binlog'] ? 'ON' : 'OFF'
+            $page->getStatusValues()['Sync_binlog'] ? 'ON' : 'OFF',
         );
     }
 }

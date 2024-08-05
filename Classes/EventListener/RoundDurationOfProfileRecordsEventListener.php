@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
  */
 class RoundDurationOfProfileRecordsEventListener
 {
-    public function __invoke(ModifyProfileRecordsEvent $event)
+    public function __invoke(ModifyProfileRecordsEvent $event): void
     {
         foreach ($event->getProfileRecords() as $key => $profileRecord) {
             if (!isset($profileRecord['duration'])) {
@@ -34,7 +34,7 @@ class RoundDurationOfProfileRecordsEventListener
                 (float)$profileRecord['duration'],
                 6,
                 '.',
-                ''
+                '',
             );
 
             $event->updateProfileRecord($key, $profileRecord);

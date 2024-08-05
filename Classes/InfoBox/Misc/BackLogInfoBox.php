@@ -44,7 +44,7 @@ class BackLogInfoBox extends AbstractInfoBox
         return sprintf(
             implode(' ', $content),
             $page->getVariables()['back_log'],
-            $this->getMaxNetworkRequests()
+            $this->getMaxNetworkRequests(),
         );
     }
 
@@ -62,10 +62,10 @@ class BackLogInfoBox extends AbstractInfoBox
             $lastLine = CommandUtility::exec($command . ' kern.ipc.somaxconn');
         }
 
-        if ($lastLine !== '' && strpos($lastLine, ':') !== false) {
+        if ($lastLine !== '' && str_contains($lastLine, ':')) {
             $parts = GeneralUtility::trimExplode(':', $lastLine);
             $value = $parts[1];
-        } elseif ($lastLine !== '' && strpos($lastLine, '=') !== false) {
+        } elseif ($lastLine !== '' && str_contains($lastLine, '=')) {
             $parts = GeneralUtility::trimExplode('=', $lastLine);
             $value = $parts[1];
         }

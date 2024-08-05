@@ -33,7 +33,7 @@ class SqlViewHelper extends AbstractViewHelper
             'string',
             'The SQL statement (query) to format.',
             false,
-            ''
+            '',
         );
     }
 

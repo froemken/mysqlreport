@@ -28,24 +28,24 @@ class UptimeInfoBox extends AbstractInfoBox
         if (isset($page->getStatusValues()['Uptime'])) {
             $this->addUnorderedListEntry(
                 $page->getStatusValues()['Uptime'] . ' seconds',
-                'Uptime'
+                'Uptime',
             );
 
             $this->addUnorderedListEntry(
                 $this->convertSecondsToDays((int)$page->getStatusValues()['Uptime']) . ' days',
-                'Uptime in days'
+                'Uptime in days',
             );
         }
 
         if (isset($page->getStatusValues()['Uptime_since_flush_status'])) {
             $this->addUnorderedListEntry(
                 $page->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
-                'Uptime since last flush'
+                'Uptime since last flush',
             );
 
             $this->addUnorderedListEntry(
                 $this->convertSecondsToDays((int)$page->getStatusValues()['Uptime_since_flush_status']) . ' days',
-                'Uptime since last flush in days'
+                'Uptime since last flush in days',
             );
         }
 
