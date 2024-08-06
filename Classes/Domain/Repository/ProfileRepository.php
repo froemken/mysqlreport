@@ -195,7 +195,7 @@ class ProfileRepository extends AbstractRepository
 
     /**
      * @param array<string, mixed> $profileRecord
-     * @return array<string, string>
+     * @return array<int, array<string, mixed>>
      */
     public function getQueryProfiling(array $profileRecord): array
     {
@@ -215,7 +215,7 @@ class ProfileRepository extends AbstractRepository
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
 
-            $queryResult = $connection->transactional(function (Connection $transactionalConnection) use ($sql): ?Result {
+            $queryResult = $connection->transactional(function (\Doctrine\DBAL\Connection $transactionalConnection) use ($sql): ?Result {
                 try {
                     $transactionalConnection->executeStatement('SET profiling=1;');
                     $transactionalConnection->executeQuery($sql);
