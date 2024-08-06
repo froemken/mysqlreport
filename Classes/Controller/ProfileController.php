@@ -109,7 +109,7 @@ class ProfileController
         $this->moduleTemplateHelper->addShortcutButton(
             $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
             'mysqlreport_profile_info',
-            'MySqlReport Show Profile',
+            'MySqlReport Show Query Information',
         );
 
         $queryParameters = $request->getQueryParams();
@@ -121,6 +121,25 @@ class ProfileController
         $moduleTemplate->assign('profileRecord', $profileRecord);
 
         return $moduleTemplate->renderResponse('Profile/Info');
+    }
+
+    public function profilingAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
+        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
+        $this->moduleTemplateHelper->addShortcutButton(
+            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
+            'mysqlreport_profile_profiling',
+            'MySqlReport Show Query Profiling',
+        );
+
+        $queryParameters = $request->getQueryParams();
+        $profileRecord = $this->profileRepository->getProfileRecordByUid((int)($queryParameters['uid'] ?? 0));
+
+        $moduleTemplate->assign('profileRecord', $profileRecord);
+        $moduleTemplate->assign('profiling', $this->profileRepository->getQueryProfiling($profileRecord));
+
+        return $moduleTemplate->renderResponse('Profile/QueryProfiling');
     }
 
     public function downloadAction(ServerRequestInterface $request): ResponseInterface

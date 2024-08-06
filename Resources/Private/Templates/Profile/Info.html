@@ -6,13 +6,19 @@
 <f:layout name="Module"/>
 
 <f:section name="Content">
-    <h1>Query Profiling</h1>
+    <h1>Query Information</h1>
 
     <p>
         <a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: profileRecord.unique_call_identifier, queryType: profileRecord.query_type})}"
            class="btn btn-primary">
             Back
         </a>
+        <f:if condition="{profileRecord.query_type} == 'SELECT'">
+            <a href="{be:moduleLink(route: 'mysqlreport_profile_profiling', arguments: {uid: profileRecord.uid})}"
+               class="btn btn-primary">
+                Show Query Profile
+            </a>
+        </f:if>
     </p>
 
     <f:render partial="ProfileInfo" arguments="{_all}"/>
