@@ -10,7 +10,10 @@ services:
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
     exclude:
-    - '../Classes/Domain/Model/*'
+      - '../Classes/Domain/Model/*'
+
+  StefanFroemken\Mysqlreport\Configuration\ExtConf:
+    public: true
 
   StefanFroemken\Mysqlreport\Controller\ProfileController:
     public: true

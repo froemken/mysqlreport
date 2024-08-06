@@ -33,8 +33,6 @@ class ExtConf
 
     private float $slowQueryTime = 10.0;
 
-    private bool $isQueryLoggingActivated = false;
-
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
         try {
@@ -55,8 +53,6 @@ class ExtConf
                 $this->$methodName($value);
             }
         }
-
-        $this->updateQueryLogging();
     }
 
     public function isProfileFrontend(): bool
@@ -106,34 +102,20 @@ class ExtConf
         }
     }
 
-    /**
-     * This method is for internal usage only and will be called by constructor of this class once.
-     * This will help to speed up the query logging check for each query in logger.
-     *
-     * @see isQueryLoggingActivated
-     */
-    private function updateQueryLogging(): void
+    public function isQueryLoggingActivated(): bool
     {
         if (Environment::isCli()) {
-            $this->isQueryLoggingActivated = false;
-            return;
+            return false;
         }
 
         if ($this->isProfileFrontend() && !$this->isBackendRequest()) {
-            $this->isQueryLoggingActivated = true;
-            return;
+            return true;
         }
 
         if ($this->isProfileBackend() && $this->isBackendRequest()) {
-            $this->isQueryLoggingActivated = true;
-            return;
+            return true;
         }
 
-        $this->isQueryLoggingActivated = false;
-    }
-
-    public function isQueryLoggingActivated(): bool
-    {
-        return $this->isQueryLoggingActivated;
+        return false;
     }
 }

@@ -56,7 +56,7 @@ class MySqlReportSqlLogger
 
     public function __construct(
         private readonly ProfileFactory $profileFactory,
-        readonly ExtConf $extConf,
+        private readonly ExtConf $extConf,
         private readonly QueryParamsHelper $queryParamsHelper,
         private readonly ExplainQueryHelper $explainQueryHelper,
     ) {
@@ -72,10 +72,6 @@ class MySqlReportSqlLogger
      */
     public function stopQuery(string $query, float $duration, array $params = [], array $types = []): void
     {
-        if (!$this->extConf->isQueryLoggingActivated()) {
-            return;
-        }
-
         if (!$this->isValidQuery($query)) {
             return;
         }
@@ -106,10 +102,6 @@ class MySqlReportSqlLogger
 
     public function __destruct()
     {
-        if (!$this->extConf->isQueryLoggingActivated()) {
-            return;
-        }
-
         $defaultConnection = $this->getTypo3DefaultConnection();
         $executeExplainQuery = $this->extConf->isAddExplain() && $defaultConnection instanceof Connection;
 

@@ -62,7 +62,7 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
     {
         $startTime = microtime(true);
         $queryResult = parent::query($sql);
-        $this->logger->stopQuery($sql, microtime() - $startTime);
+        $this->logger->stopQuery($sql, microtime(true) - $startTime);
 
         return $queryResult;
     }
@@ -74,7 +74,7 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
     {
         $startTime = microtime(true);
         $affectedRows = parent::exec($sql);
-        $this->logger->stopQuery($sql, microtime() - $startTime);
+        $this->logger->stopQuery($sql, microtime(true) - $startTime);
 
         return (int)$affectedRows;
     }
