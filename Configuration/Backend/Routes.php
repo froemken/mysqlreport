@@ -44,6 +44,12 @@ return [
         'target' => \StefanFroemken\Mysqlreport\Controller\ProfileController::class . '::infoAction',
     ],
 
+    // MySqlReport Profile Show Query Profiling
+    'mysqlreport_profile_profiling' => [
+        'path' => '/mysqlreport/profile/profiling',
+        'target' => \StefanFroemken\Mysqlreport\Controller\ProfileController::class . '::profilingAction',
+    ],
+
     // MySqlReport Profile Download
     'mysqlreport_profile_download' => [
         'path' => '/mysqlreport/profile/download',

@@ -1,0 +1,51 @@
+<html lang="en"
+      xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
+      xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      data-namespace-typo3-fluid="true">
+
+<f:layout name="Module"/>
+
+<f:section name="Content">
+    <h1>Query Profiling</h1>
+
+    <p>
+        <a href="{be:moduleLink(route: 'mysqlreport_profile_info', arguments: {uid: profileRecord.uid})}"
+           class="btn btn-primary">
+            Back
+        </a>
+    </p>
+
+    <f:if condition="{profiling}">
+        <f:then>
+            <p>
+                Following table shows the internal durations of the MySQL server to process the query
+            </p>
+
+            <table class="table table-striped table-hover">
+                <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Duration</th>
+                </tr>
+                </thead>
+                <tbody>
+                <f:for each="{profiling}" as="profile">
+                    <tr>
+                        <td>{profile.Status}</td>
+                        <td>{profile.Duration}</td>
+                    </tr>
+                </f:for>
+                </tbody>
+            </table>
+        </f:then>
+        <f:else>
+            <p>
+                Sorry, query profiling failed. Please rememer that we have a prepared statement version of your
+                query in most cases where we have to insert the params dynamically. If that replacement fails
+                we may got an invalid query and query profiling fails. Else, query profiling is not allowed with
+                current DB user rights.
+            </p>
+        </f:else>
+    </f:if>
+</f:section>
+</html>

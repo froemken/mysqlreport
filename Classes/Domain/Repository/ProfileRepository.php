@@ -12,9 +12,12 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Result;
 use StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Repository to get records to profile the queries of a request
@@ -169,7 +172,7 @@ class ProfileRepository extends AbstractRepository
     {
         $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
         $queryBuilder
-            ->select('query', 'query_type', 'explain_query', 'using_index', 'unique_call_identifier', 'duration')
+            ->select('uid', 'query', 'query_type', 'explain_query', 'using_index', 'unique_call_identifier', 'duration')
             ->from('tx_mysqlreport_domain_model_profile')
             ->where(
                 $queryBuilder->expr()->eq(
@@ -188,6 +191,51 @@ class ProfileRepository extends AbstractRepository
         $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, [$profileRecord]));
 
         return current($event->getProfileRecords());
+    }
+
+    /**
+     * @param array<string, mixed> $profileRecord
+     * @return array<string, string>
+     */
+    public function getQueryProfiling(array $profileRecord): array
+    {
+        $sql = trim($profileRecord['query']);
+        $queryType = trim(strtoupper($profileRecord['query_type']));
+
+        if ($sql === '') {
+            return [];
+        }
+
+        if ($queryType !== 'SELECT') {
+            return [];
+        }
+
+        $profileRows = [];
+        try {
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+
+            $queryResult = $connection->transactional(function(Connection $transactionalConnection) use ($sql): ?Result {
+                try {
+                    $transactionalConnection->executeStatement('SET profiling=1;');
+                    $transactionalConnection->executeQuery($sql);
+                    return $transactionalConnection->executeQuery('SHOW profile;');
+                } catch (Exception $e) {
+                }
+                return null;
+            });
+
+            if (!$queryResult instanceof Result) {
+                return [];
+            }
+
+            while ($profilingRow = $queryResult->fetchAssociative()) {
+                $profileRows[] = $profilingRow;
+            }
+        } catch (\Throwable | \Exception | Exception $e) {
+        }
+
+        return $profileRows;
     }
 
     /**

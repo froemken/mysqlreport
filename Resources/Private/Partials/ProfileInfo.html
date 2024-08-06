@@ -10,22 +10,24 @@
 <f:if condition="{profileRecord.explain}">
     <h1>Explain output</h1>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <f:for each="{profileRecord.explain.0}" as="value" key="key">
-                <th>{key}</th>
-            </f:for>
-        </tr>
-        </thead>
-        <tbody>
-        <f:for each="{profileRecord.explain}" as="explain">
+    <div class="table-fit">
+        <table class="table table-striped table-hover">
+            <thead>
             <tr>
-                <f:for each="{explain}" as="value">
-                    <td>{value}</td>
+                <f:for each="{profileRecord.explain.0}" as="value" key="key">
+                    <th>{key}</th>
                 </f:for>
             </tr>
-        </f:for>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            <f:for each="{profileRecord.explain}" as="explain">
+                <tr>
+                    <f:for each="{explain}" as="value">
+                        <td>{value}</td>
+                    </f:for>
+                </tr>
+            </f:for>
+            </tbody>
+        </table>
+    </div>
 </f:if>
