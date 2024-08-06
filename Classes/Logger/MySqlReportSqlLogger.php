@@ -100,66 +100,7 @@ class MySqlReportSqlLogger
         return true;
     }
 
-    public function __destruct()
-    {
-        $defaultConnection = $this->getTypo3DefaultConnection();
-        $executeExplainQuery = $this->extConf->isAddExplain() && $defaultConnection instanceof Connection;
 
-        $queriesToStore = [];
-        foreach ($this->profiles as $key => $profile) {
-            if ($executeExplainQuery && $profile->getQueryType() === 'SELECT') {
-                try {
-                    $queryResult = $defaultConnection->executeQuery('EXPLAIN ' . $profile->getQuery());
-                    while ($explainRow = $queryResult->fetchAssociative()) {
-                        $this->explainQueryHelper->updateProfile($profile, $explainRow);
-                    }
-                } catch (Exception $e) {
-                    continue;
-                }
-            }
-
-            $queryToStore = [
-                'pid' => $profile->getPid(),
-                'ip' => $profile->getIp(),
-                'referer' => $profile->getReferer(),
-                'request' => $profile->getRequest(),
-                'query_type' => $profile->getQueryType(),
-                'duration' => $profile->getDuration(),
-                'query' => $profile->getQuery(),
-                'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
-                'using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 1 : 0,
-                'using_fulltable' => $profile->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
-                'mode' => $profile->getMode(),
-                'unique_call_identifier' => $profile->getUniqueCallIdentifier(),
-                'crdate' => $profile->getCrdate(),
-                'query_id' => $key,
-            ];
-
-            $queriesToStore[] = $queryToStore;
-        }
-
-        foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
-            $this->bulkInsert(
-                $chunkOfQueriesToStore,
-                [
-                    'pid',
-                    'ip',
-                    'referer',
-                    'request',
-                    'query_type',
-                    'duration',
-                    'query',
-                    'explain_query',
-                    'using_index',
-                    'using_fulltable',
-                    'mode',
-                    'unique_call_identifier',
-                    'crdate',
-                    'query_id',
-                ],
-            );
-        }
-    }
 
     private function getTypo3DefaultConnection(): ?Connection
     {
