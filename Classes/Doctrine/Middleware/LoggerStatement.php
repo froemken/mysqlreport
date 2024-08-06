@@ -48,9 +48,9 @@ class LoggerStatement implements Statement
 
     public function execute(): ResultInterface
     {
-        $this->logger->startQuery();
+        $startTime = microtime(true);
         $result = $this->wrappedStatement->execute();
-        $this->logger->stopQuery($this->sql, $this->params, $this->types);
+        $this->logger->stopQuery($this->sql, microtime(true) - $startTime, $this->params, $this->types);
 
         return $result;
     }

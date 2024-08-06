@@ -60,9 +60,9 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
      */
     public function query(string $sql): Result
     {
-        $this->logger->startQuery();
+        $startTime = microtime(true);
         $queryResult = parent::query($sql);
-        $this->logger->stopQuery($sql);
+        $this->logger->stopQuery($sql, microtime() - $startTime);
 
         return $queryResult;
     }
@@ -72,9 +72,9 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
      */
     public function exec(string $sql): int
     {
-        $this->logger->startQuery();
+        $startTime = microtime(true);
         $affectedRows = parent::exec($sql);
-        $this->logger->stopQuery($sql);
+        $this->logger->stopQuery($sql, microtime() - $startTime);
 
         return (int)$affectedRows;
     }

@@ -36,12 +36,6 @@ class MySqlReportSqlLogger
     private \SplQueue $profiles;
 
     /**
-     * This value will be set for each query to retrieve query execution time.
-     * Must be a class property to transfer micro-time from startQuery to stopQuery method.
-     */
-    private float $queryStartTime = 0.0;
-
-    /**
      * It looks like a counter, but will be used to order the queries into correct execution position
      * while listing them in BE module.
      */
@@ -70,30 +64,14 @@ class MySqlReportSqlLogger
     }
 
     /**
-     * This method will be called just before the query will be executed by doctrine.
-     * Prepare query logging.
-     */
-    public function startQuery(): void
-    {
-        if (!$this->extConf->isQueryLoggingActivated()) {
-            return;
-        }
-
-        $this->queryStartTime = microtime(true);
-    }
-
-    /**
      * This method will be called just after the query has been executed by doctrine.
      * Start collecting duration and other stuff.
      *
      * @param array<int, string> $params
      * @param array<int, ParameterType> $types
      */
-    public function stopQuery(string $query, array $params = [], array $types = []): void
+    public function stopQuery(string $query, float $duration, array $params = [], array $types = []): void
     {
-        // Must be the first row in this method to get more exact query time
-        $duration = microtime(true) - $this->queryStartTime;
-
         if (!$this->extConf->isQueryLoggingActivated()) {
             return;
         }
