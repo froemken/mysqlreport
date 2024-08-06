@@ -18,8 +18,6 @@ use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\Profile;
 use StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper;
 use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
-use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
-use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -30,8 +28,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class MySqlReportSqlLogger
 {
-    use Typo3RequestTrait;
-
     /**
      * Collected profiles
      *
@@ -40,11 +36,8 @@ class MySqlReportSqlLogger
     private \SplQueue $profiles;
 
     /**
-     * This value will be set for each query to current micro-time.
-     * Needed to calculate the query duration.
-     * Must be a class property to transfer micro-time from startQuery to stopQuery.
-     *
-     * @var float
+     * This value will be set for each query to retrieve query execution time.
+     * Must be a class property to transfer micro-time from startQuery to stopQuery method.
      */
     private float $queryStartTime = 0.0;
 
@@ -60,6 +53,7 @@ class MySqlReportSqlLogger
      * @var string[]
      */
     private array $skipQueries = [
+        'SELECT DATABASE()',
         'show global status',
         'show global variables',
         'tx_mysqlreport_domain_model_profile',
@@ -68,7 +62,7 @@ class MySqlReportSqlLogger
 
     public function __construct(
         private readonly ProfileFactory $profileFactory,
-        private readonly ExtConf $extConf,
+        readonly ExtConf $extConf,
         private readonly QueryParamsHelper $queryParamsHelper,
         private readonly ExplainQueryHelper $explainQueryHelper,
     ) {
@@ -77,10 +71,14 @@ class MySqlReportSqlLogger
 
     /**
      * This method will be called just before the query will be executed by doctrine.
-     * Prepare query profiling.
+     * Prepare query logging.
      */
     public function startQuery(): void
     {
+        if (!$this->extConf->isQueryLoggingActivated()) {
+            return;
+        }
+
         $this->queryStartTime = microtime(true);
     }
 
@@ -93,7 +91,12 @@ class MySqlReportSqlLogger
      */
     public function stopQuery(string $query, array $params = [], array $types = []): void
     {
+        // Must be the first row in this method to get more exact query time
         $duration = microtime(true) - $this->queryStartTime;
+
+        if (!$this->extConf->isQueryLoggingActivated()) {
+            return;
+        }
 
         if (!$this->isValidQuery($query)) {
             return;
@@ -101,11 +104,7 @@ class MySqlReportSqlLogger
 
         $profile = $this->profileFactory->createNewProfile();
         $profile->setDuration($duration);
-        $profile->setQuery($this->queryParamsHelper->getQueryWithReplacedParams(
-            $query,
-            $params,
-            $types,
-        ));
+        $profile->setQuery($this->queryParamsHelper->getQueryWithReplacedParams($query, $params, $types));
 
         $this->profiles->add($this->queryIterator, $profile);
 
@@ -129,7 +128,7 @@ class MySqlReportSqlLogger
 
     public function __destruct()
     {
-        if (!$this->isFrontendOrBackendProfilingActivated()) {
+        if (!$this->extConf->isQueryLoggingActivated()) {
             return;
         }
 
@@ -201,23 +200,6 @@ class MySqlReportSqlLogger
         }
 
         return null;
-    }
-
-    private function isFrontendOrBackendProfilingActivated(): bool
-    {
-        if (Environment::isCli()) {
-            return false;
-        }
-
-        if ($this->extConf->isProfileFrontend() && !$this->isBackendRequest()) {
-            return true;
-        }
-
-        if ($this->extConf->isProfileBackend() && $this->isBackendRequest()) {
-            return true;
-        }
-
-        return false;
     }
 
     /**

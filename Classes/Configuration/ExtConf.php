@@ -11,24 +11,29 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Configuration;
 
+use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
- * This class will streamline the values from extension manager configuration
+ * This class will streamline the values from extension settings
  */
-class ExtConf implements SingletonInterface
+class ExtConf
 {
-    protected bool $profileFrontend = false;
+    use Typo3RequestTrait;
 
-    protected bool $profileBackend = false;
+    private bool $profileFrontend = false;
 
-    protected bool $addExplain = false;
+    private bool $profileBackend = false;
 
-    protected float $slowQueryTime = 10.0;
+    private bool $addExplain = false;
+
+    private float $slowQueryTime = 10.0;
+
+    private bool $isQueryLoggingActivated = false;
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
@@ -36,10 +41,6 @@ class ExtConf implements SingletonInterface
             $extConf = (array)$extensionConfiguration->get('mysqlreport');
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
             // Use default values
-            return;
-        }
-
-        if (!is_array($extConf)) {
             return;
         }
 
@@ -54,6 +55,8 @@ class ExtConf implements SingletonInterface
                 $this->$methodName($value);
             }
         }
+
+        $this->updateQueryLogging();
     }
 
     public function isProfileFrontend(): bool
@@ -101,5 +104,36 @@ class ExtConf implements SingletonInterface
                 $this->slowQueryTime = (float)$slowQueryTime;
             }
         }
+    }
+
+    /**
+     * This method is for internal usage only and will be called by constructor of this class once.
+     * This will help to speed up the query logging check for each query in logger.
+     *
+     * @see isQueryLoggingActivated
+     */
+    private function updateQueryLogging(): void
+    {
+        if (Environment::isCli()) {
+            $this->isQueryLoggingActivated = false;
+            return;
+        }
+
+        if ($this->isProfileFrontend() && !$this->isBackendRequest()) {
+            $this->isQueryLoggingActivated = true;
+            return;
+        }
+
+        if ($this->isProfileBackend() && $this->isBackendRequest()) {
+            $this->isQueryLoggingActivated = true;
+            return;
+        }
+
+        $this->isQueryLoggingActivated = false;
+    }
+
+    public function isQueryLoggingActivated(): bool
+    {
+        return $this->isQueryLoggingActivated;
     }
 }
