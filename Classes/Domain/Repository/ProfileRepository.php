@@ -215,7 +215,7 @@ class ProfileRepository extends AbstractRepository
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
 
-            $queryResult = $connection->transactional(function(Connection $transactionalConnection) use ($sql): ?Result {
+            $queryResult = $connection->transactional(function (Connection $transactionalConnection) use ($sql): ?Result {
                 try {
                     $transactionalConnection->executeStatement('SET profiling=1;');
                     $transactionalConnection->executeQuery($sql);
