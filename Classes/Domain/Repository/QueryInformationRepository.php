@@ -60,7 +60,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
         );
 
         return $event->getQueryInformationRecords();
@@ -99,7 +99,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
         );
 
         return $event->getQueryInformationRecords();
@@ -136,7 +136,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
         );
 
         return $event->getQueryInformationRecords();
@@ -178,7 +178,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
         );
 
         return $event->getQueryInformationRecords();
@@ -208,7 +208,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, [$queryInformationRecord])
+            new ModifyQueryInformationRecordsEvent(__METHOD__, [$queryInformationRecord]),
         );
 
         return current($event->getQueryInformationRecords());
@@ -234,7 +234,7 @@ readonly class QueryInformationRepository
         $profilingRows = [];
         try {
             $connection = $this->getConnectionPool()->getConnectionByName(
-                ConnectionPool::DEFAULT_CONNECTION_NAME
+                ConnectionPool::DEFAULT_CONNECTION_NAME,
             );
 
             $queryResult = $connection->transactional(function (\Doctrine\DBAL\Connection $transactionalConnection) use ($sql): ?Result {
@@ -291,7 +291,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
         );
 
         return $event->getQueryInformationRecords();
@@ -328,7 +328,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
         );
 
         return $event->getQueryInformationRecords();
@@ -349,7 +349,7 @@ readonly class QueryInformationRepository
                     'duration',
                     $queryBuilder->createNamedParameter(
                         GeneralUtility::makeInstance(ExtConf::class)->getSlowQueryThreshold(),
-                        Connection::PARAM_LOB
+                        Connection::PARAM_LOB,
                     ),
                 ),
             )
@@ -368,7 +368,7 @@ readonly class QueryInformationRepository
 
         /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
         );
 
         return $event->getQueryInformationRecords();
@@ -399,11 +399,10 @@ readonly class QueryInformationRepository
                         'unique_call_identifier',
                         'crdate',
                         'query_id',
-                    ]
+                    ],
                 );
             }
         } catch (Exception $e) {
         }
     }
-
 }

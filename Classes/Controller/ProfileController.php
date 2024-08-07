@@ -33,9 +33,9 @@ class ProfileController
 
     public function __construct(
         QueryInformationRepository $queryInformationRepository,
-        ModuleTemplateFactory      $moduleTemplateFactory,
-        ModuleTemplateHelper       $moduleTemplateHelper,
-        DownloadHelper             $downloadHelper,
+        ModuleTemplateFactory $moduleTemplateFactory,
+        ModuleTemplateHelper $moduleTemplateHelper,
+        DownloadHelper $downloadHelper,
     ) {
         $this->queryInformationRepository = $queryInformationRepository;
         $this->moduleTemplateFactory = $moduleTemplateFactory;

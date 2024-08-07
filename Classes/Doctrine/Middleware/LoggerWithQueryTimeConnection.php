@@ -60,7 +60,7 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
             parent::prepare($sql),
             $this->logger,
             $sql,
-            $this->queries
+            $this->queries,
         );
     }
 

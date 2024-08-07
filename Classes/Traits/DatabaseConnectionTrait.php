@@ -34,7 +34,7 @@ trait DatabaseConnectionTrait
     private function getDefaultConnection(): Connection
     {
         return $this->getConnectionPool()->getConnectionByName(
-            ConnectionPool::DEFAULT_CONNECTION_NAME
+            ConnectionPool::DEFAULT_CONNECTION_NAME,
         );
     }
 }

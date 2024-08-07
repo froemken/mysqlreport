@@ -58,7 +58,7 @@ readonly class ExplainQueryHelper
         $explainRows = [];
         try {
             $queryResult = $this->getDefaultConnection()->executeQuery(
-                'EXPLAIN ' . $queryInformation->getQuery()
+                'EXPLAIN ' . $queryInformation->getQuery(),
             );
 
             while ($explainRow = $queryResult->fetchAssociative()) {
