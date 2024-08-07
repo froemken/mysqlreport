@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\Tests\Functional\Configuration;
 
 use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
