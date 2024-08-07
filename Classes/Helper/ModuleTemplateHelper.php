@@ -15,6 +15,7 @@ use TYPO3\CMS\Backend\Routing\UriBuilder;
 use TYPO3\CMS\Backend\Template\Components\ButtonBar;
 use TYPO3\CMS\Core\Imaging\Icon;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -35,7 +36,7 @@ class ModuleTemplateHelper
             ->makeLinkButton()
             ->setShowLabelText(true)
             ->setTitle('Overview')
-            ->setIcon($this->getIconFactory()->getIcon('actions-viewmode-tiles', Icon::SIZE_SMALL))
+            ->setIcon($this->getIconFactory()->getIcon('actions-viewmode-tiles', IconSize::SMALL))
             ->setHref(
                 (string)$this->uriBuilder->buildUriFromRoute('system_mysqlreport'),
             );
