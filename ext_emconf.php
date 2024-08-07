@@ -13,9 +13,6 @@ $EM_CONF[$_EXTKEY] = [
         'depends' => [
             'typo3' => '13.0.0-13.4.99',
         ],
-        'conflicts' => [
-            'adminpanel' => '13.0.0-13.4.99',
-        ],
         'suggests' => [
         ],
     ],
