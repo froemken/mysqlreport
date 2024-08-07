@@ -14,8 +14,7 @@ namespace StefanFroemken\Mysqlreport\Helper;
 use Doctrine\DBAL\Exception;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -23,6 +22,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class ExplainQueryHelper
 {
+    use DatabaseConnectionTrait;
+
     /**
      * @param QueryInformation $queryInformation
      */
@@ -76,11 +77,5 @@ readonly class ExplainQueryHelper
     private function getExtConf(): ExtConf
     {
         return GeneralUtility::makeInstance(ExtConf::class);
-    }
-
-    private function getDefaultConnection(): Connection
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class)
-            ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
     }
 }
