@@ -31,7 +31,7 @@ readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInter
             return false;
         }
 
-        if (($connectionParams['driver'] ?? '') !== 'mysqli') {
+        if (in_array($connectionParams['driver'] ?? '', ['mysqli', 'pdo_mysql'], true)) {
             return false;
         }
 

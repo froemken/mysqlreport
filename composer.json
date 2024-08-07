@@ -45,9 +45,6 @@
 	"replace": {
 		"typo3-ter/mysqlreport": "self.version"
 	},
-	"conflict": {
-		"typo3/cms-adminpanel": "*"
-	},
 	"suggest": {
 		"typo3/cms-dashboard": "MySQL Report comes with some pretty cool widgets for TYPO3 Dashboard."
 	},

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Factory;
 
+use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Core\Environment;
@@ -66,9 +67,20 @@ class QueryInformationFactory
 
     private function getPageUid(): int
     {
-        return isset($GLOBALS['TSFE']) && $GLOBALS['TSFE'] instanceof TypoScriptFrontendController
-            ? $GLOBALS['TSFE']->id
-            : 0;
+        $serverRequest = $GLOBALS['TYPO3_REQUEST'];
+        if ($serverRequest instanceof ServerRequestInterface) {
+            $typoScriptFrontendController = $serverRequest->getAttribute('frontend.controller');
+            if ($typoScriptFrontendController instanceof TypoScriptFrontendController) {
+                return $typoScriptFrontendController->id;
+            }
+
+            $backendPageUid = (int)($serverRequest->getQueryParams()['id'] ?? 0);
+            if ($backendPageUid !== 0) {
+                return $backendPageUid;
+            }
+        }
+
+        return 0;
     }
 
     private function getTypo3Mode(): string
