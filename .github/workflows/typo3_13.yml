@@ -68,3 +68,30 @@ jobs:
 
       - name: 'Execute unit tests'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
+
+  functional-tests:
+    name: Functional tests
+    needs: code-quality
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        php:
+          - '8.2'
+          - '8.3'
+
+        vendor:
+          - sqlite
+          - mysql
+          - mariadb
+          - postgres
+
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v4
+
+      - name: 'Install testing system'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerUpdate
+
+      - name: 'Execute functional tests'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -d ${{ matrix.vendor }} -s functional
