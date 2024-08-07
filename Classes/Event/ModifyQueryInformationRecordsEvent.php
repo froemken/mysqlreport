@@ -13,25 +13,25 @@ namespace StefanFroemken\Mysqlreport\Event;
 
 /**
  * Event to modify the profile records in ProfileRepository
- * There is no setProfileRecords in this class, as I don't want that someone removes all records.
+ * There is no setQueryInformationRecords in this class, as I don't want that someone removes all records.
  */
-class ModifyProfileRecordsEvent
+class ModifyQueryInformationRecordsEvent
 {
     private string $methodName;
 
     /**
      * @var array<int, mixed>
      */
-    private array $profileRecords;
+    private array $queryInformationRecords;
 
     /**
      * @param string $methodName
-     * @param array<int, mixed> $profileRecords
+     * @param array<int, mixed> $queryInformationRecords
      */
-    public function __construct(string $methodName, array $profileRecords)
+    public function __construct(string $methodName, array $queryInformationRecords)
     {
         $this->methodName = $methodName;
-        $this->profileRecords = $profileRecords;
+        $this->queryInformationRecords = $queryInformationRecords;
     }
 
     public function getMethodName(): string
@@ -42,17 +42,17 @@ class ModifyProfileRecordsEvent
     /**
      * @return array<int, mixed>
      */
-    public function getProfileRecords(): array
+    public function getQueryInformationRecords(): array
     {
-        return $this->profileRecords;
+        return $this->queryInformationRecords;
     }
 
     /**
      * @param int $key
-     * @param array<string, mixed> $profileRecord
+     * @param array<string, mixed> $queryInformationRecord
      */
-    public function updateProfileRecord(int $key, array $profileRecord): void
+    public function updateQueryInformationRecord(int $key, array $queryInformationRecord): void
     {
-        $this->profileRecords[$key] = $profileRecord;
+        $this->queryInformationRecords[$key] = $queryInformationRecord;
     }
 }

@@ -8,7 +8,7 @@
 <f:section name="Content">
     <h1>Queries grouped by request</h1>
 
-    <f:if condition="{profileRecords}">
+    <f:if condition="{queryInformationRecords}">
         <f:then>
             <table class="table">
                 <thead>
@@ -21,22 +21,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <f:for each="{profileRecords}" as="profileRecord">
+                <f:for each="{queryInformationRecords}" as="queryInformationRecord">
                     <tr>
-                        <td>{profileRecord.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
-                        <td>{profileRecord.mode}</td>
-                        <td>{profileRecord.amount}</td>
+                        <td>{queryInformationRecord.crdate -> f:format.date(format: 'd.m.Y H:i:s')}</td>
+                        <td>{queryInformationRecord.mode}</td>
+                        <td>{queryInformationRecord.amount}</td>
                         <td>
-                            {profileRecord.duration}
+                            {queryInformationRecord.duration}
                         </td>
                         <td>
-                            <a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: profileRecord.unique_call_identifier})}"
+                            <a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: queryInformationRecord.unique_call_identifier})}"
                                class="btn btn-primary">
                                 <core:icon identifier="actions-search"/>
                             </a>
-                            <a href="{profileRecord.request}" target="_blank">
+                            <a href="{queryInformationRecord.request}" target="_blank">
 								<span data-bs-toggle="tooltip"
-                                      title="{profileRecord.request}"
+                                      title="{queryInformationRecord.request}"
                                       class="btn btn-default"
                                       data-bs-html="true"
                                       data-bs-placement="right">

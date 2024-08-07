@@ -53,7 +53,7 @@ class ProfileController
             'MySqlReport Profiles',
         );
 
-        $moduleTemplate->assign('profileRecords', $this->queryInformationRepository->findProfileRecordsForCall());
+        $moduleTemplate->assign('queryInformationRecords', $this->queryInformationRepository->findQueryInformationRecordsForCall());
 
         return $moduleTemplate->renderResponse('Profile/List');
     }
@@ -73,7 +73,7 @@ class ProfileController
 
         $moduleTemplate->assignMultiple([
             'uniqueIdentifier' => $uniqueIdentifier,
-            'profileTypes' => $this->queryInformationRepository->getProfileRecordsByUniqueIdentifier($uniqueIdentifier),
+            'profileTypes' => $this->queryInformationRepository->getQueryInformationRecordsByUniqueIdentifier($uniqueIdentifier),
         ]);
 
         return $moduleTemplate->renderResponse('Profile/Show');
@@ -96,7 +96,7 @@ class ProfileController
         $moduleTemplate->assignMultiple([
             'uniqueIdentifier' => $uniqueIdentifier,
             'queryType' => $queryType,
-            'profileRecords' => $this->queryInformationRepository->getProfileRecordsByQueryType($uniqueIdentifier, $queryType),
+            'queryInformationRecords' => $this->queryInformationRepository->getQueryInformationRecordsByQueryType($uniqueIdentifier, $queryType),
         ]);
 
         return $moduleTemplate->renderResponse('Profile/QueryType');
@@ -115,10 +115,10 @@ class ProfileController
         $queryParameters = $request->getQueryParams();
         $uid = (int)($queryParameters['uid'] ?? 0);
 
-        $profileRecord = $this->queryInformationRepository->getProfileRecordByUid($uid);
-        $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
+        $queryInformationRecord = $this->queryInformationRepository->getQueryInformationRecordByUid($uid);
+        $queryInformationRecord['explain'] = unserialize($queryInformationRecord['explain_query'], ['allowed_classes' => false]);
 
-        $moduleTemplate->assign('profileRecord', $profileRecord);
+        $moduleTemplate->assign('queryInformationRecord', $queryInformationRecord);
 
         return $moduleTemplate->renderResponse('Profile/Info');
     }
@@ -134,10 +134,10 @@ class ProfileController
         );
 
         $queryParameters = $request->getQueryParams();
-        $profileRecord = $this->queryInformationRepository->getProfileRecordByUid((int)($queryParameters['uid'] ?? 0));
+        $queryInformationRecord = $this->queryInformationRepository->getQueryInformationRecordByUid((int)($queryParameters['uid'] ?? 0));
 
-        $moduleTemplate->assign('profileRecord', $profileRecord);
-        $moduleTemplate->assign('profiling', $this->queryInformationRepository->getQueryProfiling($profileRecord));
+        $moduleTemplate->assign('queryInformationRecord', $queryInformationRecord);
+        $moduleTemplate->assign('profiling', $this->queryInformationRepository->getQueryProfiling($queryInformationRecord));
 
         return $moduleTemplate->renderResponse('Profile/QueryProfiling');
     }
@@ -162,7 +162,7 @@ class ProfileController
             'query' => 'Query',
         ];
 
-        $records = $this->queryInformationRepository->getProfileRecordsForDownloadByUniqueIdentifier(
+        $records = $this->queryInformationRepository->getQueryInformationRecordsForDownloadByUniqueIdentifier(
             $queryParameters['uniqueIdentifier'] ?? '',
             array_keys($columns),
         );

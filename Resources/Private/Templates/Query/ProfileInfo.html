@@ -12,6 +12,12 @@
         <a href="{be:moduleLink(route: '{prevRouteIdentifier}')}" class="btn btn-primary">
             Back
         </a>
+        <f:if condition="{queryInformationRecord.query_type} == 'SELECT'">
+            <a href="{be:moduleLink(route: 'mysqlreport_profile_profiling', arguments: {uid: queryInformationRecord.uid})}"
+               class="btn btn-primary">
+                Show Query Profile
+            </a>
+        </f:if>
     </p>
 
     <f:render partial="ProfileInfo" arguments="{_all}"/>

@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent;
+use StefanFroemken\Mysqlreport\Event\ModifyQueryInformationRecordsEvent;
 use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
@@ -37,7 +37,7 @@ readonly class QueryInformationRepository
     /**
      * @return array<int, mixed>
      */
-    public function findProfileRecordsForCall(): array
+    public function findQueryInformationRecordsForCall(): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -58,12 +58,12 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
         );
 
-        return $event->getProfileRecords();
+        return $event->getQueryInformationRecords();
     }
 
     /**
@@ -71,7 +71,7 @@ readonly class QueryInformationRepository
      *
      * @return array<int, mixed>
      */
-    public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
+    public function getQueryInformationRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -97,12 +97,12 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
         );
 
-        return $event->getProfileRecords();
+        return $event->getQueryInformationRecords();
     }
 
     /**
@@ -111,7 +111,7 @@ readonly class QueryInformationRepository
      * @param array<int, string> $columns
      * @return array<int, mixed>
      */
-    public function getProfileRecordsForDownloadByUniqueIdentifier(string $uniqueIdentifier, array $columns): array
+    public function getQueryInformationRecordsForDownloadByUniqueIdentifier(string $uniqueIdentifier, array $columns): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -134,12 +134,12 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
         );
 
-        return $event->getProfileRecords();
+        return $event->getQueryInformationRecords();
     }
 
     /**
@@ -147,7 +147,7 @@ readonly class QueryInformationRepository
      * @param string $queryType
      * @return array<int, string>
      */
-    public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
+    public function getQueryInformationRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -176,18 +176,18 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
         );
 
-        return $event->getProfileRecords();
+        return $event->getQueryInformationRecords();
     }
 
     /**
      * @return array<string, mixed>
      */
-    public function getProfileRecordByUid(int $uid): array
+    public function getQueryInformationRecordByUid(int $uid): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -206,12 +206,12 @@ readonly class QueryInformationRepository
             return [];
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, [$queryInformationRecord])
+            new ModifyQueryInformationRecordsEvent(__METHOD__, [$queryInformationRecord])
         );
 
-        return current($event->getProfileRecords());
+        return current($event->getQueryInformationRecords());
     }
 
     /**
@@ -263,7 +263,7 @@ readonly class QueryInformationRepository
     /**
      * @return array<int, mixed>
      */
-    public function findProfileRecordsWithFilesort(): array
+    public function findQueryInformationRecordsWithFilesort(): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -289,18 +289,18 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
         );
 
-        return $event->getProfileRecords();
+        return $event->getQueryInformationRecords();
     }
 
     /**
      * @return array<int, mixed>
      */
-    public function findProfileRecordsWithFullTableScan(): array
+    public function findQueryInformationRecordsWithFullTableScan(): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -326,18 +326,18 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
         );
 
-        return $event->getProfileRecords();
+        return $event->getQueryInformationRecords();
     }
 
     /**
      * @return array<int, mixed>
      */
-    public function findProfileRecordsWithSlowQueries(): array
+    public function findQueryInformationRecordsWithSlowQueries(): array
     {
         $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
@@ -366,12 +366,12 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
 
-        /** @var ModifyProfileRecordsEvent $event */
+        /** @var ModifyQueryInformationRecordsEvent $event */
         $event = $this->eventDispatcher->dispatch(
-            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords)
         );
 
-        return $event->getProfileRecords();
+        return $event->getQueryInformationRecords();
     }
 
     public function bulkInsert(array $queries): void
