@@ -14,9 +14,9 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * A representation of one record of table tx_mysql_domain_model_profile
+ * A representation of one record of table tx_mysqlreport_query_information
  */
-class Profile
+class QueryInformation
 {
     private int $uid = 0;
 
@@ -41,6 +41,8 @@ class Profile
     private string $uniqueCallIdentifier = '';
 
     private int $crdate = 0;
+
+    private int $queryId = 0;
 
     public function __construct()
     {
@@ -173,5 +175,40 @@ class Profile
     public function setCrdate(int $crdate): void
     {
         $this->crdate = $crdate;
+    }
+
+    public function getQueryId(): int
+    {
+        return $this->queryId;
+    }
+
+    public function setQueryId(int $queryId): void
+    {
+        $this->queryId = $queryId;
+    }
+
+    /**
+     * Returns Profile model as ready to use record for DB INSERT
+     *
+     * @return array<string, mixed>
+     */
+    public function asArray(): array
+    {
+        return [
+            'pid' => $this->getPid(),
+            'ip' => $this->getIp(),
+            'referer' => $this->getReferer(),
+            'request' => $this->getRequest(),
+            'query_type' => $this->getQueryType(),
+            'duration' => $this->getDuration(),
+            'query' => $this->getQuery(),
+            'explain_query' => serialize($this->getExplainInformation()->getExplainResults()),
+            'using_index' => $this->getExplainInformation()->isQueryUsingIndex() ? 1 : 0,
+            'using_fulltable' => $this->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
+            'mode' => $this->getMode(),
+            'unique_call_identifier' => $this->getUniqueCallIdentifier(),
+            'crdate' => $this->getCrdate(),
+            'query_id' => $this->queryId,
+        ];
     }
 }

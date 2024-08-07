@@ -37,8 +37,7 @@ readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInter
 
     public function wrap(Driver $driver): Driver
     {
-        // Can not use DI here, because we have to transfer an individual driver object
-        // to our LoggerWithQueryTimeDriver as constructor argument.
-        return new LoggerWithQueryTimeDriver($driver);
+        // As $driver is transferred as constructor argument, DI can not be used in that class
+        return GeneralUtility::makeInstance(LoggerWithQueryTimeDriver::class, $driver);
     }
 }

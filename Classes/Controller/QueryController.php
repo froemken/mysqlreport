@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
 use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 
@@ -23,7 +23,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
  */
 class QueryController
 {
-    protected ProfileRepository $profileRepository;
+    protected QueryInformationRepository $profileRepository;
 
     protected ExtConf $extConf;
 
@@ -32,10 +32,10 @@ class QueryController
     private ModuleTemplateHelper $moduleTemplateHelper;
 
     public function __construct(
-        ProfileRepository $profileRepository,
-        ExtConf $extConf,
-        ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleTemplateHelper $moduleTemplateHelper,
+        QueryInformationRepository $profileRepository,
+        ExtConf                    $extConf,
+        ModuleTemplateFactory      $moduleTemplateFactory,
+        ModuleTemplateHelper       $moduleTemplateHelper,
     ) {
         $this->profileRepository = $profileRepository;
         $this->extConf = $extConf;
@@ -84,7 +84,7 @@ class QueryController
         );
 
         $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithSlowQueries());
-        $moduleTemplate->assign('slowQueryTime', $this->extConf->getSlowQueryTime());
+        $moduleTemplate->assign('slowQueryTime', $this->extConf->getSlowQueryThreshold());
 
         return $moduleTemplate->renderResponse('Query/SlowQuery');
     }

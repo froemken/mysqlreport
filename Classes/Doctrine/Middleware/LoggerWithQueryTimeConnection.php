@@ -16,37 +16,36 @@ use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Driver\Middleware\AbstractConnectionMiddleware;
 use Doctrine\DBAL\Driver\Result;
 use Doctrine\DBAL\Driver\Statement;
-use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
+use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
+use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
 use StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper;
-use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
 use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Here in the connection, we can wrap our logger around the queries and commands.
  */
 class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
 {
+    /**
+     * @var \SplQueue<QueryInformation>
+     */
+    private \SplQueue $queries;
+
     private MySqlReportSqlLogger $logger;
 
-    private ExtConf $extConf;
+    private ExplainQueryHelper $explainQueryHelper;
+
+    private QueryInformationRepository $queryInformationRepository;
 
     public function __construct(Connection $connection)
     {
         parent::__construct($connection);
 
-        $this->extConf = new ExtConf(new ExtensionConfiguration());
-
-        // As this logger is also valid for InstallTool where we have a reduced set of DI classes, we instantiate the
-        // MySQL report logger on our own.
-        $this->logger = new MySqlReportSqlLogger(
-            new ProfileFactory(),
-            $this->extConf,
-            new QueryParamsHelper(new ConnectionPool()),
-            new ExplainQueryHelper(),
-        );
+        $this->queries = new \SplQueue();
+        $this->logger = GeneralUtility::makeInstance(MySqlReportSqlLogger::class);
+        $this->explainQueryHelper = GeneralUtility::makeInstance(ExplainQueryHelper::class);
+        $this->queryInformationRepository = GeneralUtility::makeInstance(QueryInformationRepository::class);
     }
 
     /**
@@ -56,91 +55,61 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
      */
     public function prepare(string $sql): Statement
     {
-        return new LoggerStatement(parent::prepare($sql), $this->logger, $sql);
+        return GeneralUtility::makeInstance(
+            LoggerStatement::class,
+            parent::prepare($sql),
+            $this->logger,
+            $sql,
+            $this->queries
+        );
     }
 
     /**
      * This method will be called during SELECT queries
+     *
+     * @throws Exception
      */
     public function query(string $sql): Result
     {
         $startTime = microtime(true);
         $queryResult = parent::query($sql);
-        $this->logger->stopQuery($sql, microtime(true) - $startTime);
+        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
+
+        if ($queryInformation instanceof QueryInformation) {
+            $this->queries->push($queryInformation);
+        }
 
         return $queryResult;
     }
 
     /**
      * This method will be called during INSERT/UPDATE/DELETE queries
+     *
+     * @throws Exception
      */
     public function exec(string $sql): int
     {
         $startTime = microtime(true);
         $affectedRows = parent::exec($sql);
-        $this->logger->stopQuery($sql, microtime(true) - $startTime);
+        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
+
+        if ($queryInformation instanceof QueryInformation) {
+            $this->queries->push($queryInformation);
+        }
 
         return (int)$affectedRows;
     }
 
     public function __destruct()
     {
-        $defaultConnection = $this->getTypo3DefaultConnection();
-        $executeExplainQuery = $this->extConf->isAddExplain() && $defaultConnection instanceof \TYPO3\CMS\Core\Database\Connection;
-
         $queriesToStore = [];
-        foreach ($this->profiles as $key => $profile) {
-            if ($executeExplainQuery && $profile->getQueryType() === 'SELECT') {
-                try {
-                    $queryResult = $defaultConnection->executeQuery('EXPLAIN ' . $profile->getQuery());
-                    while ($explainRow = $queryResult->fetchAssociative()) {
-                        $this->explainQueryHelper->updateProfile($profile, $explainRow);
-                    }
-                } catch (\Doctrine\DBAL\Exception $e) {
-                    continue;
-                }
-            }
+        foreach ($this->queries as $index => $queryInformation) {
+            $queryInformation->setQueryId($index);
+            $this->explainQueryHelper->updateQueryInformation($queryInformation);
 
-            $queryToStore = [
-                'pid' => $profile->getPid(),
-                'ip' => $profile->getIp(),
-                'referer' => $profile->getReferer(),
-                'request' => $profile->getRequest(),
-                'query_type' => $profile->getQueryType(),
-                'duration' => $profile->getDuration(),
-                'query' => $profile->getQuery(),
-                'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
-                'using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 1 : 0,
-                'using_fulltable' => $profile->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
-                'mode' => $profile->getMode(),
-                'unique_call_identifier' => $profile->getUniqueCallIdentifier(),
-                'crdate' => $profile->getCrdate(),
-                'query_id' => $key,
-            ];
-
-            $queriesToStore[] = $queryToStore;
+            $queriesToStore[] = $queryInformation->asArray();
         }
 
-        foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
-            $this->bulkInsert(
-                $chunkOfQueriesToStore,
-                [
-                    'pid',
-                    'ip',
-                    'referer',
-                    'request',
-                    'query_type',
-                    'duration',
-                    'query',
-                    'explain_query',
-                    'using_index',
-                    'using_fulltable',
-                    'mode',
-                    'unique_call_identifier',
-                    'crdate',
-                    'query_id',
-                ],
-            );
-        }
+        $this->queryInformationRepository->bulkInsert($queriesToStore);
     }
 }

@@ -13,23 +13,23 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
+use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent;
+use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Repository to get records to profile the queries of a request
+ * Repository to retrieve the logged queries of a request
  */
-class ProfileRepository extends AbstractRepository
+readonly class QueryInformationRepository
 {
-    private EventDispatcher $eventDispatcher;
-
-    public function injectEventDispatcher(EventDispatcher $eventDispatcher): void
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    public function __construct(
+        private ConnectionHelper $connectionHelper,
+        private EventDispatcher $eventDispatcher,
+    ) {}
 
     /**
      * @return array<int, mixed>
@@ -37,24 +37,26 @@ class ProfileRepository extends AbstractRepository
      */
     public function findProfileRecordsForCall(): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select('unique_call_identifier', 'crdate', 'mode', 'request')
             ->addSelectLiteral('SUM(duration) as duration, COUNT(*) as amount')
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->groupBy('unique_call_identifier', 'crdate', 'mode', 'request')
             ->orderBy('crdate', 'DESC')
             ->setMaxResults(100);
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
-        $profileRecords = [];
-        while ($profileRecord = $result->fetchAssociative()) {
-            $profileRecords[] = $profileRecord;
+        $queryInformationRecords = [];
+        while ($queryInformationRecord = $result->fetchAssociative()) {
+            $queryInformationRecords[] = $queryInformationRecord;
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+        );
 
         return $event->getProfileRecords();
     }
@@ -67,11 +69,11 @@ class ProfileRepository extends AbstractRepository
      */
     public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select('query_type', 'unique_call_identifier', 'request')
             ->addSelectLiteral('SUM(duration) as duration, COUNT(*) as amount')
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
@@ -83,13 +85,15 @@ class ProfileRepository extends AbstractRepository
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
-        $profileRecords = [];
-        while ($profileRecord = $result->fetchAssociative()) {
-            $profileRecords[] = $profileRecord;
+        $queryInformationRecords = [];
+        while ($queryInformationRecord = $result->fetchAssociative()) {
+            $queryInformationRecords[] = $queryInformationRecord;
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+        );
 
         return $event->getProfileRecords();
     }
@@ -103,10 +107,10 @@ class ProfileRepository extends AbstractRepository
      */
     public function getProfileRecordsForDownloadByUniqueIdentifier(string $uniqueIdentifier, array $columns): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select(...$columns)
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
@@ -116,13 +120,15 @@ class ProfileRepository extends AbstractRepository
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
-        $profileRecords = [];
-        while ($profileRecord = $result->fetchAssociative()) {
-            $profileRecords[] = $profileRecord;
+        $queryInformationRecords = [];
+        while ($queryInformationRecord = $result->fetchAssociative()) {
+            $queryInformationRecords[] = $queryInformationRecord;
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+        );
 
         return $event->getProfileRecords();
     }
@@ -135,11 +141,11 @@ class ProfileRepository extends AbstractRepository
      */
     public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select('uid', 'query_id', 'using_index', 'duration')
             ->addSelectLiteral('LEFT(query, 120) as query')
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
@@ -154,13 +160,15 @@ class ProfileRepository extends AbstractRepository
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
-        $profileRecords = [];
-        while ($profileRecord = $result->fetchAssociative()) {
-            $profileRecords[] = $profileRecord;
+        $queryInformationRecords = [];
+        while ($queryInformationRecord = $result->fetchAssociative()) {
+            $queryInformationRecords[] = $queryInformationRecord;
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+        );
 
         return $event->getProfileRecords();
     }
@@ -170,10 +178,10 @@ class ProfileRepository extends AbstractRepository
      */
     public function getProfileRecordByUid(int $uid): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select('uid', 'query', 'query_type', 'explain_query', 'using_index', 'unique_call_identifier', 'duration')
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
@@ -182,25 +190,27 @@ class ProfileRepository extends AbstractRepository
             );
 
         try {
-            $profileRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetchAssociative() ?: [];
+            $queryInformationRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetchAssociative() ?: [];
         } catch (Exception $e) {
             return [];
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, [$profileRecord]));
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, [$queryInformationRecord])
+        );
 
         return current($event->getProfileRecords());
     }
 
     /**
-     * @param array<string, mixed> $profileRecord
+     * @param array<string, mixed> $queryInformationRecord
      * @return array<int, array<string, mixed>>
      */
-    public function getQueryProfiling(array $profileRecord): array
+    public function getQueryProfiling(array $queryInformationRecord): array
     {
-        $sql = trim($profileRecord['query']);
-        $queryType = trim(strtoupper($profileRecord['query_type']));
+        $sql = trim($queryInformationRecord['query']);
+        $queryType = trim(strtoupper($queryInformationRecord['query_type']));
 
         if ($sql === '') {
             return [];
@@ -210,7 +220,7 @@ class ProfileRepository extends AbstractRepository
             return [];
         }
 
-        $profileRows = [];
+        $profilingRows = [];
         try {
             $connection = GeneralUtility::makeInstance(ConnectionPool::class)
                 ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
@@ -230,12 +240,12 @@ class ProfileRepository extends AbstractRepository
             }
 
             while ($profilingRow = $queryResult->fetchAssociative()) {
-                $profileRows[] = $profilingRow;
+                $profilingRows[] = $profilingRow;
             }
         } catch (\Throwable | \Exception | Exception $e) {
         }
 
-        return $profileRows;
+        return $profilingRows;
     }
 
     /**
@@ -244,11 +254,11 @@ class ProfileRepository extends AbstractRepository
      */
     public function findProfileRecordsWithFilesort(): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->where(
                 $queryBuilder->expr()->like(
                     'explain_query',
@@ -260,13 +270,13 @@ class ProfileRepository extends AbstractRepository
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
-        $profileRecords = [];
-        while ($profileRecord = $result->fetchAssociative()) {
-            $profileRecords[] = $profileRecord;
+        $queryInformationRecords = [];
+        while ($queryInformationRecord = $result->fetchAssociative()) {
+            $queryInformationRecords[] = $queryInformationRecord;
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords));
 
         return $event->getProfileRecords();
     }
@@ -277,11 +287,11 @@ class ProfileRepository extends AbstractRepository
      */
     public function findProfileRecordsWithFullTableScan(): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->where(
                 $queryBuilder->expr()->eq(
                     'using_fulltable',
@@ -293,13 +303,15 @@ class ProfileRepository extends AbstractRepository
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
-        $profileRecords = [];
-        while ($profileRecord = $result->fetchAssociative()) {
-            $profileRecords[] = $profileRecord;
+        $queryInformationRecords = [];
+        while ($queryInformationRecord = $result->fetchAssociative()) {
+            $queryInformationRecords[] = $queryInformationRecord;
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+        );
 
         return $event->getProfileRecords();
     }
@@ -310,15 +322,18 @@ class ProfileRepository extends AbstractRepository
      */
     public function findProfileRecordsWithSlowQueries(): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_domain_model_profile');
+        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
         $queryBuilder
             ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
-            ->from('tx_mysqlreport_domain_model_profile')
+            ->from('tx_mysqlreport_query_information')
             ->where(
                 $queryBuilder->expr()->gte(
                     'duration',
-                    $queryBuilder->createNamedParameter($this->extConf->getSlowQueryTime(), Connection::PARAM_LOB),
+                    $queryBuilder->createNamedParameter(
+                        GeneralUtility::makeInstance(ExtConf::class)->getSlowQueryThreshold(),
+                        Connection::PARAM_LOB
+                    ),
                 ),
             )
             ->orderBy('duration', 'DESC')
@@ -326,14 +341,48 @@ class ProfileRepository extends AbstractRepository
 
         $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
 
-        $profileRecords = [];
-        while ($profileRecord = $result->fetchAssociative()) {
-            $profileRecords[] = $profileRecord;
+        $queryInformationRecords = [];
+        while ($queryInformationRecord = $result->fetchAssociative()) {
+            $queryInformationRecords[] = $queryInformationRecord;
         }
 
         /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $profileRecords));
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+        );
 
         return $event->getProfileRecords();
+    }
+
+    public function bulkInsert(array $queries): void
+    {
+        try {
+            $connection = GeneralUtility::makeInstance(ConnectionPool::class)
+                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+
+            foreach (array_chunk($queries, 50) as $chunkOfQueriesToStore) {
+                $connection->bulkInsert(
+                    'tx_mysqlreport_query_information',
+                    $chunkOfQueriesToStore,
+                    [
+                        'pid',
+                        'ip',
+                        'referer',
+                        'request',
+                        'query_type',
+                        'duration',
+                        'query',
+                        'explain_query',
+                        'using_index',
+                        'using_fulltable',
+                        'mode',
+                        'unique_call_identifier',
+                        'crdate',
+                        'query_id',
+                    ]
+                );
+            }
+        } catch (Exception $e) {
+        }
     }
 }

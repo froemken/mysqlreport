@@ -42,7 +42,7 @@ class CacheAction
     }
 
     /**
-     * Truncate table tx_mysqlreport_domain_model_profile
+     * Truncate table tx_mysqlreport_query_information
      *
      * @param array<string, string> $params
      */
@@ -53,8 +53,8 @@ class CacheAction
             && $params['cacheCmd'] === 'mysqlprofiles'
         ) {
             $this->getConnectionPool()
-                ->getConnectionForTable('tx_mysqlreport_domain_model_profile')
-                ->truncate('tx_mysqlreport_domain_model_profile');
+                ->getConnectionForTable('tx_mysqlreport_query_information')
+                ->truncate('tx_mysqlreport_query_information');
         }
     }
 

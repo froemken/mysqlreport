@@ -25,13 +25,13 @@ class ExtConf
 {
     use Typo3RequestTrait;
 
-    private bool $profileFrontend = false;
+    private bool $enableFrontendLogging = false;
 
-    private bool $profileBackend = false;
+    private bool $enableBackendLogging = false;
 
-    private bool $addExplain = false;
+    private bool $activateExplainQuery = false;
 
-    private float $slowQueryTime = 10.0;
+    private float $slowQueryThreshold = 10.0;
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
@@ -55,49 +55,49 @@ class ExtConf
         }
     }
 
-    public function isProfileFrontend(): bool
+    public function isEnableFrontendLogging(): bool
     {
-        return $this->profileFrontend;
+        return $this->enableFrontendLogging;
     }
 
-    public function setProfileFrontend(string $profileFrontend): void
+    public function setEnableFrontendLogging(string $enableFrontendLogging): void
     {
-        $this->profileFrontend = (bool)$profileFrontend;
+        $this->enableFrontendLogging = (bool)$enableFrontendLogging;
     }
 
-    public function isProfileBackend(): bool
+    public function isEnableBackendLogging(): bool
     {
-        return $this->profileBackend;
+        return $this->enableBackendLogging;
     }
 
-    public function setProfileBackend(string $profileBackend): void
+    public function setEnableBackendLogging(string $enableBackendLogging): void
     {
-        $this->profileBackend = (bool)$profileBackend;
+        $this->enableBackendLogging = (bool)$enableBackendLogging;
     }
 
-    public function isAddExplain(): bool
+    public function isActivateExplainQuery(): bool
     {
-        return $this->addExplain;
+        return $this->activateExplainQuery;
     }
 
-    public function setAddExplain(string $addExplain): void
+    public function setActivateExplainQuery(string $activateExplainQuery): void
     {
-        $this->addExplain = (bool)$addExplain;
+        $this->activateExplainQuery = (bool)$activateExplainQuery;
     }
 
-    public function getSlowQueryTime(): float
+    public function getSlowQueryThreshold(): float
     {
-        return $this->slowQueryTime;
+        return $this->slowQueryThreshold;
     }
 
-    public function setSlowQueryTime(string $slowQueryTime): void
+    public function setSlowQueryThreshold(string $slowQueryThreshold): void
     {
-        if (MathUtility::canBeInterpretedAsFloat($slowQueryTime)) {
-            $this->slowQueryTime = (float)$slowQueryTime;
+        if (MathUtility::canBeInterpretedAsFloat($slowQueryThreshold)) {
+            $this->slowQueryThreshold = (float)$slowQueryThreshold;
         } else {
-            $slowQueryTime = str_replace(',', '.', $slowQueryTime);
-            if (MathUtility::canBeInterpretedAsFloat($slowQueryTime)) {
-                $this->slowQueryTime = (float)$slowQueryTime;
+            $slowQueryThreshold = str_replace(',', '.', $slowQueryThreshold);
+            if (MathUtility::canBeInterpretedAsFloat($slowQueryThreshold)) {
+                $this->slowQueryThreshold = (float)$slowQueryThreshold;
             }
         }
     }
@@ -108,11 +108,11 @@ class ExtConf
             return false;
         }
 
-        if ($this->isProfileFrontend() && !$this->isBackendRequest()) {
+        if ($this->isEnableFrontendLogging() && !$this->isBackendRequest()) {
             return true;
         }
 
-        if ($this->isProfileBackend() && $this->isBackendRequest()) {
+        if ($this->isEnableBackendLogging() && $this->isBackendRequest()) {
             return true;
         }
 

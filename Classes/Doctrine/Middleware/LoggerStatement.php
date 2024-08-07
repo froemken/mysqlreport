@@ -15,6 +15,7 @@ use Doctrine\DBAL\Driver\Result as ResultInterface;
 use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\ParameterType;
+use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
 
 /**
@@ -36,6 +37,7 @@ class LoggerStatement implements Statement
         readonly private StatementInterface $wrappedStatement,
         readonly private MySqlReportSqlLogger $logger,
         readonly private string $sql,
+        readonly private \SplQueue $queries,
     ) {}
 
     public function bindValue(int|string $param, mixed $value, ParameterType $type = ParameterType::STRING): void
@@ -50,7 +52,16 @@ class LoggerStatement implements Statement
     {
         $startTime = microtime(true);
         $result = $this->wrappedStatement->execute();
-        $this->logger->stopQuery($this->sql, microtime(true) - $startTime, $this->params, $this->types);
+        $queryInformation = $this->logger->stopQuery(
+            $this->sql,
+            microtime(true) - $startTime,
+            $this->params,
+            $this->types,
+        );
+
+        if ($queryInformation instanceof QueryInformation) {
+            $this->queries->push($queryInformation);
+        }
 
         return $result;
     }

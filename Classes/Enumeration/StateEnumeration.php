@@ -11,12 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Enumeration;
 
-use TYPO3\CMS\Core\Type\Enumeration;
-
 /**
  * Contains the state values from InfoBox ViewHelper for highlighting
  */
-final class StateEnumeration extends Enumeration
+enum StateEnumeration
 {
     public const __default = self::STATE_NOTICE;
     public const STATE_NOTICE = -2;

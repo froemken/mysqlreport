@@ -12,12 +12,16 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
 
 /**
  * Repository to get the MySQL/MariaDB VARIABLES
  */
-class VariablesRepository extends AbstractRepository
+class VariablesRepository
 {
+    public function __construct(readonly private ConnectionHelper $connectionHelper)
+    {}
+
     public function findAll(): Variables
     {
         $result = $this->connectionHelper->executeQuery('SHOW GLOBAL VARIABLES');

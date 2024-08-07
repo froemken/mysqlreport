@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Factory;
 
-use StefanFroemken\Mysqlreport\Domain\Model\Profile;
+use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,7 +21,7 @@ use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
  * A factory to build new Profile objects.
  * It should prevent calling methods to retrieve environment variables multiple times
  */
-class ProfileFactory
+class QueryInformationFactory
 {
     use Typo3RequestTrait;
 
@@ -50,18 +50,18 @@ class ProfileFactory
         $this->crdate = (int)$GLOBALS['EXEC_TIME'];
     }
 
-    public function createNewProfile(): Profile
+    public function createNewQueryInformation(): QueryInformation
     {
-        $profile = new Profile();
-        $profile->setPid($this->pageUid);
-        $profile->setIp($this->ip);
-        $profile->setReferer($this->referer);
-        $profile->setRequest($this->request);
-        $profile->setMode($this->mode);
-        $profile->setUniqueCallIdentifier($this->uniqueCallIdentifier);
-        $profile->setCrdate($this->crdate);
+        $queryInformation = new QueryInformation();
+        $queryInformation->setPid($this->pageUid);
+        $queryInformation->setIp($this->ip);
+        $queryInformation->setReferer($this->referer);
+        $queryInformation->setRequest($this->request);
+        $queryInformation->setMode($this->mode);
+        $queryInformation->setUniqueCallIdentifier($this->uniqueCallIdentifier);
+        $queryInformation->setCrdate($this->crdate);
 
-        return $profile;
+        return $queryInformation;
     }
 
     private function getPageUid(): int

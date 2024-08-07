@@ -12,22 +12,22 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Model;
 
 use PHPUnit\Framework\Attributes\Test;
-use StefanFroemken\Mysqlreport\Domain\Model\Profile;
+use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
  * Test case.
  */
-class ProfileTest extends UnitTestCase
+class QueryInformationTest extends UnitTestCase
 {
     /**
-     * @var Profile
+     * @var QueryInformation
      */
     private $subject;
 
     protected function setUp(): void
     {
-        $this->subject = new Profile();
+        $this->subject = new QueryInformation();
     }
 
     protected function tearDown(): void

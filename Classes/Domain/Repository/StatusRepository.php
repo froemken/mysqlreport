@@ -12,12 +12,16 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
 
 /**
  * Repository to get the MySQL/MariaDB STATUS values
  */
-class StatusRepository extends AbstractRepository
+class StatusRepository
 {
+    public function __construct(readonly private ConnectionHelper $connectionHelper)
+    {}
+
     public function findAll(): StatusValues
     {
         $result = $this->connectionHelper->executeQuery('SHOW GLOBAL STATUS');
