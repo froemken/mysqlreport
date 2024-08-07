@@ -11,23 +11,27 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use Doctrine\DBAL\Exception;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 
 /**
  * Repository to get the MySQL/MariaDB VARIABLES
  */
-class VariablesRepository extends AbstractRepository
+class VariablesRepository
 {
+    use DatabaseConnectionTrait;
+
     public function findAll(): Variables
     {
-        $result = $this->connectionHelper->executeQuery('SHOW GLOBAL VARIABLES');
-        if ($result === null) {
-            return new Variables([]);
-        }
-
         $rows = [];
-        while ($row = $result->fetchAssociative()) {
-            $rows[$row['Variable_name']] = $row['Value'];
+
+        try {
+            $result = $this->getDefaultConnection()->executeQuery('SHOW GLOBAL VARIABLES');
+            while ($row = $result->fetchAssociative()) {
+                $rows[$row['Variable_name']] = $row['Value'];
+            }
+        } catch (Exception $e) {
         }
 
         return new Variables($rows);

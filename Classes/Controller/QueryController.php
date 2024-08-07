@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Domain\Repository\ProfileRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
 use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 
@@ -23,7 +23,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
  */
 class QueryController
 {
-    protected ProfileRepository $profileRepository;
+    protected QueryInformationRepository $queryInformationRepository;
 
     protected ExtConf $extConf;
 
@@ -32,12 +32,12 @@ class QueryController
     private ModuleTemplateHelper $moduleTemplateHelper;
 
     public function __construct(
-        ProfileRepository $profileRepository,
+        QueryInformationRepository $profileRepository,
         ExtConf $extConf,
         ModuleTemplateFactory $moduleTemplateFactory,
         ModuleTemplateHelper $moduleTemplateHelper,
     ) {
-        $this->profileRepository = $profileRepository;
+        $this->queryInformationRepository = $profileRepository;
         $this->extConf = $extConf;
         $this->moduleTemplateFactory = $moduleTemplateFactory;
         $this->moduleTemplateHelper = $moduleTemplateHelper;
@@ -53,7 +53,7 @@ class QueryController
             'MySqlReport Filesort',
         );
 
-        $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFilesort());
+        $moduleTemplate->assign('queryInformationRecords', $this->queryInformationRepository->findQueryInformationRecordsWithFilesort());
 
         return $moduleTemplate->renderResponse('Query/Filesort');
     }
@@ -68,7 +68,7 @@ class QueryController
             'MySqlReport Full Table Scan',
         );
 
-        $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithFullTableScan());
+        $moduleTemplate->assign('queryInformationRecords', $this->queryInformationRepository->findQueryInformationRecordsWithFullTableScan());
 
         return $moduleTemplate->renderResponse('Query/FullTableScan');
     }
@@ -83,8 +83,8 @@ class QueryController
             'MySqlReport Slow Query',
         );
 
-        $moduleTemplate->assign('profileRecords', $this->profileRepository->findProfileRecordsWithSlowQueries());
-        $moduleTemplate->assign('slowQueryTime', $this->extConf->getSlowQueryTime());
+        $moduleTemplate->assign('queryInformationRecords', $this->queryInformationRepository->findQueryInformationRecordsWithSlowQueries());
+        $moduleTemplate->assign('slowQueryTime', $this->extConf->getSlowQueryThreshold());
 
         return $moduleTemplate->renderResponse('Query/SlowQuery');
     }
@@ -101,11 +101,11 @@ class QueryController
 
         $queryParameters = $request->getQueryParams();
 
-        $profileRecord = $this->profileRepository->getProfileRecordByUid((int)($queryParameters['uid'] ?? 0));
-        $profileRecord['profile'] = unserialize($profileRecord['profile'], ['allowed_classes' => false]);
-        $profileRecord['explain'] = unserialize($profileRecord['explain_query'], ['allowed_classes' => false]);
+        $queryInformationRecord = $this->queryInformationRepository->getQueryInformationRecordByUid((int)($queryParameters['uid'] ?? 0));
+        $queryInformationRecord['explain'] = unserialize($queryInformationRecord['explain_query'], ['allowed_classes' => false]);
 
-        $moduleTemplate->assign('profileRecord', $profileRecord);
+        $moduleTemplate->assign('queryInformationRecord', $queryInformationRecord);
+        $moduleTemplate->assign('profiling', $this->queryInformationRepository->getQueryProfiling($queryInformationRecord));
         $moduleTemplate->assign('prevRouteIdentifier', $queryParameters['prevRouteIdentifier'] ?? '');
 
         return $moduleTemplate->renderResponse('Query/ProfileInfo');

@@ -1,6 +1,9 @@
 imports:
 - { resource: Backend/DashboardWidgets.yaml }
 
+parameters:
+  default_connection_name: 'Default'
+
 services:
   _defaults:
     autowire: true
@@ -10,7 +13,37 @@ services:
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
     exclude:
-    - '../Classes/Domain/Model/*'
+      - '../Classes/Domain/Model/*'
+
+  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeMiddleware and LoggerWithQueryTimeConnection
+  StefanFroemken\Mysqlreport\Configuration\ExtConf:
+    public: true
+
+  # Will be called via GeneralUtility::makeInstance in ConnectionPool
+  StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeMiddleware:
+    public: true
+
+  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeMiddleware
+  # Disable autowire, because $wrappedDriver as constructor argument will be transferred by LoggerWithQueryTimeMiddleware manually
+  StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeDriver:
+    autowire: false
+    public: false
+
+  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeDriver
+  # Disable autowire, because $connection as constructor argument will be transferred by LoggerWithQueryTimeDriver manually
+  # Shared false, as that object contains data. Stateful.
+  StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeConnection:
+    autowire: false
+    public: false
+    shared: false
+
+  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeConnection
+  # Disable autowire, because $wrappedStatement and $sql as constructor argument will be transferred by LoggerWithQueryTimeConnection manually
+  # Shared false, as that object contains data. Stateful.
+  StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerStatement:
+    autowire: false
+    public: true
+    shared: false
 
   StefanFroemken\Mysqlreport\Controller\ProfileController:
     public: true
@@ -18,11 +51,13 @@ services:
   StefanFroemken\Mysqlreport\Controller\QueryController:
     public: true
 
-  StefanFroemken\Mysqlreport\Domain\Model\ExplainInformation:
-    shared: false
+  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeConnection
+  StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository:
+    public: true
 
-  StefanFroemken\Mysqlreport\Domain\Model\Profile:
-    shared: false
+  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeConnection
+  StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper:
+    public: true
 
   StefanFroemken\Mysqlreport\Report\StatusReport:
     tags:
@@ -65,10 +100,10 @@ services:
     tags:
       - name: event.listener
         event: TYPO3\CMS\Backend\Backend\Event\ModifyClearCacheActionsEvent
-  StefanFroemken\Mysqlreport\EventListener\RoundDurationOfProfileRecordsEventListener:
+  StefanFroemken\Mysqlreport\EventListener\RoundDurationOfQueryInformationRecordsEventListener:
     tags:
       - name: event.listener
-        event: StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent
+        event: StefanFroemken\Mysqlreport\Event\ModifyQueryInformationRecordsEvent
 
   # Register InfoBoxes for pages (PageIdentifier)
   StefanFroemken\Mysqlreport\InfoBox\Information\ConnectionInfoBox:

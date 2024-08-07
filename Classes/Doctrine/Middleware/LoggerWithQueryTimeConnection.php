@@ -16,33 +16,36 @@ use Doctrine\DBAL\Driver\Exception;
 use Doctrine\DBAL\Driver\Middleware\AbstractConnectionMiddleware;
 use Doctrine\DBAL\Driver\Result;
 use Doctrine\DBAL\Driver\Statement;
-use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
+use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
+use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
 use StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper;
-use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
 use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Here in the connection, we can wrap our logger around the queries and commands.
  */
 class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
 {
+    /**
+     * @var \SplQueue<QueryInformation>
+     */
+    private \SplQueue $queries;
+
     private MySqlReportSqlLogger $logger;
+
+    private ExplainQueryHelper $explainQueryHelper;
+
+    private QueryInformationRepository $queryInformationRepository;
 
     public function __construct(Connection $connection)
     {
         parent::__construct($connection);
 
-        // As this logger is also valid for InstallTool where we have a reduced set of DI classes, we instantiate the
-        // MySQL report logger on our own.
-        $this->logger = new MySqlReportSqlLogger(
-            new ProfileFactory(),
-            new ExtConf(new ExtensionConfiguration()),
-            new QueryParamsHelper(new ConnectionPool()),
-            new ExplainQueryHelper(),
-        );
+        $this->queries = new \SplQueue();
+        $this->logger = GeneralUtility::makeInstance(MySqlReportSqlLogger::class);
+        $this->explainQueryHelper = GeneralUtility::makeInstance(ExplainQueryHelper::class);
+        $this->queryInformationRepository = GeneralUtility::makeInstance(QueryInformationRepository::class);
     }
 
     /**
@@ -52,30 +55,61 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
      */
     public function prepare(string $sql): Statement
     {
-        return new LoggerStatement(parent::prepare($sql), $this->logger, $sql);
+        return GeneralUtility::makeInstance(
+            LoggerStatement::class,
+            parent::prepare($sql),
+            $this->logger,
+            $sql,
+            $this->queries,
+        );
     }
 
     /**
      * This method will be called during SELECT queries
+     *
+     * @throws Exception
      */
     public function query(string $sql): Result
     {
-        $this->logger->startQuery();
+        $startTime = microtime(true);
         $queryResult = parent::query($sql);
-        $this->logger->stopQuery($sql);
+        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
+
+        if ($queryInformation instanceof QueryInformation) {
+            $this->queries->push($queryInformation);
+        }
 
         return $queryResult;
     }
 
     /**
      * This method will be called during INSERT/UPDATE/DELETE queries
+     *
+     * @throws Exception
      */
     public function exec(string $sql): int
     {
-        $this->logger->startQuery();
+        $startTime = microtime(true);
         $affectedRows = parent::exec($sql);
-        $this->logger->stopQuery($sql);
+        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
+
+        if ($queryInformation instanceof QueryInformation) {
+            $this->queries->push($queryInformation);
+        }
 
         return (int)$affectedRows;
+    }
+
+    public function __destruct()
+    {
+        $queriesToStore = [];
+        foreach ($this->queries as $index => $queryInformation) {
+            $queryInformation->setQueryId($index);
+            $this->explainQueryHelper->updateQueryInformation($queryInformation);
+
+            $queriesToStore[] = $queryInformation->asArray();
+        }
+
+        $this->queryInformationRepository->bulkInsert($queriesToStore);
     }
 }

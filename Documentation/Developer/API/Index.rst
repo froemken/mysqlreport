@@ -104,7 +104,6 @@ Highlight Infobox
 The `AbstractInfoBox` class comes with a `setState` method which allows values
 from `StateEnumeration`.
 
-*   empty value: default color: gray
 *   -2 or StateEnumeration::STATE_NOTICE
 *   -1 or StateEnumeration::STATE_INFO
 *   0 or StateEnumeration::STATE_OK

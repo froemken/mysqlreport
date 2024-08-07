@@ -11,24 +11,27 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Configuration;
 
+use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
-use TYPO3\CMS\Core\SingletonInterface;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
- * This class will streamline the values from extension manager configuration
+ * This class will streamline the values from extension settings
  */
-class ExtConf implements SingletonInterface
+class ExtConf
 {
-    protected bool $profileFrontend = false;
+    use Typo3RequestTrait;
 
-    protected bool $profileBackend = false;
+    private bool $enableFrontendLogging = false;
 
-    protected bool $addExplain = false;
+    private bool $enableBackendLogging = false;
 
-    protected float $slowQueryTime = 10.0;
+    private bool $activateExplainQuery = false;
+
+    private float $slowQueryThreshold = 10.0;
 
     public function __construct(ExtensionConfiguration $extensionConfiguration)
     {
@@ -36,10 +39,6 @@ class ExtConf implements SingletonInterface
             $extConf = (array)$extensionConfiguration->get('mysqlreport');
         } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
             // Use default values
-            return;
-        }
-
-        if (!is_array($extConf)) {
             return;
         }
 
@@ -56,50 +55,67 @@ class ExtConf implements SingletonInterface
         }
     }
 
-    public function isProfileFrontend(): bool
+    public function isEnableFrontendLogging(): bool
     {
-        return $this->profileFrontend;
+        return $this->enableFrontendLogging;
     }
 
-    public function setProfileFrontend(string $profileFrontend): void
+    public function setEnableFrontendLogging(string $enableFrontendLogging): void
     {
-        $this->profileFrontend = (bool)$profileFrontend;
+        $this->enableFrontendLogging = (bool)$enableFrontendLogging;
     }
 
-    public function isProfileBackend(): bool
+    public function isEnableBackendLogging(): bool
     {
-        return $this->profileBackend;
+        return $this->enableBackendLogging;
     }
 
-    public function setProfileBackend(string $profileBackend): void
+    public function setEnableBackendLogging(string $enableBackendLogging): void
     {
-        $this->profileBackend = (bool)$profileBackend;
+        $this->enableBackendLogging = (bool)$enableBackendLogging;
     }
 
-    public function isAddExplain(): bool
+    public function isActivateExplainQuery(): bool
     {
-        return $this->addExplain;
+        return $this->activateExplainQuery;
     }
 
-    public function setAddExplain(string $addExplain): void
+    public function setActivateExplainQuery(string $activateExplainQuery): void
     {
-        $this->addExplain = (bool)$addExplain;
+        $this->activateExplainQuery = (bool)$activateExplainQuery;
     }
 
-    public function getSlowQueryTime(): float
+    public function getSlowQueryThreshold(): float
     {
-        return $this->slowQueryTime;
+        return $this->slowQueryThreshold;
     }
 
-    public function setSlowQueryTime(string $slowQueryTime): void
+    public function setSlowQueryThreshold(string $slowQueryThreshold): void
     {
-        if (MathUtility::canBeInterpretedAsFloat($slowQueryTime)) {
-            $this->slowQueryTime = (float)$slowQueryTime;
+        if (MathUtility::canBeInterpretedAsFloat($slowQueryThreshold)) {
+            $this->slowQueryThreshold = (float)$slowQueryThreshold;
         } else {
-            $slowQueryTime = str_replace(',', '.', $slowQueryTime);
-            if (MathUtility::canBeInterpretedAsFloat($slowQueryTime)) {
-                $this->slowQueryTime = (float)$slowQueryTime;
+            $slowQueryThreshold = str_replace(',', '.', $slowQueryThreshold);
+            if (MathUtility::canBeInterpretedAsFloat($slowQueryThreshold)) {
+                $this->slowQueryThreshold = (float)$slowQueryThreshold;
             }
         }
+    }
+
+    public function isQueryLoggingActivated(): bool
+    {
+        if (Environment::isCli()) {
+            return false;
+        }
+
+        if ($this->isEnableFrontendLogging() && !$this->isBackendRequest()) {
+            return true;
+        }
+
+        if ($this->isEnableBackendLogging() && $this->isBackendRequest()) {
+            return true;
+        }
+
+        return false;
     }
 }

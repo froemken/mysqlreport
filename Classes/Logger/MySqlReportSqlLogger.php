@@ -11,18 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Logger;
 
-use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\ParameterType;
-use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Domain\Factory\ProfileFactory;
-use StefanFroemken\Mysqlreport\Domain\Model\Profile;
-use StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper;
+use StefanFroemken\Mysqlreport\Domain\Factory\QueryInformationFactory;
+use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
-use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
-use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This logger is wrapped around the query and command execution of doctrine to collect duration and
@@ -30,59 +22,23 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class MySqlReportSqlLogger
 {
-    use Typo3RequestTrait;
-
-    /**
-     * Collected profiles
-     *
-     * @var \SplQueue<Profile>|Profile[]
-     */
-    private \SplQueue $profiles;
-
-    /**
-     * This value will be set for each query to current micro-time.
-     * Needed to calculate the query duration.
-     * Must be a class property to transfer micro-time from startQuery to stopQuery.
-     *
-     * @var float
-     */
-    private float $queryStartTime = 0.0;
-
-    /**
-     * It looks like a counter, but will be used to order the queries into correct execution position
-     * while listing them in BE module.
-     */
-    private int $queryIterator = 0;
-
     /**
      * Every query which contains one of these parts will be skipped.
      *
      * @var string[]
      */
     private array $skipQueries = [
+        'SELECT DATABASE()',
         'show global status',
         'show global variables',
-        'tx_mysqlreport_domain_model_profile',
+        'tx_mysqlreport_query_information',
         'information_schema',
     ];
 
     public function __construct(
-        private readonly ProfileFactory $profileFactory,
-        private readonly ExtConf $extConf,
+        private readonly QueryInformationFactory $queryInformationFactory,
         private readonly QueryParamsHelper $queryParamsHelper,
-        private readonly ExplainQueryHelper $explainQueryHelper,
-    ) {
-        $this->profiles = new \SplQueue();
-    }
-
-    /**
-     * This method will be called just before the query will be executed by doctrine.
-     * Prepare query profiling.
-     */
-    public function startQuery(): void
-    {
-        $this->queryStartTime = microtime(true);
-    }
+    ) {}
 
     /**
      * This method will be called just after the query has been executed by doctrine.
@@ -91,25 +47,17 @@ class MySqlReportSqlLogger
      * @param array<int, string> $params
      * @param array<int, ParameterType> $types
      */
-    public function stopQuery(string $query, array $params = [], array $types = []): void
+    public function stopQuery(string $query, float $duration, array $params = [], array $types = []): ?QueryInformation
     {
-        $duration = microtime(true) - $this->queryStartTime;
-
         if (!$this->isValidQuery($query)) {
-            return;
+            return null;
         }
 
-        $profile = $this->profileFactory->createNewProfile();
-        $profile->setDuration($duration);
-        $profile->setQuery($this->queryParamsHelper->getQueryWithReplacedParams(
-            $query,
-            $params,
-            $types,
-        ));
+        $queryInformation = $this->queryInformationFactory->createNewQueryInformation();
+        $queryInformation->setDuration($duration);
+        $queryInformation->setQuery($this->queryParamsHelper->getQueryWithReplacedParams($query, $params, $types));
 
-        $this->profiles->add($this->queryIterator, $profile);
-
-        $this->queryIterator++;
+        return $queryInformation;
     }
 
     private function isValidQuery(string $query): bool
@@ -125,115 +73,5 @@ class MySqlReportSqlLogger
         }
 
         return true;
-    }
-
-    public function __destruct()
-    {
-        if (!$this->isFrontendOrBackendProfilingActivated()) {
-            return;
-        }
-
-        $defaultConnection = $this->getTypo3DefaultConnection();
-        $executeExplainQuery = $this->extConf->isAddExplain() && $defaultConnection instanceof Connection;
-
-        $queriesToStore = [];
-        foreach ($this->profiles as $key => $profile) {
-            if ($executeExplainQuery && $profile->getQueryType() === 'SELECT') {
-                try {
-                    $queryResult = $defaultConnection->executeQuery('EXPLAIN ' . $profile->getQuery());
-                    while ($explainRow = $queryResult->fetchAssociative()) {
-                        $this->explainQueryHelper->updateProfile($profile, $explainRow);
-                    }
-                } catch (Exception $e) {
-                    continue;
-                }
-            }
-
-            $queryToStore = [
-                'pid' => $profile->getPid(),
-                'ip' => $profile->getIp(),
-                'referer' => $profile->getReferer(),
-                'request' => $profile->getRequest(),
-                'query_type' => $profile->getQueryType(),
-                'duration' => $profile->getDuration(),
-                'query' => $profile->getQuery(),
-                'explain_query' => serialize($profile->getExplainInformation()->getExplainResults()),
-                'using_index' => $profile->getExplainInformation()->isQueryUsingIndex() ? 1 : 0,
-                'using_fulltable' => $profile->getExplainInformation()->isQueryUsingFTS() ? 1 : 0,
-                'mode' => $profile->getMode(),
-                'unique_call_identifier' => $profile->getUniqueCallIdentifier(),
-                'crdate' => $profile->getCrdate(),
-                'query_id' => $key,
-            ];
-
-            $queriesToStore[] = $queryToStore;
-        }
-
-        foreach (array_chunk($queriesToStore, 50) as $chunkOfQueriesToStore) {
-            $this->bulkInsert(
-                $chunkOfQueriesToStore,
-                [
-                    'pid',
-                    'ip',
-                    'referer',
-                    'request',
-                    'query_type',
-                    'duration',
-                    'query',
-                    'explain_query',
-                    'using_index',
-                    'using_fulltable',
-                    'mode',
-                    'unique_call_identifier',
-                    'crdate',
-                    'query_id',
-                ],
-            );
-        }
-    }
-
-    private function getTypo3DefaultConnection(): ?Connection
-    {
-        try {
-            return GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
-        } catch (Exception $e) {
-        }
-
-        return null;
-    }
-
-    private function isFrontendOrBackendProfilingActivated(): bool
-    {
-        if (Environment::isCli()) {
-            return false;
-        }
-
-        if ($this->extConf->isProfileFrontend() && !$this->isBackendRequest()) {
-            return true;
-        }
-
-        if ($this->extConf->isProfileBackend() && $this->isBackendRequest()) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Bulk insert. This method will also be caught by our logger, but as it was called
-     * at last position of __destruct, it will not be stored in profile table.
-     *
-     * @param array<int, array<mixed>> $data
-     * @param array<int, string> $columns
-     */
-    private function bulkInsert(array $data, array $columns = []): void
-    {
-        try {
-            GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME)
-                ->bulkInsert('tx_mysqlreport_domain_model_profile', $data, $columns);
-        } catch (Exception $e) {
-        }
     }
 }

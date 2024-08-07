@@ -11,23 +11,28 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
+use Doctrine\DBAL\Exception;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 
 /**
  * Repository to get the MySQL/MariaDB STATUS values
  */
-class StatusRepository extends AbstractRepository
+class StatusRepository
 {
+    use DatabaseConnectionTrait;
+
     public function findAll(): StatusValues
     {
-        $result = $this->connectionHelper->executeQuery('SHOW GLOBAL STATUS');
-        if ($result === null) {
-            return new StatusValues([]);
-        }
-
         $rows = [];
-        while ($row = $result->fetchAssociative()) {
-            $rows[$row['Variable_name']] = $row['Value'];
+
+        try {
+            $result = $this->getDefaultConnection()->executeQuery('SHOW GLOBAL STATUS');
+            while ($row = $result->fetchAssociative()) {
+                $rows[$row['Variable_name']] = $row['Value'];
+            }
+        } catch (Exception $e) {
+            return new StatusValues([]);
         }
 
         return new StatusValues($rows);

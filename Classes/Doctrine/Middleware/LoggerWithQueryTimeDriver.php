@@ -13,6 +13,7 @@ namespace StefanFroemken\Mysqlreport\Doctrine\Middleware;
 
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Driver\Middleware\AbstractDriverMiddleware;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * We need our own driver to implement our own connection where we can start using
@@ -22,7 +23,7 @@ final class LoggerWithQueryTimeDriver extends AbstractDriverMiddleware
 {
     public function connect(#[\SensitiveParameter] array $params): Connection
     {
-        // DI not possible, because of individual constructor arguments
-        return new LoggerWithQueryTimeConnection(parent::connect($params));
+        // As parent::connect is transferred as constructor argument, DI can not be used in that class
+        return GeneralUtility::makeInstance(LoggerWithQueryTimeConnection::class, parent::connect($params));
     }
 }

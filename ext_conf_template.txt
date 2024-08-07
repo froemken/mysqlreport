@@ -1,8 +1,8 @@
-# cat=profiling/enable; type=boolean; label=Enable profiling for frontend
-profileFrontend = 0
-# cat=profiling/enable; type=boolean; label=Enable profiling for backend
-profileBackend = 0
-# cat=profiling/enable; type=boolean; label=Add EXPLAIN for each query. Be careful, this reduces performance a lot.
-addExplain = 0
-# cat=profiling/enable; type=string; label=Define a duration since when a query should be logged as slow query. You have to activate one of these profile settings from above.
-slowQueryTime = 10.0
+# cat=profiling/enable; type=boolean; label=Log frontend queries: Enables logging of nearly all queries of each frontend request incl. AJAX requests
+enableFrontendLogging = 0
+# cat=profiling/enable; type=boolean; label=Log backend queries: Enables logging of nearly all queries of each backend request incl. AJAX requests
+enableBackendLogging = 0
+# cat=profiling/enable; type=boolean; label=Activate explain queries: For each collected query we will execute an additional SQL EXPLAIN query to retrieve additional information on how many records were taken into account and which SQL index was used.
+activateExplainQuery = 0
+# cat=profiling/enable; type=string; label=Slow query time threshold: While logging queries we also log the query execution time. If execution time reaches the defined threshold the query will be listet in slow query time panel in backend module of mysqlreport. Be aware that this technique is not the real slow query log of the database!
+slowQueryThreshold = 10.0

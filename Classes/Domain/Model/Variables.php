@@ -34,9 +34,8 @@ class Variables implements \ArrayAccess
 
     /**
      * @param int|string|null $offset
-     * @param mixed $value
      */
-    public function offsetSet($offset, $value): void
+    public function offsetSet($offset, mixed $value): void
     {
         if ($offset === null) {
             $this->storage[] = $value;
@@ -55,12 +54,7 @@ class Variables implements \ArrayAccess
         unset($this->storage[$offset]);
     }
 
-    /**
-     * @param mixed $offset
-     * @return mixed|null
-     */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->storage[$offset] ?? null;
     }

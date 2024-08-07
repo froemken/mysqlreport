@@ -99,7 +99,7 @@ Clear Profiles
 ==============
 
 After activating profiling in extension settings each query for each activated
-request will be stored in table `tx_mysqlreport_domain_model_profile`. As big
+request will be stored in table `tx_mysqlreport_query_information`. As big
 as your TYPO3 could be, this table can grow very fast and can slow down your
 TYPO3 system a lot. Please keep an eye on that table.
 `mysqlreport` comes with a new entry in Clear Cache menu of

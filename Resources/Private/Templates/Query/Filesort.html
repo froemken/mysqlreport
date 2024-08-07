@@ -8,7 +8,7 @@
 <f:section name="Content">
     <h1>Queries using filesort</h1>
 
-    <f:if condition="{profileRecords}">
+    <f:if condition="{queryInformationRecords}">
         <f:then>
             <f:render section="renderProfileTable" arguments="{_all}"/>
         </f:then>
@@ -30,14 +30,14 @@
         </tr>
         </thead>
         <tbody>
-        <f:for each="{profileRecords}" as="profileRecord">
+        <f:for each="{queryInformationRecords}" as="queryInformationRecord">
             <tr>
-                <td>{profileRecord.query}...</td>
+                <td>{queryInformationRecord.query}...</td>
                 <td>
-                    {profileRecord.duration}
+                    {queryInformationRecord.duration}
                 </td>
                 <td>
-                    <a href="{be:moduleLink(route: 'mysqlreport_query_profileinfo', arguments: {prevRouteIdentifier: 'mysqlreport_query_filesort', uid: profileRecord.uid})}"
+                    <a href="{be:moduleLink(route: 'mysqlreport_query_profileinfo', arguments: {prevRouteIdentifier: 'mysqlreport_query_filesort', uid: queryInformationRecord.uid})}"
                        class="btn btn-default">
                         <core:icon identifier="actions-search"/>
                     </a>
