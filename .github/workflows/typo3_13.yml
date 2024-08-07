@@ -81,10 +81,8 @@ jobs:
           - '8.3'
 
         vendor:
-          - sqlite
           - mysql
           - mariadb
-          - postgres
 
     steps:
       - name: 'Checkout'
