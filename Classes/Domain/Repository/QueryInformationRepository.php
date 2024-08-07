@@ -15,7 +15,7 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Event\ModifyProfileRecordsEvent;
-use StefanFroemken\Mysqlreport\Helper\ConnectionHelper;
+use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
@@ -26,31 +26,36 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class QueryInformationRepository
 {
+    use DatabaseConnectionTrait;
+
+    private const TABLE = 'tx_mysqlreport_query_information';
+
     public function __construct(
-        private ConnectionHelper $connectionHelper,
         private EventDispatcher $eventDispatcher,
     ) {}
 
     /**
      * @return array<int, mixed>
-     * @throws \Doctrine\DBAL\Exception
      */
     public function findProfileRecordsForCall(): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
+        $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->select('unique_call_identifier', 'crdate', 'mode', 'request')
             ->addSelectLiteral('SUM(duration) as duration, COUNT(*) as amount')
-            ->from('tx_mysqlreport_query_information')
+            ->from(self::TABLE)
             ->groupBy('unique_call_identifier', 'crdate', 'mode', 'request')
             ->orderBy('crdate', 'DESC')
             ->setMaxResults(100);
 
-        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $queryBuilder->executeQuery();
 
         $queryInformationRecords = [];
-        while ($queryInformationRecord = $result->fetchAssociative()) {
-            $queryInformationRecords[] = $queryInformationRecord;
+        try {
+            while ($queryInformationRecord = $result->fetchAssociative()) {
+                $queryInformationRecords[] = $queryInformationRecord;
+            }
+        } catch (Exception $e) {
         }
 
         /** @var ModifyProfileRecordsEvent $event */
@@ -65,15 +70,14 @@ readonly class QueryInformationRepository
      * To differ between the requests I have implemented the unique identifier
      *
      * @return array<int, mixed>
-     * @throws Exception
      */
     public function getProfileRecordsByUniqueIdentifier(string $uniqueIdentifier): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
+        $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->select('query_type', 'unique_call_identifier', 'request')
             ->addSelectLiteral('SUM(duration) as duration, COUNT(*) as amount')
-            ->from('tx_mysqlreport_query_information')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
@@ -83,11 +87,14 @@ readonly class QueryInformationRepository
             ->groupBy('query_type', 'unique_call_identifier', 'request')
             ->orderBy('duration', 'DESC');
 
-        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $queryBuilder->executeQuery();
 
         $queryInformationRecords = [];
-        while ($queryInformationRecord = $result->fetchAssociative()) {
-            $queryInformationRecords[] = $queryInformationRecord;
+        try {
+            while ($queryInformationRecord = $result->fetchAssociative()) {
+                $queryInformationRecords[] = $queryInformationRecord;
+            }
+        } catch (Exception $e) {
         }
 
         /** @var ModifyProfileRecordsEvent $event */
@@ -103,14 +110,13 @@ readonly class QueryInformationRepository
      *
      * @param array<int, string> $columns
      * @return array<int, mixed>
-     * @throws Exception
      */
     public function getProfileRecordsForDownloadByUniqueIdentifier(string $uniqueIdentifier, array $columns): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
+        $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->select(...$columns)
-            ->from('tx_mysqlreport_query_information')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
@@ -118,11 +124,14 @@ readonly class QueryInformationRepository
                 ),
             );
 
-        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $queryBuilder->executeQuery();
 
         $queryInformationRecords = [];
-        while ($queryInformationRecord = $result->fetchAssociative()) {
-            $queryInformationRecords[] = $queryInformationRecord;
+        try {
+            while ($queryInformationRecord = $result->fetchAssociative()) {
+                $queryInformationRecords[] = $queryInformationRecord;
+            }
+        } catch (Exception $e) {
         }
 
         /** @var ModifyProfileRecordsEvent $event */
@@ -137,15 +146,14 @@ readonly class QueryInformationRepository
      * @param string $uniqueIdentifier
      * @param string $queryType
      * @return array<int, string>
-     * @throws Exception
      */
     public function getProfileRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
+        $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->select('uid', 'query_id', 'using_index', 'duration')
             ->addSelectLiteral('LEFT(query, 120) as query')
-            ->from('tx_mysqlreport_query_information')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->eq(
                     'unique_call_identifier',
@@ -158,11 +166,14 @@ readonly class QueryInformationRepository
             )
             ->orderBy('duration', 'DESC');
 
-        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $queryBuilder->executeQuery();
 
         $queryInformationRecords = [];
-        while ($queryInformationRecord = $result->fetchAssociative()) {
-            $queryInformationRecords[] = $queryInformationRecord;
+        try {
+            while ($queryInformationRecord = $result->fetchAssociative()) {
+                $queryInformationRecords[] = $queryInformationRecord;
+            }
+        } catch (Exception $e) {
         }
 
         /** @var ModifyProfileRecordsEvent $event */
@@ -178,10 +189,10 @@ readonly class QueryInformationRepository
      */
     public function getProfileRecordByUid(int $uid): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
+        $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->select('uid', 'query', 'query_type', 'explain_query', 'using_index', 'unique_call_identifier', 'duration')
-            ->from('tx_mysqlreport_query_information')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->eq(
                     'uid',
@@ -190,7 +201,7 @@ readonly class QueryInformationRepository
             );
 
         try {
-            $queryInformationRecord = $this->connectionHelper->executeQueryBuilder($queryBuilder)->fetchAssociative() ?: [];
+            $queryInformationRecord = $queryBuilder->executeQuery()->fetchAssociative() ?: [];
         } catch (Exception $e) {
             return [];
         }
@@ -222,8 +233,9 @@ readonly class QueryInformationRepository
 
         $profilingRows = [];
         try {
-            $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+            $connection = $this->getConnectionPool()->getConnectionByName(
+                ConnectionPool::DEFAULT_CONNECTION_NAME
+            );
 
             $queryResult = $connection->transactional(function (\Doctrine\DBAL\Connection $transactionalConnection) use ($sql): ?Result {
                 try {
@@ -250,15 +262,14 @@ readonly class QueryInformationRepository
 
     /**
      * @return array<int, mixed>
-     * @throws Exception
      */
     public function findProfileRecordsWithFilesort(): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
+        $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
-            ->from('tx_mysqlreport_query_information')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->like(
                     'explain_query',
@@ -268,44 +279,14 @@ readonly class QueryInformationRepository
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);
 
-        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $queryBuilder->executeQuery();
 
         $queryInformationRecords = [];
-        while ($queryInformationRecord = $result->fetchAssociative()) {
-            $queryInformationRecords[] = $queryInformationRecord;
-        }
-
-        /** @var ModifyProfileRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords));
-
-        return $event->getProfileRecords();
-    }
-
-    /**
-     * @return array<int, mixed>
-     * @throws Exception
-     */
-    public function findProfileRecordsWithFullTableScan(): array
-    {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
-        $queryBuilder
-            ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
-            ->addSelectLiteral('LEFT(query, 255) as query')
-            ->from('tx_mysqlreport_query_information')
-            ->where(
-                $queryBuilder->expr()->eq(
-                    'using_fulltable',
-                    $queryBuilder->createNamedParameter(1, Connection::PARAM_INT),
-                ),
-            )
-            ->orderBy('duration', 'DESC')
-            ->setMaxResults(100);
-
-        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
-
-        $queryInformationRecords = [];
-        while ($queryInformationRecord = $result->fetchAssociative()) {
-            $queryInformationRecords[] = $queryInformationRecord;
+        try {
+            while ($queryInformationRecord = $result->fetchAssociative()) {
+                $queryInformationRecords[] = $queryInformationRecord;
+            }
+        } catch (Exception $e) {
         }
 
         /** @var ModifyProfileRecordsEvent $event */
@@ -318,15 +299,51 @@ readonly class QueryInformationRepository
 
     /**
      * @return array<int, mixed>
-     * @throws Exception
      */
-    public function findProfileRecordsWithSlowQueries(): array
+    public function findProfileRecordsWithFullTableScan(): array
     {
-        $queryBuilder = $this->connectionHelper->getQueryBuilderForTable('tx_mysqlreport_query_information');
+        $queryBuilder = $this->getQueryBuilder();
         $queryBuilder
             ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
             ->addSelectLiteral('LEFT(query, 255) as query')
-            ->from('tx_mysqlreport_query_information')
+            ->from(self::TABLE)
+            ->where(
+                $queryBuilder->expr()->eq(
+                    'using_fulltable',
+                    $queryBuilder->createNamedParameter(1, Connection::PARAM_INT),
+                ),
+            )
+            ->orderBy('duration', 'DESC')
+            ->setMaxResults(100);
+
+        $result = $queryBuilder->executeQuery();
+
+        $queryInformationRecords = [];
+        try {
+            while ($queryInformationRecord = $result->fetchAssociative()) {
+                $queryInformationRecords[] = $queryInformationRecord;
+            }
+        } catch (Exception $e) {
+        }
+
+        /** @var ModifyProfileRecordsEvent $event */
+        $event = $this->eventDispatcher->dispatch(
+            new ModifyProfileRecordsEvent(__METHOD__, $queryInformationRecords)
+        );
+
+        return $event->getProfileRecords();
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public function findProfileRecordsWithSlowQueries(): array
+    {
+        $queryBuilder = $this->getQueryBuilder();
+        $queryBuilder
+            ->select('uid', 'explain_query', 'duration', 'unique_call_identifier')
+            ->addSelectLiteral('LEFT(query, 255) as query')
+            ->from(self::TABLE)
             ->where(
                 $queryBuilder->expr()->gte(
                     'duration',
@@ -339,11 +356,14 @@ readonly class QueryInformationRepository
             ->orderBy('duration', 'DESC')
             ->setMaxResults(100);
 
-        $result = $this->connectionHelper->executeQueryBuilder($queryBuilder);
+        $result = $queryBuilder->executeQuery();
 
         $queryInformationRecords = [];
-        while ($queryInformationRecord = $result->fetchAssociative()) {
-            $queryInformationRecords[] = $queryInformationRecord;
+        try {
+            while ($queryInformationRecord = $result->fetchAssociative()) {
+                $queryInformationRecords[] = $queryInformationRecord;
+            }
+        } catch (Exception $e) {
         }
 
         /** @var ModifyProfileRecordsEvent $event */
@@ -362,7 +382,7 @@ readonly class QueryInformationRepository
 
             foreach (array_chunk($queries, 50) as $chunkOfQueriesToStore) {
                 $connection->bulkInsert(
-                    'tx_mysqlreport_query_information',
+                    self::TABLE,
                     $chunkOfQueriesToStore,
                     [
                         'pid',
@@ -385,4 +405,5 @@ readonly class QueryInformationRepository
         } catch (Exception $e) {
         }
     }
+
 }

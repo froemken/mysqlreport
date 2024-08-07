@@ -14,12 +14,11 @@ namespace StefanFroemken\Mysqlreport\Enumeration;
 /**
  * Contains the state values from InfoBox ViewHelper for highlighting
  */
-enum StateEnumeration
+enum StateEnumeration: int
 {
-    public const __default = self::STATE_NOTICE;
-    public const STATE_NOTICE = -2;
-    public const STATE_INFO = -1;
-    public const STATE_OK = 0;
-    public const STATE_WARNING = 1;
-    public const STATE_ERROR = 2;
+    case STATE_NOTICE = -2;
+    case STATE_INFO = -1;
+    case STATE_OK = 0;
+    case STATE_WARNING = 1;
+    case STATE_ERROR = 2;
 }

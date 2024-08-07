@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox;
 
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Core\Type\Exception\InvalidEnumerationValueException;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Fluid\View\StandaloneView;
 
@@ -54,7 +53,7 @@ abstract class AbstractInfoBox implements \SplObserver
     public function __construct()
     {
         $this->unorderedList = new \SplQueue();
-        $this->state = new StateEnumeration();
+        $this->state = StateEnumeration::STATE_NOTICE;
 
         // Do not load StandaloneView with injectStandaloneView as it is not configured as "shared: false" anymore
         $this->view = GeneralUtility::makeInstance(StandaloneView::class);
@@ -69,7 +68,7 @@ abstract class AbstractInfoBox implements \SplObserver
             $this->view->assign('unorderedList', $this->unorderedList);
 
             // First call __string() of Enumeration, then cast to INT
-            $this->view->assign('state', (int)(string)$this->state);
+            $this->view->assign('state', $this->state->value);
 
             // $shouldBeRendered can be modified within renderBody() by a developer
             if ($this->shouldBeRendered) {
@@ -91,14 +90,10 @@ abstract class AbstractInfoBox implements \SplObserver
         ]);
     }
 
-    protected function setState(int $state): void
+    protected function setState(StateEnumeration $state): void
     {
-        if (!$this->state->equals($state)) {
-            try {
-                $this->state = new StateEnumeration($state);
-            } catch (InvalidEnumerationValueException $invalidEnumerationValueException) {
-                // Do nothing, keep current color
-            }
+        if ($this->state->value !== $state->value) {
+            $this->state = $state;
         }
     }
 
