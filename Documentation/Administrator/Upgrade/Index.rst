@@ -10,13 +10,25 @@ Upgrades
 Upgrade to version 4.0.0
 ========================
 
-Please visit and execute "DB compare" to add new column "using_index" and
-remove old column "not_using_index".
+Please visit Installtool and execute "DB compare":
 
-Please visit and execute "DB compare" to remove old column "profile".
+*   Add new column `using_index`
+*   Remove old column `not_using_index`
+*   Remove old column `profile`
+*   Add table `tx_mysqlreport_query_information`
+*   Remove table `tx_mysqlreport_domain_model_profile`
 
 Make sure TYPO3 "adminpanel" is not installed. This system extension
 interferes with our own SQL logger.
+
+All `profile` or `profileRecord` variables are changed
+to `queryInformationRecord`.
+
+The event `ModifyProfileRecordsEvent` was renamed
+to `ModifyQueryInformationRecordsEvent`.
+
+All extension settings have new names, please visit settings and adopt
+settings to your needs again. There is no UpgradeWizard.
 
 Upgrade to version 2.0.0
 ========================

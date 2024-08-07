@@ -20,6 +20,7 @@ Version 4.0.0
 *   [TASK] Completely rework registering of logger
 *   [TASK] Remove TYPO3 11 and TYPO3 12 compatibility
 *   [TASK] Remove ConnectionHelper class
+*   [TASK] Rename tx_mysqlreport_domain_model_profile to tx_mysqlreport_query_information
 
 Version 3.0.4
 =============

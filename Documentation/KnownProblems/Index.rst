@@ -28,7 +28,8 @@ systems. If there is still a problem, please create an issue at
 Support of further Database Systems
 ===================================
 
-Currently, `mysqlreport` just supports MySQL and MariaDB only.
+Currently, `mysqlreport` just supports MySQL and MariaDB with driver
+`mysqli` and `pdo_mysql` only.
 
 Support of further Connections
 ==============================
@@ -41,19 +42,6 @@ SQL Logger
 
 `mysqlreport` comes with its own SQL Logger. If you have implemented your own
 SQL Logger `mysqlreport` will overwrite SQL Logger with its own version.
-
-Empty insert_id
-===============
-
-That will only happen, if you have activated "Add EXPLAIN" in Extension
-Settings. The additional "SHOW profile;" query of `mysqlreport` will
-reset the internal information (insert_id and affected_rows) of the previous
-query.
-
-You will find further information about that in `configuration` section
-of this documentation.
-
-Please inform me, if you have a hint how to solve that problem.
 
 Missing Queries in profiling
 ============================
