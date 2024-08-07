@@ -374,6 +374,9 @@ readonly class QueryInformationRepository
         return $event->getQueryInformationRecords();
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $queries
+     */
     public function bulkInsert(array $queries): void
     {
         try {

@@ -22,6 +22,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInterface
 {
+    /**
+     * @param array<string, string> $connectionParams
+     */
     public function canBeUsedForConnection(string $identifier, array $connectionParams): bool
     {
         if ($identifier !== ConnectionPool::DEFAULT_CONNECTION_NAME) {

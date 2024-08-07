@@ -33,6 +33,9 @@ class LoggerStatement implements Statement
      */
     private array $types = [];
 
+    /**
+     * @param \SplQueue<QueryInformation> $queries
+     */
     public function __construct(
         readonly private StatementInterface $wrappedStatement,
         readonly private MySqlReportSqlLogger $logger,

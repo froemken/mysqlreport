@@ -53,6 +53,9 @@ readonly class ExplainQueryHelper
         }
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     private function getExplainRows(QueryInformation $queryInformation): array
     {
         $explainRows = [];
