@@ -68,7 +68,7 @@ class QueryInformationFactory
 
     private function getPageUid(): int
     {
-        $serverRequest = $GLOBALS['TYPO3_REQUEST'] ?? ServerRequestFactory::fromGlobals();
+        $serverRequest = $GLOBALS['TYPO3_REQUEST'];
         if ($serverRequest instanceof ServerRequestInterface) {
             $typoScriptFrontendController = $serverRequest->getAttribute('frontend.controller');
             if ($typoScriptFrontendController instanceof TypoScriptFrontendController) {
