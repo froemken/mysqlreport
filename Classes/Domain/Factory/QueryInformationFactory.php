@@ -43,9 +43,9 @@ class QueryInformationFactory
     public function __construct()
     {
         $this->pageUid = $this->getPageUid();
-        $this->ip = GeneralUtility::getIndpEnv('REMOTE_ADDR');
-        $this->referer = GeneralUtility::getIndpEnv('HTTP_REFERER');
-        $this->request = GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
+        $this->ip = (string)GeneralUtility::getIndpEnv('REMOTE_ADDR');
+        $this->referer = (string)GeneralUtility::getIndpEnv('HTTP_REFERER');
+        $this->request = (string)GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
         $this->mode = $this->getTypo3Mode();
         $this->uniqueCallIdentifier = uniqid('', true);
         $this->crdate = (int)$GLOBALS['EXEC_TIME'];
