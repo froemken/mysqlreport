@@ -17,7 +17,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
  *
  * @implements \ArrayAccess<int|string|null, mixed>
  */
-class StatusValues implements \ArrayAccess
+readonly class StatusValues implements \ArrayAccess
 {
     /**
      * @var array<int|string|null, mixed>

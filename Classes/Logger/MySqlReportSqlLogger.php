@@ -20,14 +20,14 @@ use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
  * This logger is wrapped around the query and command execution of doctrine to collect duration and
  * other query information.
  */
-class MySqlReportSqlLogger implements LoggerInterface
+readonly class MySqlReportSqlLogger implements LoggerInterface
 {
     /**
      * Every query which contains one of these parts will be skipped.
      *
      * @var string[]
      */
-    private array $skipQueries = [
+    private const SKIP_QUERIES = [
         'SELECT DATABASE()',
         'show global status',
         'show global variables',
@@ -66,7 +66,7 @@ class MySqlReportSqlLogger implements LoggerInterface
             return false;
         }
 
-        foreach ($this->skipQueries as $skipQuery) {
+        foreach (self::SKIP_QUERIES as $skipQuery) {
             if (str_contains(strtolower($query), $skipQuery)) {
                 return false;
             }

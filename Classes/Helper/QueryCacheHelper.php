@@ -16,7 +16,7 @@ use StefanFroemken\Mysqlreport\Menu\Page;
 /**
  * Helper with useful methods for Query Cache
  */
-class QueryCacheHelper
+readonly class QueryCacheHelper
 {
     /**
      * Returns true, if Query Cache is activated

@@ -17,7 +17,7 @@ use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-class MaxUsedConnectionsDataProvider implements ChartDataProviderInterface
+readonly class MaxUsedConnectionsDataProvider implements ChartDataProviderInterface
 {
     private StatusValues $statusValues;
 

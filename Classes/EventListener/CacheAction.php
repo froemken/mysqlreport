@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Create ClearCache entry and process Cache Clearing of mysqlreport
  */
-class CacheAction
+readonly class CacheAction
 {
     /**
      * Add clear cache menu entry

@@ -17,7 +17,7 @@ use TYPO3\CMS\Core\Utility\MathUtility;
 /**
  * EventListener to reduce precision of duration column to 6.
  */
-class RoundDurationOfQueryInformationRecordsEventListener
+readonly class RoundDurationOfQueryInformationRecordsEventListener
 {
     public function __invoke(ModifyQueryInformationRecordsEvent $event): void
     {

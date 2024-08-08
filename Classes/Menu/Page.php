@@ -21,7 +21,7 @@ use TYPO3Fluid\Fluid\View\ViewInterface;
 /**
  * Model with properties for panels you can see in BE module
  */
-class Page implements \SplSubject
+readonly class Page implements \SplSubject
 {
     /**
      * @var \SplObjectStorage<\SplObserver, AbstractInfoBox>
