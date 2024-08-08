@@ -55,7 +55,7 @@ class QueryInformationFactoryTest extends UnitTestCase
             Environment::getVarPath(),
             Environment::getConfigPath(),
             Environment::getCurrentScript(),
-            Environment::isWindows() ? 'WINDOWS' : 'UNIX'
+            Environment::isWindows() ? 'WINDOWS' : 'UNIX',
         );
 
         $this->subject = new QueryInformationFactory();
