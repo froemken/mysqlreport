@@ -15,6 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Page\PageInformation;
 
@@ -69,9 +70,9 @@ class QueryInformationFactory
     {
         $serverRequest = $GLOBALS['TYPO3_REQUEST'];
         if ($serverRequest instanceof ServerRequestInterface) {
-            $pageInformation = $serverRequest->getAttribute('routing');
-            if ($pageInformation instanceof PageInformation) {
-                return $pageInformation->getId();
+            $pageArguments = $serverRequest->getAttribute('routing');
+            if ($pageArguments instanceof PageArguments) {
+                return $pageArguments->getPageId();
             }
 
             $backendPageUid = (int)($serverRequest->getQueryParams()['id'] ?? 0);
