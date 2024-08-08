@@ -15,7 +15,7 @@
     />
     <project title="MySQL Report"
              release="4.0"
-             version="4.0.0"
+             version="4.0.1"
              copyright="since 2024 by Stefan Froemken &amp; contributors"
     />
     <inventory id="t3coreapi"
