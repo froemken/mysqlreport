@@ -27,11 +27,11 @@ class QueryInformationFactoryTest extends UnitTestCase
 
     protected function setUp(): void
     {
-        $this->subject = new QueryInformationFactory();
-
         $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.example.com/'))
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
             ->withAttribute('routing', new PageArguments(1, '0', []));
+
+        $this->subject = new QueryInformationFactory();
     }
 
     protected function tearDown(): void
