@@ -20,10 +20,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class QueryInformationFactoryTest extends UnitTestCase
 {
-    /**
-     * @var QueryInformationFactory
-     */
-    private $subject;
+    private QueryInformationFactory $subject;
 
     protected function setUp(): void
     {

@@ -15,6 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ServerRequestFactory;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Frontend\Controller\TypoScriptFrontendController;
 
@@ -67,7 +68,7 @@ class QueryInformationFactory
 
     private function getPageUid(): int
     {
-        $serverRequest = $GLOBALS['TYPO3_REQUEST'];
+        $serverRequest = $GLOBALS['TYPO3_REQUEST'] ?? ServerRequestFactory::fromGlobals();
         if ($serverRequest instanceof ServerRequestInterface) {
             $typoScriptFrontendController = $serverRequest->getAttribute('frontend.controller');
             if ($typoScriptFrontendController instanceof TypoScriptFrontendController) {
