@@ -13,6 +13,9 @@ namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Factory;
 
 use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Domain\Factory\QueryInformationFactory;
+use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\ServerRequest;
+use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -25,6 +28,10 @@ class QueryInformationFactoryTest extends UnitTestCase
     protected function setUp(): void
     {
         $this->subject = new QueryInformationFactory();
+
+        $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.example.com/'))
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
+            ->withAttribute('routing', new PageArguments(1, '0', []));
     }
 
     protected function tearDown(): void
@@ -35,10 +42,10 @@ class QueryInformationFactoryTest extends UnitTestCase
     }
 
     #[Test]
-    public function createNewQueryInformationWillCreateQueryInformationWithPid0(): void
+    public function createNewQueryInformationWillCreateQueryInformationWithPid1(): void
     {
         self::assertSame(
-            0,
+            1,
             $this->subject->createNewQueryInformation()->getPid(),
         );
     }
