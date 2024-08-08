@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Configuration;
 
+use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
@@ -33,12 +34,22 @@ class ExtConf
 
     private float $slowQueryThreshold = 10.0;
 
-    public function __construct(ExtensionConfiguration $extensionConfiguration)
-    {
+    public function __construct(
+        ExtensionConfiguration $extensionConfiguration,
+        readonly private LoggerInterface $logger,
+    ) {
+        $extConf = [];
+
         try {
             $extConf = (array)$extensionConfiguration->get('mysqlreport');
-        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $exception) {
-            // Use default values
+        } catch (ExtensionConfigurationExtensionNotConfiguredException $exception) {
+            $this->logger->error('No extension settings could be found for extension: mysqlreport', [
+                'exception' => $exception,
+            ]);
+        } catch (ExtensionConfigurationPathDoesNotExistException $exception) {
+            $this->logger->error('No extension settings could be found in TYPO3_CONF_VARS for extension: mysqlreport', [
+                'exception' => $exception,
+            ]);
             return;
         }
 

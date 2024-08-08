@@ -16,4 +16,14 @@ call_user_func(static function (): void {
             'typo3/core/custom-platform-driver-middleware',
         ],
     ];
+
+    if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['StefanFroemken']['Mysqlreport']['writerConfiguration'])) {
+        $GLOBALS['TYPO3_CONF_VARS']['LOG']['StefanFroemken']['Mysqlreport']['writerConfiguration'] = [
+            \Psr\Log\LogLevel::INFO => [
+                \TYPO3\CMS\Core\Log\Writer\FileWriter::class => [
+                    'logFileInfix' => 'mysqlreport',
+                ],
+            ],
+        ];
+    }
 });

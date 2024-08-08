@@ -13,11 +13,11 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
+use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Event\ModifyQueryInformationRecordsEvent;
 use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Core\Database\Connection;
-use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -32,6 +32,7 @@ readonly class QueryInformationRepository
 
     public function __construct(
         private EventDispatcher $eventDispatcher,
+        private LoggerInterface $logger,
     ) {}
 
     /**
@@ -55,7 +56,10 @@ readonly class QueryInformationRepository
             while ($queryInformationRecord = $result->fetchAssociative()) {
                 $queryInformationRecords[] = $queryInformationRecord;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: findQueryInformationRecordsForCall', [
+                'exception' => $exception,
+            ]);
         }
 
         /** @var ModifyQueryInformationRecordsEvent $event */
@@ -94,7 +98,10 @@ readonly class QueryInformationRepository
             while ($queryInformationRecord = $result->fetchAssociative()) {
                 $queryInformationRecords[] = $queryInformationRecord;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: getQueryInformationRecordsByUniqueIdentifier', [
+                'exception' => $exception,
+            ]);
         }
 
         /** @var ModifyQueryInformationRecordsEvent $event */
@@ -131,7 +138,10 @@ readonly class QueryInformationRepository
             while ($queryInformationRecord = $result->fetchAssociative()) {
                 $queryInformationRecords[] = $queryInformationRecord;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: getQueryInformationRecordsForDownloadByUniqueIdentifier', [
+                'exception' => $exception,
+            ]);
         }
 
         /** @var ModifyQueryInformationRecordsEvent $event */
@@ -143,8 +153,6 @@ readonly class QueryInformationRepository
     }
 
     /**
-     * @param string $uniqueIdentifier
-     * @param string $queryType
      * @return array<int, string>
      */
     public function getQueryInformationRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
@@ -173,7 +181,10 @@ readonly class QueryInformationRepository
             while ($queryInformationRecord = $result->fetchAssociative()) {
                 $queryInformationRecords[] = $queryInformationRecord;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: getQueryInformationRecordsByQueryType', [
+                'exception' => $exception,
+            ]);
         }
 
         /** @var ModifyQueryInformationRecordsEvent $event */
@@ -202,7 +213,10 @@ readonly class QueryInformationRepository
 
         try {
             $queryInformationRecord = $queryBuilder->executeQuery()->fetchAssociative() ?: [];
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: getQueryInformationRecordByUid', [
+                'exception' => $exception,
+            ]);
             return [];
         }
 
@@ -233,17 +247,19 @@ readonly class QueryInformationRepository
 
         $profilingRows = [];
         try {
-            $connection = $this->getConnectionPool()->getConnectionByName(
-                ConnectionPool::DEFAULT_CONNECTION_NAME,
-            );
+            $connection = $this->getDefaultConnection();
 
             $queryResult = $connection->transactional(function (\Doctrine\DBAL\Connection $transactionalConnection) use ($sql): ?Result {
                 try {
                     $transactionalConnection->executeStatement('SET profiling=1;');
                     $transactionalConnection->executeQuery($sql);
                     return $transactionalConnection->executeQuery('SHOW profile;');
-                } catch (Exception $e) {
+                } catch (Exception $exception) {
+                    $this->logger->error('Error while executing transactional query for profiling', [
+                        'exception' => $exception,
+                    ]);
                 }
+
                 return null;
             });
 
@@ -254,7 +270,10 @@ readonly class QueryInformationRepository
             while ($profilingRow = $queryResult->fetchAssociative()) {
                 $profilingRows[] = $profilingRow;
             }
-        } catch (\Throwable | \Exception | Exception $e) {
+        } catch (\Throwable | \Exception | Exception $exception) {
+            $this->logger->error('Error while executing query profiling', [
+                'exception' => $exception,
+            ]);
         }
 
         return $profilingRows;
@@ -286,7 +305,10 @@ readonly class QueryInformationRepository
             while ($queryInformationRecord = $result->fetchAssociative()) {
                 $queryInformationRecords[] = $queryInformationRecord;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: findQueryInformationRecordsWithFilesort', [
+                'exception' => $exception,
+            ]);
         }
 
         /** @var ModifyQueryInformationRecordsEvent $event */
@@ -323,7 +345,10 @@ readonly class QueryInformationRepository
             while ($queryInformationRecord = $result->fetchAssociative()) {
                 $queryInformationRecords[] = $queryInformationRecord;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: findQueryInformationRecordsWithFullTableScan', [
+                'exception' => $exception,
+            ]);
         }
 
         /** @var ModifyQueryInformationRecordsEvent $event */
@@ -363,7 +388,10 @@ readonly class QueryInformationRepository
             while ($queryInformationRecord = $result->fetchAssociative()) {
                 $queryInformationRecords[] = $queryInformationRecord;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while fetching records in method: findQueryInformationRecordsWithSlowQueries', [
+                'exception' => $exception,
+            ]);
         }
 
         /** @var ModifyQueryInformationRecordsEvent $event */
@@ -380,8 +408,7 @@ readonly class QueryInformationRepository
     public function bulkInsert(array $queries): void
     {
         try {
-            $connection = GeneralUtility::makeInstance(ConnectionPool::class)
-                ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+            $connection = $this->getDefaultConnection();
 
             foreach (array_chunk($queries, 50) as $chunkOfQueriesToStore) {
                 $connection->bulkInsert(
@@ -405,7 +432,10 @@ readonly class QueryInformationRepository
                     ],
                 );
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while bulk inserting query information records', [
+                'exception' => $exception,
+            ]);
         }
     }
 }

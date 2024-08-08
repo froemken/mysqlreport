@@ -15,6 +15,7 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
@@ -22,13 +23,14 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
  */
 readonly class QueryParamsHelper
 {
-    public function __construct(private ConnectionPool $connectionPool) {}
+    public function __construct(
+        private ConnectionPool $connectionPool,
+        private LoggerInterface $logger,
+    ) {}
 
     /**
-     * @param string $sql
      * @param array<int, string> $params
      * @param array<int, ParameterType> $types
-     * @return string
      */
     public function getQueryWithReplacedParams(
         string $sql,
@@ -50,7 +52,10 @@ readonly class QueryParamsHelper
                     );
                 }
             }
-        } catch (ConversionException|Exception $e) {
+        } catch (ConversionException|Exception $exception) {
+            $this->logger->error('Error while replacing placeholders (?) in query', [
+                'exception' => $exception,
+            ]);
         }
 
         return $sql;

@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Report;
 
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
-use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
-use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
+use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -23,15 +21,8 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
 /**
  * Provides a status report about mysqlreport
  */
-class StatusReport implements StatusProviderInterface
+readonly class StatusReport implements StatusProviderInterface
 {
-    private ExtensionConfiguration $extensionConfiguration;
-
-    public function __construct(ExtensionConfiguration $extensionConfiguration)
-    {
-        $this->extensionConfiguration = $extensionConfiguration;
-    }
-
     /**
      * @return Status[]
      */
@@ -59,12 +50,11 @@ class StatusReport implements StatusProviderInterface
 
     private function getAddExplainValue(): bool
     {
-        $addExplain = false;
-        try {
-            $addExplain = (bool)$this->extensionConfiguration->get('mysqlreport', 'addExplain');
-        } catch (ExtensionConfigurationExtensionNotConfiguredException | ExtensionConfigurationPathDoesNotExistException $e) {
-        }
+        return $this->getExtConf()->isActivateExplainQuery();
+    }
 
-        return $addExplain;
+    private function getExtConf(): ExtConf
+    {
+        return GeneralUtility::makeInstance(ExtConf::class);
     }
 }

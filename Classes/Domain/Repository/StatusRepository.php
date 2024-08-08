@@ -12,15 +12,19 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Domain\Repository;
 
 use Doctrine\DBAL\Exception;
+use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 
 /**
  * Repository to get the MySQL/MariaDB STATUS values
  */
-class StatusRepository
+readonly class StatusRepository
 {
     use DatabaseConnectionTrait;
+
+    public function __construct(private LoggerInterface $logger)
+    {}
 
     public function findAll(): StatusValues
     {
@@ -31,8 +35,10 @@ class StatusRepository
             while ($row = $result->fetchAssociative()) {
                 $rows[$row['Variable_name']] = $row['Value'];
             }
-        } catch (Exception $e) {
-            return new StatusValues([]);
+        } catch (Exception $exception) {
+            $this->logger->error('Error while retrieving status values from database server', [
+                'exception' => $exception,
+            ]);
         }
 
         return new StatusValues($rows);
