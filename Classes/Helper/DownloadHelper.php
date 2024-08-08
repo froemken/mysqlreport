@@ -13,6 +13,7 @@ namespace StefanFroemken\Mysqlreport\Helper;
 
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Utility\CsvUtility;
 
 /**
@@ -24,17 +25,14 @@ class DownloadHelper
 
     private string $csvQuote = '"';
 
-    private ResponseFactoryInterface $responseFactory;
-
-    public function __construct(ResponseFactoryInterface $responseFactory)
-    {
-        $this->responseFactory = $responseFactory;
-    }
+    public function __construct(
+        readonly private ResponseFactoryInterface $responseFactory,
+        readonly private LoggerInterface $logger,
+    ) {}
 
     /**
      * @param array<int, string> $headerRow
      * @param array<string, mixed> $records
-     * @return ResponseInterface
      */
     public function asCSV(array $headerRow, array $records): ResponseInterface
     {
@@ -49,13 +47,15 @@ class DownloadHelper
 
     /**
      * @param array<string, mixed> $records
-     * @return ResponseInterface
      */
     public function asJSON(array $records): ResponseInterface
     {
         try {
             $json = json_encode($records, JSON_THROW_ON_ERROR) ?: '';
-        } catch (\JsonException $e) {
+        } catch (\JsonException $exception) {
+            $this->logger->error('Error while encoding JSON in DownloadHelper', [
+                'exception' => $exception,
+            ]);
             $json = '';
         }
 

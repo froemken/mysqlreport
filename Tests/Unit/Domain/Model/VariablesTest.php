@@ -20,10 +20,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class VariablesTest extends UnitTestCase
 {
-    /**
-     * @var Variables
-     */
-    private $subject;
+    private Variables $subject;
 
     protected function tearDown(): void
     {

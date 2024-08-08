@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Helper;
 
 use Doctrine\DBAL\Exception;
+use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
@@ -23,6 +24,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 readonly class ExplainQueryHelper
 {
     use DatabaseConnectionTrait;
+
+    public function __construct(private LoggerInterface $logger) {}
 
     /**
      * @param QueryInformation $queryInformation
@@ -68,7 +71,10 @@ readonly class ExplainQueryHelper
             while ($explainRow = $queryResult->fetchAssociative()) {
                 $explainRows[] = $explainRow;
             }
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
+            $this->logger->error('Error while executing EXPLAIN query', [
+                'exception' => $exception,
+            ]);
         }
 
         return $explainRows;

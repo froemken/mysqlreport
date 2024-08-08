@@ -3,11 +3,14 @@ name: tests
 on: [pull_request]
 
 jobs:
-  lint:
-    name: Linting
-    runs-on: self-hosted
+  testing:
+    name: Testing
+
+    runs-on: ubuntu-latest
+
     strategy:
       fail-fast: true
+
       matrix:
         php:
           - '8.2'
@@ -19,19 +22,6 @@ jobs:
 
       - name: 'Lint PHP'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s lint
-
-  code-quality:
-    name: 'Code quality'
-    needs: lint
-    runs-on: self-hosted
-    strategy:
-      fail-fast: true
-      matrix:
-        php:
-          - '8.2'
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
 
       - name: 'Install testing system'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerUpdate
@@ -48,48 +38,11 @@ jobs:
       - name: 'phpstan'
         run: Build/Scripts/runTests.sh -n -p ${{ matrix.php }} -s phpstan
 
-  unit-tests:
-    name: 'Unit tests'
-    needs: code-quality
-    runs-on: self-hosted
-    strategy:
-      fail-fast: true
-      matrix:
-        php:
-          - '8.2'
-          - '8.3'
-
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
-
-      - name: 'Install testing system'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerUpdate
-
       - name: 'Execute unit tests'
         run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s unit
 
-  functional-tests:
-    name: Functional tests
-    needs: code-quality
-    runs-on: self-hosted
-
-    strategy:
-      matrix:
-        php:
-          - '8.2'
-          - '8.3'
-
-        vendor:
-          - mysql
-          - mariadb
-
-    steps:
-      - name: 'Checkout'
-        uses: actions/checkout@v4
-
-      - name: 'Install testing system'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -s composerUpdate
+      - name: 'Execute functional tests'
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -d mysql -s functional
 
       - name: 'Execute functional tests'
-        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -d ${{ matrix.vendor }} -s functional
+        run: Build/Scripts/runTests.sh -p ${{ matrix.php }} -d mariadb -s functional

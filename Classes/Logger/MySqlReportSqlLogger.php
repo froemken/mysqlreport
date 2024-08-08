@@ -20,7 +20,7 @@ use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
  * This logger is wrapped around the query and command execution of doctrine to collect duration and
  * other query information.
  */
-class MySqlReportSqlLogger
+class MySqlReportSqlLogger implements LoggerInterface
 {
     /**
      * Every query which contains one of these parts will be skipped.

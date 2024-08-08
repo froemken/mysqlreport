@@ -20,10 +20,7 @@ use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
  */
 class ExplainInformationTest extends UnitTestCase
 {
-    /**
-     * @var ExplainInformation
-     */
-    private $subject;
+    private ExplainInformation $subject;
 
     protected function setUp(): void
     {

@@ -10,6 +10,11 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 4.0.1
+=============
+
+*   [TASK] Add logging for each try-catch
+
 Version 4.0.0
 =============
 
