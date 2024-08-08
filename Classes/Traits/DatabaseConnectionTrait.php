@@ -37,4 +37,9 @@ trait DatabaseConnectionTrait
             ConnectionPool::DEFAULT_CONNECTION_NAME,
         );
     }
+
+    private function isValidConnectionDriver(string $connectionDriver): bool
+    {
+        return in_array($connectionDriver, ['mysqli', 'pdo_mysql'], true);
+    }
 }
