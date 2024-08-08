@@ -25,8 +25,7 @@ readonly class ExplainQueryHelper
 {
     use DatabaseConnectionTrait;
 
-    public function __construct(private LoggerInterface $logger)
-    {}
+    public function __construct(private LoggerInterface $logger) {}
 
     /**
      * @param QueryInformation $queryInformation
