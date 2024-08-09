@@ -82,9 +82,10 @@ class QueryInformationFactoryTest extends UnitTestCase
     #[Test]
     public function createNewQueryInformationWillCreateQueryInformationWithBackendPid(): void
     {
+        $_GET['id'] = 30;
+
         $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.example.com/typo3/?id=30', 'GET', 'php://input', [], $_SERVER))
-            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE)
-            ->withQueryParams(['id' => 30]);
+            ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
         $this->subject = new QueryInformationFactory();
 
