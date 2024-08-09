@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Logger;
 
-use Doctrine\DBAL\ParameterType;
 use StefanFroemken\Mysqlreport\Domain\Factory\QueryInformationFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Helper;
 
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
 use Psr\Log\LoggerInterface;
