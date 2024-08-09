@@ -13,6 +13,7 @@ namespace StefanFroemken\Mysqlreport\Doctrine\Middleware;
 
 use Doctrine\DBAL\Driver;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
+use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Middleware\UsableForConnectionInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -22,6 +23,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInterface
 {
+    use DatabaseConnectionTrait;
+
     /**
      * @param array<string, string> $connectionParams
      */
@@ -31,7 +34,7 @@ readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInter
             return false;
         }
 
-        if (in_array($connectionParams['driver'] ?? '', ['mysqli', 'pdo_mysql'], true)) {
+        if (!$this->isValidConnectionDriver($connectionParams['driver'] ?? '')) {
             return false;
         }
 

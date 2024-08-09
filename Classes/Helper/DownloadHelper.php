@@ -19,15 +19,15 @@ use TYPO3\CMS\Core\Utility\CsvUtility;
 /**
  * Helper to download records as CSV or JSON
  */
-class DownloadHelper
+readonly class DownloadHelper
 {
-    private string $csvDelimiter = ';';
+    private const CSV_DELIMITER = ';';
 
-    private string $csvQuote = '"';
+    private const CSV_QUOTE = '"';
 
     public function __construct(
-        readonly private ResponseFactoryInterface $responseFactory,
-        readonly private LoggerInterface $logger,
+        private ResponseFactoryInterface $responseFactory,
+        private LoggerInterface $logger,
     ) {}
 
     /**
@@ -37,9 +37,9 @@ class DownloadHelper
     public function asCSV(array $headerRow, array $records): ResponseInterface
     {
         // Create result
-        $result[] = CsvUtility::csvValues($headerRow, $this->csvDelimiter, $this->csvQuote);
+        $result[] = CsvUtility::csvValues($headerRow, self::CSV_DELIMITER, self::CSV_QUOTE);
         foreach ($records as $record) {
-            $result[] = CsvUtility::csvValues($record, $this->csvDelimiter, $this->csvQuote);
+            $result[] = CsvUtility::csvValues($record, self::CSV_DELIMITER, self::CSV_QUOTE);
         }
 
         return $this->generateDownloadResponse(implode(CRLF, $result), 'csv');

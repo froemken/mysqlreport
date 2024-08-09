@@ -18,7 +18,7 @@ use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use TYPO3\CMS\Dashboard\WidgetApi;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-class InnoDbBufferDataProvider implements ChartDataProviderInterface
+readonly class InnoDbBufferDataProvider implements ChartDataProviderInterface
 {
     private StatusValues $statusValues;
 

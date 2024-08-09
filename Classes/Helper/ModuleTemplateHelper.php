@@ -20,14 +20,9 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * Helper to add buttons to button bar
  */
-class ModuleTemplateHelper
+readonly class ModuleTemplateHelper
 {
-    private UriBuilder $uriBuilder;
-
-    public function __construct(UriBuilder $uriBuilder)
-    {
-        $this->uriBuilder = $uriBuilder;
-    }
+    public function __construct(private UriBuilder $uriBuilder) {}
 
     public function addOverviewButton(ButtonBar $buttonBar): void
     {
@@ -44,9 +39,6 @@ class ModuleTemplateHelper
     }
 
     /**
-     * @param ButtonBar $buttonBar
-     * @param string $routeIdentifier
-     * @param string $displayName
      * @param array<string, string> $arguments
      */
     public function addShortcutButton(

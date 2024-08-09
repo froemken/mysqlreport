@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Logger;
 
-use Doctrine\DBAL\ParameterType;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 
 interface LoggerInterface
@@ -21,7 +20,7 @@ interface LoggerInterface
      * Start collecting duration and other stuff.
      *
      * @param array<int, string> $params
-     * @param array<int, ParameterType> $types
+     * @param array<int, string> $types
      */
     public function stopQuery(string $query, float $duration, array $params = [], array $types = []): ?QueryInformation;
 }

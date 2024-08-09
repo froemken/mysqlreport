@@ -21,27 +21,14 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 /**
  * Controller to show and analyze all queries of a request
  */
-class ProfileController
+readonly class ProfileController
 {
-    private QueryInformationRepository $queryInformationRepository;
-
-    private ModuleTemplateFactory $moduleTemplateFactory;
-
-    private ModuleTemplateHelper $moduleTemplateHelper;
-
-    private DownloadHelper $downloadHelper;
-
     public function __construct(
-        QueryInformationRepository $queryInformationRepository,
-        ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleTemplateHelper $moduleTemplateHelper,
-        DownloadHelper $downloadHelper,
-    ) {
-        $this->queryInformationRepository = $queryInformationRepository;
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-        $this->moduleTemplateHelper = $moduleTemplateHelper;
-        $this->downloadHelper = $downloadHelper;
-    }
+        private QueryInformationRepository $queryInformationRepository,
+        private ModuleTemplateFactory $moduleTemplateFactory,
+        private ModuleTemplateHelper $moduleTemplateHelper,
+        private DownloadHelper $downloadHelper,
+    ) {}
 
     public function listAction(ServerRequestInterface $request): ResponseInterface
     {

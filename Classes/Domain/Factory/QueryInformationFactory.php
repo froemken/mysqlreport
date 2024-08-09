@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * A factory to build new Profile objects.
  * It should prevent calling methods to retrieve environment variables multiple times
  */
-class QueryInformationFactory
+readonly class QueryInformationFactory
 {
     use Typo3RequestTrait;
 
@@ -67,17 +67,19 @@ class QueryInformationFactory
 
     private function getPageUid(): int
     {
-        $serverRequest = $GLOBALS['TYPO3_REQUEST'];
-        if ($serverRequest instanceof ServerRequestInterface) {
+        if (
+            ($serverRequest = $GLOBALS['TYPO3_REQUEST'] ?? null)
+            && $serverRequest instanceof ServerRequestInterface
+        ) {
             $pageArguments = $serverRequest->getAttribute('routing');
             if ($pageArguments instanceof PageArguments) {
                 return $pageArguments->getPageId();
             }
+        }
 
-            $backendPageUid = (int)($serverRequest->getQueryParams()['id'] ?? 0);
-            if ($backendPageUid !== 0) {
-                return $backendPageUid;
-            }
+        $backendPageUid = (int)($_GET['id'] ?? 0);
+        if ($backendPageUid !== 0) {
+            return $backendPageUid;
         }
 
         return 0;

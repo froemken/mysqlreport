@@ -15,7 +15,7 @@ use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-class CreatedTempTablesDataProvider implements ChartDataProviderInterface
+readonly class CreatedTempTablesDataProvider implements ChartDataProviderInterface
 {
     private StatusValues $statusValues;
 

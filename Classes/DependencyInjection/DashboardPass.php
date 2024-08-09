@@ -20,7 +20,7 @@ use TYPO3\CMS\Dashboard\Controller\DashboardController;
  * As there is no possibility in Services.yaml to check for activated/installed extensions
  * I have moved that check into this CompilerPass.
  */
-class DashboardPass implements CompilerPassInterface
+readonly class DashboardPass implements CompilerPassInterface
 {
     private string $tagName;
 

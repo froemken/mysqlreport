@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Helper;
 
 use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
 use Psr\Log\LoggerInterface;
@@ -30,7 +29,7 @@ readonly class QueryParamsHelper
 
     /**
      * @param array<int, string> $params
-     * @param array<int, ParameterType> $types
+     * @param array<int, string> $types
      */
     public function getQueryWithReplacedParams(
         string $sql,
@@ -44,7 +43,7 @@ readonly class QueryParamsHelper
                 )->getDatabasePlatform();
 
                 foreach ($params as $key => $param) {
-                    $type = Type::getType(strtolower($types[$key]->name));
+                    $type = Type::getType($types[$key]);
                     $value = $type->convertToDatabaseValue($param, $dbPlatform);
                     $sql = implode(
                         var_export($value, true),

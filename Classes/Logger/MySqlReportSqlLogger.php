@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Logger;
 
-use Doctrine\DBAL\ParameterType;
 use StefanFroemken\Mysqlreport\Domain\Factory\QueryInformationFactory;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
@@ -20,14 +19,14 @@ use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
  * This logger is wrapped around the query and command execution of doctrine to collect duration and
  * other query information.
  */
-class MySqlReportSqlLogger implements LoggerInterface
+readonly class MySqlReportSqlLogger implements LoggerInterface
 {
     /**
      * Every query which contains one of these parts will be skipped.
      *
      * @var string[]
      */
-    private array $skipQueries = [
+    private const SKIP_QUERIES = [
         'SELECT DATABASE()',
         'show global status',
         'show global variables',
@@ -36,8 +35,8 @@ class MySqlReportSqlLogger implements LoggerInterface
     ];
 
     public function __construct(
-        private readonly QueryInformationFactory $queryInformationFactory,
-        private readonly QueryParamsHelper $queryParamsHelper,
+        private QueryInformationFactory $queryInformationFactory,
+        private QueryParamsHelper $queryParamsHelper,
     ) {}
 
     /**
@@ -45,7 +44,7 @@ class MySqlReportSqlLogger implements LoggerInterface
      * Start collecting duration and other stuff.
      *
      * @param array<int, string> $params
-     * @param array<int, ParameterType> $types
+     * @param array<int, string> $types
      */
     public function stopQuery(string $query, float $duration, array $params = [], array $types = []): ?QueryInformation
     {
@@ -66,7 +65,7 @@ class MySqlReportSqlLogger implements LoggerInterface
             return false;
         }
 
-        foreach ($this->skipQueries as $skipQuery) {
+        foreach (self::SKIP_QUERIES as $skipQuery) {
             if (str_contains(strtolower($query), $skipQuery)) {
                 return false;
             }

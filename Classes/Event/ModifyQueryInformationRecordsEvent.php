@@ -48,7 +48,6 @@ class ModifyQueryInformationRecordsEvent
     }
 
     /**
-     * @param int $key
      * @param array<string, mixed> $queryInformationRecord
      */
     public function updateQueryInformationRecord(int $key, array $queryInformationRecord): void

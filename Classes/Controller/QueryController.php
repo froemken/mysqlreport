@@ -21,27 +21,14 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 /**
  * Controller to show results of FTS and filesort
  */
-class QueryController
+readonly class QueryController
 {
-    protected QueryInformationRepository $queryInformationRepository;
-
-    protected ExtConf $extConf;
-
-    private ModuleTemplateFactory $moduleTemplateFactory;
-
-    private ModuleTemplateHelper $moduleTemplateHelper;
-
     public function __construct(
-        QueryInformationRepository $profileRepository,
-        ExtConf $extConf,
-        ModuleTemplateFactory $moduleTemplateFactory,
-        ModuleTemplateHelper $moduleTemplateHelper,
-    ) {
-        $this->queryInformationRepository = $profileRepository;
-        $this->extConf = $extConf;
-        $this->moduleTemplateFactory = $moduleTemplateFactory;
-        $this->moduleTemplateHelper = $moduleTemplateHelper;
-    }
+        private QueryInformationRepository $queryInformationRepository,
+        private ExtConf $extConf,
+        private ModuleTemplateFactory $moduleTemplateFactory,
+        private ModuleTemplateHelper $moduleTemplateHelper,
+    ) {}
 
     public function filesortAction(ServerRequestInterface $request): ResponseInterface
     {
