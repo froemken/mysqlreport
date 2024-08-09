@@ -36,8 +36,8 @@ readonly class MySqlReportSqlLogger implements LoggerInterface
     ];
 
     public function __construct(
-        private readonly QueryInformationFactory $queryInformationFactory,
-        private readonly QueryParamsHelper $queryParamsHelper,
+        private QueryInformationFactory $queryInformationFactory,
+        private QueryParamsHelper $queryParamsHelper,
     ) {}
 
     /**

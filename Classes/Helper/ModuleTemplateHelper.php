@@ -39,9 +39,6 @@ readonly class ModuleTemplateHelper
     }
 
     /**
-     * @param ButtonBar $buttonBar
-     * @param string $routeIdentifier
-     * @param string $displayName
      * @param array<string, string> $arguments
      */
     public function addShortcutButton(

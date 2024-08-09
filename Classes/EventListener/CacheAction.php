@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\EventListener;
 
+use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Backend\Backend\Event\ModifyClearCacheActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
@@ -22,6 +23,8 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 readonly class CacheAction
 {
+    use DatabaseConnectionTrait;
+
     /**
      * Add clear cache menu entry
      *
@@ -52,14 +55,7 @@ readonly class CacheAction
             isset($params['cacheCmd'])
             && $params['cacheCmd'] === 'mysqlprofiles'
         ) {
-            $this->getConnectionPool()
-                ->getConnectionForTable('tx_mysqlreport_query_information')
-                ->truncate('tx_mysqlreport_query_information');
+            $this->getDefaultConnection()->truncate('tx_mysqlreport_query_information');
         }
-    }
-
-    private function getConnectionPool(): ConnectionPool
-    {
-        return GeneralUtility::makeInstance(ConnectionPool::class);
     }
 }
