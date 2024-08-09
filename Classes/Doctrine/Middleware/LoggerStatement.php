@@ -29,7 +29,7 @@ class LoggerStatement implements Statement
     private array $params = [];
 
     /**
-     * @var array<int, ParameterType>
+     * @var array<int, string>
      */
     private array $types = [];
 
@@ -46,7 +46,7 @@ class LoggerStatement implements Statement
     public function bindValue(int|string $param, mixed $value, ParameterType $type = ParameterType::STRING): void
     {
         $this->params[$param] = $value;
-        $this->types[$param]  = $type;
+        $this->types[$param]  = $this->convertParameterType($type);
 
         $this->wrappedStatement->bindValue($param, $value, $type);
     }
@@ -67,5 +67,25 @@ class LoggerStatement implements Statement
         }
 
         return $result;
+    }
+
+    /**
+     * LARGE_OBJECT is not mapped to a Type object by default.
+     * In case of Mysqli it will be mapped to PARAMETER_TYPE_BINARY.
+     * As convertParameterType of MysqliStatement is private I have to map such types manually here.
+     * As long as this logger works for MySQL and MariaDB only, we should be safe here.
+     * Adding further DB types may need some modification here.
+     */
+    private function convertParameterType(ParameterType $type): string
+    {
+        return match ($type) {
+            ParameterType::NULL,
+            ParameterType::STRING,
+            ParameterType::ASCII,
+            ParameterType::BINARY => 'string',
+            ParameterType::INTEGER,
+            ParameterType::BOOLEAN => 'integer',
+            ParameterType::LARGE_OBJECT => 'binary',
+        };
     }
 }
