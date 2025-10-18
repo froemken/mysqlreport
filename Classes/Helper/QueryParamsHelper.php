@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
- * Helper to replace query params in query to get a ready to use query for EXPLAIN
+ * Helper to replace query params in a query to get a ready to use query for EXPLAIN
  */
 readonly class QueryParamsHelper
 {

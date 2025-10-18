@@ -54,7 +54,7 @@ readonly class CacheAction
             isset($params['cacheCmd'])
             && $params['cacheCmd'] === 'mysqlprofiles'
         ) {
-            $this->getDefaultConnection()->truncate('tx_mysqlreport_query_information');
+            $this->getConnectionForMySqlReport()->truncate('tx_mysqlreport_query_information');
         }
     }
 }
