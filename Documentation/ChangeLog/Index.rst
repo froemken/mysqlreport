@@ -10,6 +10,11 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 4.0.2
+=============
+
+*   [TASK] Use specific connection for mysqlreport table
+
 Version 4.0.1
 =============
 
