@@ -26,8 +26,7 @@ readonly class CacheAction
 
     public function __construct(
         private UriBuilder $uriBuilder,
-    ) {
-    }
+    ) {}
 
     /**
      * Add clear cache menu entry
