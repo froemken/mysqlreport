@@ -11,20 +11,24 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * InfoBox to inform about current query cache fragmentation ratio
+ * InfoBox to inform about the current query cache fragmentation ratio
  */
-class FragmentationRatioInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.query_cache',
+)]
+class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'queryCache';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Fragmentation Ratio';
+    protected const TITLE = 'Fragmentation Ratio';
 
     private QueryCacheHelper $queryCacheHelper;
 
@@ -33,14 +37,13 @@ class FragmentationRatioInfoBox extends AbstractInfoBox
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
-            !isset($page->getStatusValues()['Qcache_total_blocks'])
-            || (int)$page->getStatusValues()['Qcache_total_blocks'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
+            !isset($this->getStatusValues()['Qcache_total_blocks'])
+            || (int)$this->getStatusValues()['Qcache_total_blocks'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
@@ -54,22 +57,31 @@ class FragmentationRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getFragmentationRatio($page->getStatusValues()),
+            $this->getFragmentationRatio(),
         );
     }
 
-    protected function getFragmentationRatio(StatusValues $status): float
+    protected function getFragmentationRatio(): float
     {
+        $status = $this->getStatusValues();
+
         // total blocks / 2 = maximum fragmentation
         $fragmentation = ($status['Qcache_free_blocks'] / ($status['Qcache_total_blocks'] / 2)) * 100;
-        if ($fragmentation <= 15) {
-            $this->setState(StateEnumeration::STATE_OK);
-        } elseif ($fragmentation <= 25) {
-            $this->setState(StateEnumeration::STATE_WARNING);
-        } else {
-            $this->setState(StateEnumeration::STATE_ERROR);
-        }
 
         return round($fragmentation, 4);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $fragmentation = $this->getFragmentationRatio();
+        if ($fragmentation <= 15) {
+            $state = StateEnumeration::STATE_OK;
+        } elseif ($fragmentation <= 25) {
+            $state = StateEnumeration::STATE_WARNING;
+        } else {
+            $state = StateEnumeration::STATE_ERROR;
+        }
+
+        return $state;
     }
 }

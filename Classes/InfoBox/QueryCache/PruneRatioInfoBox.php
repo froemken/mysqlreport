@@ -11,20 +11,25 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about current query cache prune ratio
  */
-class PruneRatioInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.query_cache',
+    attributes: ['priority' => 80],
+)]
+class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'queryCache';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Prune Ratio';
+    protected const TITLE = 'Prune Ratio';
 
     private QueryCacheHelper $queryCacheHelper;
 
@@ -33,14 +38,13 @@ class PruneRatioInfoBox extends AbstractInfoBox
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
-            !isset($page->getStatusValues()['Qcache_inserts'])
-            || (int)$page->getStatusValues()['Qcache_inserts'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
+            !isset($this->getStatusValues()['Qcache_inserts'])
+            || (int)$this->getStatusValues()['Qcache_inserts'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
@@ -61,25 +65,33 @@ class PruneRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getPruneRatio($page->getStatusValues()),
+            $this->getPruneRatio(),
         );
     }
 
-    protected function getPruneRatio(StatusValues $status): float
+    protected function getPruneRatio(): float
     {
+        $status = $this->getStatusValues();
         $pruneRatio = 0;
+
         if ($status['Qcache_inserts']) {
             $pruneRatio = ($status['Qcache_lowmem_prunes'] / $status['Qcache_inserts']) * 100;
         }
 
+        return round($pruneRatio, 4);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $pruneRatio = $this->getPruneRatio();
         if ($pruneRatio <= 10) {
-            $this->setState(StateEnumeration::STATE_OK);
+            $state = StateEnumeration::STATE_OK;
         } elseif ($pruneRatio <= 40) {
-            $this->setState(StateEnumeration::STATE_WARNING);
+            $state = StateEnumeration::STATE_WARNING;
         } else {
-            $this->setState(StateEnumeration::STATE_ERROR);
+            $state = StateEnumeration::STATE_ERROR;
         }
 
-        return round($pruneRatio, 4);
+        return $state;
     }
 }

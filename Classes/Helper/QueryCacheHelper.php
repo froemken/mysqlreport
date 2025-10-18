@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Helper;
 
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 
 /**
  * Helper with useful methods for Query Cache
@@ -19,18 +19,18 @@ use StefanFroemken\Mysqlreport\Menu\Page;
 readonly class QueryCacheHelper
 {
     /**
-     * Returns true, if Query Cache is activated
+     * Returns true if Query Cache is activated
      *
      * @api
      */
-    public function isQueryCacheEnabled(Page $page): bool
+    public function isQueryCacheEnabled(Variables $variables): bool
     {
-        return isset($page->getVariables()['query_cache_type'])
+        return isset($variables['query_cache_type'])
             && (
-                strtolower($page->getVariables()['query_cache_type']) === 'on'
+                strtolower($variables['query_cache_type']) === 'on'
                 || (
-                    is_numeric($page->getVariables()['query_cache_type'])
-                    && (int)($page->getVariables()['query_cache_type']) === 1
+                    is_numeric($variables['query_cache_type'])
+                    && (int)($variables['query_cache_type']) === 1
                 )
             );
     }

@@ -30,14 +30,14 @@ readonly class DashboardPass implements CompilerPassInterface
     }
 
     /**
-     * Start removing registered dashboard widgets, if EXT:dashboard is not installed
+     * Start removing registered dashboard widgets if EXT:dashboard is not installed
      *
      * This CompilerPass was called at a very early state, where $container was not injected into
      * GeneralUtility for makeInstance usage and ExtensionManagementUtility could not be used
-     * as PackageManager was not injected into that class already. We also can not use the container itself, as the
+     * as PackageManager was not injected into that class already. We also cannot use the container itself, as the
      * real PackageManger will be added to $container AFTER processing all CompilerPasses.
      *
-     * The only solution is, to check if there is a class definition of EXT:dashboard registered in given $container
+     * The only solution is to check if there is a class definition of EXT:dashboard registered in a given $ container
      */
     public function process(ContainerBuilder $container): void
     {

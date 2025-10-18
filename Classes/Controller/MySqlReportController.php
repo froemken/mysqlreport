@@ -16,14 +16,17 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use TYPO3\CMS\Backend\Template\ModuleTemplate;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 
 /**
  * Controller to show a basic analysis of MySQL variables and status
  */
-readonly class MySqlReportController
+class MySqlReportController
 {
+    use GetStatusValuesAndVariablesTrait;
+
     /**
      * @param ContainerInterface $serviceLocator A container just containing a few objects available for this controller
      */
@@ -56,7 +59,7 @@ readonly class MySqlReportController
             'MySqlReport Overview',
         );
 
-        $moduleTemplate->assign('status', $this->serviceLocator->get('repository.status')->findAll());
+        $moduleTemplate->assign('status', $this->getStatusValues());
 
         return $moduleTemplate->renderResponse('MySqlReport/Overview');
     }

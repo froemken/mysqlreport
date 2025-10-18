@@ -11,31 +11,34 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about InnoDB buffer write ratio
  */
-class WriteRatioInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.innodb',
+)]
+class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'innoDb';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Write Ratio';
+    protected const TITLE = 'Write Ratio';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
             !isset(
-                $page->getStatusValues()['Innodb_page_size'],
-                $page->getStatusValues()['Innodb_buffer_pool_write_requests'],
-                $page->getStatusValues()['Innodb_buffer_pool_pages_flushed'],
+                $this->getStatusValues()['Innodb_page_size'],
+                $this->getStatusValues()['Innodb_buffer_pool_write_requests'],
+                $this->getStatusValues()['Innodb_buffer_pool_pages_flushed'],
             )
-            || (int)$page->getStatusValues()['Innodb_buffer_pool_pages_flushed'] === 0
+            || (int)$this->getStatusValues()['Innodb_buffer_pool_pages_flushed'] === 0
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
@@ -46,7 +49,7 @@ class WriteRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getWriteRatio($page->getStatusValues()),
+            $this->getWriteRatio(),
         );
     }
 
@@ -54,17 +57,26 @@ class WriteRatioInfoBox extends AbstractInfoBox
      * get write ratio of innoDb Buffer
      * A value higher than 1 is good
      */
-    protected function getWriteRatio(StatusValues $status): float
+    protected function getWriteRatio(): float
     {
+        $status = $this->getStatusValues();
+
         $writeRatio = $status['Innodb_buffer_pool_write_requests'] / $status['Innodb_buffer_pool_pages_flushed'];
-        if ($writeRatio <= 2) {
-            $this->setState(StateEnumeration::STATE_ERROR);
-        } elseif ($writeRatio <= 7) {
-            $this->setState(StateEnumeration::STATE_WARNING);
-        } else {
-            $this->setState(StateEnumeration::STATE_OK);
-        }
 
         return round($writeRatio, 2);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $writeRatio = $this->getWriteRatio();
+        if ($writeRatio <= 2) {
+            $state = StateEnumeration::STATE_ERROR;
+        } elseif ($writeRatio <= 7) {
+            $state = StateEnumeration::STATE_WARNING;
+        } else {
+            $state = StateEnumeration::STATE_OK;
+        }
+
+        return $state;
     }
 }

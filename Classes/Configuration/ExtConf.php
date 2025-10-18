@@ -11,59 +11,59 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Configuration;
 
-use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
+use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
-use TYPO3\CMS\Core\Utility\MathUtility;
 
 /**
- * This class will streamline the values from extension settings
+ * This class streamlines all settings from the extension manager
  */
-class ExtConf
+#[Autoconfigure(constructor: 'create')]
+final readonly class ExtConf
 {
     use Typo3RequestTrait;
 
-    private bool $enableFrontendLogging = false;
+    private const EXT_KEY = 'mysqlreport';
 
-    private bool $enableBackendLogging = false;
-
-    private bool $activateExplainQuery = false;
-
-    private float $slowQueryThreshold = 10.0;
+    private const DEFAULT_SETTINGS = [
+        'enableFrontendLogging' => false,
+        'enableBackendLogging' => false,
+        'activateExplainQuery' => false,
+        'slowQueryThreshold' => 10.0,
+    ];
 
     public function __construct(
-        ExtensionConfiguration $extensionConfiguration,
-        private readonly LoggerInterface $logger,
+        private bool $enableFrontendLogging = self::DEFAULT_SETTINGS['enableFrontendLogging'],
+        private bool $enableBackendLogging = self::DEFAULT_SETTINGS['enableBackendLogging'],
+        private bool $activateExplainQuery = self::DEFAULT_SETTINGS['activateExplainQuery'],
+        private float $slowQueryThreshold = self::DEFAULT_SETTINGS['slowQueryThreshold'],
     ) {
-        $extConf = [];
+    }
 
+    public static function create(ExtensionConfiguration $extensionConfiguration): self
+    {
+        $extensionSettings = self::DEFAULT_SETTINGS;
+
+        // Overwrite default extension settings with values from EXT_CONF
         try {
-            $extConf = (array)$extensionConfiguration->get('mysqlreport');
-        } catch (ExtensionConfigurationExtensionNotConfiguredException $exception) {
-            $this->logger->error('No extension settings could be found for extension: mysqlreport', [
-                'exception' => $exception,
-            ]);
-        } catch (ExtensionConfigurationPathDoesNotExistException $exception) {
-            $this->logger->error('No extension settings could be found in TYPO3_CONF_VARS for extension: mysqlreport', [
-                'exception' => $exception,
-            ]);
-            return;
+            $extensionSettings = array_merge(
+                $extensionSettings,
+                $extensionConfiguration->get(self::EXT_KEY),
+            );
+
+            $extensionSettings['slowQueryThreshold'] = str_replace(',', '.', $extensionSettings['slowQueryThreshold']);
+        } catch (ExtensionConfigurationExtensionNotConfiguredException|ExtensionConfigurationPathDoesNotExistException) {
         }
 
-        if ($extConf === []) {
-            return;
-        }
-
-        // call setter method foreach configuration entry
-        foreach ($extConf as $key => $value) {
-            $methodName = 'set' . ucfirst($key);
-            if (method_exists($this, $methodName)) {
-                $this->$methodName($value);
-            }
-        }
+        return new self(
+            enableFrontendLogging: (bool)$extensionSettings['enableFrontendLogging'],
+            enableBackendLogging: (bool)$extensionSettings['enableBackendLogging'],
+            activateExplainQuery: (bool)$extensionSettings['activateExplainQuery'],
+            slowQueryThreshold: (float)$extensionSettings['slowQueryThreshold'],
+        );
     }
 
     public function isEnableFrontendLogging(): bool
@@ -71,19 +71,9 @@ class ExtConf
         return $this->enableFrontendLogging;
     }
 
-    public function setEnableFrontendLogging(string $enableFrontendLogging): void
-    {
-        $this->enableFrontendLogging = (bool)$enableFrontendLogging;
-    }
-
     public function isEnableBackendLogging(): bool
     {
         return $this->enableBackendLogging;
-    }
-
-    public function setEnableBackendLogging(string $enableBackendLogging): void
-    {
-        $this->enableBackendLogging = (bool)$enableBackendLogging;
     }
 
     public function isActivateExplainQuery(): bool
@@ -91,26 +81,9 @@ class ExtConf
         return $this->activateExplainQuery;
     }
 
-    public function setActivateExplainQuery(string $activateExplainQuery): void
-    {
-        $this->activateExplainQuery = (bool)$activateExplainQuery;
-    }
-
     public function getSlowQueryThreshold(): float
     {
         return $this->slowQueryThreshold;
-    }
-
-    public function setSlowQueryThreshold(string $slowQueryThreshold): void
-    {
-        if (MathUtility::canBeInterpretedAsFloat($slowQueryThreshold)) {
-            $this->slowQueryThreshold = (float)$slowQueryThreshold;
-        } else {
-            $slowQueryThreshold = str_replace(',', '.', $slowQueryThreshold);
-            if (MathUtility::canBeInterpretedAsFloat($slowQueryThreshold)) {
-                $this->slowQueryThreshold = (float)$slowQueryThreshold;
-            }
-        }
     }
 
     public function isQueryLoggingActivated(): bool

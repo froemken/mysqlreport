@@ -12,43 +12,25 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about uptime and uptime since last flush
  */
-class UptimeInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.information',
+    attributes: ['priority' => 80],
+)]
+class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
-    protected string $pageIdentifier = 'information';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Uptime';
+    protected const TITLE = 'Uptime';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (isset($page->getStatusValues()['Uptime'])) {
-            $this->addUnorderedListEntry(
-                $page->getStatusValues()['Uptime'] . ' seconds',
-                'Uptime',
-            );
-
-            $this->addUnorderedListEntry(
-                $this->convertSecondsToDays((int)$page->getStatusValues()['Uptime']) . ' days',
-                'Uptime in days',
-            );
-        }
-
-        if (isset($page->getStatusValues()['Uptime_since_flush_status'])) {
-            $this->addUnorderedListEntry(
-                $page->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
-                'Uptime since last flush',
-            );
-
-            $this->addUnorderedListEntry(
-                $this->convertSecondsToDays((int)$page->getStatusValues()['Uptime_since_flush_status']) . ' days',
-                'Uptime since last flush in days',
-            );
-        }
-
         return '"Uptime" shows time since server start or last restart. '
             . 'As a server admin you can FLUSH STATUS to reset various status variables. '
             . 'This is good for temporary debugging, but breaks analysis of server over full time.'
@@ -58,5 +40,36 @@ class UptimeInfoBox extends AbstractInfoBox
     private function convertSecondsToDays(int $seconds): string
     {
         return number_format($seconds / 60 / 60 / 24, 2, ',', '.');
+    }
+
+    public function getUnorderedList(): \SplQueue
+    {
+        $unorderedList = new \SplQueue();
+
+        if (isset($this->getStatusValues()['Uptime'])) {
+            $unorderedList->enqueue([
+                'title' => 'Uptime',
+                'value' => $this->getStatusValues()['Uptime'] . ' seconds',
+            ]);
+
+            $unorderedList->enqueue([
+                'title' => 'Uptime in days',
+                'value' => $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime']) . ' days',
+            ]);
+        }
+
+        if (isset($this->getStatusValues()['Uptime_since_flush_status'])) {
+            $unorderedList->enqueue([
+                'title' => 'Uptime since last flush',
+                'value' => $this->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
+            ]);
+
+            $unorderedList->enqueue([
+                'title' => 'Uptime since last flush in days',
+                'value' => $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime_since_flush_status']) . ' days',
+            ]);
+        }
+
+        return $unorderedList;
     }
 }

@@ -11,24 +11,28 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * InfoBox to inform about InnoDB buffer load
  */
-class InnoDbBufferLoadInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.innodb',
+    attributes: ['priority' => 90],
+)]
+class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
-    protected string $pageIdentifier = 'innoDb';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'InnoDB Buffer Load';
+    protected const TITLE = 'InnoDB Buffer Load';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (!isset($page->getStatusValues()['Innodb_page_size'])) {
-            $this->shouldBeRendered = false;
+        if (!isset($this->getStatusValues()['Innodb_page_size'])) {
             return '';
         }
 
@@ -37,16 +41,9 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox
         $content[] = 'If free InnoDB Buffer is below 15-20%% it may indicate that you have to increase your innodb_buffer_pool_size';
         $content[] = 'If free InnoDB Buffer is higher than 20-30%% it may indicate that you should reduce innodb_buffer_pool_size';
 
-        $load = $this->getLoad($page->getStatusValues());
-
-        $this->addUnorderedListEntry($load['total'], 'Total');
-        $this->addUnorderedListEntry($load['data'] . ' (' . $load['dataPercent'] . '%)', 'Data');
-        $this->addUnorderedListEntry($load['misc'] . ' (' . $load['miscPercent'] . '%)', 'Misc');
-        $this->addUnorderedListEntry($load['free'] . ' (' . $load['freePercent'] . '%)', 'Free');
-
         return sprintf(
             implode(' ', $content),
-            $page->getStatusValues()['Innodb_page_size'],
+            $this->getStatusValues()['Innodb_page_size'],
         );
     }
 
@@ -55,9 +52,10 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox
      *
      * @return array<string, string|int>
      */
-    protected function getLoad(StatusValues $status): array
+    protected function getLoad(): array
     {
         $load = [];
+        $status = $this->getStatusValues();
 
         // in Bytes
         $total = $status['Innodb_buffer_pool_pages_total'] * $status['Innodb_page_size'];
@@ -77,5 +75,34 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox
         $load['freePercent'] = round(100 / $total * $free, 1);
 
         return $load;
+    }
+
+    public function getUnorderedList(): \SplQueue
+    {
+        $unorderedList = new \SplQueue();
+
+        $load = $this->getLoad();
+
+        $unorderedList->enqueue([
+            'title' => 'Total',
+            'value' => $load['total'],
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Data',
+            'value' => $load['data'] . ' (' . $load['dataPercent'] . '%)',
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Misc',
+            'value' => $load['misc'] . ' (' . $load['miscPercent'] . '%)',
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Free',
+            'value' => $load['free'] . ' (' . $load['freePercent'] . '%)',
+        ]);
+
+        return $unorderedList;
     }
 }

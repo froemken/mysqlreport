@@ -26,20 +26,20 @@
 		"source": "https://github.com/froemken/mysqlreport"
 	},
 	"require": {
-		"doctrine/sql-formatter": "^1.1",
-		"typo3/cms-backend": "^13.2",
-		"typo3/cms-core": "^13.2",
-		"typo3/cms-extbase": "^13.2",
-		"typo3/cms-fluid": "^13.2"
+		"doctrine/sql-formatter": "^1.5",
+		"typo3/cms-backend": "^14.0 || dev-main",
+		"typo3/cms-core": "^14.0 || dev-main",
+		"typo3/cms-extbase": "^14.0 || dev-main",
+		"typo3/cms-fluid": "^14.0 || dev-main"
 	},
 	"require-dev": {
-		"ergebnis/composer-normalize": "~2.42.0",
-		"friendsofphp/php-cs-fixer": "^3.52",
-		"phpstan/phpstan": "^1.10",
-		"phpunit/phpunit": "^11.0.3",
-		"typo3/cms-dashboard": "^13.2",
-		"typo3/cms-install": "^13.2",
-		"typo3/cms-reports": "^13.2",
+		"ergebnis/composer-normalize": "~2.48.0",
+		"friendsofphp/php-cs-fixer": "^3.88",
+		"phpstan/phpstan": "^2.1",
+		"phpunit/phpunit": "^12.4",
+		"typo3/cms-dashboard": "^14.0 || dev-main",
+		"typo3/cms-install": "^14.0 || dev-main",
+		"typo3/cms-reports": "^14.0 || dev-main",
 		"typo3/testing-framework": "dev-main"
 	},
 	"replace": {

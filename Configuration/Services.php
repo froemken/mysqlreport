@@ -39,8 +39,6 @@ return static function (ContainerConfigurator $container, ContainerBuilder $cont
                         'page.query_cache' => new Reference('mysqlreport.page.query_cache'),
                         'page.table_cache' => new Reference('mysqlreport.page.table_cache'),
                         'page.thread_cache' => new Reference('mysqlreport.page.thread_cache'),
-                        'repository.status' => new Reference('mysqlreport.repository.status'),
-                        'repository.variables' => new Reference('mysqlreport.repository.variables'),
                     ],
                 ));
         }

@@ -11,92 +11,65 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Menu;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
-use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use TYPO3Fluid\Fluid\View\ViewInterface;
+use TYPO3\CMS\Core\View\ViewFactoryData;
+use TYPO3\CMS\Core\View\ViewFactoryInterface;
+use TYPO3\CMS\Core\View\ViewInterface;
 
 /**
- * Model with properties for panels you can see in BE module
+ * Domain model representing a Backend "page" in the MySQL / MariaDB
+ * report module.
+ *
+ * A page is NOT a TYPO3 page record.
+ * Instead, it is a logical collection of Bootstrap info-boxes (panels)
+ * that are rendered together in the module UI.
+ * Each page focuses on one technical topic and therefore aggregates only
+ * the info-boxes that belong to that topic.
+ *
+ * Typical examples
+ * ----------------
+ *
+ * - "InnoDB" page – shows engine status, buffer pool size, row lock stats …
+ * - "Query Cache" page – shows hit ratio, memory fragmentation …
+ * - "Profiling" page – shows slow-query log settings, current long-running
+ *   queries …
+ *
+ * The model acts as a DTO that is filled by the controller and consumed by
+ * the Fluid template. It only contains immutable value objects and simple
+ * scalars that the template needs for rendering; no persistence or business
+ * logic lives here.
  */
-class Page implements \SplSubject
+readonly class Page
 {
-    /**
-     * @var \SplObjectStorage<\SplObserver, AbstractInfoBox>
-     */
-    protected \SplObjectStorage $infoBoxes;
+    private const TEMPLATE_FILE = 'EXT:mysqlreport/Resources/Private/Templates/InfoBox/Default.html';
 
     /**
-     * @var \SplQueue<ViewInterface>
-     */
-    protected \SplQueue $infoBoxViews;
-
-    protected StatusValues $statusValues;
-
-    protected Variables $variables;
-
-    /**
-     * @param iterable<AbstractInfoBox> $infoBoxHandlers
+     * @param iterable<AbstractInfoBox> $infoBoxes
      */
     public function __construct(
-        iterable $infoBoxHandlers,
-        StatusRepository $statusRepository,
-        VariablesRepository $variablesRepository,
+        private iterable $infoBoxes,
+        private ViewFactoryInterface $viewFactory,
     ) {
-        $this->infoBoxes = new \SplObjectStorage();
-        $this->infoBoxViews = new \SplQueue();
-
-        foreach ($infoBoxHandlers as $infoBoxHandler) {
-            $this->attach($infoBoxHandler);
-        }
-
-        $this->statusValues = $statusRepository->findAll();
-        $this->variables = $variablesRepository->findAll();
-    }
-
-    public function attach(\SplObserver $observer): void
-    {
-        $this->infoBoxes->attach($observer);
-    }
-
-    public function detach(\SplObserver $observer): void
-    {
-        $this->infoBoxes->detach($observer);
-    }
-
-    public function notify(): void
-    {
-        foreach ($this->infoBoxes as $infoBox) {
-            $infoBox->update($this);
-        }
     }
 
     public function getRenderedInfoBoxes(): string
     {
-        $this->notify();
-
         $renderedInfoBoxes = '';
-        foreach ($this->infoBoxViews as $view) {
-            $renderedInfoBoxes .= $view->render();
+        foreach ($this->infoBoxes as $infoBox) {
+            if ($view = $infoBox->updateView($this->getViewForInfoBox())) {
+                $renderedInfoBoxes .= $view->render();
+            }
         }
 
         return $renderedInfoBoxes;
     }
 
-    public function addInfoBoxView(ViewInterface $view): void
+    private function getViewForInfoBox(): ViewInterface
     {
-        $this->infoBoxViews->enqueue($view);
-    }
+        $viewFactoryData = new ViewFactoryData(
+            templatePathAndFilename: self::TEMPLATE_FILE,
+        );
 
-    public function getStatusValues(): StatusValues
-    {
-        return $this->statusValues;
-    }
-
-    public function getVariables(): Variables
-    {
-        return $this->variables;
+        return $this->viewFactory->create($viewFactoryData);
     }
 }

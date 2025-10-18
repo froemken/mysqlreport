@@ -11,78 +11,33 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about Table Cache Opened table definitions
  *
  * See: https://dev.mysql.com/doc/refman/8.0/en/table-cache.html
  */
-class OpenedTablesInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.table_cache',
+    attributes: ['priority' => 90],
+)]
+class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'tableCache';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Opened Tables';
+    protected const TITLE = 'Opened Tables';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (!isset($page->getStatusValues()['Opened_tables'])) {
-            $this->shouldBeRendered = false;
+        if (!isset($this->getStatusValues()['Opened_tables'])) {
             return '';
         }
-
-        $this->addUnorderedListEntry(
-            $page->getStatusValues()['Opened_tables'],
-            'Opened tables since server start (Opened_tables)',
-        );
-
-        $this->addUnorderedListEntry(
-            $page->getStatusValues()['Open_tables'],
-            'Open tables in cache (Open_tables)',
-        );
-
-        $this->addUnorderedListEntry(
-            $page->getVariables()['table_open_cache'],
-            'Max allowed tables in cache (table_open_cache)',
-        );
-
-        $this->addUnorderedListEntry(
-            $page->getVariables()['open_files_limit'],
-            'Max file descriptors the mysqld process can use (open_files_limit)',
-        );
-
-        $this->addUnorderedListEntry(
-            number_format(
-                $page->getVariables()['max_connections'] * (5 + 2),
-                0,
-                ',',
-                '.',
-            ),
-            'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
-        );
-
-        $this->addUnorderedListEntry(
-            number_format(
-                $page->getVariables()['max_connections'] * (8 + 3),
-                0,
-                ',',
-                '.',
-            ),
-            'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
-        );
-
-        $this->addUnorderedListEntry(
-            number_format(
-                $this->getOpenedTablesEachSecond($page->getStatusValues()),
-                2,
-                ',',
-                '.',
-            ),
-            'Opened tables each second',
-        );
 
         return 'To increase performance, MySQL includes a mechanism to access a table simultaneously. '
             . 'With each client connect an additional file descriptor to the table is required. '
@@ -92,19 +47,84 @@ class OpenedTablesInfoBox extends AbstractInfoBox
     }
 
     /**
-     * get amount of opened tables each second
+     * get number of opened tables each second
      */
-    protected function getOpenedTablesEachSecond(StatusValues $status): float
+    protected function getOpenedTablesEachSecond(): float
     {
+        $status = $this->getStatusValues();
         $openedTables = $status['Opened_tables'] / $status['Uptime'];
-        if ($openedTables <= 0.6) {
-            $this->setState(StateEnumeration::STATE_OK);
-        } elseif ($openedTables <= 4) {
-            $this->setState(StateEnumeration::STATE_WARNING);
-        } else {
-            $this->setState(StateEnumeration::STATE_ERROR);
-        }
 
         return round($openedTables, 4);
+    }
+
+    public function getUnorderedList(): \SplQueue
+    {
+        $unorderedList = new \SplQueue();
+
+        $unorderedList->enqueue([
+            'title' => 'Opened tables since server start (Opened_tables)',
+            'value' => $this->getStatusValues()['Opened_tables'],
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Open tables in cache (Open_tables)',
+            'value' => $this->getStatusValues()['Open_tables'],
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Max allowed tables in cache (table_open_cache)',
+            'value' => $this->getVariables()['table_open_cache'],
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Max file descriptors the mysqld process can use (open_files_limit)',
+            'value' => $this->getVariables()['open_files_limit'],
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
+            'value' => number_format(
+                $this->getVariables()['max_connections'] * (5 + 2),
+                0,
+                ',',
+                '.',
+            ),
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
+            'value' => number_format(
+                $this->getVariables()['max_connections'] * (8 + 3),
+                0,
+                ',',
+                '.',
+            ),
+        ]);
+
+        $unorderedList->enqueue([
+            'title' => 'Opened tables each second',
+            'value' => number_format(
+                $this->getOpenedTablesEachSecond(),
+                2,
+                ',',
+                '.',
+            ),
+        ]);
+
+        return $unorderedList;
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $openedTables = $this->getOpenedTablesEachSecond();
+        if ($openedTables <= 0.6) {
+            $state = StateEnumeration::STATE_OK;
+        } elseif ($openedTables <= 4) {
+            $state = StateEnumeration::STATE_WARNING;
+        } else {
+            $state = StateEnumeration::STATE_ERROR;
+        }
+
+        return $state;
     }
 }

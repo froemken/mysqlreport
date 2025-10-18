@@ -22,7 +22,7 @@ use StefanFroemken\Mysqlreport\Helper\QueryParamsHelper;
 readonly class MySqlReportSqlLogger implements LoggerInterface
 {
     /**
-     * Every query which contains one of these parts will be skipped.
+     * Every query that contains one of these parts will be skipped.
      *
      * @var string[]
      */

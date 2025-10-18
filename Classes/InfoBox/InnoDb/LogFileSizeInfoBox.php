@@ -11,35 +11,37 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about InnoDB buffer log file size
  */
-class LogFileSizeInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.innodb',
+)]
+class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'innoDb';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Log File Size';
+    protected const TITLE = 'Log File Size';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
             !isset(
-                $page->getStatusValues()['Innodb_page_size'],
-                $page->getVariables()['innodb_log_files_in_group'],
+                $this->getStatusValues()['Innodb_page_size'],
+                $this->getVariables()['innodb_log_files_in_group'],
             )
-            || (int)$page->getVariables()['innodb_log_files_in_group'] === 0
+            || (int)$this->getVariables()['innodb_log_files_in_group'] === 0
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
-        $logFileSize = $this->getLogFileSize($page->getStatusValues(), $page->getVariables());
+        $logFileSize = $this->getLogFileSize();
 
         $content = [];
         $content[] = 'Your current log file size is %d Bytes.';
@@ -63,21 +65,38 @@ class LogFileSizeInfoBox extends AbstractInfoBox
      *
      * @return array<string, int>
      */
-    protected function getLogFileSize(StatusValues $status, Variables $variables): array
+    protected function getLogFileSize(): array
     {
-        $bytesWrittenEachSecond = $status['Innodb_os_log_written'] / $status['Uptime'];
-        $bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
-        $sizeOfEachLogFile = (int)($bytesWrittenEachHour / $variables['innodb_log_files_in_group']);
-
-        if ($sizeOfEachLogFile < 5242880 || $sizeOfEachLogFile < $variables['innodb_log_file_size']) {
-            $this->setState(StateEnumeration::STATE_OK);
-        } else {
-            $this->setState(StateEnumeration::STATE_ERROR);
-        }
+        $variables = $this->getVariables();
 
         return [
             'value' => $variables['innodb_log_file_size'],
-            'niceToHave' => $sizeOfEachLogFile,
+            'niceToHave' => $this->getSizeOfEachLogFile(),
         ];
+    }
+
+    private function getSizeOfEachLogFile(): int
+    {
+        $variables = $this->getVariables();
+        $status = $this->getStatusValues();
+
+        $bytesWrittenEachSecond = $status['Innodb_os_log_written'] / $status['Uptime'];
+        $bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
+
+        return (int)($bytesWrittenEachHour / $variables['innodb_log_files_in_group']);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $variables = $this->getVariables();
+        $sizeOfEachLogFile = $this->getSizeOfEachLogFile();
+
+        if ($sizeOfEachLogFile < 5242880 || $sizeOfEachLogFile < $variables['innodb_log_file_size']) {
+            $state = StateEnumeration::STATE_OK;
+        } else {
+            $state = StateEnumeration::STATE_ERROR;
+        }
+
+        return $state;
     }
 }

@@ -36,7 +36,7 @@ readonly class DownloadHelper
      */
     public function asCSV(array $headerRow, array $records): ResponseInterface
     {
-        // Create result
+        // Create the result
         $result[] = CsvUtility::csvValues($headerRow, self::CSV_DELIMITER, self::CSV_QUOTE);
         foreach ($records as $record) {
             $result[] = CsvUtility::csvValues($record, self::CSV_DELIMITER, self::CSV_QUOTE);

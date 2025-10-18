@@ -21,7 +21,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 /**
  * Controller to show and analyze all queries of a request
  */
-readonly class ProfileController
+class ProfileController
 {
     public function __construct(
         private QueryInformationRepository $queryInformationRepository,

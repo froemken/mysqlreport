@@ -21,7 +21,7 @@ use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 /**
  * Controller to show results of FTS and filesort
  */
-readonly class QueryController
+class QueryController
 {
     public function __construct(
         private QueryInformationRepository $queryInformationRepository,
