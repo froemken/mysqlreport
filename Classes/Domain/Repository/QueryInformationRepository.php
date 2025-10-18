@@ -408,7 +408,7 @@ readonly class QueryInformationRepository
     public function bulkInsert(array $queries): void
     {
         try {
-            $connection = $this->getDefaultConnection();
+            $connection = $this->getConnectionForMySqlReport();
 
             foreach (array_chunk($queries, 50) as $chunkOfQueriesToStore) {
                 $connection->bulkInsert(

@@ -36,7 +36,7 @@ class ExtConf
 
     public function __construct(
         ExtensionConfiguration $extensionConfiguration,
-        readonly private LoggerInterface $logger,
+        private readonly LoggerInterface $logger,
     ) {
         $extConf = [];
 

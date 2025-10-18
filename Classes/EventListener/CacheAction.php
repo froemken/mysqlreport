@@ -15,7 +15,6 @@ use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Backend\Backend\Event\ModifyClearCacheActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Create ClearCache entry and process Cache Clearing of mysqlreport
@@ -23,6 +22,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 readonly class CacheAction
 {
     use DatabaseConnectionTrait;
+
+    public function __construct(
+        private UriBuilder $uriBuilder,
+    ) {}
 
     /**
      * Add clear cache menu entry
@@ -32,13 +35,12 @@ readonly class CacheAction
      */
     public function __invoke(ModifyClearCacheActionsEvent $modifyClearCacheActionsEvent): void
     {
-        $uriBuilder = GeneralUtility::makeInstance(UriBuilder::class);
-
         $modifyClearCacheActionsEvent->addCacheActionIdentifier('mysqlprofiles');
         $modifyClearCacheActionsEvent->addCacheAction([
+            'id' => 'mysqlprofile',
             'title' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.title',
             'description' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.description',
-            'href' => (string)$uriBuilder->buildUriFromRoute('tce_db', ['cacheCmd' => 'mysqlprofiles']),
+            'href' => (string)$this->uriBuilder->buildUriFromRoute('tce_db', ['cacheCmd' => 'mysqlprofiles']),
             'iconIdentifier' => 'actions-system-cache-clear-impact-high',
         ]);
     }
@@ -54,7 +56,7 @@ readonly class CacheAction
             isset($params['cacheCmd'])
             && $params['cacheCmd'] === 'mysqlprofiles'
         ) {
-            $this->getDefaultConnection()->truncate('tx_mysqlreport_query_information');
+            $this->getConnectionForMySqlReport()->truncate('tx_mysqlreport_query_information');
         }
     }
 }

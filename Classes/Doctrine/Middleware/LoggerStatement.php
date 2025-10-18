@@ -37,10 +37,10 @@ class LoggerStatement implements Statement
      * @param \SplQueue<QueryInformation> $queries
      */
     public function __construct(
-        readonly private StatementInterface $wrappedStatement,
-        readonly private MySqlReportSqlLogger $logger,
-        readonly private string $sql,
-        readonly private \SplQueue $queries,
+        private readonly StatementInterface $wrappedStatement,
+        private readonly MySqlReportSqlLogger $logger,
+        private readonly string $sql,
+        private readonly \SplQueue $queries,
     ) {}
 
     public function bindValue(int|string $param, mixed $value, ParameterType $type = ParameterType::STRING): void

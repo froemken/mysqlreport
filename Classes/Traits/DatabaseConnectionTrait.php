@@ -38,6 +38,16 @@ trait DatabaseConnectionTrait
         );
     }
 
+    /**
+     * It may happen that the mysqlreport table is NOT configured for DEFAULT_CONNECTION_NAME (read-ony|write setups)
+     */
+    private function getConnectionForMySqlReport(): Connection
+    {
+        return $this->getConnectionPool()->getConnectionForTable(
+            'tx_mysqlreport_query_information',
+        );
+    }
+
     private function isValidConnectionDriver(string $connectionDriver): bool
     {
         return in_array($connectionDriver, ['mysqli', 'pdo_mysql'], true);

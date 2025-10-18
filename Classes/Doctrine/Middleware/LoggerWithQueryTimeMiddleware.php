@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Database\Middleware\UsableForConnectionInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * With new driverMiddlewares-hook of TYPO3 we register a Middleware into Doctrine.
+ * With the new driverMiddlewares-hook of TYPO3 we register a Middleware into Doctrine.
  */
 readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInterface
 {
@@ -43,7 +43,7 @@ readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInter
 
     public function wrap(Driver $driver): Driver
     {
-        // As $driver is transferred as constructor argument, DI can not be used in that class
+        // As $driver is transferred as a constructor argument, DI cannot be used in that class
         return GeneralUtility::makeInstance(LoggerWithQueryTimeDriver::class, $driver);
     }
 }
