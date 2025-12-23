@@ -15,9 +15,57 @@ services:
     exclude:
       - '../Classes/Domain/Model/*'
 
+  mysqlreport.page.information:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.status' }]
+
+  mysqlreport.page.innodb:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.innodb' }]
+
+  mysqlreport.page.misc:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.misc' }]
+
+  mysqlreport.page.query_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.query_cache' }]
+
+  mysqlreport.page.table_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.table_cache' }]
+
+  mysqlreport.page.thread_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.thread_cache' }]
+
   # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeMiddleware and LoggerWithQueryTimeConnection
   StefanFroemken\Mysqlreport\Configuration\ExtConf:
     public: true
+
+  StefanFroemken\Mysqlreport\Controller\InnoDBController:
+    arguments:
+      $page: '@mysqlreport.page.innodb'
+
+  StefanFroemken\Mysqlreport\Controller\MiscController:
+    arguments:
+      $page: '@mysqlreport.page.misc'
+
+  StefanFroemken\Mysqlreport\Controller\QueryCacheController:
+    arguments:
+      $page: '@mysqlreport.page.query_cache'
+
+  StefanFroemken\Mysqlreport\Controller\StatusController:
+    arguments:
+      $page: '@mysqlreport.page.information'
+
+  StefanFroemken\Mysqlreport\Controller\TableCacheController:
+    arguments:
+      $page: '@mysqlreport.page.table_cache'
+
+  StefanFroemken\Mysqlreport\Controller\ThreadCacheController:
+    arguments:
+      $page: '@mysqlreport.page.thread_cache'
 
   # Will be called via GeneralUtility::makeInstance in ConnectionPool
   StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeMiddleware:
@@ -66,25 +114,6 @@ services:
   StefanFroemken\Mysqlreport\ViewHelper\Format\SqlViewHelper:
     calls:
       - setSqlFormatter: ['@?Doctrine\SqlFormatter\SqlFormatter']
-
-  mysqlreport.page.information:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.information' }]
-  mysqlreport.page.innodb:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.innodb' }]
-  mysqlreport.page.misc:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.misc' }]
-  mysqlreport.page.query_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.query_cache' }]
-  mysqlreport.page.table_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.table_cache' }]
-  mysqlreport.page.thread_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.thread_cache' }]
 
   StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger:
     public: true

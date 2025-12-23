@@ -3,20 +3,19 @@
 	<file id="mysqlreport-module">
 		<unit id="title">
 			<segment state="final">
-				<source>MySQL Report</source>
+				<source>Request-Based Profiling</source>
 			</segment>
 		</unit>
 		<unit id="short_description">
 			<segment state="final">
-				<source>DB performance insights</source>
+				<source>Performance grouped by operation</source>
 			</segment>
 		</unit>
 		<unit id="description">
 			<segment state="final">
 				<source>
-					Monitor MySQL/MariaDB health and optimize performance.
-					View metrics for InnoDB, caches, and uptime. Includes an optional query profiler
-					to analyze database interactions per request.
+					Aggregates database load by request and operation type, such as SELECT, INSERT, or UPDATE.
+					Detailed profile information helps correlate database stress with specific application tasks.
 				</source>
 			</segment>
 		</unit>

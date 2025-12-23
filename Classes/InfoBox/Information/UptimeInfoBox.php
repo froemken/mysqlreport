@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
  * InfoBox to inform about uptime and uptime since last flush
  */
 #[AutoconfigureTag(
-    name: 'mysqlreport.infobox.information',
+    name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 80],
 )]
 class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface

@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
  * InfoBox to inform about Server information like version and uptime
  */
 #[AutoconfigureTag(
-    name: 'mysqlreport.infobox.information',
+    name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 90],
 )]
 class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface

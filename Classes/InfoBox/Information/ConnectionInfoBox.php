@@ -23,7 +23,7 @@ use TYPO3\CMS\Core\View\ViewFactoryInterface;
  * InfoBox to inform about current connections and max used connections
  */
 #[AutoconfigureTag(
-    name: 'mysqlreport.infobox.information',
+    name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 30],
 )]
 class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface

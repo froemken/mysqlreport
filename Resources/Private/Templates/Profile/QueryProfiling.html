@@ -9,10 +9,24 @@
     <h1>Query Profiling</h1>
 
     <p>
-        <a href="{be:moduleLink(route: 'mysqlreport_profile_info', arguments: {uid: queryInformationRecord.uid})}"
-           class="btn btn-primary">
-            Back
-        </a>
+        <f:if condition="{prevController}">
+            <f:then>
+                <f:link.action action="info"
+                               controller="Profile"
+                               class="btn btn-primary"
+                               arguments="{uid: queryInformationRecord.uid, prevController: prevController}">
+                    Back
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <f:link.action action="info"
+                               controller="Profile"
+                               class="btn btn-primary"
+                               arguments="{uid: queryInformationRecord.uid}">
+                    Back
+                </f:link.action>
+            </f:else>
+        </f:if>
     </p>
 
     <f:if condition="{profiling}">

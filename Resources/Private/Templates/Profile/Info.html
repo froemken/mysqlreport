@@ -9,15 +9,43 @@
     <h1>Query Information</h1>
 
     <p>
-        <a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: queryInformationRecord.unique_call_identifier, queryType: queryInformationRecord.query_type})}"
-           class="btn btn-primary">
-            Back
-        </a>
+        <f:if condition="{prevController}">
+            <f:then>
+                <f:link.action action="index"
+                               controller="{prevController}"
+                               class="btn btn-primary">
+                    Back
+                </f:link.action>
+            </f:then>
+            <f:else>
+                <f:link.action action="queryType"
+                               controller="Profile"
+                               class="btn btn-primary"
+                               arguments="{uniqueIdentifier: queryInformationRecord.unique_call_identifier, queryType: queryInformationRecord.query_type}">
+                    Back
+                </f:link.action>
+            </f:else>
+        </f:if>
+
         <f:if condition="{queryInformationRecord.query_type} == 'SELECT'">
-            <a href="{be:moduleLink(route: 'mysqlreport_profile_profiling', arguments: {uid: queryInformationRecord.uid})}"
-               class="btn btn-primary">
-                Show Query Profile
-            </a>
+            <f:if condition="{prevController}">
+                <f:then>
+                    <f:link.action action="queryProfiling"
+                                   controller="Profile"
+                                   class="btn btn-primary"
+                                   arguments="{uid: queryInformationRecord.uid, prevController: prevController}">
+                        Show Query Profile
+                    </f:link.action>
+                </f:then>
+                <f:else>
+                    <f:link.action action="queryProfiling"
+                                   controller="Profile"
+                                   class="btn btn-primary"
+                                   arguments="{uid: queryInformationRecord.uid}">
+                        Show Query Profile
+                    </f:link.action>
+                </f:else>
+            </f:if>
         </f:if>
     </p>
 

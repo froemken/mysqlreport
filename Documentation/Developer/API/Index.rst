@@ -36,7 +36,7 @@ infoboxes on a specific page.
 
 Currently, following tags are available:
 
-*   mysqlreport.infobox.information
+*   mysqlreport.infobox.status
 *   mysqlreport.infobox.innodb
 *   mysqlreport.infobox.misc
 *   mysqlreport.infobox.query_cache

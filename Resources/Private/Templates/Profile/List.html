@@ -30,18 +30,20 @@
                             {queryInformationRecord.duration}
                         </td>
                         <td>
-                            <a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: queryInformationRecord.unique_call_identifier})}"
-                               class="btn btn-primary">
+                            <f:link.action action="show"
+                                           controller="Profile"
+                                           class="btn btn-primary"
+                                           arguments="{uniqueIdentifier: queryInformationRecord.unique_call_identifier}">
                                 <core:icon identifier="actions-search"/>
-                            </a>
+                            </f:link.action>
                             <a href="{queryInformationRecord.request}" target="_blank">
-								<span data-bs-toggle="tooltip"
+                                <span data-bs-toggle="tooltip"
                                       title="{queryInformationRecord.request}"
                                       class="btn btn-default"
                                       data-bs-html="true"
                                       data-bs-placement="right">
-									<core:icon identifier="actions-document-share"/>
-								</span>
+                                    <core:icon identifier="actions-document-share"/>
+                                </span>
                             </a>
                         </td>
                     </tr>

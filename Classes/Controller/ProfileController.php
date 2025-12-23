@@ -12,32 +12,28 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
 use StefanFroemken\Mysqlreport\Helper\DownloadHelper;
-use StefanFroemken\Mysqlreport\Helper\ModuleTemplateHelper;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
+use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Controller to show and analyze all queries of a request
  */
-class ProfileController
+class ProfileController extends ActionController
 {
     public function __construct(
         private QueryInformationRepository $queryInformationRepository,
         private ModuleTemplateFactory $moduleTemplateFactory,
-        private ModuleTemplateHelper $moduleTemplateHelper,
         private DownloadHelper $downloadHelper,
     ) {}
 
-    public function listAction(ServerRequestInterface $request): ResponseInterface
+    public function listAction(): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($request);
-        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
-        $this->moduleTemplateHelper->addShortcutButton(
-            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport_profile_list',
-            'MySqlReport Profiles',
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
+            'mysqlreport_profile',
+            'MySQL Report - List Profiles',
         );
 
         $moduleTemplate->assign('queryInformationRecords', $this->queryInformationRepository->findQueryInformationRecordsForCall());
@@ -45,98 +41,89 @@ class ProfileController
         return $moduleTemplate->renderResponse('Profile/List');
     }
 
-    public function showAction(ServerRequestInterface $request): ResponseInterface
+    public function showAction(string $uniqueIdentifier): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($request);
-        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
-        $this->moduleTemplateHelper->addShortcutButton(
-            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport_profile_show',
-            'MySqlReport Show Profile',
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
+            'mysqlreport_profile',
+            'MySQL Report - Show Profile',
         );
-
-        $queryParameters = $request->getQueryParams();
-        $uniqueIdentifier = $queryParameters['uniqueIdentifier'] ?? '';
 
         $moduleTemplate->assignMultiple([
             'uniqueIdentifier' => $uniqueIdentifier,
-            'profileTypes' => $this->queryInformationRepository->getQueryInformationRecordsByUniqueIdentifier($uniqueIdentifier),
+            'profileTypes' => $this->queryInformationRepository->getQueryInformationRecordsByUniqueIdentifier(
+                $uniqueIdentifier,
+            ),
         ]);
 
         return $moduleTemplate->renderResponse('Profile/Show');
     }
 
-    public function queryTypeAction(ServerRequestInterface $request): ResponseInterface
+    public function queryTypeAction(string $uniqueIdentifier, string $queryType): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($request);
-        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
-        $this->moduleTemplateHelper->addShortcutButton(
-            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport_profile_querytype',
-            'MySqlReport Show Profile',
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
+            'mysqlreport_profile',
+            'MySQL Report - Show Query Type',
         );
-
-        $queryParameters = $request->getQueryParams();
-        $uniqueIdentifier = $queryParameters['uniqueIdentifier'] ?? '';
-        $queryType = $queryParameters['queryType'] ?? '';
 
         $moduleTemplate->assignMultiple([
             'uniqueIdentifier' => $uniqueIdentifier,
             'queryType' => $queryType,
-            'queryInformationRecords' => $this->queryInformationRepository->getQueryInformationRecordsByQueryType($uniqueIdentifier, $queryType),
+            'queryInformationRecords' => $this->queryInformationRepository->getQueryInformationRecordsByQueryType(
+                $uniqueIdentifier,
+                $queryType,
+            ),
         ]);
 
         return $moduleTemplate->renderResponse('Profile/QueryType');
     }
 
-    public function infoAction(ServerRequestInterface $request): ResponseInterface
+    public function infoAction(int $uid, string $prevController = ''): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($request);
-        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
-        $this->moduleTemplateHelper->addShortcutButton(
-            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport_profile_info',
-            'MySqlReport Show Query Information',
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
+            'mysqlreport_profile',
+            'MySQL Report - Show Query Information',
         );
-
-        $queryParameters = $request->getQueryParams();
-        $uid = (int)($queryParameters['uid'] ?? 0);
 
         $queryInformationRecord = $this->queryInformationRepository->getQueryInformationRecordByUid($uid);
         $queryInformationRecord['explain'] = unserialize($queryInformationRecord['explain_query'], ['allowed_classes' => false]);
 
-        $moduleTemplate->assign('queryInformationRecord', $queryInformationRecord);
+        $moduleTemplate->assignMultiple([
+            'queryInformationRecord' => $queryInformationRecord,
+            'prevController' => $prevController,
+        ]);
 
         return $moduleTemplate->renderResponse('Profile/Info');
     }
 
-    public function profilingAction(ServerRequestInterface $request): ResponseInterface
+    public function queryProfilingAction(int $uid, string $prevController = ''): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($request);
-        $this->moduleTemplateHelper->addOverviewButton($moduleTemplate->getDocHeaderComponent()->getButtonBar());
-        $this->moduleTemplateHelper->addShortcutButton(
-            $moduleTemplate->getDocHeaderComponent()->getButtonBar(),
-            'mysqlreport_profile_profiling',
-            'MySqlReport Show Query Profiling',
+        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
+            'mysqlreport_profile',
+            'MySQL Report - Show Query Profiling',
         );
 
-        $queryParameters = $request->getQueryParams();
-        $queryInformationRecord = $this->queryInformationRepository->getQueryInformationRecordByUid((int)($queryParameters['uid'] ?? 0));
+        $queryInformationRecord = $this->queryInformationRepository->getQueryInformationRecordByUid($uid);
 
-        $moduleTemplate->assign('queryInformationRecord', $queryInformationRecord);
-        $moduleTemplate->assign('profiling', $this->queryInformationRepository->getQueryProfiling($queryInformationRecord));
+        $moduleTemplate->assignMultiple([
+            'queryInformationRecord' => $queryInformationRecord,
+            'profiling' => $this->queryInformationRepository->getQueryProfiling($queryInformationRecord),
+            'prevController' => $prevController,
+        ]);
 
         return $moduleTemplate->renderResponse('Profile/QueryProfiling');
     }
 
-    public function downloadAction(ServerRequestInterface $request): ResponseInterface
+    public function downloadAction(string $uniqueIdentifier, string $downloadType): ResponseInterface
     {
-        $queryParameters = $request->getQueryParams();
-
-        if (empty($queryParameters['downloadType'])) {
+        if ($downloadType === '') {
             throw new \RuntimeException('downloadType was not given in request', 1673904554);
         }
-        if (!in_array($queryParameters['downloadType'], ['csv', 'json'], true)) {
+
+        if (!in_array($downloadType, ['csv', 'json'], true)) {
             throw new \RuntimeException('Given downloadType is not allowed', 1673904777);
         }
 
@@ -150,11 +137,11 @@ class ProfileController
         ];
 
         $records = $this->queryInformationRepository->getQueryInformationRecordsForDownloadByUniqueIdentifier(
-            $queryParameters['uniqueIdentifier'] ?? '',
+            $uniqueIdentifier,
             array_keys($columns),
         );
 
-        if ($queryParameters['downloadType'] === 'csv') {
+        if ($downloadType === 'csv') {
             return $this->downloadAsCsv(array_values($columns), $records);
         }
 
