@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
-use SplQueue;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -58,11 +57,11 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUn
     }
 
     /**
-     * @return SplQueue<ListElement>
+     * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): SplQueue
+    public function getUnorderedList(): \SplQueue
     {
-        $unorderedList = new SplQueue();
+        $unorderedList = new \SplQueue();
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables since server start (Opened_table_definitions)',

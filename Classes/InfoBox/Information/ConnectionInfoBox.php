@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
-use SplQueue;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -52,11 +51,11 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
     }
 
     /**
-     * @return SplQueue<ListElement>
+     * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): SplQueue
+    public function getUnorderedList(): \SplQueue
     {
-        $unorderedList = new SplQueue();
+        $unorderedList = new \SplQueue();
 
         if (isset($this->getStatusValues()['Connections'])) {
             $unorderedList->enqueue(new ListElement(

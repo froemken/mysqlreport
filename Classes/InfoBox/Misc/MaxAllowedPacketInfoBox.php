@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use SplQueue;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
@@ -47,11 +46,11 @@ class MaxAllowedPacketInfoBox extends AbstractInfoBox implements InfoBoxUnordere
     }
 
     /**
-     * @return SplQueue<ListElement>
+     * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): SplQueue
+    public function getUnorderedList(): \SplQueue
     {
-        $unorderedList = new SplQueue();
+        $unorderedList = new \SplQueue();
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed packet size in bytes (max_allowed_packet)',

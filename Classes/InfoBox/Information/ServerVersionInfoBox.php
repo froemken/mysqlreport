@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
-use SplQueue;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
@@ -37,11 +36,11 @@ class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLi
     }
 
     /**
-     * @return SplQueue<ListElement>
+     * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): SplQueue
+    public function getUnorderedList(): \SplQueue
     {
-        $unorderedList = new SplQueue();
+        $unorderedList = new \SplQueue();
 
         if (isset($this->getVariables()['version'])) {
             $unorderedList->enqueue(new ListElement(

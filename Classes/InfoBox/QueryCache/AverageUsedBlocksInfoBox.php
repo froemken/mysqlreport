@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
-use SplQueue;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
@@ -81,11 +80,11 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorder
     }
 
     /**
-     * @return SplQueue<ListElement>
+     * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): SplQueue
+    public function getUnorderedList(): \SplQueue
     {
-        $unorderedList = new SplQueue();
+        $unorderedList = new \SplQueue();
 
         $unorderedList->enqueue(new ListElement(
             title: 'very small',
