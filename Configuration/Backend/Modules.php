@@ -9,6 +9,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+use StefanFroemken\Mysqlreport\Controller\FileSortController;
 use StefanFroemken\Mysqlreport\Controller\FullTableScanController;
 use StefanFroemken\Mysqlreport\Controller\InnoDBController;
 use StefanFroemken\Mysqlreport\Controller\MiscController;
@@ -18,7 +19,6 @@ use StefanFroemken\Mysqlreport\Controller\SlowQueryController;
 use StefanFroemken\Mysqlreport\Controller\StatusController;
 use StefanFroemken\Mysqlreport\Controller\TableCacheController;
 use StefanFroemken\Mysqlreport\Controller\ThreadCacheController;
-use StefanFroemken\Mysqlreport\Controller\FileSortController;
 
 return [
     'mysqlreport' => [
