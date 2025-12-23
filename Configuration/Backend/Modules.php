@@ -20,7 +20,7 @@ return [
         'position' => ['after' => '*'],
         'access' => 'admin',
         'path' => '/module/mysqlreport/overview',
-        'icon' => 'EXT:mysqlreport/Resources/Public/Icons/Extension.svg',
+        'iconIdentifier' => 'ext-mysqlreport',
         'labels' => 'mysqlreport.mod',
         'routes' => [
             '_default' => [
