@@ -21,7 +21,7 @@ return [
         'access' => 'admin',
         'path' => '/module/mysqlreport/overview',
         'icon' => 'EXT:mysqlreport/Resources/Public/Icons/Extension.svg',
-        'labels' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang_report.xlf',
+        'labels' => 'mysqlreport.mod',
         'routes' => [
             '_default' => [
                 'target' => MySqlReportController::class . '::handleRequest',
