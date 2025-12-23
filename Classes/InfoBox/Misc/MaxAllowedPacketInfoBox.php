@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -44,14 +46,17 @@ class MaxAllowedPacketInfoBox extends AbstractInfoBox implements InfoBoxUnordere
         return implode(' ', $content);
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
-        $unorderedList->enqueue([
-            'title' => 'Max allowed packet size in bytes (max_allowed_packet)',
-            'value' => $this->getVariables()['max_allowed_packet'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Max allowed packet size in bytes (max_allowed_packet)',
+            value: $this->getVariables()['max_allowed_packet'],
+        ));
 
         return $unorderedList;
     }

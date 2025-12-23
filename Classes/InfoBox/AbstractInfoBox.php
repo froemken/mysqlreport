@@ -20,13 +20,15 @@ abstract class AbstractInfoBox
 {
     protected const TITLE = '';
 
+    abstract public function renderBody(): string;
+
     public function updateView(ViewInterface $view): ?ViewInterface
     {
         if (($body = $this->renderBody()) === '') {
             return null;
         }
 
-        $view->assign('title', self::TITLE);
+        $view->assign('title', static::TITLE);
         $view->assign('body', $body);
 
         if ($this instanceof InfoBoxUnorderedListInterface) {

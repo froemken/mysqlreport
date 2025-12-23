@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -34,36 +36,39 @@ class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLi
         return 'Following server information have been found:';
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
         if (isset($this->getVariables()['version'])) {
-            $unorderedList->enqueue([
-                'title' => 'Version',
-                'value' => $this->getVariables()['version'],
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Version',
+                value: $this->getVariables()['version'],
+            ));
         }
 
         if (isset($this->getVariables()['version_comment'])) {
-            $unorderedList->enqueue([
-                'title' => 'Version comment',
-                'value' => $this->getVariables()['version_comment'],
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Version comment',
+                value: $this->getVariables()['version_comment'],
+            ));
         }
 
         if (isset($this->getVariables()['version_compile_machine'])) {
-            $unorderedList->enqueue([
-                'title' => 'Version compile machine',
-                'value' => $this->getVariables()['version_compile_machine'],
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Version compile machine',
+                value: $this->getVariables()['version_compile_machine'],
+            ));
         }
 
         if (isset($this->getVariables()['version_compile_os'])) {
-            $unorderedList->enqueue([
-                'title' => 'Version compile OS',
-                'value' => $this->getVariables()['version_compile_os'],
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Version compile OS',
+                value: $this->getVariables()['version_compile_os'],
+            ));
         }
 
         return $unorderedList;

@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -40,73 +42,76 @@ class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
         return implode(' ', $content);
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
         if (isset(
             $this->getVariables()['tmp_table_size'],
             $this->getVariables()['max_heap_table_size'],
         )) {
-            $unorderedList->enqueue([
-                'title' => 'Configured max size of temp table while query (tmp_table_size)',
-                'value' => $this->getVariables()['tmp_table_size'],
-            ]);
-            $unorderedList->enqueue([
-                'title' => 'Configured max size of in-memory table YOU can create (max_heap_table_size)',
-                'value' => $this->getVariables()['max_heap_table_size'],
-            ]);
-            $unorderedList->enqueue([
-                'title' => 'Real max size. Lowest value of tmp_table_size/max_heap_table_size wins',
-                'value' => $this->getVariables()['max_heap_table_size'] < $this->getVariables()['tmp_table_size']
+            $unorderedList->enqueue(new ListElement(
+                title: 'Configured max size of temp table while query (tmp_table_size)',
+                value: $this->getVariables()['tmp_table_size'],
+            ));
+            $unorderedList->enqueue(new ListElement(
+                title: 'Configured max size of in-memory table YOU can create (max_heap_table_size)',
+                value: $this->getVariables()['max_heap_table_size'],
+            ));
+            $unorderedList->enqueue(new ListElement(
+                title: 'Real max size. Lowest value of tmp_table_size/max_heap_table_size wins',
+                value: $this->getVariables()['max_heap_table_size'] < $this->getVariables()['tmp_table_size']
                     ? $this->getVariables()['max_heap_table_size']
                     : $this->getVariables()['tmp_table_size'],
-            ]);
+            ));
         }
 
         if (isset($this->getStatusValues()['Created_tmp_disk_tables'])) {
-            $unorderedList->enqueue([
-                'title' => 'Created temporary tables on disk since server start',
-                'value' => $this->getStatusValues()['Created_tmp_disk_tables'],
-            ]);
-            $unorderedList->enqueue([
-                'title' => 'Created temporary tables on disk in seconds',
-                'value' => number_format(
+            $unorderedList->enqueue(new ListElement(
+                title: 'Created temporary tables on disk since server start',
+                value: $this->getStatusValues()['Created_tmp_disk_tables'],
+            ));
+            $unorderedList->enqueue(new ListElement(
+                title: 'Created temporary tables on disk in seconds',
+                value: number_format(
                     $this->getStatusValues()['Created_tmp_disk_tables'] / $this->getStatusValues()['Uptime'],
                     2,
                     ',',
                     '.',
                 ),
-            ]);
+            ));
         }
 
         if (isset($this->getStatusValues()['Created_tmp_tables'])) {
-            $unorderedList->enqueue([
-                'title' => 'Created temporary tables on disk and ram since server start',
-                'value' => $this->getStatusValues()['Created_tmp_tables'],
-            ]);
-            $unorderedList->enqueue([
-                'title' => 'Created temporary tables on disk and ram in seconds',
-                'value' => number_format(
+            $unorderedList->enqueue(new ListElement(
+                title: 'Created temporary tables on disk and ram since server start',
+                value: $this->getStatusValues()['Created_tmp_tables'],
+            ));
+            $unorderedList->enqueue(new ListElement(
+                title: 'Created temporary tables on disk and ram in seconds',
+                value: number_format(
                     $this->getStatusValues()['Created_tmp_tables'] / $this->getStatusValues()['Uptime'],
                     2,
                     ',',
                     '.',
                 ),
-            ]);
+            ));
         }
 
         // If not set, InnoDB is the new default
-        $unorderedList->enqueue([
-            'title' => 'Storage engine for temp. tables on disk',
-            'value' => $this->getVariables()['internal_tmp_disk_storage_engine'] ?? 'InnoDB',
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Storage engine for temp. tables on disk',
+            value: $this->getVariables()['internal_tmp_disk_storage_engine'] ?? 'InnoDB',
+        ));
 
         // If not set, MEMORY was the old default
-        $unorderedList->enqueue([
-            'title' => 'Storage engine for temp. tables in ram',
-            'value' => $this->getVariables()['internal_tmp_mem_storage_engine'] ?? 'MEMORY',
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Storage engine for temp. tables in ram',
+            value: $this->getVariables()['internal_tmp_mem_storage_engine'] ?? 'MEMORY',
+        ));
 
         return $unorderedList;
     }

@@ -14,6 +14,7 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/Domain/Model/*'
+      - '../Classes/InfoBox/ListElement.php'
 
   mysqlreport.page.information:
     class: StefanFroemken\Mysqlreport\Menu\Page

@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -57,59 +59,62 @@ class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLis
         return round($openedTables, 4);
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
-        $unorderedList->enqueue([
-            'title' => 'Opened tables since server start (Opened_tables)',
-            'value' => $this->getStatusValues()['Opened_tables'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Opened tables since server start (Opened_tables)',
+            value: $this->getStatusValues()['Opened_tables'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Open tables in cache (Open_tables)',
-            'value' => $this->getStatusValues()['Open_tables'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Open tables in cache (Open_tables)',
+            value: $this->getStatusValues()['Open_tables'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Max allowed tables in cache (table_open_cache)',
-            'value' => $this->getVariables()['table_open_cache'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Max allowed tables in cache (table_open_cache)',
+            value: $this->getVariables()['table_open_cache'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Max file descriptors the mysqld process can use (open_files_limit)',
-            'value' => $this->getVariables()['open_files_limit'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Max file descriptors the mysqld process can use (open_files_limit)',
+            value: $this->getVariables()['open_files_limit'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
-            'value' => number_format(
+        $unorderedList->enqueue(new ListElement(
+            title: 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
+            value: number_format(
                 $this->getVariables()['max_connections'] * (5 + 2),
                 0,
                 ',',
                 '.',
             ),
-        ]);
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
-            'value' => number_format(
+        $unorderedList->enqueue(new ListElement(
+            title: 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
+            value: number_format(
                 $this->getVariables()['max_connections'] * (8 + 3),
                 0,
                 ',',
                 '.',
             ),
-        ]);
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Opened tables each second',
-            'value' => number_format(
+        $unorderedList->enqueue(new ListElement(
+            title: 'Opened tables each second',
+            value: number_format(
                 $this->getOpenedTablesEachSecond(),
                 2,
                 ',',
                 '.',
             ),
-        ]);
+        ));
 
         return $unorderedList;
     }

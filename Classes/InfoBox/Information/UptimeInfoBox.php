@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -42,32 +44,35 @@ class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInter
         return number_format($seconds / 60 / 60 / 24, 2, ',', '.');
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
         if (isset($this->getStatusValues()['Uptime'])) {
-            $unorderedList->enqueue([
-                'title' => 'Uptime',
-                'value' => $this->getStatusValues()['Uptime'] . ' seconds',
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Uptime',
+                value: $this->getStatusValues()['Uptime'] . ' seconds',
+            ));
 
-            $unorderedList->enqueue([
-                'title' => 'Uptime in days',
-                'value' => $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime']) . ' days',
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Uptime in days',
+                value: $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime']) . ' days',
+            ));
         }
 
         if (isset($this->getStatusValues()['Uptime_since_flush_status'])) {
-            $unorderedList->enqueue([
-                'title' => 'Uptime since last flush',
-                'value' => $this->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Uptime since last flush',
+                value: $this->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
+            ));
 
-            $unorderedList->enqueue([
-                'title' => 'Uptime since last flush in days',
-                'value' => $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime_since_flush_status']) . ' days',
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Uptime since last flush in days',
+                value: $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime_since_flush_status']) . ' days',
+            ));
         }
 
         return $unorderedList;

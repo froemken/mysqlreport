@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -77,31 +79,34 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnordere
         return $load;
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
         $load = $this->getLoad();
 
-        $unorderedList->enqueue([
-            'title' => 'Total',
-            'value' => $load['total'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Total',
+            value: $load['total'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Data',
-            'value' => $load['data'] . ' (' . $load['dataPercent'] . '%)',
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Data',
+            value: $load['data'] . ' (' . $load['dataPercent'] . '%)',
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Misc',
-            'value' => $load['misc'] . ' (' . $load['miscPercent'] . '%)',
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Misc',
+            value: $load['misc'] . ' (' . $load['miscPercent'] . '%)',
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Free',
-            'value' => $load['free'] . ' (' . $load['freePercent'] . '%)',
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Free',
+            value: $load['free'] . ' (' . $load['freePercent'] . '%)',
+        ));
 
         return $unorderedList;
     }

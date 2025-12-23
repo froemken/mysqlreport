@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -55,34 +57,37 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUn
         return round($openedTableDefinitions, 4);
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
-        $unorderedList->enqueue([
-            'title' => 'Opened tables since server start (Opened_table_definitions)',
-            'value' => $this->getStatusValues()['Opened_table_definitions'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Opened tables since server start (Opened_table_definitions)',
+            value: $this->getStatusValues()['Opened_table_definitions'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Open tables in cache (Open_table_definitions)',
-            'value' => $this->getStatusValues()['Open_table_definitions'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Open tables in cache (Open_table_definitions)',
+            value: $this->getStatusValues()['Open_table_definitions'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Max allowed tables in cache (table_definition_cache)',
-            'value' => $this->getVariables()['table_definition_cache'],
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'Max allowed tables in cache (table_definition_cache)',
+            value: $this->getVariables()['table_definition_cache'],
+        ));
 
-        $unorderedList->enqueue([
-            'title' => 'Opened table definitions each second',
-            'value' => number_format(
+        $unorderedList->enqueue(new ListElement(
+            title: 'Opened table definitions each second',
+            value: number_format(
                 $this->getOpenedTableDefinitionsEachSecond(),
                 2,
                 ',',
                 '.',
             ),
-        ]);
+        ));
 
         return $unorderedList;
     }

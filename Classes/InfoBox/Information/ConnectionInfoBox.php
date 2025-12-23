@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
@@ -49,64 +51,67 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
         return number_format($value / $uptime, 2, ',', '.');
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
         if (isset($this->getStatusValues()['Connections'])) {
-            $unorderedList->enqueue([
-                'title' => 'Connections in total (Connections)',
-                'value' => $this->getStatusValues()['Connections'],
-            ]);
-            $unorderedList->enqueue([
-                'title' => 'Average connections each second',
-                'value' => $this->getAverage(
+            $unorderedList->enqueue(new ListElement(
+                title: 'Connections in total (Connections)',
+                value: $this->getStatusValues()['Connections'],
+            ));
+            $unorderedList->enqueue(new ListElement(
+                title: 'Average connections each second',
+                value: $this->getAverage(
                     (int)$this->getStatusValues()['Connections'],
                     (int)$this->getStatusValues()['Uptime'],
                 ),
-            ]);
+            ));
         }
 
         if (isset($this->getStatusValues()['Max_used_connections'])) {
-            $unorderedList->enqueue([
-                'title' => 'Max used simultaneous connections (Max_used_connections)',
-                'value' => $this->getStatusValues()['Max_used_connections'],
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Max used simultaneous connections (Max_used_connections)',
+                value: $this->getStatusValues()['Max_used_connections'],
+            ));
 
             if (isset($this->getVariables()['max_connections'])) {
                 $percent = 100 / (int)$this->getVariables()['max_connections'] * (int)$this->getStatusValues()['Max_used_connections'];
-                $unorderedList->enqueue([
-                    'title' => 'Max used simultaneous connections in percent',
-                    'value' => number_format($percent, 2, ',', '.') . '%',
-                ]);
+                $unorderedList->enqueue(new ListElement(
+                    title: 'Max used simultaneous connections in percent',
+                    value: number_format($percent, 2, ',', '.') . '%',
+                ));
             }
         }
 
         if (isset($this->getVariables()['max_connections'])) {
-            $unorderedList->enqueue([
-                'title' => 'Max allowed simultaneous connections (max_connections)',
-                'value' => $this->getVariables()['max_connections'],
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Max allowed simultaneous connections (max_connections)',
+                value: $this->getVariables()['max_connections'],
+            ));
         }
 
         if (isset($this->getVariables()['extra_max_connections'])) {
-            $unorderedList->enqueue([
-                'title' => 'Extra connections (extra_max_connections)',
-                'value' => $this->getVariables()['extra_max_connections'],
-            ]);
+            $unorderedList->enqueue(new ListElement(
+                title: 'Extra connections (extra_max_connections)',
+                value: $this->getVariables()['extra_max_connections'],
+            ));
         }
 
         if (isset($this->getVariables()['max_user_connections'])) {
             if ((int)$this->getVariables()['max_user_connections'] === 0) {
-                $unorderedList->enqueue([
-                    'title' => 'Max allowed user connections (max_user_connections)',
-                    'value' => 'No limit. Using value from max_connections',
-                ]);
+                $unorderedList->enqueue(new ListElement(
+                    title: 'Max allowed user connections (max_user_connections)',
+                    value: 'No limit. Using value from max_connections',
+                ));
             } else {
-                $unorderedList->enqueue([
-                    'title' => 'Max allowed user connections (max_user_connections)',
-                    'value' => $this->getVariables()['max_user_connections'],
-                ]);
+                $unorderedList->enqueue(new ListElement(
+                    title: 'Max allowed user connections (max_user_connections)',
+                    value: $this->getVariables()['max_user_connections'],
+                ));
             }
         }
 

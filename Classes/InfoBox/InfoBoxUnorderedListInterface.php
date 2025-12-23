@@ -11,7 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
+use SplQueue;
+
 interface InfoBoxUnorderedListInterface
 {
-    public function getUnorderedList(): \SplQueue;
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue;
 }

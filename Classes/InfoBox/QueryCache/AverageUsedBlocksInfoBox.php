@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use SplQueue;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -78,26 +80,29 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorder
         return round($avgUsedBlocks, 4);
     }
 
-    public function getUnorderedList(): \SplQueue
+    /**
+     * @return SplQueue<ListElement>
+     */
+    public function getUnorderedList(): SplQueue
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = new SplQueue();
 
-        $unorderedList->enqueue([
-            'title' => 'very small',
-            'value' => '16KB - 128KB',
-        ]);
-        $unorderedList->enqueue([
-            'title' => 'small',
-            'value' => '128KB - 256KB',
-        ]);
-        $unorderedList->enqueue([
-            'title' => 'medium',
-            'value' => '256KB - 1MB',
-        ]);
-        $unorderedList->enqueue([
-            'title' => 'big',
-            'value' => '1MB - 4MB',
-        ]);
+        $unorderedList->enqueue(new ListElement(
+            title: 'very small',
+            value: '16KB - 128KB',
+        ));
+        $unorderedList->enqueue(new ListElement(
+            title: 'small',
+            value: '128KB - 256KB',
+        ));
+        $unorderedList->enqueue(new ListElement(
+            title: 'medium',
+            value: '256KB - 1MB',
+        ));
+        $unorderedList->enqueue(new ListElement(
+            title: 'big',
+            value: '1MB - 4MB',
+        ));
 
         return $unorderedList;
     }
