@@ -11,30 +11,34 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about InnoDB buffer hit ratio by SF
  */
-class HitRatioBySFInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.innodb',
+    attributes: ['priority' => 40],
+)]
+class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'innoDb';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Hit Ratio by SF';
+    protected const TITLE = 'Hit Ratio by SF';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
             !isset(
-                $page->getStatusValues()['Innodb_page_size'],
-                $page->getStatusValues()['Innodb_buffer_pool_reads'],
-                $page->getStatusValues()['Innodb_buffer_pool_read_requests'],
+                $this->getStatusValues()['Innodb_page_size'],
+                $this->getStatusValues()['Innodb_buffer_pool_reads'],
+                $this->getStatusValues()['Innodb_buffer_pool_read_requests'],
             )
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
@@ -47,26 +51,38 @@ class HitRatioBySFInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getHitRatioBySF($page->getStatusValues()),
+            $this->getHitRatioBySF(),
         );
     }
 
     /**
      * get hit ratio of innoDb Buffer by SF
      */
-    protected function getHitRatioBySF(StatusValues $status): float
+    protected function getHitRatioBySF(): float
     {
-        // we always want a factor of 1/1000.
+        $status = $this->getStatusValues();
+
+        $niceToHave = $status['Innodb_buffer_pool_reads'] * 1000;
+        $hitRatio = 100 / $niceToHave * $status['Innodb_buffer_pool_read_requests'];
+
+        return round($hitRatio, 2);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $status = $this->getStatusValues();
+
+        // We always want a factor of 1/1000.
         $niceToHave = $status['Innodb_buffer_pool_reads'] * 1000;
         $hitRatio = 100 / $niceToHave * $status['Innodb_buffer_pool_read_requests'];
         if ($hitRatio <= 70) {
-            $this->setState(StateEnumeration::STATE_ERROR);
+            $state = StateEnumeration::STATE_ERROR;
         } elseif ($hitRatio <= 90) {
-            $this->setState(StateEnumeration::STATE_WARNING);
+            $state = StateEnumeration::STATE_WARNING;
         } else {
-            $this->setState(StateEnumeration::STATE_OK);
+            $state = StateEnumeration::STATE_OK;
         }
 
-        return round($hitRatio, 2);
+        return $state;
     }
 }

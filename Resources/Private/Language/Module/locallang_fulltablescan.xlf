@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
+	<file id="mysqlreport-module">
+		<unit id="title">
+			<segment state="final">
+				<source>Full Table Scans</source>
+			</segment>
+		</unit>
+		<unit id="short_description">
+			<segment state="final">
+				<source>Non-indexed query detection</source>
+			</segment>
+		</unit>
+		<unit id="description">
+			<segment state="final">
+				<source>
+					Monitors the frequency of full table scans across your database.
+					Frequent scans on large tables can significantly degrade overall system performance.
+				</source>
+			</segment>
+		</unit>
+	</file>
+</xliff>

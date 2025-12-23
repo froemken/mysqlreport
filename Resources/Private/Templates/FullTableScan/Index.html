@@ -40,10 +40,12 @@
                     {queryInformationRecord.duration}
                 </td>
                 <td>
-                    <a href="{be:moduleLink(route: 'mysqlreport_query_profileinfo', arguments: {prevRouteIdentifier: 'mysqlreport_query_fulltablescan', uid: queryInformationRecord.uid})}"
-                       class="btn btn-default">
+                    <f:link.action action="info"
+                                   controller="Profile"
+                                   class="btn btn-default"
+                                   arguments="{uid: queryInformationRecord.uid, prevController: 'FullTableScan'}">
                         <core:icon identifier="actions-search"/>
-                    </a>
+                    </f:link.action>
                 </td>
             </tr>
         </f:for>

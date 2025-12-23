@@ -12,28 +12,29 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about max allowed packet size
  */
-class MaxAllowedPacketInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.misc',
+    attributes: ['priority' => 90],
+)]
+class MaxAllowedPacketInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
-    protected string $pageIdentifier = 'misc';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Max Packet Size';
+    protected const TITLE = 'Max Packet Size';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (!isset($page->getVariables()['max_allowed_packet'])) {
-            $this->shouldBeRendered = false;
+        if (!isset($this->getVariables()['max_allowed_packet'])) {
             return '';
         }
-
-        $this->addUnorderedListEntry(
-            $page->getVariables()['max_allowed_packet'],
-            'Max allowed packet size in bytes (max_allowed_packet)',
-        );
 
         $content = [];
         $content[] = 'Max allowed packet size a client can send to or retrieve from the server.';
@@ -42,5 +43,20 @@ class MaxAllowedPacketInfoBox extends AbstractInfoBox
         $content[] = 'Hint: 1 GB is the largest allowed size.';
 
         return implode(' ', $content);
+    }
+
+    /**
+     * @return \SplQueue<ListElement>
+     */
+    public function getUnorderedList(): \SplQueue
+    {
+        $unorderedList = new \SplQueue();
+
+        $unorderedList->enqueue(new ListElement(
+            title: 'Max allowed packet size in bytes (max_allowed_packet)',
+            value: $this->getVariables()['max_allowed_packet'],
+        ));
+
+        return $unorderedList;
     }
 }

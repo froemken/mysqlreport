@@ -14,16 +14,21 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * InfoBox to inform about current query cache too high
+ * InfoBox to inform about the current query cache too high
  */
-class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.query_cache',
+)]
+class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'queryCache';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Query Cache too high';
+    protected const TITLE = 'Query Cache too high';
 
     private QueryCacheHelper $queryCacheHelper;
 
@@ -32,22 +37,18 @@ class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
-            !isset($page->getVariables()['query_cache_size'])
-            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
+            !isset($this->getVariables()['query_cache_size'])
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
-        if ($page->getVariables()['query_cache_size'] < 268435456) {
-            $this->shouldBeRendered = false;
+        if ($this->getVariables()['query_cache_size'] < 268435456) {
             return '';
         }
-
-        $this->setState(StateEnumeration::STATE_ERROR);
 
         $content = [];
         $content[] = 'The query cache is configured too high.';
@@ -55,5 +56,10 @@ class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox
         $content[] = 'Try to keep query cache below 256MBAs higher as better.';
 
         return implode(' ', $content);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        return StateEnumeration::STATE_ERROR;
     }
 }

@@ -36,7 +36,7 @@ readonly class DownloadHelper
      */
     public function asCSV(array $headerRow, array $records): ResponseInterface
     {
-        // Create result
+        // Create the result
         $result[] = CsvUtility::csvValues($headerRow, self::CSV_DELIMITER, self::CSV_QUOTE);
         foreach ($records as $record) {
             $result[] = CsvUtility::csvValues($record, self::CSV_DELIMITER, self::CSV_QUOTE);
@@ -50,9 +50,25 @@ readonly class DownloadHelper
      */
     public function asJSON(array $records): ResponseInterface
     {
+        if ($records === []) {
+            $json = json_encode(
+                [
+                    'message' => 'No records for export found',
+                ],
+            );
+            return $this->generateDownloadResponse($json, 'json');
+        }
+
         try {
-            $json = json_encode($records, JSON_THROW_ON_ERROR) ?: '';
+            $json = json_encode($records, JSON_THROW_ON_ERROR);
         } catch (\JsonException $exception) {
+            if ($exception->getCode() === JSON_ERROR_UTF8) {
+                foreach ($records as &$record) {
+                    $record['query'] = base64_encode($record['query']);
+                }
+                return $this->asJSON($records);
+            }
+
             $this->logger->error('Error while encoding JSON in DownloadHelper', [
                 'exception' => $exception,
             ]);

@@ -11,30 +11,34 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about InnoDB buffer hit ratio
  */
-class HitRatioInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.innodb',
+    attributes: ['priority' => 50],
+)]
+class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'innoDb';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Hit Ratio';
+    protected const TITLE = 'Hit Ratio';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
             !isset(
-                $page->getStatusValues()['Innodb_page_size'],
-                $page->getStatusValues()['Innodb_buffer_pool_read_requests'],
-                $page->getStatusValues()['Innodb_buffer_pool_reads'],
+                $this->getStatusValues()['Innodb_page_size'],
+                $this->getStatusValues()['Innodb_buffer_pool_read_requests'],
+                $this->getStatusValues()['Innodb_buffer_pool_reads'],
             )
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
@@ -47,7 +51,7 @@ class HitRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getHitRatio($page->getStatusValues()),
+            $this->getHitRatio(),
         );
     }
 
@@ -55,17 +59,26 @@ class HitRatioInfoBox extends AbstractInfoBox
      * get hit ratio of innoDb Buffer
      * A ratio of 99.9 equals 1/1000
      */
-    protected function getHitRatio(StatusValues $status): float
+    protected function getHitRatio(): float
     {
+        $status = $this->getStatusValues();
+
         $hitRatio = ($status['Innodb_buffer_pool_read_requests'] / ($status['Innodb_buffer_pool_read_requests'] + $status['Innodb_buffer_pool_reads'])) * 100;
-        if ($hitRatio <= 90) {
-            $this->setState(StateEnumeration::STATE_ERROR);
-        } elseif ($hitRatio <= 99.7) {
-            $this->setState(StateEnumeration::STATE_WARNING);
-        } else {
-            $this->setState(StateEnumeration::STATE_OK);
-        }
 
         return round($hitRatio, 2);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $hitRatio = $this->getHitRatio();
+        if ($hitRatio <= 90) {
+            $state = StateEnumeration::STATE_ERROR;
+        } elseif ($hitRatio <= 99.7) {
+            $state = StateEnumeration::STATE_WARNING;
+        } else {
+            $state = StateEnumeration::STATE_OK;
+        }
+
+        return $state;
     }
 }

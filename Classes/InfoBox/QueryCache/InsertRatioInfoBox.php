@@ -11,20 +11,25 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * InfoBox to inform about current query cache insert ratio
+ * InfoBox to inform about the current query cache insert ratio
  */
-class InsertRatioInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.query_cache',
+    attributes: ['priority' => 80],
+)]
+class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'queryCache';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Insert Ratio';
+    protected const TITLE = 'Insert Ratio';
 
     private QueryCacheHelper $queryCacheHelper;
 
@@ -33,14 +38,13 @@ class InsertRatioInfoBox extends AbstractInfoBox
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
-            !isset($page->getStatusValues()['Qcache_hits'])
-            || (int)$page->getStatusValues()['Qcache_hits'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
+            !isset($this->getStatusValues()['Qcache_hits'])
+            || (int)$this->getStatusValues()['Qcache_hits'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
@@ -53,21 +57,30 @@ class InsertRatioInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getInsertRatio($page->getStatusValues()),
+            $this->getInsertRatio(),
         );
     }
 
-    protected function getInsertRatio(StatusValues $status): float
+    protected function getInsertRatio(): float
     {
+        $status = $this->getStatusValues();
+
         $insertRatio = ($status['Qcache_inserts'] / ($status['Qcache_hits'] + $status['Com_select'])) * 100;
-        if ($insertRatio <= 20) {
-            $this->setState(StateEnumeration::STATE_OK);
-        } elseif ($insertRatio <= 40) {
-            $this->setState(StateEnumeration::STATE_WARNING);
-        } else {
-            $this->setState(StateEnumeration::STATE_ERROR);
-        }
 
         return round($insertRatio, 4);
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $insertRatio = $this->getInsertRatio();
+        if ($insertRatio <= 20) {
+            $state = StateEnumeration::STATE_OK;
+        } elseif ($insertRatio <= 40) {
+            $state = StateEnumeration::STATE_WARNING;
+        } else {
+            $state = StateEnumeration::STATE_ERROR;
+        }
+
+        return $state;
     }
 }

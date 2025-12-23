@@ -11,72 +11,97 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about Table Cache Opened table definitions
  *
  * See: https://fromdual.com/how-mysql-behaves-with-many-schemata-tables-and-partitions
  */
-class OpenedTableDefinitionsInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.table_cache',
+    attributes: ['priority' => 80],
+)]
+class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
-    protected string $pageIdentifier = 'tableCache';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Opened Table Definitions';
+    protected const TITLE = 'Opened Table Definitions';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (!isset($page->getStatusValues()['Opened_table_definitions'])) {
-            $this->shouldBeRendered = false;
+        if (!isset($this->getStatusValues()['Opened_table_definitions'])) {
             return '';
         }
-
-        $this->addUnorderedListEntry(
-            $page->getStatusValues()['Opened_table_definitions'],
-            'Opened tables since server start (Opened_table_definitions)',
-        );
-
-        $this->addUnorderedListEntry(
-            $page->getStatusValues()['Open_table_definitions'],
-            'Open tables in cache (Open_table_definitions)',
-        );
-
-        $this->addUnorderedListEntry(
-            $page->getVariables()['table_definition_cache'],
-            'Max allowed tables in cache (table_definition_cache)',
-        );
-
-        $this->addUnorderedListEntry(
-            number_format(
-                $this->getOpenedTableDefinitionsEachSecond($page->getStatusValues()),
-                2,
-                ',',
-                '.',
-            ),
-            'Opened table definitions each second',
-        );
 
         return 'Number of *.frm files (table definitions) that have been opened and cached. '
             . 'If Opened_table_definitions grows very fast you should consider to increase table_definition_cache.';
     }
 
     /**
-     * Get amount of opened table definitions each second
+     * Get the number of opened table definitions each second
      */
-    protected function getOpenedTableDefinitionsEachSecond(StatusValues $status): float
+    protected function getOpenedTableDefinitionsEachSecond(): float
     {
+        $status = $this->getStatusValues();
+
         $openedTableDefinitions = $status['Opened_table_definitions'] / $status['Uptime'];
-        if ($openedTableDefinitions <= 0.3) {
-            $this->setState(StateEnumeration::STATE_OK);
-        } elseif ($openedTableDefinitions <= 2) {
-            $this->setState(StateEnumeration::STATE_WARNING);
-        } else {
-            $this->setState(StateEnumeration::STATE_ERROR);
-        }
 
         return round($openedTableDefinitions, 4);
+    }
+
+    /**
+     * @return \SplQueue<ListElement>
+     */
+    public function getUnorderedList(): \SplQueue
+    {
+        $unorderedList = new \SplQueue();
+
+        $unorderedList->enqueue(new ListElement(
+            title: 'Opened tables since server start (Opened_table_definitions)',
+            value: $this->getStatusValues()['Opened_table_definitions'],
+        ));
+
+        $unorderedList->enqueue(new ListElement(
+            title: 'Open tables in cache (Open_table_definitions)',
+            value: $this->getStatusValues()['Open_table_definitions'],
+        ));
+
+        $unorderedList->enqueue(new ListElement(
+            title: 'Max allowed tables in cache (table_definition_cache)',
+            value: $this->getVariables()['table_definition_cache'],
+        ));
+
+        $unorderedList->enqueue(new ListElement(
+            title: 'Opened table definitions each second',
+            value: number_format(
+                $this->getOpenedTableDefinitionsEachSecond(),
+                2,
+                ',',
+                '.',
+            ),
+        ));
+
+        return $unorderedList;
+    }
+
+    public function getState(): StateEnumeration
+    {
+        $openedTableDefinitions = $this->getOpenedTableDefinitionsEachSecond();
+        if ($openedTableDefinitions <= 0.3) {
+            $state = StateEnumeration::STATE_OK;
+        } elseif ($openedTableDefinitions <= 2) {
+            $state = StateEnumeration::STATE_WARNING;
+        } else {
+            $state = StateEnumeration::STATE_ERROR;
+        }
+
+        return $state;
     }
 }

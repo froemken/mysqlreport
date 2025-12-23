@@ -9,17 +9,23 @@
     <h1>Queries grouped by type</h1>
 
     <p>
-        <a href="{be:moduleLink(route: 'mysqlreport_profile_list')}" class="btn btn-primary">
+        <f:link.action action="list"
+                       controller="Profile"
+                       class="btn btn-primary">
             Back
-        </a>
-        <a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'})}"
-           class="btn btn-primary">
+        </f:link.action>
+        <f:link.action action="download"
+                       controller="Profile"
+                       class="btn btn-primary"
+                       arguments="{uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'}">
             Download CSV
-        </a>
-        <a href="{be:moduleLink(route: 'mysqlreport_profile_download', arguments: {uniqueIdentifier: uniqueIdentifier, downloadType: 'json'})}"
-           class="btn btn-primary">
+        </f:link.action>
+        <f:link.action action="download"
+                       controller="Profile"
+                       class="btn btn-primary"
+                       arguments="{uniqueIdentifier: uniqueIdentifier, downloadType: 'json'}">
             Download JSON
-        </a>
+        </f:link.action>
     </p>
 
     <f:be.infobox title="Request" disableIcon="true">
@@ -44,10 +50,12 @@
                     {profile.duration}
                 </td>
                 <td>
-                    <a href="{be:moduleLink(route: 'mysqlreport_profile_querytype', arguments: {uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type})}"
-                       class="btn btn-default">
+                    <f:link.action action="queryType"
+                                   controller="Profile"
+                                   class="btn btn-default"
+                                   arguments="{uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type}">
                         <core:icon identifier="actions-search"/>
-                    </a>
+                    </f:link.action>
                 </td>
             </tr>
         </f:for>

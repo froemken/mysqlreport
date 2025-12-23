@@ -11,19 +11,24 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
+use StefanFroemken\Mysqlreport\InfoBox\ListElement;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
- * InfoBox to inform about current query cache average used blocks
+ * InfoBox to inform about the current query cache average used blocks
  */
-class AverageUsedBlocksInfoBox extends AbstractInfoBox
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.query_cache',
+)]
+class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
-    protected string $pageIdentifier = 'queryCache';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Average Used Blocks';
+    protected const TITLE = 'Average Used Blocks';
 
     private QueryCacheHelper $queryCacheHelper;
 
@@ -32,14 +37,13 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
-            !isset($page->getStatusValues()['Qcache_queries_in_cache'])
-            || (int)$page->getStatusValues()['Qcache_queries_in_cache'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($page)
+            !isset($this->getStatusValues()['Qcache_queries_in_cache'])
+            || (int)$this->getStatusValues()['Qcache_queries_in_cache'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
         ) {
-            $this->shouldBeRendered = false;
             return '';
         }
 
@@ -47,15 +51,10 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox
         $content[] = 'Currently your server is configured with an average amount of %f used blocks in Query Cache.';
         $content[] = 'Please adjust query_cache_limit of currently %d Bytes to your needs, if needed';
 
-        $this->addUnorderedListEntry('16KB - 128KB', 'very small');
-        $this->addUnorderedListEntry('128KB - 256KB', 'small');
-        $this->addUnorderedListEntry('256KB - 1MB', 'medium');
-        $this->addUnorderedListEntry('1MB - 4MB', 'big');
-
         return sprintf(
             implode(' ', $content),
-            $this->getAvgUsedBlocks($page->getStatusValues()),
-            $page->getVariables()['query_cache_limit'],
+            $this->getAvgUsedBlocks(),
+            $this->getVariables()['query_cache_limit'],
         );
     }
 
@@ -66,8 +65,10 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox
      *
      * @link: http://dev.mysql.com/doc/refman/5.0/en/query-cache-status-and-maintenance.html
      */
-    protected function getAvgUsedBlocks(StatusValues $status): float
+    protected function getAvgUsedBlocks(): float
     {
+        $status = $this->getStatusValues();
+
         $avgUsedBlocks = 0;
         $usedBlocks = $status['Qcache_total_blocks'] - $status['Qcache_free_blocks'];
         $minimumUsedBlocks = $status['Qcache_queries_in_cache'] * 2; // see link above
@@ -76,5 +77,32 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox
         }
 
         return round($avgUsedBlocks, 4);
+    }
+
+    /**
+     * @return \SplQueue<ListElement>
+     */
+    public function getUnorderedList(): \SplQueue
+    {
+        $unorderedList = new \SplQueue();
+
+        $unorderedList->enqueue(new ListElement(
+            title: 'very small',
+            value: '16KB - 128KB',
+        ));
+        $unorderedList->enqueue(new ListElement(
+            title: 'small',
+            value: '128KB - 256KB',
+        ));
+        $unorderedList->enqueue(new ListElement(
+            title: 'medium',
+            value: '256KB - 1MB',
+        ));
+        $unorderedList->enqueue(new ListElement(
+            title: 'big',
+            value: '1MB - 4MB',
+        ));
+
+        return $unorderedList;
     }
 }

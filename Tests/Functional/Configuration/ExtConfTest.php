@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Tests\Functional\Configuration;
 
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
@@ -20,7 +22,7 @@ use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
  */
 class ExtConfTest extends FunctionalTestCase
 {
-    private ExtConf $subject;
+    private ExtensionConfiguration|MockObject $extensionConfigurationMock;
 
     protected array $testExtensionsToLoad = [
         'stefanfroemken/mysqlreport',
@@ -30,13 +32,13 @@ class ExtConfTest extends FunctionalTestCase
     {
         parent::setUp();
 
-        $this->subject = $this->get(ExtConf::class);
+        $this->extensionConfigurationMock = $this->createMock(ExtensionConfiguration::class);
     }
 
     protected function tearDown(): void
     {
         unset(
-            $this->subject,
+            $this->extensionConfigurationMock,
         );
 
         parent::tearDown();
@@ -45,96 +47,176 @@ class ExtConfTest extends FunctionalTestCase
     #[Test]
     public function isEnableFrontendLoggingInitiallyReturnsFalse(): void
     {
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
         self::assertFalse(
-            $this->subject->isEnableFrontendLogging(),
+            $subject->isEnableFrontendLogging(),
         );
     }
 
     #[Test]
     public function setEnableFrontendLoggingSetsEnableFrontendLogging(): void
     {
-        $this->subject->setEnableFrontendLogging('1');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([
+                'enableFrontendLogging' => '1',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertTrue(
-            $this->subject->isEnableFrontendLogging(),
+            $subject->isEnableFrontendLogging(),
         );
     }
 
     #[Test]
     public function isEnableBackendLoggingInitiallyReturnsFalse(): void
     {
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
         self::assertFalse(
-            $this->subject->isEnableBackendLogging(),
+            $subject->isEnableBackendLogging(),
         );
     }
 
     #[Test]
     public function setEnableBackendLoggingSetsEnableBackendLogging(): void
     {
-        $this->subject->setEnableBackendLogging('1');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([
+                'enableBackendLogging' => '1',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertTrue(
-            $this->subject->isEnableBackendLogging(),
+            $subject->isEnableBackendLogging(),
         );
     }
 
     #[Test]
     public function isActivateExplainQueryInitiallyReturnsFalse(): void
     {
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
         self::assertFalse(
-            $this->subject->isActivateExplainQuery(),
+            $subject->isActivateExplainQuery(),
         );
     }
 
     #[Test]
     public function setActivateExplainQuerySetsActivateExplainQuery(): void
     {
-        $this->subject->setActivateExplainQuery('1');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([
+                'activateExplainQuery' => '1',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertTrue(
-            $this->subject->isActivateExplainQuery(),
+            $subject->isActivateExplainQuery(),
         );
     }
 
     #[Test]
     public function getSlowQueryThresholdInitiallyReturns10Seconds(): void
     {
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
+
         self::assertSame(
             10.0,
-            $this->subject->getSlowQueryThreshold(),
+            $subject->getSlowQueryThreshold(),
         );
     }
 
     #[Test]
     public function setSlowQueryThresholdWithIntegerSetsSlowQueryThreshold(): void
     {
-        $this->subject->setSlowQueryThreshold('1');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([
+                'slowQueryThreshold' => '1',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             1.0,
-            $this->subject->getSlowQueryThreshold(),
+            $subject->getSlowQueryThreshold(),
         );
     }
 
     #[Test]
     public function setSlowQueryThresholdWithFloatSetsSlowQueryThreshold(): void
     {
-        $this->subject->setSlowQueryThreshold('1.25');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([
+                'slowQueryThreshold' => '1.25',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             1.25,
-            $this->subject->getSlowQueryThreshold(),
+            $subject->getSlowQueryThreshold(),
         );
     }
 
     #[Test]
     public function setSlowQueryThresholdWithCommaFloatSetsSlowQueryThreshold(): void
     {
-        $this->subject->setSlowQueryThreshold('5,38');
+        $this->extensionConfigurationMock
+            ->expects(self::once())
+            ->method('get')
+            ->with('mysqlreport')
+            ->willReturn([
+                'slowQueryThreshold' => '5,38',
+            ]);
+
+        $subject = ExtConf::create($this->extensionConfigurationMock);
 
         self::assertSame(
             5.38,
-            $this->subject->getSlowQueryThreshold(),
+            $subject->getSlowQueryThreshold(),
         );
     }
 }

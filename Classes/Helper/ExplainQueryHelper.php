@@ -16,23 +16,25 @@ use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
- * Helper to analyze EXPLAIN query result and add information to QueryInformation model
+ * Helper to analyze an EXPLAIN query result and add information to QueryInformation model
  */
 readonly class ExplainQueryHelper
 {
     use DatabaseConnectionTrait;
 
-    public function __construct(private LoggerInterface $logger) {}
+    public function __construct(
+        private ExtConf $extConf,
+        private LoggerInterface $logger,
+    ) {}
 
     /**
      * @param QueryInformation $queryInformation
      */
     public function updateQueryInformation(QueryInformation $queryInformation): void
     {
-        if (!$this->getExtConf()->isActivateExplainQuery()) {
+        if (!$this->extConf->isActivateExplainQuery()) {
             return;
         }
 
@@ -78,10 +80,5 @@ readonly class ExplainQueryHelper
         }
 
         return $explainRows;
-    }
-
-    private function getExtConf(): ExtConf
-    {
-        return GeneralUtility::makeInstance(ExtConf::class);
     }
 }

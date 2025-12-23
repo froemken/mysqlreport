@@ -12,23 +12,26 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * InfoBox about back_log configuration
  */
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.misc',
+)]
 class BackLogInfoBox extends AbstractInfoBox
 {
-    protected string $pageIdentifier = 'misc';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Back Log';
+    protected const TITLE = 'Back Log';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (!isset($page->getVariables()['back_log'])) {
-            $this->shouldBeRendered = false;
+        if (!isset($this->getVariables()['back_log'])) {
             return '';
         }
 
@@ -43,7 +46,7 @@ class BackLogInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $page->getVariables()['back_log'],
+            $this->getVariables()['back_log'],
             $this->getMaxNetworkRequests(),
         );
     }

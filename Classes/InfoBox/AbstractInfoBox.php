@@ -11,91 +11,34 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\Menu\Page;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Fluid\View\StandaloneView;
+use TYPO3\CMS\Core\View\ViewInterface;
 
 /**
  * Model with properties for panels you can see in BE module
  */
-abstract class AbstractInfoBox implements \SplObserver
+abstract class AbstractInfoBox
 {
-    protected string $pageIdentifier = '';
+    protected const TITLE = '';
 
-    /**
-     * This is the title of the infobox
-     */
-    protected string $title = '';
+    abstract public function renderBody(): string;
 
-    /**
-     * Use addUnorderedListEntry to add new elements to <ul> output
-     *
-     * @var \SplQueue<array<string, string>>
-     */
-    private \SplQueue $unorderedList;
-
-    /**
-     * You can highlight the infobox with help of the state constants
-     */
-    private StateEnumeration $state;
-
-    /**
-     * You can decide, if this panel should be rendered or not.
-     * Useful, if a MySQL status/variable does not exist.
-     */
-    protected bool $shouldBeRendered = true;
-
-    protected string $template = 'EXT:mysqlreport/Resources/Private/Templates/InfoBox/Default.html';
-
-    protected StandaloneView $view;
-
-    public function __construct()
+    public function updateView(ViewInterface $view): ?ViewInterface
     {
-        $this->unorderedList = new \SplQueue();
-        $this->state = StateEnumeration::STATE_NOTICE;
-
-        // Do not load StandaloneView with injectStandaloneView as it is not configured as "shared: false" anymore
-        $this->view = GeneralUtility::makeInstance(StandaloneView::class);
-        $this->view->setTemplatePathAndFilename($this->template);
-        $this->view->assign('title', $this->title);
-    }
-
-    public function update(\SplSubject $subject): void
-    {
-        if ($subject instanceof Page) {
-            $this->view->assign('body', $this->renderBody($subject));
-            $this->view->assign('unorderedList', $this->unorderedList);
-
-            // First call __string() of Enumeration, then cast to INT
-            $this->view->assign('state', $this->state->value);
-
-            // $shouldBeRendered can be modified within renderBody() by a developer
-            if ($this->shouldBeRendered) {
-                $subject->addInfoBoxView($this->view);
-            }
+        if (($body = $this->renderBody()) === '') {
+            return null;
         }
-    }
 
-    public function getPageIdentifier(): string
-    {
-        return $this->pageIdentifier;
-    }
+        $view->assign('title', static::TITLE);
+        $view->assign('body', $body);
 
-    protected function addUnorderedListEntry(string $value, string $title = ''): void
-    {
-        $this->unorderedList->enqueue([
-            'title' => $title,
-            'value' => $value,
-        ]);
-    }
-
-    protected function setState(StateEnumeration $state): void
-    {
-        if ($this->state->value !== $state->value) {
-            $this->state = $state;
+        if ($this instanceof InfoBoxUnorderedListInterface) {
+            $view->assign('unorderedList', $this->getUnorderedList());
         }
-    }
 
-    abstract protected function renderBody(Page $page): string;
+        if ($this instanceof InfoBoxStateInterface) {
+            $view->assign('state', $this->getState()->value);
+        }
+
+        return $view;
+    }
 }

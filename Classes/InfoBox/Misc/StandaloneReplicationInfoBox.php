@@ -12,21 +12,24 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform you, if your server runs in standalone or replication mode
  */
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.misc',
+)]
 class StandaloneReplicationInfoBox extends AbstractInfoBox
 {
-    protected string $pageIdentifier = 'misc';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Standalone or Replication';
+    protected const TITLE = 'Standalone or Replication';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (!isset($page->getStatusValues()['Slave_running'])) {
-            $this->shouldBeRendered = false;
+        if (!isset($this->getStatusValues()['Slave_running'])) {
             return '';
         }
 
@@ -38,7 +41,7 @@ class StandaloneReplicationInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $page->getStatusValues()['Slave_running'],
+            $this->getStatusValues()['Slave_running'],
         );
     }
 }

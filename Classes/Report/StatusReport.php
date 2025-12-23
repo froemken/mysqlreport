@@ -23,6 +23,10 @@ use TYPO3\CMS\Reports\StatusProviderInterface;
  */
 readonly class StatusReport implements StatusProviderInterface
 {
+    public function __construct(
+        private ExtConf $extConf,
+    ) {}
+
     /**
      * @return Status[]
      */
@@ -50,11 +54,6 @@ readonly class StatusReport implements StatusProviderInterface
 
     private function getAddExplainValue(): bool
     {
-        return $this->getExtConf()->isActivateExplainQuery();
-    }
-
-    private function getExtConf(): ExtConf
-    {
-        return GeneralUtility::makeInstance(ExtConf::class);
+        return $this->extConf->isActivateExplainQuery();
     }
 }

@@ -14,10 +14,59 @@ services:
     resource: '../Classes/*'
     exclude:
       - '../Classes/Domain/Model/*'
+      - '../Classes/InfoBox/ListElement.php'
+
+  mysqlreport.page.information:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.status' }]
+
+  mysqlreport.page.innodb:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.innodb' }]
+
+  mysqlreport.page.misc:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.misc' }]
+
+  mysqlreport.page.query_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.query_cache' }]
+
+  mysqlreport.page.table_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.table_cache' }]
+
+  mysqlreport.page.thread_cache:
+    class: StefanFroemken\Mysqlreport\Menu\Page
+    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.thread_cache' }]
 
   # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeMiddleware and LoggerWithQueryTimeConnection
   StefanFroemken\Mysqlreport\Configuration\ExtConf:
     public: true
+
+  StefanFroemken\Mysqlreport\Controller\InnoDBController:
+    arguments:
+      $page: '@mysqlreport.page.innodb'
+
+  StefanFroemken\Mysqlreport\Controller\MiscController:
+    arguments:
+      $page: '@mysqlreport.page.misc'
+
+  StefanFroemken\Mysqlreport\Controller\QueryCacheController:
+    arguments:
+      $page: '@mysqlreport.page.query_cache'
+
+  StefanFroemken\Mysqlreport\Controller\StatusController:
+    arguments:
+      $page: '@mysqlreport.page.information'
+
+  StefanFroemken\Mysqlreport\Controller\TableCacheController:
+    arguments:
+      $page: '@mysqlreport.page.table_cache'
+
+  StefanFroemken\Mysqlreport\Controller\ThreadCacheController:
+    arguments:
+      $page: '@mysqlreport.page.thread_cache'
 
   # Will be called via GeneralUtility::makeInstance in ConnectionPool
   StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeMiddleware:
@@ -67,32 +116,6 @@ services:
     calls:
       - setSqlFormatter: ['@?Doctrine\SqlFormatter\SqlFormatter']
 
-  mysqlreport.page.information:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.information' }]
-  mysqlreport.page.innodb:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.innodb' }]
-  mysqlreport.page.misc:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.misc' }]
-  mysqlreport.page.query_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.query_cache' }]
-  mysqlreport.page.table_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.table_cache' }]
-  mysqlreport.page.thread_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.thread_cache' }]
-
-  mysqlreport.repository.status:
-    class: StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository
-    public: true
-  mysqlreport.repository.variables:
-    class: StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository
-    public: true
-
   StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger:
     public: true
 
@@ -104,106 +127,3 @@ services:
     tags:
       - name: event.listener
         event: StefanFroemken\Mysqlreport\Event\ModifyQueryInformationRecordsEvent
-
-  # Register InfoBoxes for pages (PageIdentifier)
-  StefanFroemken\Mysqlreport\InfoBox\Information\ConnectionInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.information'
-        priority: 30
-  StefanFroemken\Mysqlreport\InfoBox\Information\ServerVersionInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.information'
-        priority: 90
-  StefanFroemken\Mysqlreport\InfoBox\Information\UptimeInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.information'
-        priority: 80
-
-  StefanFroemken\Mysqlreport\InfoBox\InnoDb\HitRatioInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.innodb'
-        priority: 50
-  StefanFroemken\Mysqlreport\InfoBox\InnoDb\HitRatioBySFInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.innodb'
-        priority: 40
-  StefanFroemken\Mysqlreport\InfoBox\InnoDb\InnoDbBufferLoadInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.innodb'
-        priority: 90
-  StefanFroemken\Mysqlreport\InfoBox\InnoDb\InstancesInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.innodb'
-  StefanFroemken\Mysqlreport\InfoBox\InnoDb\LogFileSizeInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.innodb'
-  StefanFroemken\Mysqlreport\InfoBox\InnoDb\WriteRatioInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.innodb'
-        priority: 80
-
-  StefanFroemken\Mysqlreport\InfoBox\Misc\AbortedConnectsInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.misc'
-  StefanFroemken\Mysqlreport\InfoBox\Misc\BackLogInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.misc'
-  StefanFroemken\Mysqlreport\InfoBox\Misc\BinaryLogInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.misc'
-  StefanFroemken\Mysqlreport\InfoBox\Misc\MaxAllowedPacketInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.misc'
-        priority: 90
-  StefanFroemken\Mysqlreport\InfoBox\Misc\StandaloneReplicationInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.misc'
-  StefanFroemken\Mysqlreport\InfoBox\Misc\SyncBinaryLogInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.misc'
-  StefanFroemken\Mysqlreport\InfoBox\Misc\TempTablesInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.misc'
-        priority: 80
-
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\AverageQuerySizeInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\AverageUsedBlocksInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\FragmentationRatioInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\HitRatioInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-        priority: 80
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\InsertRatioInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-        priority: 80
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\PruneRatioInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-        priority: 80
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\QueryCacheSizeTooHighInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-  StefanFroemken\Mysqlreport\InfoBox\QueryCache\QueryCacheStatusInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.query_cache'
-        priority: 90
-
-  StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTableDefinitionsInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.table_cache'
-        priority: 80
-  StefanFroemken\Mysqlreport\InfoBox\TableCache\OpenedTablesInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.table_cache'
-        priority: 90
-
-  StefanFroemken\Mysqlreport\InfoBox\ThreadCache\HitRatioInfoBox:
-    tags:
-      - name: 'mysqlreport.infobox.thread_cache'

@@ -12,24 +12,28 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about binary log
  */
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.misc',
+)]
 class BinaryLogInfoBox extends AbstractInfoBox
 {
-    protected string $pageIdentifier = 'misc';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Binary Log';
+    protected const TITLE = 'Binary Log';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
         if (
-            isset($page->getStatusValues()['Slave_running'])
+            isset($this->getStatusValues()['Slave_running'])
             && (
-                strtolower($page->getStatusValues()['Slave_running']) === 'off'
-                || (int)$page->getStatusValues()['Slave_running'] === 0
+                strtolower($this->getStatusValues()['Slave_running']) === 'off'
+                || (int)$this->getStatusValues()['Slave_running'] === 0
             )
         ) {
             $content = [];
@@ -43,8 +47,6 @@ class BinaryLogInfoBox extends AbstractInfoBox
 
             return implode(' ', $content);
         }
-
-        $this->shouldBeRendered = false;
 
         return '';
     }

@@ -12,21 +12,25 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
  * InfoBox to inform about aborted connects
  */
+#[AutoconfigureTag(
+    name: 'mysqlreport.infobox.misc',
+    attributes: ['priority' => 50],
+)]
 class AbortedConnectsInfoBox extends AbstractInfoBox
 {
-    protected string $pageIdentifier = 'misc';
+    use GetStatusValuesAndVariablesTrait;
 
-    protected string $title = 'Aborted Connects';
+    protected const TITLE = 'Aborted Connects';
 
-    public function renderBody(Page $page): string
+    public function renderBody(): string
     {
-        if (!isset($page->getStatusValues()['Aborted_connects'])) {
-            $this->shouldBeRendered = false;
+        if (!isset($this->getStatusValues()['Aborted_connects'])) {
             return '';
         }
 
@@ -37,7 +41,7 @@ class AbortedConnectsInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $page->getStatusValues()['Aborted_connects'],
+            $this->getStatusValues()['Aborted_connects'],
         );
     }
 }

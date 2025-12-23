@@ -10,10 +10,12 @@
     <h1>Queries of selected type</h1>
 
     <p>
-        <a href="{be:moduleLink(route: 'mysqlreport_profile_show', arguments: {uniqueIdentifier: uniqueIdentifier})}"
-           class="btn btn-primary">
+        <f:link.action action="show"
+                       controller="Profile"
+                       class="btn btn-primary"
+                       arguments="{uniqueIdentifier: uniqueIdentifier}">
             Back
-        </a>
+        </f:link.action>
     </p>
 
     <table class="table">
@@ -45,10 +47,12 @@
                     {queryInformationRecord.duration}
                 </td>
                 <td>
-                    <a href="{be:moduleLink(route: 'mysqlreport_profile_info', arguments: {uid: queryInformationRecord.uid})}"
-                       class="btn btn-default">
+                    <f:link.action action="info"
+                                   controller="Profile"
+                                   class="btn btn-default"
+                                   arguments="{uid: queryInformationRecord.uid}">
                         <core:icon identifier="actions-search"/>
-                    </a>
+                    </f:link.action>
                 </td>
             </tr>
         </f:for>
