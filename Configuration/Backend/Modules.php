@@ -9,6 +9,8 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
+use StefanFroemken\Mysqlreport\Controller\MySqlReportController;
+
 /**
  * Definitions for modules provided by EXT:mysqlreport
  */
@@ -22,7 +24,7 @@ return [
         'labels' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang_report.xlf',
         'routes' => [
             '_default' => [
-                'target' => \StefanFroemken\Mysqlreport\Controller\MySqlReportController::class . '::handleRequest',
+                'target' => MySqlReportController::class . '::handleRequest',
             ],
         ],
     ],
