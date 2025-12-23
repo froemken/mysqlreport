@@ -53,7 +53,13 @@ final readonly class ExtConf
                 $extensionConfiguration->get(self::EXT_KEY),
             );
 
-            $extensionSettings['slowQueryThreshold'] = str_replace(',', '.', $extensionSettings['slowQueryThreshold']);
+            if (is_string($extensionSettings['slowQueryThreshold'])) {
+                $extensionSettings['slowQueryThreshold'] = str_replace(
+                    ',',
+                    '.',
+                    $extensionSettings['slowQueryThreshold'],
+                );
+            }
         } catch (ExtensionConfigurationExtensionNotConfiguredException|ExtensionConfigurationPathDoesNotExistException) {
         }
 
