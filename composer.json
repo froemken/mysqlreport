@@ -27,19 +27,17 @@
 	},
 	"require": {
 		"doctrine/sql-formatter": "^1.5",
-		"typo3/cms-backend": "^14.0 || dev-main",
-		"typo3/cms-core": "^14.0 || dev-main",
-		"typo3/cms-extbase": "^14.0 || dev-main",
-		"typo3/cms-fluid": "^14.0 || dev-main"
+		"typo3/cms-backend": "^14.0",
+		"typo3/cms-core": "^14.0"
 	},
 	"require-dev": {
 		"ergebnis/composer-normalize": "~2.48.0",
 		"friendsofphp/php-cs-fixer": "^3.88",
 		"phpstan/phpstan": "^2.1",
-		"phpunit/phpunit": "^12.4",
-		"typo3/cms-dashboard": "^14.0 || dev-main",
-		"typo3/cms-install": "^14.0 || dev-main",
-		"typo3/cms-reports": "^14.0 || dev-main",
+		"phpunit/phpunit": "^11.5",
+		"typo3/cms-dashboard": "^14.0",
+		"typo3/cms-install": "^14.0",
+		"typo3/cms-reports": "^14.0",
 		"typo3/testing-framework": "dev-main"
 	},
 	"replace": {
