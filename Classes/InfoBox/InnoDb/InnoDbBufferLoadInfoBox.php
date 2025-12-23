@@ -51,7 +51,7 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnordere
     /**
      * Get load of InnoDB Buffer
      *
-     * @return array<string, string|int>
+     * @return array<string, float|string>
      */
     protected function getLoad(): array
     {

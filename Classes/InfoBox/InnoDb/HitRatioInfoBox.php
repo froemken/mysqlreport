@@ -70,9 +70,7 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 
     public function getState(): StateEnumeration
     {
-        $state = $this->getStatusValues();
-
-        $hitRatio = $this->getHitRatio($state);
+        $hitRatio = $this->getHitRatio();
         if ($hitRatio <= 90) {
             $state = StateEnumeration::STATE_ERROR;
         } elseif ($hitRatio <= 99.7) {

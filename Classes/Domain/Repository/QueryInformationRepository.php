@@ -270,7 +270,7 @@ readonly class QueryInformationRepository
             while ($profilingRow = $queryResult->fetchAssociative()) {
                 $profilingRows[] = $profilingRow;
             }
-        } catch (\Throwable | \Exception $exception) {
+        } catch (\Throwable $exception) {
             $this->logger->error('Error while executing query profiling', [
                 'exception' => $exception,
             ]);

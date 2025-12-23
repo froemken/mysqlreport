@@ -33,10 +33,6 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
 
     protected const TITLE = 'Connections';
 
-    public function __construct(
-        private readonly ViewFactoryInterface $viewFactory,
-    ) {}
-
     public function renderBody(): string
     {
         return 'Have an eye on your servers connections. '
