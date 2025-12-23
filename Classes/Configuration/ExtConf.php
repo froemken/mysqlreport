@@ -40,8 +40,7 @@ final readonly class ExtConf
         private bool $enableBackendLogging = self::DEFAULT_SETTINGS['enableBackendLogging'],
         private bool $activateExplainQuery = self::DEFAULT_SETTINGS['activateExplainQuery'],
         private float $slowQueryThreshold = self::DEFAULT_SETTINGS['slowQueryThreshold'],
-    ) {
-    }
+    ) {}
 
     public static function create(ExtensionConfiguration $extensionConfiguration): self
     {

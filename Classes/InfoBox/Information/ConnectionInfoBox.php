@@ -34,8 +34,7 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
 
     public function __construct(
         private readonly ViewFactoryInterface $viewFactory,
-    ) {
-    }
+    ) {}
 
     public function renderBody(): string
     {

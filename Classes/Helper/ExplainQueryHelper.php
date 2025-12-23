@@ -27,8 +27,7 @@ readonly class ExplainQueryHelper
     public function __construct(
         private ExtConf $extConf,
         private LoggerInterface $logger,
-    ) {
-    }
+    ) {}
 
     /**
      * @param QueryInformation $queryInformation

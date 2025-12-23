@@ -49,8 +49,7 @@ readonly class Page
     public function __construct(
         private iterable $infoBoxes,
         private ViewFactoryInterface $viewFactory,
-    ) {
-    }
+    ) {}
 
     public function getRenderedInfoBoxes(): string
     {

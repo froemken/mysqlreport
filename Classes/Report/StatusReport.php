@@ -25,8 +25,7 @@ readonly class StatusReport implements StatusProviderInterface
 {
     public function __construct(
         private ExtConf $extConf,
-    ) {
-    }
+    ) {}
 
     /**
      * @return Status[]
