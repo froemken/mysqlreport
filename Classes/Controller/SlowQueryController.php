@@ -20,8 +20,8 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class SlowQueryController extends ActionController
 {
     public function __construct(
-        private QueryInformationRepository $queryInformationRepository,
-        private ExtConf $extConf,
+        private readonly QueryInformationRepository $queryInformationRepository,
+        private readonly ExtConf $extConf,
         private readonly ModuleTemplateFactory $moduleTemplateFactory,
     ) {}
 

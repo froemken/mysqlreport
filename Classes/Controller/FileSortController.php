@@ -19,7 +19,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class FileSortController extends ActionController
 {
     public function __construct(
-        private QueryInformationRepository $queryInformationRepository,
+        private readonly QueryInformationRepository $queryInformationRepository,
         private readonly ModuleTemplateFactory $moduleTemplateFactory,
     ) {}
 

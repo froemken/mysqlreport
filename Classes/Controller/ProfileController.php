@@ -23,9 +23,9 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class ProfileController extends ActionController
 {
     public function __construct(
-        private QueryInformationRepository $queryInformationRepository,
-        private ModuleTemplateFactory $moduleTemplateFactory,
-        private DownloadHelper $downloadHelper,
+        private readonly QueryInformationRepository $queryInformationRepository,
+        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        private readonly DownloadHelper $downloadHelper,
     ) {}
 
     public function listAction(): ResponseInterface
