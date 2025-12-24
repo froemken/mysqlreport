@@ -7,6 +7,16 @@
 Upgrades
 ========
 
+Upgrade to version 5.0.0
+========================
+
+Add TYPO3 14 compatibility
+
+Removed TYPO3 13 compatibility
+
+We add "adminpanel" as conflicting extension, because of duplicate
+SQL logging.
+
 Upgrade to version 4.0.0
 ========================
 
