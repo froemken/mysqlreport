@@ -41,7 +41,7 @@
 		"typo3/testing-framework": "dev-main"
 	},
 	"conflict": {
-		"typo3/cms-adminpanel": "*",
+		"typo3/cms-adminpanel": "*"
 	},
 	"replace": {
 		"typo3-ter/mysqlreport": "self.version"
