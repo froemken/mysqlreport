@@ -8,10 +8,12 @@
         <target>MySQL Profiles löschen</target>
       </trans-unit>
       <trans-unit id="clearCache.description">
-        <source>Clear collected profile records of extension mysqlreport. This table can grow very fast, so
+        <source>
+          Clear collected profile records of extension mysqlreport. This table can grow very fast, so
           maybe it is good to clear this table.
         </source>
-        <target>Lösche die gesammelten MySQL Profiles der mysqlreports extension. Die Tabelle kann sehr schnell
+        <target>
+          Lösche die gesammelten MySQL Profiles der mysqlreports extension. Die Tabelle kann sehr schnell
           wachsen, von daher sollte diese durchaus mal geleert werden.
         </target>
       </trans-unit>
@@ -22,7 +24,8 @@
       </trans-unit>
       <trans-unit id="report_description">
         <source>With this report you can test/check your MySQL-Server</source>
-        <target>Dieser Bericht gibt Dir einen Überblick über Deinen MySQL-Server und einige Tipps die
+        <target>
+          Dieser Bericht gibt Dir einen Überblick über Deinen MySQL-Server und einige Tipps die
           Geschwindigkeit zu verbessern
         </target>
       </trans-unit>
@@ -149,10 +152,12 @@
         <target>Cache Hit Ratio</target>
       </trans-unit>
       <trans-unit id="cacheHitRatioBook.description">
-        <source>This calculation I have from this book "High Performance MySQL" given in percent. As higher as
+        <source>
+          This calculation I have from this book "High Performance MySQL" given in percent. As higher as
           better.
         </source>
-        <target>Diese Berechnung habe ich aus dem Buch "High Performance MySQL". Angabe in Prozent. Je höher
+        <target>
+          Diese Berechnung habe ich aus dem Buch "High Performance MySQL". Angabe in Prozent. Je höher
           desto besser. Jedoch liegt zwischen 99% und 99,9% eine Leistungssteigerung von 10% vor.
         </target>
       </trans-unit>
@@ -161,10 +166,12 @@
         <target>Cache Hit Ratio</target>
       </trans-unit>
       <trans-unit id="cacheHitRatioMySql.description">
-        <source>This calculation I have from MySQL-Website. The value should be near 0.01. As smaller as
+        <source>
+          This calculation I have from MySQL-Website. The value should be near 0.01. As smaller as
           better.
         </source>
-        <target>Diese Berechnung habe ich von der MySQL-Webseite. Der Wert sollte um die 0.01 liegen. Je kleiner
+        <target>
+          Diese Berechnung habe ich von der MySQL-Webseite. Der Wert sollte um die 0.01 liegen. Je kleiner
           je besser.
         </target>
       </trans-unit>
@@ -174,7 +181,8 @@
       </trans-unit>
       <trans-unit id="cacheHitRatio.description">
         <source>Personal calculation. Schould be higher than 100.</source>
-        <target>Persönliche Berechnung. Wenn wir davon ausgehen, dass das Verhältnis zwischen RAM und HDD bei
+        <target>
+          Persönliche Berechnung. Wenn wir davon ausgehen, dass das Verhältnis zwischen RAM und HDD bei
           einer Geschwindigkeit von 100 zu 1 liegt, dann sollte dieser Wert hier über 100 liegen.
         </target>
       </trans-unit>
@@ -183,10 +191,12 @@
         <target>Cache Misses</target>
       </trans-unit>
       <trans-unit id="cacheMisses.description">
-        <source>How ofter MySQL have to access the HDD instead of RAM. As lower as better. 5 should be OK, but
+        <source>
+          How ofter MySQL have to access the HDD instead of RAM. As lower as better. 5 should be OK, but
           80 is really high.
         </source>
-        <target>Wie oft musste MySQL pro Sekunde auf die Festplatte zugreifen, um einen Indexeintrag auszulesen.
+        <target>
+          Wie oft musste MySQL pro Sekunde auf die Festplatte zugreifen, um einen Indexeintrag auszulesen.
           Je höher desto schlechter. 5 mag OK sein. 80 ist jedoch schon heftig viel
         </target>
       </trans-unit>
@@ -203,10 +213,12 @@
         <target>Indexgröße</target>
       </trans-unit>
       <trans-unit id="myIsamIndexSize.description">
-        <source>Sum of all MyISAM-Indexes. He should be smaller than key_buffer_size. If not, key_buffer_size
+        <source>
+          Sum of all MyISAM-Indexes. He should be smaller than key_buffer_size. If not, key_buffer_size
           should not be higher than 25-33% of RAM.
         </source>
-        <target>Summe aller MyISAM-Indexes. Er sollte kleiner sein als die key_buffer_size. Falls das nicht
+        <target>
+          Summe aller MyISAM-Indexes. Er sollte kleiner sein als die key_buffer_size. Falls das nicht
           geht, dann sollte die key_buffer_size 25-33% des RAMS nicht übersteigen.
         </target>
       </trans-unit>

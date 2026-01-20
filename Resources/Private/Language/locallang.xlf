@@ -7,7 +7,8 @@
         <source>Clear MySQL Profiles</source>
       </trans-unit>
       <trans-unit id="clearCache.description">
-        <source>Clear collected profile records of extension mysqlreport. This table can grow very fast, so
+        <source>
+          Clear collected profile records of extension mysqlreport. This table can grow very fast, so
           maybe it is good to clear this table.
         </source>
       </trans-unit>
