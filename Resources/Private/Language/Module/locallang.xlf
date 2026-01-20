@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
-	<file id="mysqlreport-module">
-		<unit id="title">
-			<segment state="final">
-				<source>MySQL Report</source>
-			</segment>
-		</unit>
-		<unit id="short_description">
-			<segment state="final">
-				<source><![CDATA[Database Performance Insights & Monitoring]]></source>
-			</segment>
-		</unit>
-		<unit id="description">
-			<segment state="final">
-				<source>
-					The mysqlreport extension provides a comprehensive suite of monitoring tools designed to
-					give TYPO3 administrators and developers deep visibility into the MySQL/MariaDB infrastructure.
-					By analyzing server-level metrics and query performance, these modules help identify bottlenecks,
-					optimize resource allocation, and ensure high availability for your TYPO3 instance.
-				</source>
-			</segment>
-		</unit>
-	</file>
+  <file id="mysqlreport-module">
+    <unit id="title">
+      <segment state="final">
+        <source>MySQL Report</source>
+      </segment>
+    </unit>
+    <unit id="short_description">
+      <segment state="final">
+        <source><![CDATA[Database Performance Insights & Monitoring]]></source>
+      </segment>
+    </unit>
+    <unit id="description">
+      <segment state="final">
+        <source>
+          The mysqlreport extension provides a comprehensive suite of monitoring tools designed to
+          give TYPO3 administrators and developers deep visibility into the MySQL/MariaDB infrastructure.
+          By analyzing server-level metrics and query performance, these modules help identify bottlenecks,
+          optimize resource allocation, and ensure high availability for your TYPO3 instance.
+        </source>
+      </segment>
+    </unit>
+  </file>
 </xliff>

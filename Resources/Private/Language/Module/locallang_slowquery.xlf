@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="2.0" xmlns="urn:oasis:names:tc:xliff:document:2.0" srcLang="en" trgLang="de">
-	<file id="mysqlreport-module">
-		<unit id="title">
-			<segment state="final">
-				<source>Slow Queries</source>
-			</segment>
-		</unit>
-		<unit id="short_description">
-			<segment state="final">
-				<source>Profiling-based latency report</source>
-			</segment>
-		</unit>
-		<unit id="description">
-			<segment state="final">
-				<source>
-					Lists the 100 slowest queries based on internal profiling data.
-					This allows you to identify performance bottlenecks without needing the global slow query log enabled.
-				</source>
-			</segment>
-		</unit>
-	</file>
+  <file id="mysqlreport-module">
+    <unit id="title">
+      <segment state="final">
+        <source>Slow Queries</source>
+      </segment>
+    </unit>
+    <unit id="short_description">
+      <segment state="final">
+        <source>Profiling-based latency report</source>
+      </segment>
+    </unit>
+    <unit id="description">
+      <segment state="final">
+        <source>
+          Lists the 100 slowest queries based on internal profiling data.
+          This allows you to identify performance bottlenecks without needing the global slow query log enabled.
+        </source>
+      </segment>
+    </unit>
+  </file>
 </xliff>
