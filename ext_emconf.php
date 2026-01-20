@@ -8,10 +8,10 @@ $EM_CONF[$_EXTKEY] = [
     'author_email' => 'froemken@gmail.com',
     'state' => 'stable',
     'author_company' => '',
-    'version' => '5.0.0',
+    'version' => '5.1.0',
     'constraints' => [
         'depends' => [
-            'typo3' => '14.0.0-14.99.99',
+            'typo3' => '14.1.0-14.99.99',
         ],
         'conflicts' => [
             'adminpanel' => '',

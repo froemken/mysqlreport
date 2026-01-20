@@ -10,6 +10,18 @@ ChangeLog
 ..  contents::
     :local:
 
+Version 5.1.0
+=============
+
+*   [TASK] Implement new ext and module icon specific for TYPO3 14.1
+*   [TASK] Remove TYPO3 14.0 compatibility
+
+Version 5.0.0
+=============
+
+*   [TASK] Add TYPO3 14 compatibility
+*   [TASK] Remove TYPO3 13 compatibility
+
 Version 4.0.2
 =============
 

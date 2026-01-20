@@ -14,8 +14,8 @@
                typo3-core-preferred="stable"
     />
     <project title="MySQL Report"
-             release="5.0"
-             version="5.0.0"
+             release="5.1"
+             version="5.1.0"
              copyright="since 2024 by Stefan Froemken &amp; contributors"
     />
 </guides>
