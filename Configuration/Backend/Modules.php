@@ -27,7 +27,7 @@ return [
         'access' => 'admin',
         'workspaces' => 'live',
         'path' => '/module/mysqlreport',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.messages',
         'showSubmoduleOverview' => true,
     ],
@@ -35,7 +35,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/status',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.status',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -46,7 +46,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/innodb',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.innodb',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -57,7 +57,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/threadcache',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.threadcache',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -68,7 +68,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/tablecache',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.tablecache',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -79,7 +79,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/querycache',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.querycache',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -90,7 +90,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/misc',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.misc',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -101,7 +101,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/filesort',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.filesort',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -113,7 +113,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/fulltablescan',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.fulltablescan',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -125,7 +125,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/slowquery',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.slowquery',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [
@@ -137,7 +137,7 @@ return [
         'parent' => 'mysqlreport',
         'access' => 'admin',
         'path' => '/module/mysqlreport/profile',
-        'iconIdentifier' => 'ext-mysqlreport',
+        'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.profile',
         'extensionName' => 'Mysqlreport',
         'controllerActions' => [

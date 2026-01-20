@@ -16,4 +16,8 @@ return [
         'provider' => SvgIconProvider::class,
         'source' => 'EXT:mysqlreport/Resources/Public/Icons/Extension.svg',
     ],
+    'ext-mysqlreport-module' => [
+        'provider' => SvgIconProvider::class,
+        'source' => 'EXT:mysqlreport/Resources/Public/Icons/Module.svg',
+    ],
 ];
