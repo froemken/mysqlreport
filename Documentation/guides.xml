@@ -6,7 +6,7 @@
 >
     <extension class="\T3Docs\Typo3DocsTheme\DependencyInjection\Typo3DocsThemeExtension"
                project-home="https://extensions.typo3.org/extension/mysqlreport"
-               project-contact="mailto:froemken\@gmail.com"
+               project-contact="mailto:froemken@gmail.com"
                project-repository="https://github.com/froemken/mysqlreport"
                project-issues="https://github.com/froemken/mysqlreport/issues"
                edit-on-github-branch="main"
