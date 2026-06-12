@@ -32,7 +32,7 @@ class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLi
 
     public function renderBody(): string
     {
-        return 'Following server information have been found:';
+        return 'The following server information was found:';
     }
 
     /**

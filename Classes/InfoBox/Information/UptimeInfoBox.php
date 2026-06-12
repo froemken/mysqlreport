@@ -32,10 +32,10 @@ class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInter
 
     public function renderBody(): string
     {
-        return '"Uptime" shows time since server start or last restart. '
-            . 'As a server admin you can FLUSH STATUS to reset various status variables. '
-            . 'This is good for temporary debugging, but breaks analysis of server over full time.'
-            . 'If "Uptime_since_flush_status" is lower than "Uptime" an admin has reset the status variables.';
+        return '"Uptime" shows the time since the server was started or restarted. '
+            . 'Database administrators can execute "FLUSH STATUS" to reset various status variables. '
+            . 'While useful for temporary debugging, resetting the status variables interrupts long-term profiling analysis. '
+            . 'If "Uptime_since_flush_status" is lower than "Uptime", the status variables have been reset since the server started.';
     }
 
     private function convertSecondsToDays(int $seconds): string
@@ -64,12 +64,12 @@ class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInter
 
         if (isset($this->getStatusValues()['Uptime_since_flush_status'])) {
             $unorderedList->enqueue(new ListElement(
-                title: 'Uptime since last flush',
+                title: 'Uptime since status variables reset',
                 value: $this->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
             ));
 
             $unorderedList->enqueue(new ListElement(
-                title: 'Uptime since last flush in days',
+                title: 'Uptime since status variables reset in days',
                 value: $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime_since_flush_status']) . ' days',
             ));
         }
