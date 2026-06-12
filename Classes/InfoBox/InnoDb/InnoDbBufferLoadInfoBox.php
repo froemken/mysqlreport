@@ -36,7 +36,7 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';

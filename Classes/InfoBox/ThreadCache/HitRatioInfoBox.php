@@ -34,7 +34,7 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (!isset($this->variables['thread_cache_size'])) {
             return '';

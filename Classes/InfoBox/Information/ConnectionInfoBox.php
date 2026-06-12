@@ -37,7 +37,7 @@ final readonly class ConnectionInfoBox implements InfoBoxInterface, InfoBoxUnord
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         return 'Keep an eye on your server\'s connections. '
             . 'It is a first indicator of how much work your server has to do. '

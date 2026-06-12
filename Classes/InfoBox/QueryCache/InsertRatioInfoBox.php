@@ -36,7 +36,7 @@ final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStat
         private Variables $variables,
     ) {}
 
-private QueryCacheHelper $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

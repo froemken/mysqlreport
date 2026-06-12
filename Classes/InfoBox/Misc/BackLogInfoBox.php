@@ -34,7 +34,7 @@ final readonly class BackLogInfoBox implements InfoBoxInterface
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (!isset($this->variables['back_log'])) {
             return '';

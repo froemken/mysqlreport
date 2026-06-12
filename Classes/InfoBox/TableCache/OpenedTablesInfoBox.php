@@ -39,7 +39,7 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Opened_tables'])) {
             return '';

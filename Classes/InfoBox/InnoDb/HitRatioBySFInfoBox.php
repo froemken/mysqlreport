@@ -35,7 +35,7 @@ final readonly class HitRatioBySFInfoBox implements InfoBoxInterface, InfoBoxSta
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (
             !isset(

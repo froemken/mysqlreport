@@ -32,7 +32,7 @@ final readonly class BinaryLogInfoBox implements InfoBoxInterface
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (
             isset($this->statusValues['Slave_running'])

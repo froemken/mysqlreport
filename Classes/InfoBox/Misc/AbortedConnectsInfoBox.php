@@ -33,7 +33,7 @@ final readonly class AbortedConnectsInfoBox implements InfoBoxInterface
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Aborted_connects'])) {
             return '';

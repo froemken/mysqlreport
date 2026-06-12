@@ -35,7 +35,7 @@ final readonly class TempTablesInfoBox implements InfoBoxInterface, InfoBoxUnord
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         $content = [];
         $content[] = 'While JOIN and GROUP BY the server needs a lot of memory to manage the requested data.';

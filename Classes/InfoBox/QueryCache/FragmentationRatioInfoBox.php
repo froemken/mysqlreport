@@ -35,7 +35,7 @@ final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, Info
         private Variables $variables,
     ) {}
 
-private QueryCacheHelper $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

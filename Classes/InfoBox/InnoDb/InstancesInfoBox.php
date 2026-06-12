@@ -34,7 +34,7 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';

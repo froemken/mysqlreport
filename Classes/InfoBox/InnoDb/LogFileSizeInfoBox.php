@@ -34,7 +34,7 @@ final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStat
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (
             !isset(

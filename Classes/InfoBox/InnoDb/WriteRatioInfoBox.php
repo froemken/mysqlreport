@@ -34,7 +34,7 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (
             !isset(

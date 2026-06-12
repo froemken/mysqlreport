@@ -32,7 +32,7 @@ final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         // Sync_binlog does not exist on MariaDB
         if (!isset($this->statusValues['Sync_binlog'])) {

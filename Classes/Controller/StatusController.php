@@ -34,7 +34,7 @@ class StatusController extends ActionController
 
         $moduleTemplate->assign(
             'renderedInfoBoxes',
-            $this->renderInfoBoxFactory->render($this->infoBoxes)
+            $this->renderInfoBoxFactory->render($this->infoBoxes),
         );
 
         return $moduleTemplate->renderResponse('Status/Index');

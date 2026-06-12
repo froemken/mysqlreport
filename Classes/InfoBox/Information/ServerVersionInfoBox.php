@@ -35,7 +35,7 @@ final readonly class ServerVersionInfoBox implements InfoBoxInterface, InfoBoxUn
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         return 'The following server information was found:';
     }

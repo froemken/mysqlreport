@@ -35,7 +35,7 @@ final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBo
         private Variables $variables,
     ) {}
 
-public function getBody(): string
+    public function getBody(): string
     {
         if (!isset($this->variables['max_allowed_packet'])) {
             return '';

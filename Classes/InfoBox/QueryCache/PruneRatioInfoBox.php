@@ -36,7 +36,7 @@ final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxState
         private Variables $variables,
     ) {}
 
-private QueryCacheHelper $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

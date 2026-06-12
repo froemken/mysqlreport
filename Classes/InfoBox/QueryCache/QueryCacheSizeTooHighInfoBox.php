@@ -35,7 +35,7 @@ final readonly class QueryCacheSizeTooHighInfoBox implements InfoBoxInterface, I
         private Variables $variables,
     ) {}
 
-private QueryCacheHelper $queryCacheHelper;
+    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {
