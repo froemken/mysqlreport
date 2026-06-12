@@ -16,6 +16,7 @@ use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -44,9 +45,21 @@ readonly class QueryInformationFactory
     public function __construct()
     {
         $this->pageUid = $this->getPageUid();
-        $this->ip = (string)GeneralUtility::getIndpEnv('REMOTE_ADDR');
-        $this->referer = (string)GeneralUtility::getIndpEnv('HTTP_REFERER');
-        $this->request = (string)GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
+        $ip = '';
+        $referer = '';
+        $requestUrl = '';
+        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        if ($request instanceof ServerRequestInterface) {
+            $normalizedParams = $request->getAttribute('normalizedParams');
+            if ($normalizedParams instanceof NormalizedParams) {
+                $ip = (string)$normalizedParams->getRemoteAddress();
+                $referer = (string)$normalizedParams->getHttpReferer();
+                $requestUrl = (string)$normalizedParams->getRequestUrl();
+            }
+        }
+        $this->ip = $ip;
+        $this->referer = $referer;
+        $this->request = $requestUrl;
         $this->mode = $this->getTypo3Mode();
         $this->uniqueCallIdentifier = uniqid('', true);
         $this->crdate = (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');

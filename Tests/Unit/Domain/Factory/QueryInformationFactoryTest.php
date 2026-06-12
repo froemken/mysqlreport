@@ -17,6 +17,7 @@ use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Context\DateTimeAspect;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -48,7 +49,8 @@ class QueryInformationFactoryTest extends UnitTestCase
 
         $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.example.com/', 'GET', 'php://input', [], $_SERVER))
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
-            ->withAttribute('routing', new PageArguments(1, '0', []));
+            ->withAttribute('routing', new PageArguments(1, '0', []))
+            ->withAttribute('normalizedParams', NormalizedParams::createFromServerParams($_SERVER));
 
         Environment::initialize(
             Environment::getContext(),
