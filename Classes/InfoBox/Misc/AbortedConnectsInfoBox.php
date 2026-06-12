@@ -21,14 +21,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.misc',
     attributes: ['priority' => 50],
 )]
-class AbortedConnectsInfoBox extends AbstractInfoBox
+readonly class AbortedConnectsInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Aborted Connects';
 
     public function renderBody(): string
     {
-        if (!isset($this->getStatusValues()['Aborted_connects'])) {
+        if (!isset($this->statusValues['Aborted_connects'])) {
             return '';
         }
 
@@ -39,7 +39,7 @@ class AbortedConnectsInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getStatusValues()['Aborted_connects'],
+            $this->statusValues['Aborted_connects'],
         );
     }
 }

@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 80],
 )]
-class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Insert Ratio';
@@ -39,9 +39,9 @@ class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
     public function renderBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_hits'])
-            || (int)$this->getStatusValues()['Qcache_hits'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_hits'])
+            || (int)$this->statusValues['Qcache_hits'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -61,7 +61,7 @@ class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
 
     protected function getInsertRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $insertRatio = ($status['Qcache_inserts'] / ($status['Qcache_hits'] + $status['Com_select'])) * 100;
 

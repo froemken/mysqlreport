@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.innodb',
 )]
-class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Log File Size';
@@ -31,10 +31,10 @@ class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getVariables()['innodb_log_files_in_group'],
+                $this->statusValues['Innodb_page_size'],
+                $this->variables['innodb_log_files_in_group'],
             )
-            || (int)$this->getVariables()['innodb_log_files_in_group'] === 0
+            || (int)$this->variables['innodb_log_files_in_group'] === 0
         ) {
             return '';
         }
@@ -65,7 +65,7 @@ class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
      */
     protected function getLogFileSize(): array
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
         return [
             'value' => $variables['innodb_log_file_size'],
@@ -75,8 +75,8 @@ class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
 
     private function getSizeOfEachLogFile(): int
     {
-        $variables = $this->getVariables();
-        $status = $this->getStatusValues();
+        $variables = $this->variables;
+        $status = $this->statusValues;
 
         $bytesWrittenEachSecond = $status['Innodb_os_log_written'] / $status['Uptime'];
         $bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
@@ -86,7 +86,7 @@ class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
 
     public function getState(): StateEnumeration
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
         $sizeOfEachLogFile = $this->getSizeOfEachLogFile();
 
         if ($sizeOfEachLogFile < 5242880 || $sizeOfEachLogFile < $variables['innodb_log_file_size']) {

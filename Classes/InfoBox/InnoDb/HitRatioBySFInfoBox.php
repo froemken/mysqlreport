@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 40],
 )]
-class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Hit Ratio by SF';
@@ -32,9 +32,9 @@ class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterfa
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getStatusValues()['Innodb_buffer_pool_reads'],
-                $this->getStatusValues()['Innodb_buffer_pool_read_requests'],
+                $this->statusValues['Innodb_page_size'],
+                $this->statusValues['Innodb_buffer_pool_reads'],
+                $this->statusValues['Innodb_buffer_pool_read_requests'],
             )
         ) {
             return '';
@@ -58,7 +58,7 @@ class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterfa
      */
     protected function getHitRatioBySF(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $niceToHave = $status['Innodb_buffer_pool_reads'] * 1000;
         $hitRatio = 100 / $niceToHave * $status['Innodb_buffer_pool_read_requests'];
@@ -68,7 +68,7 @@ class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterfa
 
     public function getState(): StateEnumeration
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         // We always want a factor of 1/1000.
         $niceToHave = $status['Innodb_buffer_pool_reads'] * 1000;

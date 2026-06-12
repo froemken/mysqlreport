@@ -22,14 +22,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class BackLogInfoBox extends AbstractInfoBox
+readonly class BackLogInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Back Log';
 
     public function renderBody(): string
     {
-        if (!isset($this->getVariables()['back_log'])) {
+        if (!isset($this->variables['back_log'])) {
             return '';
         }
 
@@ -44,7 +44,7 @@ class BackLogInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getVariables()['back_log'],
+            $this->variables['back_log'],
             $this->getMaxNetworkRequests(),
         );
     }

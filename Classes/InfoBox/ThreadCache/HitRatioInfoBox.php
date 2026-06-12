@@ -22,14 +22,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.thread_cache',
 )]
-class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Hit Ratio';
 
     public function renderBody(): string
     {
-        if (!isset($this->getVariables()['thread_cache_size'])) {
+        if (!isset($this->variables['thread_cache_size'])) {
             return '';
         }
 
@@ -37,12 +37,12 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
         $content[] = 'As closer to 100%% as better.';
         $content[] = "\n\n";
 
-        if ((int)$this->getVariables()['thread_cache_size'] === 0) {
+        if ((int)$this->variables['thread_cache_size'] === 0) {
             $content[] = 'Your thread_cache_size (0) is not activated. Please set this value 10.';
-        } elseif ($this->getStatusValues()['Threads_connected'] < $this->getVariables()['thread_cache_size']) {
+        } elseif ($this->statusValues['Threads_connected'] < $this->variables['thread_cache_size']) {
             $content[] = 'It seems that you are the only person on this MySQL-Server, so this value should be OK.';
         } else {
-            $content[] = 'It seems that your thread_cache_size (' . $this->getVariables()['thread_cache_size'] . ') is too low.';
+            $content[] = 'It seems that your thread_cache_size (' . $this->variables['thread_cache_size'] . ') is too low.';
             $content[] = 'Please increase this value in 10th steps.';
         }
 
@@ -61,7 +61,7 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
      */
     protected function getHitRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $hitRatio = 100 - (($status['Threads_created'] / $status['Connections']) * 100);
 

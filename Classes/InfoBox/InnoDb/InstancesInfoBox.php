@@ -22,18 +22,18 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.innodb',
 )]
-class InstancesInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class InstancesInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Instances';
 
     public function renderBody(): string
     {
-        if (!isset($this->getStatusValues()['Innodb_page_size'])) {
+        if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';
         }
 
-        if (!isset($this->getVariables()['innodb_buffer_pool_instances'])) {
+        if (!isset($this->variables['innodb_buffer_pool_instances'])) {
             return '';
         }
 
@@ -54,14 +54,14 @@ class InstancesInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 
     protected function getInstances(): int
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
         return (int)$variables['innodb_buffer_pool_instances'];
     }
 
     public function getState(): StateEnumeration
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
         $innodbBufferShouldBe = $variables['innodb_buffer_pool_instances'] * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
         if (

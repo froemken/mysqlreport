@@ -27,14 +27,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.table_cache',
     attributes: ['priority' => 80],
 )]
-class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
+readonly class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
 
     protected const TITLE = 'Opened Table Definitions';
 
     public function renderBody(): string
     {
-        if (!isset($this->getStatusValues()['Opened_table_definitions'])) {
+        if (!isset($this->statusValues['Opened_table_definitions'])) {
             return '';
         }
 
@@ -47,7 +47,7 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUn
      */
     protected function getOpenedTableDefinitionsEachSecond(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $openedTableDefinitions = $status['Opened_table_definitions'] / $status['Uptime'];
 
@@ -63,17 +63,17 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUn
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables since server start (Opened_table_definitions)',
-            value: $this->getStatusValues()['Opened_table_definitions'],
+            value: $this->statusValues['Opened_table_definitions'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Open tables in cache (Open_table_definitions)',
-            value: $this->getStatusValues()['Open_table_definitions'],
+            value: $this->statusValues['Open_table_definitions'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed tables in cache (table_definition_cache)',
-            value: $this->getVariables()['table_definition_cache'],
+            value: $this->variables['table_definition_cache'],
         ));
 
         $unorderedList->enqueue(new ListElement(

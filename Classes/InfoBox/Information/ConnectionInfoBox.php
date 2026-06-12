@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 30],
 )]
-class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
+readonly class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
 
     protected const TITLE = 'Connections';
@@ -50,29 +50,29 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
     {
         $unorderedList = new \SplQueue();
 
-        if (isset($this->getStatusValues()['Connections'])) {
+        if (isset($this->statusValues['Connections'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Connections in total (Connections)',
-                value: $this->getStatusValues()['Connections'],
+                value: $this->statusValues['Connections'],
             ));
             $unorderedList->enqueue(new ListElement(
                 title: 'Average connections each second',
                 value: $this->getAverage(
-                    (int)$this->getStatusValues()['Connections'],
-                    (int)$this->getStatusValues()['Uptime'],
+                    (int)$this->statusValues['Connections'],
+                    (int)$this->statusValues['Uptime'],
                 ),
             ));
         }
 
-        if (isset($this->getStatusValues()['Max_used_connections'])) {
+        if (isset($this->statusValues['Max_used_connections'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Max used simultaneous connections (Max_used_connections)',
-                value: $this->getStatusValues()['Max_used_connections'],
+                value: $this->statusValues['Max_used_connections'],
             ));
 
-            $maxConnections = (int)($this->getVariables()['max_connections'] ?? 0);
+            $maxConnections = (int)($this->variables['max_connections'] ?? 0);
             if ($maxConnections > 0) {
-                $percent = 100 / $maxConnections * (int)$this->getStatusValues()['Max_used_connections'];
+                $percent = 100 / $maxConnections * (int)$this->statusValues['Max_used_connections'];
                 $unorderedList->enqueue(new ListElement(
                     title: 'Max used simultaneous connections in percent',
                     value: number_format($percent, 2, ',', '.') . '%',
@@ -80,22 +80,22 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
             }
         }
 
-        if (isset($this->getVariables()['max_connections'])) {
+        if (isset($this->variables['max_connections'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Max allowed simultaneous connections (max_connections)',
-                value: $this->getVariables()['max_connections'],
+                value: $this->variables['max_connections'],
             ));
         }
 
-        if (isset($this->getVariables()['extra_max_connections'])) {
+        if (isset($this->variables['extra_max_connections'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Extra connections (extra_max_connections)',
-                value: $this->getVariables()['extra_max_connections'],
+                value: $this->variables['extra_max_connections'],
             ));
         }
 
-        if (isset($this->getVariables()['max_user_connections'])) {
-            if ((int)$this->getVariables()['max_user_connections'] === 0) {
+        if (isset($this->variables['max_user_connections'])) {
+            if ((int)$this->variables['max_user_connections'] === 0) {
                 $unorderedList->enqueue(new ListElement(
                     title: 'Max allowed user connections (max_user_connections)',
                     value: 'No per-user limit (applies global max_connections limit)',
@@ -103,7 +103,7 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
             } else {
                 $unorderedList->enqueue(new ListElement(
                     title: 'Max allowed user connections (max_user_connections)',
-                    value: $this->getVariables()['max_user_connections'],
+                    value: $this->variables['max_user_connections'],
                 ));
             }
         }
@@ -115,12 +115,12 @@ class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
     {
         $state = StateEnumeration::STATE_NOTICE;
 
-        $maxConnections = (int)($this->getVariables()['max_connections'] ?? 0);
+        $maxConnections = (int)($this->variables['max_connections'] ?? 0);
         if (
             $maxConnections > 0
-            && isset($this->getStatusValues()['Max_used_connections'])
+            && isset($this->statusValues['Max_used_connections'])
         ) {
-            $percent = 100 / $maxConnections * (int)$this->getStatusValues()['Max_used_connections'];
+            $percent = 100 / $maxConnections * (int)$this->statusValues['Max_used_connections'];
             if ($percent > 90) {
                 $state = StateEnumeration::STATE_ERROR;
             } elseif ($percent > 70) {

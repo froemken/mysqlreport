@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+readonly class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Average Used Blocks';
@@ -38,9 +38,9 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorder
     public function renderBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_queries_in_cache'])
-            || (int)$this->getStatusValues()['Qcache_queries_in_cache'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_queries_in_cache'])
+            || (int)$this->statusValues['Qcache_queries_in_cache'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -52,7 +52,7 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorder
         return sprintf(
             implode(' ', $content),
             $this->getAvgUsedBlocks(),
-            $this->getVariables()['query_cache_limit'],
+            $this->variables['query_cache_limit'],
         );
     }
 
@@ -65,7 +65,7 @@ class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorder
      */
     protected function getAvgUsedBlocks(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $avgUsedBlocks = 0;
         $usedBlocks = $status['Qcache_total_blocks'] - $status['Qcache_free_blocks'];

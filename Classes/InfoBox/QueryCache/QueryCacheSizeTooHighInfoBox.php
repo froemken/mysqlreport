@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Query Cache too high';
@@ -38,13 +38,13 @@ class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implements InfoBoxSta
     public function renderBody(): string
     {
         if (
-            !isset($this->getVariables()['query_cache_size'])
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->variables['query_cache_size'])
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
 
-        if ($this->getVariables()['query_cache_size'] < 268435456) {
+        if ($this->variables['query_cache_size'] < 268435456) {
             return '';
         }
 

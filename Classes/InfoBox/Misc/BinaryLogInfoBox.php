@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class BinaryLogInfoBox extends AbstractInfoBox
+readonly class BinaryLogInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Binary Log';
@@ -28,10 +28,10 @@ class BinaryLogInfoBox extends AbstractInfoBox
     public function renderBody(): string
     {
         if (
-            isset($this->getStatusValues()['Slave_running'])
+            isset($this->statusValues['Slave_running'])
             && (
-                strtolower($this->getStatusValues()['Slave_running']) === 'off'
-                || (int)$this->getStatusValues()['Slave_running'] === 0
+                strtolower($this->statusValues['Slave_running']) === 'off'
+                || (int)$this->statusValues['Slave_running'] === 0
             )
         ) {
             $content = [];

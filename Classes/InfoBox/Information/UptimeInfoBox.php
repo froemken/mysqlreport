@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 80],
 )]
-class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+readonly class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Uptime';
@@ -48,27 +48,27 @@ class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInter
     {
         $unorderedList = new \SplQueue();
 
-        if (isset($this->getStatusValues()['Uptime'])) {
+        if (isset($this->statusValues['Uptime'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime',
-                value: $this->getStatusValues()['Uptime'] . ' seconds',
+                value: $this->statusValues['Uptime'] . ' seconds',
             ));
 
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime in days',
-                value: $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime']) . ' days',
+                value: $this->convertSecondsToDays((int)$this->statusValues['Uptime']) . ' days',
             ));
         }
 
-        if (isset($this->getStatusValues()['Uptime_since_flush_status'])) {
+        if (isset($this->statusValues['Uptime_since_flush_status'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime since status variables reset',
-                value: $this->getStatusValues()['Uptime_since_flush_status'] . ' seconds',
+                value: $this->statusValues['Uptime_since_flush_status'] . ' seconds',
             ));
 
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime since status variables reset in days',
-                value: $this->convertSecondsToDays((int)$this->getStatusValues()['Uptime_since_flush_status']) . ' days',
+                value: $this->convertSecondsToDays((int)$this->statusValues['Uptime_since_flush_status']) . ' days',
             ));
         }
 

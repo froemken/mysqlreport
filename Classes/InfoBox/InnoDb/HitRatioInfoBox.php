@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 50],
 )]
-class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Hit Ratio';
@@ -32,9 +32,9 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getStatusValues()['Innodb_buffer_pool_read_requests'],
-                $this->getStatusValues()['Innodb_buffer_pool_reads'],
+                $this->statusValues['Innodb_page_size'],
+                $this->statusValues['Innodb_buffer_pool_read_requests'],
+                $this->statusValues['Innodb_buffer_pool_reads'],
             )
         ) {
             return '';
@@ -59,7 +59,7 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
      */
     protected function getHitRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $hitRatio = ($status['Innodb_buffer_pool_read_requests'] / ($status['Innodb_buffer_pool_read_requests'] + $status['Innodb_buffer_pool_reads'])) * 100;
 

@@ -20,14 +20,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class StandaloneReplicationInfoBox extends AbstractInfoBox
+readonly class StandaloneReplicationInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Standalone or Replication';
 
     public function renderBody(): string
     {
-        if (!isset($this->getStatusValues()['Slave_running'])) {
+        if (!isset($this->statusValues['Slave_running'])) {
             return '';
         }
 
@@ -39,7 +39,7 @@ class StandaloneReplicationInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getStatusValues()['Slave_running'],
+            $this->statusValues['Slave_running'],
         );
     }
 }

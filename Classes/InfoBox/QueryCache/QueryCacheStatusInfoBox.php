@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 90],
 )]
-class QueryCacheStatusInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class QueryCacheStatusInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Query Cache Status';
@@ -38,11 +38,11 @@ class QueryCacheStatusInfoBox extends AbstractInfoBox implements InfoBoxStateInt
 
     public function renderBody(): string
     {
-        if (!$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())) {
+        if (!$this->queryCacheHelper->isQueryCacheEnabled($this->variables)) {
             return 'Query Cache is not activated';
         }
 
-        if ((int)($this->getVariables()['query_cache_size']) === 0) {
+        if ((int)($this->variables['query_cache_size']) === 0) {
             return 'Query Cache is activated, but query_cache_size can not be 0';
         }
 

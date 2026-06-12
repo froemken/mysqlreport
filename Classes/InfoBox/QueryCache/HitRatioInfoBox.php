@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 80],
 )]
-class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Hit Ratio';
@@ -39,9 +39,9 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
     public function renderBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_hits'])
-            || (int)$this->getStatusValues()['Qcache_hits'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_hits'])
+            || (int)$this->statusValues['Qcache_hits'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -59,7 +59,7 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 
     protected function getHitRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $hitRatio = ($status['Qcache_hits'] / ($status['Qcache_hits'] + $status['Com_select'])) * 100;
 

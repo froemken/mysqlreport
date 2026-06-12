@@ -24,14 +24,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 90],
 )]
-class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+readonly class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'InnoDB Buffer Load';
 
     public function renderBody(): string
     {
-        if (!isset($this->getStatusValues()['Innodb_page_size'])) {
+        if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';
         }
 
@@ -42,7 +42,7 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnordere
 
         return sprintf(
             implode(' ', $content),
-            $this->getStatusValues()['Innodb_page_size'],
+            $this->statusValues['Innodb_page_size'],
         );
     }
 
@@ -54,7 +54,7 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnordere
     protected function getLoad(): array
     {
         $load = [];
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         // in Bytes
         $total = $status['Innodb_buffer_pool_pages_total'] * $status['Innodb_page_size'];

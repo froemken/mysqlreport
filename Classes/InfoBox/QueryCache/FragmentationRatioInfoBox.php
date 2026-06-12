@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Fragmentation Ratio';
@@ -38,9 +38,9 @@ class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateI
     public function renderBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_total_blocks'])
-            || (int)$this->getStatusValues()['Qcache_total_blocks'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_total_blocks'])
+            || (int)$this->statusValues['Qcache_total_blocks'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -61,7 +61,7 @@ class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateI
 
     protected function getFragmentationRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         // total blocks / 2 = maximum fragmentation
         $fragmentation = ($status['Qcache_free_blocks'] / ($status['Qcache_total_blocks'] / 2)) * 100;

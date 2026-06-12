@@ -18,26 +18,16 @@ use TYPO3\CMS\Core\View\ViewInterface;
 /**
  * Model with properties for panels you can see in BE module
  */
-abstract class AbstractInfoBox
+abstract readonly class AbstractInfoBox
 {
     protected const TITLE = '';
 
     public function __construct(
-        protected readonly StatusValues $statusValues,
-        protected readonly Variables $variables,
+        protected StatusValues $statusValues,
+        protected Variables $variables,
     ) {}
 
     abstract public function renderBody(): string;
-
-    protected function getStatusValues(): StatusValues
-    {
-        return $this->statusValues;
-    }
-
-    protected function getVariables(): Variables
-    {
-        return $this->variables;
-    }
 
     public function updateView(ViewInterface $view): ?ViewInterface
     {

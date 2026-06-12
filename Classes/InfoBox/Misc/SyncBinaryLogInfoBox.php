@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class SyncBinaryLogInfoBox extends AbstractInfoBox
+readonly class SyncBinaryLogInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Sync Binary Log';
@@ -28,7 +28,7 @@ class SyncBinaryLogInfoBox extends AbstractInfoBox
     public function renderBody(): string
     {
         // Sync_binlog does not exist on MariaDB
-        if (!isset($this->getStatusValues()['Sync_binlog'])) {
+        if (!isset($this->statusValues['Sync_binlog'])) {
             return '';
         }
 
@@ -41,7 +41,7 @@ class SyncBinaryLogInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getStatusValues()['Sync_binlog'] ? 'ON' : 'OFF',
+            $this->statusValues['Sync_binlog'] ? 'ON' : 'OFF',
         );
     }
 }

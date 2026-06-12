@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Average Query Size';
@@ -38,9 +38,9 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInt
     public function renderBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_queries_in_cache'])
-            || (int)$this->getStatusValues()['Qcache_queries_in_cache'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_queries_in_cache'])
+            || (int)$this->statusValues['Qcache_queries_in_cache'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -51,13 +51,13 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInt
         return sprintf(
             implode(' ', $content),
             $this->getAvgQuerySize(),
-            $this->getVariables()['query_cache_min_res_unit'],
+            $this->variables['query_cache_min_res_unit'],
         );
     }
 
     protected function getAvgQuerySize(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $avgQuerySize = 0;
         if ($status['Qcache_queries_in_cache']) {
@@ -69,8 +69,8 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInt
 
     protected function getUsedQueryCacheSize(): int
     {
-        $status = $this->getStatusValues();
-        $variables = $this->getVariables();
+        $status = $this->statusValues;
+        $variables = $this->variables;
 
         // ~40KB are reserved by the operating system
         $queryCacheSize = $variables['query_cache_size'] - (40 * 1024);
@@ -80,7 +80,7 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInt
 
     public function getState(): StateEnumeration
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
         $avgQuerySize = $this->getAvgQuerySize();
         if ($avgQuerySize > $variables['query_cache_min_res_unit']) {

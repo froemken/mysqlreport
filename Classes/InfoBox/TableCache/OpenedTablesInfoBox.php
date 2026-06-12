@@ -27,14 +27,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.table_cache',
     attributes: ['priority' => 90],
 )]
-class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
+readonly class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
 
     protected const TITLE = 'Opened Tables';
 
     public function renderBody(): string
     {
-        if (!isset($this->getStatusValues()['Opened_tables'])) {
+        if (!isset($this->statusValues['Opened_tables'])) {
             return '';
         }
 
@@ -50,7 +50,7 @@ class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLis
      */
     protected function getOpenedTablesEachSecond(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
         $openedTables = $status['Opened_tables'] / $status['Uptime'];
 
         return round($openedTables, 4);
@@ -65,28 +65,28 @@ class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLis
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables since server start (Opened_tables)',
-            value: $this->getStatusValues()['Opened_tables'],
+            value: $this->statusValues['Opened_tables'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Open tables in cache (Open_tables)',
-            value: $this->getStatusValues()['Open_tables'],
+            value: $this->statusValues['Open_tables'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed tables in cache (table_open_cache)',
-            value: $this->getVariables()['table_open_cache'],
+            value: $this->variables['table_open_cache'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max file descriptors the mysqld process can use (open_files_limit)',
-            value: $this->getVariables()['open_files_limit'],
+            value: $this->variables['open_files_limit'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
             value: number_format(
-                $this->getVariables()['max_connections'] * (5 + 2),
+                $this->variables['max_connections'] * (5 + 2),
                 0,
                 ',',
                 '.',
@@ -96,7 +96,7 @@ class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLis
         $unorderedList->enqueue(new ListElement(
             title: 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
             value: number_format(
-                $this->getVariables()['max_connections'] * (8 + 3),
+                $this->variables['max_connections'] * (8 + 3),
                 0,
                 ',',
                 '.',

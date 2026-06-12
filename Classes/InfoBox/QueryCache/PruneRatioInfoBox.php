@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 80],
 )]
-class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Prune Ratio';
@@ -39,9 +39,9 @@ class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
     public function renderBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_inserts'])
-            || (int)$this->getStatusValues()['Qcache_inserts'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_inserts'])
+            || (int)$this->statusValues['Qcache_inserts'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -69,7 +69,7 @@ class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 
     protected function getPruneRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
         $pruneRatio = 0;
 
         if ($status['Qcache_inserts']) {

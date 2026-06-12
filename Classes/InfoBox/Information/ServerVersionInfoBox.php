@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 90],
 )]
-class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+readonly class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Server Information';
@@ -40,31 +40,31 @@ class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLi
     {
         $unorderedList = new \SplQueue();
 
-        if (isset($this->getVariables()['version'])) {
+        if (isset($this->variables['version'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version',
-                value: $this->getVariables()['version'],
+                value: $this->variables['version'],
             ));
         }
 
-        if (isset($this->getVariables()['version_comment'])) {
+        if (isset($this->variables['version_comment'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version comment',
-                value: $this->getVariables()['version_comment'],
+                value: $this->variables['version_comment'],
             ));
         }
 
-        if (isset($this->getVariables()['version_compile_machine'])) {
+        if (isset($this->variables['version_compile_machine'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version compile machine',
-                value: $this->getVariables()['version_compile_machine'],
+                value: $this->variables['version_compile_machine'],
             ));
         }
 
-        if (isset($this->getVariables()['version_compile_os'])) {
+        if (isset($this->variables['version_compile_os'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version compile OS',
-                value: $this->getVariables()['version_compile_os'],
+                value: $this->variables['version_compile_os'],
             ));
         }
 

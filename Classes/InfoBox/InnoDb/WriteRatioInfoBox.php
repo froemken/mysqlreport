@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.innodb',
 )]
-class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+readonly class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Write Ratio';
@@ -31,11 +31,11 @@ class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getStatusValues()['Innodb_buffer_pool_write_requests'],
-                $this->getStatusValues()['Innodb_buffer_pool_pages_flushed'],
+                $this->statusValues['Innodb_page_size'],
+                $this->statusValues['Innodb_buffer_pool_write_requests'],
+                $this->statusValues['Innodb_buffer_pool_pages_flushed'],
             )
-            || (int)$this->getStatusValues()['Innodb_buffer_pool_pages_flushed'] === 0
+            || (int)$this->statusValues['Innodb_buffer_pool_pages_flushed'] === 0
         ) {
             return '';
         }
@@ -57,7 +57,7 @@ class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
      */
     protected function getWriteRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $writeRatio = $status['Innodb_buffer_pool_write_requests'] / $status['Innodb_buffer_pool_pages_flushed'];
 
