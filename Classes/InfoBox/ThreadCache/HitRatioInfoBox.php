@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\ThreadCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -23,15 +24,18 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.thread_cache',
 )]
-class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Hit Ratio';
 
-    protected const TITLE = 'Hit Ratio';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getVariables()['thread_cache_size'])) {
+        if (!isset($this->variables['thread_cache_size'])) {
             return '';
         }
 
@@ -39,12 +43,12 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
         $content[] = 'As closer to 100%% as better.';
         $content[] = "\n\n";
 
-        if ((int)$this->getVariables()['thread_cache_size'] === 0) {
+        if ((int)$this->variables['thread_cache_size'] === 0) {
             $content[] = 'Your thread_cache_size (0) is not activated. Please set this value 10.';
-        } elseif ($this->getStatusValues()['Threads_connected'] < $this->getVariables()['thread_cache_size']) {
+        } elseif ($this->statusValues['Threads_connected'] < $this->variables['thread_cache_size']) {
             $content[] = 'It seems that you are the only person on this MySQL-Server, so this value should be OK.';
         } else {
-            $content[] = 'It seems that your thread_cache_size (' . $this->getVariables()['thread_cache_size'] . ') is too low.';
+            $content[] = 'It seems that your thread_cache_size (' . $this->variables['thread_cache_size'] . ') is too low.';
             $content[] = 'Please increase this value in 10th steps.';
         }
 
@@ -61,9 +65,9 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
      * get hit ratio of threads cache
      * A ratio nearly 100 would be cool
      */
-    protected function getHitRatio(): float
+    private function getHitRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $hitRatio = 100 - (($status['Threads_created'] / $status['Connections']) * 100);
 

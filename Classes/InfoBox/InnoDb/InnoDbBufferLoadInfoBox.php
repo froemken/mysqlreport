@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -25,15 +25,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 90],
 )]
-class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'InnoDB Buffer Load';
 
-    protected const TITLE = 'InnoDB Buffer Load';
+    public function __construct(
+        private StatusValues $statusValues,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getStatusValues()['Innodb_page_size'])) {
+        if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';
         }
 
@@ -44,7 +46,7 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnordere
 
         return sprintf(
             implode(' ', $content),
-            $this->getStatusValues()['Innodb_page_size'],
+            $this->statusValues['Innodb_page_size'],
         );
     }
 
@@ -53,10 +55,10 @@ class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnordere
      *
      * @return array<string, float|string>
      */
-    protected function getLoad(): array
+    private function getLoad(): array
     {
         $load = [];
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         // in Bytes
         $total = $status['Innodb_buffer_pool_pages_total'] * $status['Innodb_page_size'];

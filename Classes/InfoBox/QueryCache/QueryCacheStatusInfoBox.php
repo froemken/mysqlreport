@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -25,26 +25,22 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 90],
 )]
-class QueryCacheStatusInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class QueryCacheStatusInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Query Cache Status';
 
-    protected const TITLE = 'Query Cache Status';
+    public function __construct(
+        private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
+    ) {}
 
-    private QueryCacheHelper $queryCacheHelper;
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
+    public function getBody(): string
     {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
-
-    public function renderBody(): string
-    {
-        if (!$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())) {
+        if (!$this->queryCacheHelper->isQueryCacheEnabled($this->variables)) {
             return 'Query Cache is not activated';
         }
 
-        if ((int)($this->getVariables()['query_cache_size']) === 0) {
+        if ((int)($this->variables['query_cache_size']) === 0) {
             return 'Query Cache is activated, but query_cache_size can not be 0';
         }
 

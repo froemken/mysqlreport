@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,13 +25,16 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.misc',
     attributes: ['priority' => 80],
 )]
-class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class TempTablesInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Temporary Tables';
 
-    protected const TITLE = 'Temporary Tables';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         $content = [];
         $content[] = 'While JOIN and GROUP BY the server needs a lot of memory to manage the requested data.';
@@ -49,34 +53,34 @@ class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
         $unorderedList = new \SplQueue();
 
         if (isset(
-            $this->getVariables()['tmp_table_size'],
-            $this->getVariables()['max_heap_table_size'],
+            $this->variables['tmp_table_size'],
+            $this->variables['max_heap_table_size'],
         )) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Configured max size of temp table while query (tmp_table_size)',
-                value: $this->getVariables()['tmp_table_size'],
+                value: $this->variables['tmp_table_size'],
             ));
             $unorderedList->enqueue(new ListElement(
                 title: 'Configured max size of in-memory table YOU can create (max_heap_table_size)',
-                value: $this->getVariables()['max_heap_table_size'],
+                value: $this->variables['max_heap_table_size'],
             ));
             $unorderedList->enqueue(new ListElement(
                 title: 'Real max size. Lowest value of tmp_table_size/max_heap_table_size wins',
-                value: $this->getVariables()['max_heap_table_size'] < $this->getVariables()['tmp_table_size']
-                    ? $this->getVariables()['max_heap_table_size']
-                    : $this->getVariables()['tmp_table_size'],
+                value: $this->variables['max_heap_table_size'] < $this->variables['tmp_table_size']
+                    ? $this->variables['max_heap_table_size']
+                    : $this->variables['tmp_table_size'],
             ));
         }
 
-        if (isset($this->getStatusValues()['Created_tmp_disk_tables'])) {
+        if (isset($this->statusValues['Created_tmp_disk_tables'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Created temporary tables on disk since server start',
-                value: $this->getStatusValues()['Created_tmp_disk_tables'],
+                value: $this->statusValues['Created_tmp_disk_tables'],
             ));
             $unorderedList->enqueue(new ListElement(
                 title: 'Created temporary tables on disk in seconds',
                 value: number_format(
-                    $this->getStatusValues()['Created_tmp_disk_tables'] / $this->getStatusValues()['Uptime'],
+                    $this->statusValues['Created_tmp_disk_tables'] / $this->statusValues['Uptime'],
                     2,
                     ',',
                     '.',
@@ -84,15 +88,15 @@ class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
             ));
         }
 
-        if (isset($this->getStatusValues()['Created_tmp_tables'])) {
+        if (isset($this->statusValues['Created_tmp_tables'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Created temporary tables on disk and ram since server start',
-                value: $this->getStatusValues()['Created_tmp_tables'],
+                value: $this->statusValues['Created_tmp_tables'],
             ));
             $unorderedList->enqueue(new ListElement(
                 title: 'Created temporary tables on disk and ram in seconds',
                 value: number_format(
-                    $this->getStatusValues()['Created_tmp_tables'] / $this->getStatusValues()['Uptime'],
+                    $this->statusValues['Created_tmp_tables'] / $this->statusValues['Uptime'],
                     2,
                     ',',
                     '.',
@@ -103,13 +107,13 @@ class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListI
         // If not set, InnoDB is the new default
         $unorderedList->enqueue(new ListElement(
             title: 'Storage engine for temp. tables on disk',
-            value: $this->getVariables()['internal_tmp_disk_storage_engine'] ?? 'InnoDB',
+            value: $this->variables['internal_tmp_disk_storage_engine'] ?? 'InnoDB',
         ));
 
         // If not set, MEMORY was the old default
         $unorderedList->enqueue(new ListElement(
             title: 'Storage engine for temp. tables in ram',
-            value: $this->getVariables()['internal_tmp_mem_storage_engine'] ?? 'MEMORY',
+            value: $this->variables['internal_tmp_mem_storage_engine'] ?? 'MEMORY',
         ));
 
         return $unorderedList;

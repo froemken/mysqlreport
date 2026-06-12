@@ -30,13 +30,13 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
     /**
      * @var \SplQueue<QueryInformation>
      */
-    private \SplQueue $queries;
+    private readonly \SplQueue $queries;
 
-    private MySqlReportSqlLogger $logger;
+    private readonly MySqlReportSqlLogger $logger;
 
-    private ExplainQueryHelper $explainQueryHelper;
+    private readonly ExplainQueryHelper $explainQueryHelper;
 
-    private QueryInformationRepository $queryInformationRepository;
+    private readonly QueryInformationRepository $queryInformationRepository;
 
     public function __construct(Connection $connection)
     {

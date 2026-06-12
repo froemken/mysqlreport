@@ -9,6 +9,9 @@ services:
     autowire: true
     autoconfigure: true
     public: false
+    bind:
+      StefanFroemken\Mysqlreport\Domain\Model\StatusValues: '@mysqlreport.status'
+      StefanFroemken\Mysqlreport\Domain\Model\Variables: '@mysqlreport.variables'
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
@@ -16,29 +19,13 @@ services:
       - '../Classes/Domain/Model/*'
       - '../Classes/InfoBox/ListElement.php'
 
-  mysqlreport.page.information:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.status' }]
+  mysqlreport.status:
+    class: StefanFroemken\Mysqlreport\Domain\Model\StatusValues
+    factory: ['@StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository', 'findAll']
 
-  mysqlreport.page.innodb:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.innodb' }]
-
-  mysqlreport.page.misc:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.misc' }]
-
-  mysqlreport.page.query_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.query_cache' }]
-
-  mysqlreport.page.table_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.table_cache' }]
-
-  mysqlreport.page.thread_cache:
-    class: StefanFroemken\Mysqlreport\Menu\Page
-    arguments: [!tagged_iterator { tag: 'mysqlreport.infobox.thread_cache' }]
+  mysqlreport.variables:
+    class: StefanFroemken\Mysqlreport\Domain\Model\Variables
+    factory: ['@StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository', 'findAll']
 
   # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeMiddleware and LoggerWithQueryTimeConnection
   StefanFroemken\Mysqlreport\Configuration\ExtConf:
@@ -46,27 +33,27 @@ services:
 
   StefanFroemken\Mysqlreport\Controller\InnoDBController:
     arguments:
-      $page: '@mysqlreport.page.innodb'
+      $infoBoxes: !tagged_iterator { tag: 'mysqlreport.infobox.innodb' }
 
   StefanFroemken\Mysqlreport\Controller\MiscController:
     arguments:
-      $page: '@mysqlreport.page.misc'
+      $infoBoxes: !tagged_iterator { tag: 'mysqlreport.infobox.misc' }
 
   StefanFroemken\Mysqlreport\Controller\QueryCacheController:
     arguments:
-      $page: '@mysqlreport.page.query_cache'
+      $infoBoxes: !tagged_iterator { tag: 'mysqlreport.infobox.query_cache' }
 
   StefanFroemken\Mysqlreport\Controller\StatusController:
     arguments:
-      $page: '@mysqlreport.page.information'
+      $infoBoxes: !tagged_iterator { tag: 'mysqlreport.infobox.status' }
 
   StefanFroemken\Mysqlreport\Controller\TableCacheController:
     arguments:
-      $page: '@mysqlreport.page.table_cache'
+      $infoBoxes: !tagged_iterator { tag: 'mysqlreport.infobox.table_cache' }
 
   StefanFroemken\Mysqlreport\Controller\ThreadCacheController:
     arguments:
-      $page: '@mysqlreport.page.thread_cache'
+      $infoBoxes: !tagged_iterator { tag: 'mysqlreport.infobox.thread_cache' }
 
   # Will be called via GeneralUtility::makeInstance in ConnectionPool
   StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeMiddleware:
@@ -97,8 +84,6 @@ services:
   StefanFroemken\Mysqlreport\Controller\ProfileController:
     public: true
 
-  StefanFroemken\Mysqlreport\Controller\QueryController:
-    public: true
 
   # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeConnection
   StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository:

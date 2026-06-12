@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,19 +24,21 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 40],
 )]
-class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class HitRatioBySFInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Hit Ratio by SF';
 
-    protected const TITLE = 'Hit Ratio by SF';
+    public function __construct(
+        private StatusValues $statusValues,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getStatusValues()['Innodb_buffer_pool_reads'],
-                $this->getStatusValues()['Innodb_buffer_pool_read_requests'],
+                $this->statusValues['Innodb_page_size'],
+                $this->statusValues['Innodb_buffer_pool_reads'],
+                $this->statusValues['Innodb_buffer_pool_read_requests'],
             )
         ) {
             return '';
@@ -58,9 +60,9 @@ class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterfa
     /**
      * get hit ratio of innoDb Buffer by SF
      */
-    protected function getHitRatioBySF(): float
+    private function getHitRatioBySF(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $niceToHave = $status['Innodb_buffer_pool_reads'] * 1000;
         $hitRatio = 100 / $niceToHave * $status['Innodb_buffer_pool_read_requests'];
@@ -70,7 +72,7 @@ class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterfa
 
     public function getState(): StateEnumeration
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         // We always want a factor of 1/1000.
         $niceToHave = $status['Innodb_buffer_pool_reads'] * 1000;

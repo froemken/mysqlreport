@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -23,19 +24,22 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.innodb',
 )]
-class InstancesInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Instances';
 
-    protected const TITLE = 'Instances';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getStatusValues()['Innodb_page_size'])) {
+        if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';
         }
 
-        if (!isset($this->getVariables()['innodb_buffer_pool_instances'])) {
+        if (!isset($this->variables['innodb_buffer_pool_instances'])) {
             return '';
         }
 
@@ -54,20 +58,20 @@ class InstancesInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
         );
     }
 
-    protected function getInstances(): int
+    private function getInstances(): int
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
         return (int)$variables['innodb_buffer_pool_instances'];
     }
 
     public function getState(): StateEnumeration
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
-        $innodbBufferShouldBe = $variables['innodb_buffer_pool_instances'] * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
+        $innodbBufferShouldBe = $variables['innodb_buffer_pool_instances'] * (1024 * 1024 * 1024); // Instances * 1 GB
         if (
-            $variables['innodb_buffer_pool_size'] < (1 * 1024 * 1024 * 1024)
+            $variables['innodb_buffer_pool_size'] < (1024 * 1024 * 1024)
             && $variables['innodb_buffer_pool_instances'] === 1
         ) {
             $state = StateEnumeration::STATE_OK;

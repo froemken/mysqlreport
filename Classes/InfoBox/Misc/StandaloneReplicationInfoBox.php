@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -21,15 +21,17 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class StandaloneReplicationInfoBox extends AbstractInfoBox
+final readonly class StandaloneReplicationInfoBox implements InfoBoxInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Standalone or Replication';
 
-    protected const TITLE = 'Standalone or Replication';
+    public function __construct(
+        private StatusValues $statusValues,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getStatusValues()['Slave_running'])) {
+        if (!isset($this->statusValues['Slave_running'])) {
             return '';
         }
 
@@ -41,7 +43,7 @@ class StandaloneReplicationInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getStatusValues()['Slave_running'],
+            $this->statusValues['Slave_running'],
         );
     }
 }

@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -25,25 +26,22 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 80],
 )]
-class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Insert Ratio';
 
-    protected const TITLE = 'Insert Ratio';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
+    ) {}
 
-    private QueryCacheHelper $queryCacheHelper;
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
-    {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
-
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_hits'])
-            || (int)$this->getStatusValues()['Qcache_hits'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_hits'])
+            || (int)$this->statusValues['Qcache_hits'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -61,9 +59,9 @@ class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
         );
     }
 
-    protected function getInsertRatio(): float
+    private function getInsertRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $insertRatio = ($status['Qcache_inserts'] / ($status['Qcache_hits'] + $status['Com_select'])) * 100;
 

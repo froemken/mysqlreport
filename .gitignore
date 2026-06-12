@@ -7,6 +7,8 @@
 /.ddev
 /.Build
 /composer.lock
+/packages/
+/scratch/
 *GENERATED*
 /Build/testing-docker/.env
 /.php-cs-fixer.cache

@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -23,21 +23,23 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.innodb',
 )]
-class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Write Ratio';
 
-    protected const TITLE = 'Write Ratio';
+    public function __construct(
+        private StatusValues $statusValues,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getStatusValues()['Innodb_buffer_pool_write_requests'],
-                $this->getStatusValues()['Innodb_buffer_pool_pages_flushed'],
+                $this->statusValues['Innodb_page_size'],
+                $this->statusValues['Innodb_buffer_pool_write_requests'],
+                $this->statusValues['Innodb_buffer_pool_pages_flushed'],
             )
-            || (int)$this->getStatusValues()['Innodb_buffer_pool_pages_flushed'] === 0
+            || (int)$this->statusValues['Innodb_buffer_pool_pages_flushed'] === 0
         ) {
             return '';
         }
@@ -57,9 +59,9 @@ class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
      * get write ratio of innoDb Buffer
      * A value higher than 1 is good
      */
-    protected function getWriteRatio(): float
+    private function getWriteRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $writeRatio = $status['Innodb_buffer_pool_write_requests'] / $status['Innodb_buffer_pool_pages_flushed'];
 

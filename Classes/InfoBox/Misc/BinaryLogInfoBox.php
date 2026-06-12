@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -21,19 +21,21 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class BinaryLogInfoBox extends AbstractInfoBox
+final readonly class BinaryLogInfoBox implements InfoBoxInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Binary Log';
 
-    protected const TITLE = 'Binary Log';
+    public function __construct(
+        private StatusValues $statusValues,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
-            isset($this->getStatusValues()['Slave_running'])
+            isset($this->statusValues['Slave_running'])
             && (
-                strtolower($this->getStatusValues()['Slave_running']) === 'off'
-                || (int)$this->getStatusValues()['Slave_running'] === 0
+                strtolower($this->statusValues['Slave_running']) === 'off'
+                || (int)$this->statusValues['Slave_running'] === 0
             )
         ) {
             $content = [];

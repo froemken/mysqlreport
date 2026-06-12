@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -21,16 +21,18 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class SyncBinaryLogInfoBox extends AbstractInfoBox
+final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Sync Binary Log';
 
-    protected const TITLE = 'Sync Binary Log';
+    public function __construct(
+        private StatusValues $statusValues,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         // Sync_binlog does not exist on MariaDB
-        if (!isset($this->getStatusValues()['Sync_binlog'])) {
+        if (!isset($this->statusValues['Sync_binlog'])) {
             return '';
         }
 
@@ -43,7 +45,7 @@ class SyncBinaryLogInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getStatusValues()['Sync_binlog'] ? 'ON' : 'OFF',
+            $this->statusValues['Sync_binlog'] ? 'ON' : 'OFF',
         );
     }
 }

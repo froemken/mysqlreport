@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,15 +24,17 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.misc',
     attributes: ['priority' => 90],
 )]
-class MaxAllowedPacketInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Max Packet Size';
 
-    protected const TITLE = 'Max Packet Size';
+    public function __construct(
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getVariables()['max_allowed_packet'])) {
+        if (!isset($this->variables['max_allowed_packet'])) {
             return '';
         }
 
@@ -54,7 +56,7 @@ class MaxAllowedPacketInfoBox extends AbstractInfoBox implements InfoBoxUnordere
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed packet size in bytes (max_allowed_packet)',
-            value: $this->getVariables()['max_allowed_packet'],
+            value: $this->variables['max_allowed_packet'],
         ));
 
         return $unorderedList;

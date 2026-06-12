@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,19 +24,21 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 50],
 )]
-class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Hit Ratio';
 
-    protected const TITLE = 'Hit Ratio';
+    public function __construct(
+        private StatusValues $statusValues,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getStatusValues()['Innodb_buffer_pool_read_requests'],
-                $this->getStatusValues()['Innodb_buffer_pool_reads'],
+                $this->statusValues['Innodb_page_size'],
+                $this->statusValues['Innodb_buffer_pool_read_requests'],
+                $this->statusValues['Innodb_buffer_pool_reads'],
             )
         ) {
             return '';
@@ -59,9 +61,9 @@ class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
      * get hit ratio of innoDb Buffer
      * A ratio of 99.9 equals 1/1000
      */
-    protected function getHitRatio(): float
+    private function getHitRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $hitRatio = ($status['Innodb_buffer_pool_read_requests'] / ($status['Innodb_buffer_pool_read_requests'] + $status['Innodb_buffer_pool_reads'])) * 100;
 

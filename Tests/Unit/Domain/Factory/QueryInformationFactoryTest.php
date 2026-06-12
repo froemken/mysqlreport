@@ -13,10 +13,14 @@ namespace StefanFroemken\Mysqlreport\Tests\Unit\Domain\Factory;
 
 use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Domain\Factory\QueryInformationFactory;
+use TYPO3\CMS\Core\Context\Context;
+use TYPO3\CMS\Core\Context\DateTimeAspect;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Core\SystemEnvironmentBuilder;
+use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Routing\PageArguments;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 /**
@@ -32,7 +36,8 @@ class QueryInformationFactoryTest extends UnitTestCase
     {
         $this->time = time();
 
-        $GLOBALS['EXEC_TIME'] = $this->time;
+        $context = GeneralUtility::makeInstance(Context::class);
+        $context->setAspect('date', new DateTimeAspect(new \DateTimeImmutable('@' . $this->time)));
 
         $_SERVER = array_merge($_SERVER, [
             'REMOTE_ADDR' => '123.124.125.126',
@@ -44,7 +49,8 @@ class QueryInformationFactoryTest extends UnitTestCase
 
         $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.example.com/', 'GET', 'php://input', [], $_SERVER))
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_FE)
-            ->withAttribute('routing', new PageArguments(1, '0', []));
+            ->withAttribute('routing', new PageArguments(1, '0', []))
+            ->withAttribute('normalizedParams', NormalizedParams::createFromServerParams($_SERVER));
 
         Environment::initialize(
             Environment::getContext(),
@@ -66,8 +72,8 @@ class QueryInformationFactoryTest extends UnitTestCase
         unset(
             $this->subject,
             $GLOBALS['TYPO3_REQUEST'],
-            $GLOBALS['EXEC_TIME'],
         );
+        GeneralUtility::purgeInstances();
     }
 
     #[Test]

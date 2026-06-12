@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -28,15 +29,18 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.table_cache',
     attributes: ['priority' => 90],
 )]
-class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
+final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Opened Tables';
 
-    protected const TITLE = 'Opened Tables';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getStatusValues()['Opened_tables'])) {
+        if (!isset($this->statusValues['Opened_tables'])) {
             return '';
         }
 
@@ -50,9 +54,9 @@ class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLis
     /**
      * get number of opened tables each second
      */
-    protected function getOpenedTablesEachSecond(): float
+    private function getOpenedTablesEachSecond(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
         $openedTables = $status['Opened_tables'] / $status['Uptime'];
 
         return round($openedTables, 4);
@@ -67,28 +71,28 @@ class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLis
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables since server start (Opened_tables)',
-            value: $this->getStatusValues()['Opened_tables'],
+            value: $this->statusValues['Opened_tables'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Open tables in cache (Open_tables)',
-            value: $this->getStatusValues()['Open_tables'],
+            value: $this->statusValues['Open_tables'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed tables in cache (table_open_cache)',
-            value: $this->getVariables()['table_open_cache'],
+            value: $this->variables['table_open_cache'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max file descriptors the mysqld process can use (open_files_limit)',
-            value: $this->getVariables()['open_files_limit'],
+            value: $this->variables['open_files_limit'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
             value: number_format(
-                $this->getVariables()['max_connections'] * (5 + 2),
+                $this->variables['max_connections'] * (5 + 2),
                 0,
                 ',',
                 '.',
@@ -98,7 +102,7 @@ class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedLis
         $unorderedList->enqueue(new ListElement(
             title: 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
             value: number_format(
-                $this->getVariables()['max_connections'] * (8 + 3),
+                $this->variables['max_connections'] * (8 + 3),
                 0,
                 ',',
                 '.',

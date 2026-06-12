@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,25 +25,22 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Average Query Size';
 
-    protected const TITLE = 'Average Query Size';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
+    ) {}
 
-    private QueryCacheHelper $queryCacheHelper;
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
-    {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
-
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_queries_in_cache'])
-            || (int)$this->getStatusValues()['Qcache_queries_in_cache'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_queries_in_cache'])
+            || (int)$this->statusValues['Qcache_queries_in_cache'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -53,13 +51,13 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInt
         return sprintf(
             implode(' ', $content),
             $this->getAvgQuerySize(),
-            $this->getVariables()['query_cache_min_res_unit'],
+            $this->variables['query_cache_min_res_unit'],
         );
     }
 
-    protected function getAvgQuerySize(): float
+    private function getAvgQuerySize(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $avgQuerySize = 0;
         if ($status['Qcache_queries_in_cache']) {
@@ -69,10 +67,10 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInt
         return round($avgQuerySize, 4);
     }
 
-    protected function getUsedQueryCacheSize(): int
+    private function getUsedQueryCacheSize(): int
     {
-        $status = $this->getStatusValues();
-        $variables = $this->getVariables();
+        $status = $this->statusValues;
+        $variables = $this->variables;
 
         // ~40KB are reserved by the operating system
         $queryCacheSize = $variables['query_cache_size'] - (40 * 1024);
@@ -82,15 +80,13 @@ class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInt
 
     public function getState(): StateEnumeration
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
         $avgQuerySize = $this->getAvgQuerySize();
         if ($avgQuerySize > $variables['query_cache_min_res_unit']) {
-            $state = StateEnumeration::STATE_ERROR;
-        } else {
-            $state = StateEnumeration::STATE_OK;
+            return StateEnumeration::STATE_ERROR;
         }
 
-        return $state;
+        return StateEnumeration::STATE_OK;
     }
 }

@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -23,15 +23,17 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-class BackLogInfoBox extends AbstractInfoBox
+final readonly class BackLogInfoBox implements InfoBoxInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Back Log';
 
-    protected const TITLE = 'Back Log';
+    public function __construct(
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getVariables()['back_log'])) {
+        if (!isset($this->variables['back_log'])) {
             return '';
         }
 
@@ -46,7 +48,7 @@ class BackLogInfoBox extends AbstractInfoBox
 
         return sprintf(
             implode(' ', $content),
-            $this->getVariables()['back_log'],
+            $this->variables['back_log'],
             $this->getMaxNetworkRequests(),
         );
     }
@@ -54,7 +56,7 @@ class BackLogInfoBox extends AbstractInfoBox
     /**
      * Execute shell command to get amount of max network requests by OS
      */
-    protected function getMaxNetworkRequests(): string
+    private function getMaxNetworkRequests(): string
     {
         $value = '';
         $command = CommandUtility::getCommand('sysctl');

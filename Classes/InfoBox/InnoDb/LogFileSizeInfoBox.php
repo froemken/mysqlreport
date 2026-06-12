@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -23,20 +24,23 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.innodb',
 )]
-class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Log File Size';
 
-    protected const TITLE = 'Log File Size';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset(
-                $this->getStatusValues()['Innodb_page_size'],
-                $this->getVariables()['innodb_log_files_in_group'],
+                $this->statusValues['Innodb_page_size'],
+                $this->variables['innodb_log_files_in_group'],
             )
-            || (int)$this->getVariables()['innodb_log_files_in_group'] === 0
+            || (int)$this->variables['innodb_log_files_in_group'] === 0
         ) {
             return '';
         }
@@ -65,9 +69,9 @@ class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
      *
      * @return array<string, int>
      */
-    protected function getLogFileSize(): array
+    private function getLogFileSize(): array
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
 
         return [
             'value' => $variables['innodb_log_file_size'],
@@ -77,8 +81,8 @@ class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
 
     private function getSizeOfEachLogFile(): int
     {
-        $variables = $this->getVariables();
-        $status = $this->getStatusValues();
+        $variables = $this->variables;
+        $status = $this->statusValues;
 
         $bytesWrittenEachSecond = $status['Innodb_os_log_written'] / $status['Uptime'];
         $bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
@@ -88,15 +92,13 @@ class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterfac
 
     public function getState(): StateEnumeration
     {
-        $variables = $this->getVariables();
+        $variables = $this->variables;
         $sizeOfEachLogFile = $this->getSizeOfEachLogFile();
 
         if ($sizeOfEachLogFile < 5242880 || $sizeOfEachLogFile < $variables['innodb_log_file_size']) {
-            $state = StateEnumeration::STATE_OK;
-        } else {
-            $state = StateEnumeration::STATE_ERROR;
+            return StateEnumeration::STATE_OK;
         }
 
-        return $state;
+        return StateEnumeration::STATE_ERROR;
     }
 }

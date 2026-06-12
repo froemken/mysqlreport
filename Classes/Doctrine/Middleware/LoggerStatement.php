@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Doctrine\Middleware;
 
 use Doctrine\DBAL\Driver\Result as ResultInterface;
-use Doctrine\DBAL\Driver\Statement;
 use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\ParameterType;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
@@ -21,7 +20,7 @@ use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
 /**
  * Here in the connection, we can wrap our logger around the queries and commands.
  */
-class LoggerStatement implements Statement
+class LoggerStatement implements StatementInterface
 {
     /**
      * @var array<int, string>

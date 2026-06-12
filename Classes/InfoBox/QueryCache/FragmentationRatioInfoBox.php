@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,25 +25,22 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Fragmentation Ratio';
 
-    protected const TITLE = 'Fragmentation Ratio';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
+    ) {}
 
-    private QueryCacheHelper $queryCacheHelper;
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
-    {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
-
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
-            !isset($this->getStatusValues()['Qcache_total_blocks'])
-            || (int)$this->getStatusValues()['Qcache_total_blocks'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->statusValues['Qcache_total_blocks'])
+            || (int)$this->statusValues['Qcache_total_blocks'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
@@ -61,9 +59,9 @@ class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateI
         );
     }
 
-    protected function getFragmentationRatio(): float
+    private function getFragmentationRatio(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         // total blocks / 2 = maximum fragmentation
         $fragmentation = ($status['Qcache_free_blocks'] / ($status['Qcache_total_blocks'] / 2)) * 100;

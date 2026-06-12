@@ -12,14 +12,18 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\RenderInfoBoxFactory;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class QueryCacheController extends ActionController
 {
+    /**
+     * @param iterable<int, \StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface> $infoBoxes
+     */
     public function __construct(
-        private readonly Page $page,
+        private readonly iterable $infoBoxes,
+        private readonly RenderInfoBoxFactory $renderInfoBoxFactory,
         private readonly ModuleTemplateFactory $moduleTemplateFactory,
     ) {}
 
@@ -31,7 +35,10 @@ class QueryCacheController extends ActionController
             'MySQL Report - Query Cache',
         );
 
-        $moduleTemplate->assign('renderedInfoBoxes', $this->page->getRenderedInfoBoxes());
+        $moduleTemplate->assign(
+            'renderedInfoBoxes',
+            $this->renderInfoBoxFactory->render($this->infoBoxes),
+        );
 
         return $moduleTemplate->renderResponse('QueryCache/Index');
     }

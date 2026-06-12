@@ -29,9 +29,6 @@ readonly class ExplainQueryHelper
         private LoggerInterface $logger,
     ) {}
 
-    /**
-     * @param QueryInformation $queryInformation
-     */
     public function updateQueryInformation(QueryInformation $queryInformation): void
     {
         if (!$this->extConf->isActivateExplainQuery()) {

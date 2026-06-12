@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -28,15 +29,18 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.table_cache',
     attributes: ['priority' => 80],
 )]
-class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
+final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Opened Table Definitions';
 
-    protected const TITLE = 'Opened Table Definitions';
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
 
-    public function renderBody(): string
+    public function getBody(): string
     {
-        if (!isset($this->getStatusValues()['Opened_table_definitions'])) {
+        if (!isset($this->statusValues['Opened_table_definitions'])) {
             return '';
         }
 
@@ -47,9 +51,9 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUn
     /**
      * Get the number of opened table definitions each second
      */
-    protected function getOpenedTableDefinitionsEachSecond(): float
+    private function getOpenedTableDefinitionsEachSecond(): float
     {
-        $status = $this->getStatusValues();
+        $status = $this->statusValues;
 
         $openedTableDefinitions = $status['Opened_table_definitions'] / $status['Uptime'];
 
@@ -65,17 +69,17 @@ class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUn
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables since server start (Opened_table_definitions)',
-            value: $this->getStatusValues()['Opened_table_definitions'],
+            value: $this->statusValues['Opened_table_definitions'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Open tables in cache (Open_table_definitions)',
-            value: $this->getStatusValues()['Open_table_definitions'],
+            value: $this->statusValues['Open_table_definitions'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed tables in cache (table_definition_cache)',
-            value: $this->getVariables()['table_definition_cache'],
+            value: $this->variables['table_definition_cache'],
         ));
 
         $unorderedList->enqueue(new ListElement(

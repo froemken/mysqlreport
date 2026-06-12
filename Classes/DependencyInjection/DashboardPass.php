@@ -22,12 +22,7 @@ use TYPO3\CMS\Dashboard\Controller\DashboardController;
  */
 readonly class DashboardPass implements CompilerPassInterface
 {
-    private string $tagName;
-
-    public function __construct(string $tagName)
-    {
-        $this->tagName = $tagName;
-    }
+    public function __construct(private string $tagName) {}
 
     /**
      * Start removing registered dashboard widgets if EXT:dashboard is not installed
@@ -42,7 +37,7 @@ readonly class DashboardPass implements CompilerPassInterface
     public function process(ContainerBuilder $container): void
     {
         if (!$container->has(DashboardController::class)) {
-            foreach ($container->findTaggedServiceIds($this->tagName) as $id => $tags) {
+            foreach (array_keys($container->findTaggedServiceIds($this->tagName)) as $id) {
                 $container->removeDefinition($id);
             }
         }

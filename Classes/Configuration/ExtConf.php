@@ -97,14 +97,9 @@ final readonly class ExtConf
             return false;
         }
 
-        if ($this->isEnableFrontendLogging() && !$this->isBackendRequest()) {
+        if ($this->enableFrontendLogging && !$this->isBackendRequest()) {
             return true;
         }
-
-        if ($this->isEnableBackendLogging() && $this->isBackendRequest()) {
-            return true;
-        }
-
-        return false;
+        return $this->enableBackendLogging && $this->isBackendRequest();
     }
 }

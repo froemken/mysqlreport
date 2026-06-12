@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,29 +24,25 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class QueryCacheSizeTooHighInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
+    public const TITLE = 'Query Cache too high';
 
-    protected const TITLE = 'Query Cache too high';
+    public function __construct(
+        private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
+    ) {}
 
-    private QueryCacheHelper $queryCacheHelper;
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
-    {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
-
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
-            !isset($this->getVariables()['query_cache_size'])
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->getVariables())
+            !isset($this->variables['query_cache_size'])
+            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
         ) {
             return '';
         }
 
-        if ($this->getVariables()['query_cache_size'] < 268435456) {
+        if ($this->variables['query_cache_size'] < 268435456) {
             return '';
         }
 

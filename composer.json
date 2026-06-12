@@ -1,6 +1,6 @@
 {
 	"name": "stefanfroemken/mysqlreport",
-	"description": "Analyze and profile your TYPO3 databases queries",
+	"description": "MySQL Report - Analyze and profile your TYPO3 database queries",
 	"license": "GPL-2.0-or-later",
 	"type": "typo3-cms-extension",
 	"keywords": [
@@ -35,6 +35,7 @@
 		"friendsofphp/php-cs-fixer": "^3.88",
 		"phpstan/phpstan": "^2.1",
 		"phpunit/phpunit": "^11.5",
+		"ssch/typo3-rector": "^3.6",
 		"typo3/cms-dashboard": "^14.0",
 		"typo3/cms-install": "^14.0",
 		"typo3/cms-reports": "^14.0",
@@ -71,7 +72,11 @@
 	},
 	"extra": {
 		"typo3/cms": {
+			"Package": {
+				"providesPackages": {}
+			},
 			"extension-key": "mysqlreport",
+			"version": "5.1.0",
 			"web-dir": ".Build/web"
 		}
 	}
