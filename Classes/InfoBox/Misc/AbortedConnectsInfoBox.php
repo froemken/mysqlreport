@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.misc',
     attributes: ['priority' => 50],
 )]
-final readonly class AbortedConnectsInfoBox extends AbstractInfoBox
+final readonly class AbortedConnectsInfoBox implements InfoBoxInterface
 {
     public function __construct(
         private StatusValues $statusValues,

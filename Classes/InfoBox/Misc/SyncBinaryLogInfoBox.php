@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-final readonly class SyncBinaryLogInfoBox extends AbstractInfoBox
+final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
 {
     public function __construct(
         private StatusValues $statusValues,

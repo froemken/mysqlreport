@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-final readonly class BackLogInfoBox extends AbstractInfoBox
+final readonly class BackLogInfoBox implements InfoBoxInterface
 {
     public function __construct(
         private StatusValues $statusValues,

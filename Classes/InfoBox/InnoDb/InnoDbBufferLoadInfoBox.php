@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 
-use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 90],
 )]
-final readonly class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
     public function __construct(
         private StatusValues $statusValues,
