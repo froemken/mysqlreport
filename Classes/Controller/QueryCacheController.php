@@ -18,6 +18,9 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class QueryCacheController extends ActionController
 {
+    /**
+     * @param iterable<int, \StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface> $infoBoxes
+     */
     public function __construct(
         private readonly iterable $infoBoxes,
         private readonly RenderInfoBoxFactory $renderInfoBoxFactory,

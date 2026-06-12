@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
@@ -32,7 +31,6 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
 
     public function __construct(
         private StatusValues $statusValues,
-        private Variables $variables,
     ) {}
 
     public function getBody(): string

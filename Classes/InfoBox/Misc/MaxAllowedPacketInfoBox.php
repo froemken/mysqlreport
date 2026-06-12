@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
@@ -30,7 +29,6 @@ final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBo
     public const TITLE = 'Max Packet Size';
 
     public function __construct(
-        private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 

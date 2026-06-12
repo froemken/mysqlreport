@@ -29,17 +29,11 @@ final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, Info
 {
     public const TITLE = 'Fragmentation Ratio';
 
-    private QueryCacheHelper $queryCacheHelper;
-
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
     ) {}
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
-    {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
 
     public function getBody(): string
     {

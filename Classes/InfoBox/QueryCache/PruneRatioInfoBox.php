@@ -30,17 +30,11 @@ final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxState
 {
     public const TITLE = 'Prune Ratio';
 
-    private QueryCacheHelper $queryCacheHelper;
-
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
     ) {}
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
-    {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
 
     public function getBody(): string
     {

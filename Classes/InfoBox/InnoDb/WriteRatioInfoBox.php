@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -30,7 +29,6 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
 
     public function __construct(
         private StatusValues $statusValues,
-        private Variables $variables,
     ) {}
 
     public function getBody(): string

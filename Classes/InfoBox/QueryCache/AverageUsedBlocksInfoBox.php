@@ -29,17 +29,11 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
 {
     public const TITLE = 'Average Used Blocks';
 
-    private QueryCacheHelper $queryCacheHelper;
-
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
+        private QueryCacheHelper $queryCacheHelper,
     ) {}
-
-    public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
-    {
-        $this->queryCacheHelper = $queryCacheHelper;
-    }
 
     public function getBody(): string
     {

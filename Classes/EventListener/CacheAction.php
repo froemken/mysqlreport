@@ -39,7 +39,7 @@ readonly class CacheAction
             'id' => 'mysqlprofile',
             'title' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.title',
             'description' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:clearCache.description',
-            'href' => (string)$this->uriBuilder->buildUriFromRoute('tce_db', ['cacheCmd' => 'mysqlprofiles']),
+            'endpoint' => (string)$this->uriBuilder->buildUriFromRoute('tce_db', ['cacheCmd' => 'mysqlprofiles']),
             'iconIdentifier' => 'actions-system-cache-clear-impact-high',
         ]);
     }

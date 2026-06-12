@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
@@ -30,7 +29,6 @@ final readonly class ServerVersionInfoBox implements InfoBoxInterface, InfoBoxUn
     public const TITLE = 'Server Information';
 
     public function __construct(
-        private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
