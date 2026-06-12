@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 90],
 )]
-readonly class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Server Information';

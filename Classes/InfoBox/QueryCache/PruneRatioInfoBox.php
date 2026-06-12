@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 80],
 )]
-readonly class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Prune Ratio';

@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 90],
 )]
-readonly class QueryCacheStatusInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class QueryCacheStatusInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Query Cache Status';

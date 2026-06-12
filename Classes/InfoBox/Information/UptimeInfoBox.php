@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 80],
 )]
-readonly class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Uptime';

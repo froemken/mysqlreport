@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-readonly class SyncBinaryLogInfoBox extends AbstractInfoBox
+final readonly class SyncBinaryLogInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Sync Binary Log';

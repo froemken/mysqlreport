@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-readonly class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Fragmentation Ratio';

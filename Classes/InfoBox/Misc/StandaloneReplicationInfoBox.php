@@ -20,7 +20,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-readonly class StandaloneReplicationInfoBox extends AbstractInfoBox
+final readonly class StandaloneReplicationInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Standalone or Replication';

@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.table_cache',
     attributes: ['priority' => 80],
 )]
-readonly class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
+final readonly class OpenedTableDefinitionsInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
 
     protected const TITLE = 'Opened Table Definitions';

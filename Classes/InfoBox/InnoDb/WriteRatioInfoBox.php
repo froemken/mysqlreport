@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.innodb',
 )]
-readonly class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Write Ratio';

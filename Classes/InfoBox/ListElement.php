@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
-readonly class ListElement
+final readonly class ListElement
 {
     public function __construct(
         public string $title,

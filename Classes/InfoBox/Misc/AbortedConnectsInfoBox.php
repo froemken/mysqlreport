@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.misc',
     attributes: ['priority' => 50],
 )]
-readonly class AbortedConnectsInfoBox extends AbstractInfoBox
+final readonly class AbortedConnectsInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Aborted Connects';

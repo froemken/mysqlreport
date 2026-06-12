@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 80],
 )]
-readonly class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Insert Ratio';

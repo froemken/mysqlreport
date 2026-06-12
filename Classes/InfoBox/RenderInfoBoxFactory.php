@@ -15,7 +15,7 @@ use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Core\View\ViewInterface;
 
-class RenderInfoBoxFactory
+final class RenderInfoBoxFactory
 {
     private const TEMPLATE_FILE = 'EXT:mysqlreport/Resources/Private/Templates/InfoBox/Default.html';
 

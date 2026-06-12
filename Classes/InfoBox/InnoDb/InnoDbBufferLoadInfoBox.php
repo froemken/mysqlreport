@@ -24,7 +24,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 90],
 )]
-readonly class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'InnoDB Buffer Load';

@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-readonly class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Average Used Blocks';

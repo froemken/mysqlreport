@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-readonly class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Query Cache too high';

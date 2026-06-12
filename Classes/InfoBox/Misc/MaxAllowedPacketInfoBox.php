@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.misc',
     attributes: ['priority' => 90],
 )]
-readonly class MaxAllowedPacketInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class MaxAllowedPacketInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Max Packet Size';

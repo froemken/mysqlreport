@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.status',
     attributes: ['priority' => 30],
 )]
-readonly class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
+final readonly class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
 
     protected const TITLE = 'Connections';

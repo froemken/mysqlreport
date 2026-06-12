@@ -22,7 +22,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.misc',
 )]
-readonly class BackLogInfoBox extends AbstractInfoBox
+final readonly class BackLogInfoBox extends AbstractInfoBox
 {
 
     protected const TITLE = 'Back Log';

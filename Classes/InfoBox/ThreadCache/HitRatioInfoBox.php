@@ -22,7 +22,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.thread_cache',
 )]
-readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Hit Ratio';

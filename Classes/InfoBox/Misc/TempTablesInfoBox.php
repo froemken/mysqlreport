@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.misc',
     attributes: ['priority' => 80],
 )]
-readonly class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
+final readonly class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
     protected const TITLE = 'Temporary Tables';

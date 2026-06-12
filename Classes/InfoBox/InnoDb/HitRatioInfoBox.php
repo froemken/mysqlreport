@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
     name: 'mysqlreport.infobox.innodb',
     attributes: ['priority' => 50],
 )]
-readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
+final readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
     protected const TITLE = 'Hit Ratio';
