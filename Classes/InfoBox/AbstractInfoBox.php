@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use TYPO3\CMS\Core\View\ViewInterface;
 
 /**
@@ -20,7 +22,22 @@ abstract class AbstractInfoBox
 {
     protected const TITLE = '';
 
+    public function __construct(
+        protected readonly StatusValues $statusValues,
+        protected readonly Variables $variables,
+    ) {}
+
     abstract public function renderBody(): string;
+
+    protected function getStatusValues(): StatusValues
+    {
+        return $this->statusValues;
+    }
+
+    protected function getVariables(): Variables
+    {
+        return $this->variables;
+    }
 
     public function updateView(ViewInterface $view): ?ViewInterface
     {

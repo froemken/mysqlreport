@@ -14,7 +14,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -26,7 +25,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
-    use GetStatusValuesAndVariablesTrait;
 
     protected const TITLE = 'Uptime';
 

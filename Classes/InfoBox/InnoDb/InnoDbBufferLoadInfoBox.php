@@ -14,7 +14,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -27,7 +26,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
-    use GetStatusValuesAndVariablesTrait;
 
     protected const TITLE = 'InnoDB Buffer Load';
 

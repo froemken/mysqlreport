@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -24,7 +23,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 class AbortedConnectsInfoBox extends AbstractInfoBox
 {
-    use GetStatusValuesAndVariablesTrait;
 
     protected const TITLE = 'Aborted Connects';
 

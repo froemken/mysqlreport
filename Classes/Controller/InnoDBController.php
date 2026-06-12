@@ -12,14 +12,15 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
-use StefanFroemken\Mysqlreport\Menu\Page;
+use StefanFroemken\Mysqlreport\InfoBox\RenderInfoBoxFactory;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 class InnoDBController extends ActionController
 {
     public function __construct(
-        private readonly Page $page,
+        private readonly iterable $infoBoxes,
+        private readonly RenderInfoBoxFactory $renderInfoBoxFactory,
         private readonly ModuleTemplateFactory $moduleTemplateFactory,
     ) {}
 
@@ -31,7 +32,10 @@ class InnoDBController extends ActionController
             'MySQL Report - InnoDB',
         );
 
-        $moduleTemplate->assign('renderedInfoBoxes', $this->page->getRenderedInfoBoxes());
+        $moduleTemplate->assign(
+            'renderedInfoBoxes',
+            $this->renderInfoBoxFactory->render($this->infoBoxes)
+        );
 
         return $moduleTemplate->renderResponse('InnoDB/Index');
     }

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\CommandUtility;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -25,7 +24,6 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 class BackLogInfoBox extends AbstractInfoBox
 {
-    use GetStatusValuesAndVariablesTrait;
 
     protected const TITLE = 'Back Log';
 

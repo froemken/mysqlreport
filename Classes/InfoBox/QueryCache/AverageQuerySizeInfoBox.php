@@ -15,7 +15,6 @@ use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
-use StefanFroemken\Mysqlreport\Traits\GetStatusValuesAndVariablesTrait;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
 /**
@@ -26,7 +25,6 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
-    use GetStatusValuesAndVariablesTrait;
 
     protected const TITLE = 'Average Query Size';
 
