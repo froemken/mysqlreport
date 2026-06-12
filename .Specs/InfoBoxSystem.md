@@ -4,44 +4,41 @@ This document specifies the internal "InfoBox" rendering system. It is a reusabl
 
 ## Overview
 
-The system is designed to decouple data fetching and rendering from the controllers. Instead of a controller fetching all data and passing it to a monolithic Fluid template, the responsibility is distributed among several smaller, specialized `InfoBox` classes.
+The system is designed to decouple database data fetching and rendering from the controllers. Instead of a controller fetching all data and passing it to a monolithic Fluid template, the responsibility is distributed among several smaller, specialized `InfoBox` classes.
 
 The core components of this system are:
 
-1.  **`Page` Service**: A DTO that acts as a container for a collection of InfoBoxes for a specific topic (e.g., "InnoDB").
-2.  **`AbstractInfoBox`**: A base class that defines the contract for all InfoBox objects.
-3.  **Concrete InfoBox Implementations**: Specific classes (e.g., `UptimeInfoBox`) that extend `AbstractInfoBox` and contain the logic to fetch and prepare data for a single panel.
-4.  **Service Tagging**: The Symfony Dependency Injection container uses tags to collect all relevant InfoBox implementations and inject them into the correct `Page` service.
+1.  **`InfoBoxInterface`**: The interface (`Classes/InfoBox/InfoBoxInterface.php`) defining the contract for all InfoBoxes. It requires a `TITLE` constant and a `getBody(): string` method.
+2.  **Concrete InfoBox Implementations**: Specific `final readonly` classes (e.g., `UptimeInfoBox`) that implement `InfoBoxInterface` (and optional interfaces like `InfoBoxUnorderedListInterface` or `InfoBoxStateInterface`) and contain the logic to calculate and format data.
+3.  **`RenderInfoBoxFactory`**: A stateless rendering service (`Classes/InfoBox/RenderInfoBoxFactory.php`) that maps the structured InfoBox properties to a Fluid view and generates the final HTML output.
+4.  **Service Tagging**: InfoBox implementations are tagged with their respective topic tags (e.g., `mysqlreport.infobox.status`) using the PHP attribute `#[AutoconfigureTag]`.
+5.  **Constructor Autowiring**: The DI container instantiates the models `StatusValues` and `Variables` using repositories and caches them. They are autowired directly to the InfoBox constructors via the global `bind` configuration in `Services.yaml`.
 
 ## Component Analysis
 
-### 1. `Page` Service (`Classes/Menu/Page.php`)
+### 1. `InfoBoxInterface` (`Classes/InfoBox/InfoBoxInterface.php`)
 
--   A `readonly` DTO that receives an iterable of `AbstractInfoBox` objects via its constructor.
--   The `getRenderedInfoBoxes()` method iterates through all its InfoBoxes.
--   For each InfoBox, it calls the `updateView()` method, which returns a configured `ViewInterface` object.
--   It then calls `render()` on that view and concatenates the resulting HTML strings.
--   The final, combined HTML of all InfoBoxes is returned to the controller.
+-   Defines the contract:
+    -   `public const TITLE = '';`
+    -   `public function getBody(): string;`
 
-### 2. `AbstractInfoBox` (`Classes/InfoBox/AbstractInfoBox.php`)
+### 2. `RenderInfoBoxFactory` (`Classes/InfoBox/RenderInfoBoxFactory.php`)
 
--   Defines the basic structure of an InfoBox, including methods for rendering a title, body, and footer.
--   Crucially, it contains the `updateView()` method, where the concrete class assigns its fetched data to the view.
--   Many InfoBoxes use the `GetStatusValuesAndVariablesTrait` to easily access the `StatusRepository` and `VariablesRepository`.
+-   Takes the `ViewFactoryInterface` in the constructor.
+-   The `render(iterable $infoBoxes): string` method iterates over the InfoBoxes, extracts their structured data, assigns them to a Fluid view, and compiles the final HTML.
+-   It keeps the InfoBox classes completely independent of the view layer (fully headless-ready).
 
 ### 3. Service Configuration (`Configuration/Services.yaml`)
 
 This is where the system is wired together.
 
--   **InfoBox Tagging**: Concrete InfoBox classes are automatically tagged using the `#[AutoconfigureTag]` PHP attribute. For example, an InfoBox for the "Status" page will have `#[AutoconfigureTag('mysqlreport.infobox.status')]`.
--   **`Page` Service Definition**: For each sub-module that uses this pattern, a dedicated `Page` service is defined.
--   **`!tagged_iterator`**: The `arguments` of the `Page` service use the `!tagged_iterator` directive to collect all services with a specific tag. For example, the `mysqlreport.page.information` service receives all InfoBoxes tagged with `mysqlreport.infobox.status`.
--   **Controller Injection**: The corresponding controller (e.g., `StatusController`) then gets the correctly configured `Page` service injected.
+-   **Factories**: `StatusValues` and `Variables` are registered as factory services calling the `findAll` repository methods.
+-   **Autowiring Bindings**: The types are globally bound to the factory services under `_defaults.bind`.
+-   **Direct Controller Injection**: The controller (e.g., `StatusController`) is configured to receive the tagged iterator of InfoBoxes directly via `!tagged_iterator`.
 
 ## Workflow Example (`StatusController`)
 
-1.  `StatusController` has `@mysqlreport.page.information` injected as `$this->page`.
-2.  The `indexAction` calls `$this->page->getRenderedInfoBoxes()`.
-3.  The `Page` object iterates through all InfoBoxes tagged with `mysqlreport.infobox.status` (e.g., `UptimeInfoBox`, `ConnectionInfoBox`).
-4.  Each InfoBox fetches its data (e.g., from `StatusRepository`), prepares it, and renders its own small HTML partial (`Resources/Private/Templates/InfoBox/Default.html`).
-5.  The controller receives a single string of pre-rendered HTML and assigns it to the main module template (`Resources/Private/Templates/Status/Index.html`).
+1.  `StatusController` has `iterable $infoBoxes` (tagged with `mysqlreport.infobox.status`) and the `RenderInfoBoxFactory` injected via constructor autowiring.
+2.  The `indexAction` calls `$this->renderInfoBoxFactory->render($this->infoBoxes)`.
+3.  Inside the factory, each InfoBox's `TITLE` constant and `getBody()` content are extracted and assigned to `Resources/Private/Templates/InfoBox/Default.html`.
+4.  The controller receives a single string of pre-rendered HTML and assigns it to the main module template (`Resources/Private/Templates/Status/Index.html`).
