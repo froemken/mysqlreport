@@ -24,5 +24,4 @@ abstract readonly class AbstractInfoBox implements InfoBoxInterface
         protected Variables $variables,
     ) {}
 
-    abstract public function getBody(): string;
 }
