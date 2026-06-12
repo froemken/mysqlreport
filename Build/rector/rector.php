@@ -43,7 +43,7 @@ return RectorConfig::configure()
     ])
     ->withPHPStanConfigs([Typo3Option::PHPSTAN_FOR_RECTOR_PATH])
     ->withConfiguredRule(ExtEmConfRector::class, [
-        ExtEmConfRector::TYPO3_VERSION_CONSTRAINT => '14.1.0-14.99.99',
+        ExtEmConfRector::TYPO3_VERSION_CONSTRAINT => '14.3.0-14.3.99',
         ExtEmConfRector::ADDITIONAL_VALUES_TO_BE_REMOVED => [],
     ])
     ->withConfiguredRule(EncapsedStringsToSprintfRector::class, [
