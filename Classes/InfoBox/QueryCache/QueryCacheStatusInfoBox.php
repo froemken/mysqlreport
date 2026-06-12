@@ -29,15 +29,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class QueryCacheStatusInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Query Cache Status';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Query Cache Status';
-
-    private QueryCacheHelper $queryCacheHelper;
+private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

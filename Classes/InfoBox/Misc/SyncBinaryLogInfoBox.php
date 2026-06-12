@@ -25,15 +25,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
 {
+    public const TITLE = 'Sync Binary Log';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Sync Binary Log';
-
-    public function getBody(): string
+public function getBody(): string
     {
         // Sync_binlog does not exist on MariaDB
         if (!isset($this->statusValues['Sync_binlog'])) {

@@ -28,15 +28,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class TempTablesInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
+    public const TITLE = 'Temporary Tables';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Temporary Tables';
-
-    public function getBody(): string
+public function getBody(): string
     {
         $content = [];
         $content[] = 'While JOIN and GROUP BY the server needs a lot of memory to manage the requested data.';

@@ -30,15 +30,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class ConnectionInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Connections';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Connections';
-
-    public function getBody(): string
+public function getBody(): string
     {
         return 'Keep an eye on your server\'s connections. '
             . 'It is a first indicator of how much work your server has to do. '

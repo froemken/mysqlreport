@@ -28,15 +28,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
+    public const TITLE = 'Max Packet Size';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Max Packet Size';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (!isset($this->variables['max_allowed_packet'])) {
             return '';

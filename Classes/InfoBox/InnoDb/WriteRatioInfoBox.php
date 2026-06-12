@@ -27,15 +27,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Write Ratio';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Write Ratio';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (
             !isset(

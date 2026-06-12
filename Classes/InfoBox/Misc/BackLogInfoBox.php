@@ -27,15 +27,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 final readonly class BackLogInfoBox implements InfoBoxInterface
 {
+    public const TITLE = 'Back Log';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Back Log';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (!isset($this->variables['back_log'])) {
             return '';

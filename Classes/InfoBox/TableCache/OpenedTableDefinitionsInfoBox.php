@@ -32,15 +32,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Opened Table Definitions';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Opened Table Definitions';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (!isset($this->statusValues['Opened_table_definitions'])) {
             return '';

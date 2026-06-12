@@ -29,15 +29,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Prune Ratio';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Prune Ratio';
-
-    private QueryCacheHelper $queryCacheHelper;
+private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

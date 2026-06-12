@@ -28,15 +28,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class HitRatioBySFInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Hit Ratio by SF';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Hit Ratio by SF';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (
             !isset(

@@ -28,15 +28,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class QueryCacheSizeTooHighInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Query Cache too high';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Query Cache too high';
-
-    private QueryCacheHelper $queryCacheHelper;
+private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

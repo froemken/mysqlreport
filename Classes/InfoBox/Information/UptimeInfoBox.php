@@ -28,15 +28,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class UptimeInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
+    public const TITLE = 'Uptime';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Uptime';
-
-    public function getBody(): string
+public function getBody(): string
     {
         return '"Uptime" shows the time since the server was started or restarted. '
             . 'Database administrators can execute "FLUSH STATUS" to reset various status variables. '

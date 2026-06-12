@@ -29,15 +29,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Hit Ratio';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Hit Ratio';
-
-    private QueryCacheHelper $queryCacheHelper;
+private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {

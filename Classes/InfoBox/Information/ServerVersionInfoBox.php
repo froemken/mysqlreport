@@ -28,15 +28,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class ServerVersionInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
+    public const TITLE = 'Server Information';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Server Information';
-
-    public function getBody(): string
+public function getBody(): string
     {
         return 'The following server information was found:';
     }

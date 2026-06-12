@@ -29,15 +29,14 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
+    public const TITLE = 'InnoDB Buffer Load';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'InnoDB Buffer Load';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';

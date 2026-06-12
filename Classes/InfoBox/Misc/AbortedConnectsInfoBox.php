@@ -26,15 +26,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class AbortedConnectsInfoBox implements InfoBoxInterface
 {
+    public const TITLE = 'Aborted Connects';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Aborted Connects';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (!isset($this->statusValues['Aborted_connects'])) {
             return '';

@@ -25,15 +25,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class BinaryLogInfoBox implements InfoBoxInterface
 {
+    public const TITLE = 'Binary Log';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Binary Log';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (
             isset($this->statusValues['Slave_running'])

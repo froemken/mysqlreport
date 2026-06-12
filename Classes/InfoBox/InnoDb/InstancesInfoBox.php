@@ -27,15 +27,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
+    public const TITLE = 'Instances';
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
 
-
-    public const TITLE = 'Instances';
-
-    public function getBody(): string
+public function getBody(): string
     {
         if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';
