@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -52,7 +51,7 @@ final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, 
     /**
      * Get the number of opened table definitions each second
      */
-    protected function getOpenedTableDefinitionsEachSecond(): float
+    private function getOpenedTableDefinitionsEachSecond(): float
     {
         $status = $this->statusValues;
 

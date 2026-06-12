@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
@@ -58,7 +57,7 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
      *
      * @return array<string, float|string>
      */
-    protected function getLoad(): array
+    private function getLoad(): array
     {
         $load = [];
         $status = $this->statusValues;

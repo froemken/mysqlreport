@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+
 /*
  * This file is part of the package stefanfroemken/mysqlreport.
  *
@@ -9,7 +11,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('dashboard')) {
+if (ExtensionManagementUtility::isLoaded('dashboard')) {
     return [
         'mysqlreport' => [
             'title' => 'LLL:EXT:mysqlreport/Resources/Private/Language/locallang.xlf:dashboard.mysqlreport.title',
@@ -25,6 +27,5 @@ if (\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::isLoaded('dashboard')) {
             'showInWizard' => true,
         ],
     ];
-} else {
-    return [];
 }
+return [];

@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
@@ -30,12 +29,12 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
 {
     public const TITLE = 'Average Used Blocks';
 
+    private QueryCacheHelper $queryCacheHelper;
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
-
-    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {
@@ -70,7 +69,7 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
      *
      * @link: http://dev.mysql.com/doc/refman/5.0/en/query-cache-status-and-maintenance.html
      */
-    protected function getAvgUsedBlocks(): float
+    private function getAvgUsedBlocks(): float
     {
         $status = $this->statusValues;
 

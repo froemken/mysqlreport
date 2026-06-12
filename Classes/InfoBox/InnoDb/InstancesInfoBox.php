@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -59,7 +58,7 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
         );
     }
 
-    protected function getInstances(): int
+    private function getInstances(): int
     {
         $variables = $this->variables;
 
@@ -70,9 +69,9 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
     {
         $variables = $this->variables;
 
-        $innodbBufferShouldBe = $variables['innodb_buffer_pool_instances'] * (1 * 1024 * 1024 * 1024); // Instances * 1 GB
+        $innodbBufferShouldBe = $variables['innodb_buffer_pool_instances'] * (1024 * 1024 * 1024); // Instances * 1 GB
         if (
-            $variables['innodb_buffer_pool_size'] < (1 * 1024 * 1024 * 1024)
+            $variables['innodb_buffer_pool_size'] < (1024 * 1024 * 1024)
             && $variables['innodb_buffer_pool_instances'] === 1
         ) {
             $state = StateEnumeration::STATE_OK;

@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -64,7 +63,7 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
      * get hit ratio of innoDb Buffer
      * A ratio of 99.9 equals 1/1000
      */
-    protected function getHitRatio(): float
+    private function getHitRatio(): float
     {
         $status = $this->statusValues;
 

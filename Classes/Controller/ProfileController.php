@@ -151,7 +151,6 @@ class ProfileController extends ActionController
     /**
      * @param array<string> $headerColumns
      * @param array<mixed> $records
-     * @return ResponseInterface
      */
     private function downloadAsCsv(array $headerColumns, array $records): ResponseInterface
     {
@@ -160,7 +159,6 @@ class ProfileController extends ActionController
 
     /**
      * @param array<mixed> $records
-     * @return ResponseInterface
      */
     private function downloadAsJson(array $records): ResponseInterface
     {

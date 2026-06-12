@@ -17,22 +17,10 @@ namespace StefanFroemken\Mysqlreport\Event;
  */
 class ModifyQueryInformationRecordsEvent
 {
-    private string $methodName;
-
     /**
-     * @var array<int, mixed>
-     */
-    private array $queryInformationRecords;
-
-    /**
-     * @param string $methodName
      * @param array<int, mixed> $queryInformationRecords
      */
-    public function __construct(string $methodName, array $queryInformationRecords)
-    {
-        $this->methodName = $methodName;
-        $this->queryInformationRecords = $queryInformationRecords;
-    }
+    public function __construct(private readonly string $methodName, private array $queryInformationRecords) {}
 
     public function getMethodName(): string
     {

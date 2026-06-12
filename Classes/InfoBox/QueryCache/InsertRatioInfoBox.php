@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
@@ -31,12 +30,12 @@ final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStat
 {
     public const TITLE = 'Insert Ratio';
 
+    private QueryCacheHelper $queryCacheHelper;
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
-
-    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {
@@ -66,7 +65,7 @@ final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStat
         );
     }
 
-    protected function getInsertRatio(): float
+    private function getInsertRatio(): float
     {
         $status = $this->statusValues;
 

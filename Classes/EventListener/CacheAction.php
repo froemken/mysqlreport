@@ -30,7 +30,6 @@ readonly class CacheAction
     /**
      * Add clear cache menu entry
      *
-     * @param ModifyClearCacheActionsEvent $modifyClearCacheActionsEvent
      * @throws RouteNotFoundException
      */
     public function __invoke(ModifyClearCacheActionsEvent $modifyClearCacheActionsEvent): void

@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -70,7 +69,7 @@ final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStat
      *
      * @return array<string, int>
      */
-    protected function getLogFileSize(): array
+    private function getLogFileSize(): array
     {
         $variables = $this->variables;
 
@@ -97,11 +96,9 @@ final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStat
         $sizeOfEachLogFile = $this->getSizeOfEachLogFile();
 
         if ($sizeOfEachLogFile < 5242880 || $sizeOfEachLogFile < $variables['innodb_log_file_size']) {
-            $state = StateEnumeration::STATE_OK;
-        } else {
-            $state = StateEnumeration::STATE_ERROR;
+            return StateEnumeration::STATE_OK;
         }
 
-        return $state;
+        return StateEnumeration::STATE_ERROR;
     }
 }

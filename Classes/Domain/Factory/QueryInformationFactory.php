@@ -14,6 +14,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Factory;
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
+use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Routing\PageArguments;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -48,7 +49,7 @@ readonly class QueryInformationFactory
         $this->request = (string)GeneralUtility::getIndpEnv('TYPO3_REQUEST_URL');
         $this->mode = $this->getTypo3Mode();
         $this->uniqueCallIdentifier = uniqid('', true);
-        $this->crdate = (int)$GLOBALS['EXEC_TIME'];
+        $this->crdate = (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
     }
 
     public function createNewQueryInformation(): QueryInformation

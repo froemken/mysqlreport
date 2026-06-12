@@ -15,12 +15,12 @@ use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Core\View\ViewInterface;
 
-final class RenderInfoBoxFactory
+final readonly class RenderInfoBoxFactory
 {
     private const TEMPLATE_FILE = 'EXT:mysqlreport/Resources/Private/Templates/InfoBox/Default.html';
 
     public function __construct(
-        private readonly ViewFactoryInterface $viewFactory,
+        private ViewFactoryInterface $viewFactory,
     ) {}
 
     /**

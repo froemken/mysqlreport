@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
@@ -30,12 +29,12 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
 {
     public const TITLE = 'Average Query Size';
 
+    private QueryCacheHelper $queryCacheHelper;
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
-
-    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {
@@ -62,7 +61,7 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
         );
     }
 
-    protected function getAvgQuerySize(): float
+    private function getAvgQuerySize(): float
     {
         $status = $this->statusValues;
 
@@ -74,7 +73,7 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
         return round($avgQuerySize, 4);
     }
 
-    protected function getUsedQueryCacheSize(): int
+    private function getUsedQueryCacheSize(): int
     {
         $status = $this->statusValues;
         $variables = $this->variables;
@@ -91,11 +90,9 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
 
         $avgQuerySize = $this->getAvgQuerySize();
         if ($avgQuerySize > $variables['query_cache_min_res_unit']) {
-            $state = StateEnumeration::STATE_ERROR;
-        } else {
-            $state = StateEnumeration::STATE_OK;
+            return StateEnumeration::STATE_ERROR;
         }
 
-        return $state;
+        return StateEnumeration::STATE_OK;
     }
 }

@@ -48,7 +48,7 @@ class ExtConfTest extends FunctionalTestCase
     public function isEnableFrontendLoggingInitiallyReturnsFalse(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([]);
@@ -64,7 +64,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEnableFrontendLoggingSetsEnableFrontendLogging(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([
@@ -82,7 +82,7 @@ class ExtConfTest extends FunctionalTestCase
     public function isEnableBackendLoggingInitiallyReturnsFalse(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([]);
@@ -98,7 +98,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setEnableBackendLoggingSetsEnableBackendLogging(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([
@@ -116,7 +116,7 @@ class ExtConfTest extends FunctionalTestCase
     public function isActivateExplainQueryInitiallyReturnsFalse(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([]);
@@ -132,7 +132,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setActivateExplainQuerySetsActivateExplainQuery(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([
@@ -150,7 +150,7 @@ class ExtConfTest extends FunctionalTestCase
     public function getSlowQueryThresholdInitiallyReturns10Seconds(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([]);
@@ -167,7 +167,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setSlowQueryThresholdWithIntegerSetsSlowQueryThreshold(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([
@@ -186,7 +186,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setSlowQueryThresholdWithFloatSetsSlowQueryThreshold(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([
@@ -205,7 +205,7 @@ class ExtConfTest extends FunctionalTestCase
     public function setSlowQueryThresholdWithCommaFloatSetsSlowQueryThreshold(): void
     {
         $this->extensionConfigurationMock
-            ->expects(self::once())
+            ->expects($this->once())
             ->method('get')
             ->with('mysqlreport')
             ->willReturn([

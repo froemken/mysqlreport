@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
@@ -31,12 +30,12 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
 {
     public const TITLE = 'Hit Ratio';
 
+    private QueryCacheHelper $queryCacheHelper;
+
     public function __construct(
         private StatusValues $statusValues,
         private Variables $variables,
     ) {}
-
-    private QueryCacheHelper $queryCacheHelper;
 
     public function injectQueryCacheHelper(QueryCacheHelper $queryCacheHelper): void
     {
@@ -64,7 +63,7 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
         );
     }
 
-    protected function getHitRatio(): float
+    private function getHitRatio(): float
     {
         $status = $this->statusValues;
 

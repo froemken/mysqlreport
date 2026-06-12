@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\CommandUtility;
@@ -59,7 +58,7 @@ final readonly class BackLogInfoBox implements InfoBoxInterface
     /**
      * Execute shell command to get amount of max network requests by OS
      */
-    protected function getMaxNetworkRequests(): string
+    private function getMaxNetworkRequests(): string
     {
         $value = '';
         $command = CommandUtility::getCommand('sysctl');

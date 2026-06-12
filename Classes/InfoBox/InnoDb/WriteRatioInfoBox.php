@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -62,7 +61,7 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
      * get write ratio of innoDb Buffer
      * A value higher than 1 is good
      */
-    protected function getWriteRatio(): float
+    private function getWriteRatio(): float
     {
         $status = $this->statusValues;
 
