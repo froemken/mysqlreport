@@ -27,7 +27,7 @@ final readonly class BackLogInfoBox extends AbstractInfoBox
 
     protected const TITLE = 'Back Log';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->variables['back_log'])) {
             return '';

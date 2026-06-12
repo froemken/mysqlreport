@@ -28,7 +28,7 @@ final readonly class TempTablesInfoBox extends AbstractInfoBox implements InfoBo
 
     protected const TITLE = 'Temporary Tables';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         $content = [];
         $content[] = 'While JOIN and GROUP BY the server needs a lot of memory to manage the requested data.';

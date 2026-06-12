@@ -35,7 +35,7 @@ final readonly class FragmentationRatioInfoBox extends AbstractInfoBox implement
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset($this->statusValues['Qcache_total_blocks'])

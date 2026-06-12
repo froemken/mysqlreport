@@ -25,7 +25,7 @@ final readonly class BinaryLogInfoBox extends AbstractInfoBox
 
     protected const TITLE = 'Binary Log';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             isset($this->statusValues['Slave_running'])

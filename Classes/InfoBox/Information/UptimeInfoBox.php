@@ -28,7 +28,7 @@ final readonly class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUno
 
     protected const TITLE = 'Uptime';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         return '"Uptime" shows the time since the server was started or restarted. '
             . 'Database administrators can execute "FLUSH STATUS" to reset various status variables. '

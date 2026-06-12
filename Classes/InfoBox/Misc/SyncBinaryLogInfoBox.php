@@ -25,7 +25,7 @@ final readonly class SyncBinaryLogInfoBox extends AbstractInfoBox
 
     protected const TITLE = 'Sync Binary Log';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         // Sync_binlog does not exist on MariaDB
         if (!isset($this->statusValues['Sync_binlog'])) {

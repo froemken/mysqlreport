@@ -28,7 +28,7 @@ final readonly class HitRatioBySFInfoBox extends AbstractInfoBox implements Info
 
     protected const TITLE = 'Hit Ratio by SF';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset(

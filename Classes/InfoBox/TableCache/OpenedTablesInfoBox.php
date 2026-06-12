@@ -32,7 +32,7 @@ final readonly class OpenedTablesInfoBox extends AbstractInfoBox implements Info
 
     protected const TITLE = 'Opened Tables';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Opened_tables'])) {
             return '';

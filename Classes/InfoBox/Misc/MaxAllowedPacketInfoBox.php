@@ -28,7 +28,7 @@ final readonly class MaxAllowedPacketInfoBox extends AbstractInfoBox implements 
 
     protected const TITLE = 'Max Packet Size';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->variables['max_allowed_packet'])) {
             return '';

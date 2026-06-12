@@ -36,7 +36,7 @@ final readonly class QueryCacheStatusInfoBox extends AbstractInfoBox implements 
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!$this->queryCacheHelper->isQueryCacheEnabled($this->variables)) {
             return 'Query Cache is not activated';

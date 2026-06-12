@@ -27,7 +27,7 @@ final readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxS
 
     protected const TITLE = 'Hit Ratio';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->variables['thread_cache_size'])) {
             return '';

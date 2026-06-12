@@ -30,9 +30,24 @@ final class RenderInfoBoxFactory
     {
         $renderedInfoBoxes = '';
         foreach ($infoBoxes as $infoBox) {
-            if ($view = $infoBox->updateView($this->getViewForInfoBox())) {
-                $renderedInfoBoxes .= $view->render();
+            $body = $infoBox->getBody();
+            if ($body === '') {
+                continue;
             }
+
+            $view = $this->getViewForInfoBox();
+            $view->assign('title', $infoBox->getTitle());
+            $view->assign('body', $body);
+
+            if ($infoBox instanceof InfoBoxUnorderedListInterface) {
+                $view->assign('unorderedList', $infoBox->getUnorderedList());
+            }
+
+            if ($infoBox instanceof InfoBoxStateInterface) {
+                $view->assign('state', $infoBox->getState()->value);
+            }
+
+            $renderedInfoBoxes .= $view->render();
         }
 
         return $renderedInfoBoxes;

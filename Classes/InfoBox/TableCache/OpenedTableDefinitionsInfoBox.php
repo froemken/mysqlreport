@@ -32,7 +32,7 @@ final readonly class OpenedTableDefinitionsInfoBox extends AbstractInfoBox imple
 
     protected const TITLE = 'Opened Table Definitions';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Opened_table_definitions'])) {
             return '';

@@ -35,7 +35,7 @@ final readonly class AverageUsedBlocksInfoBox extends AbstractInfoBox implements
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset($this->statusValues['Qcache_queries_in_cache'])

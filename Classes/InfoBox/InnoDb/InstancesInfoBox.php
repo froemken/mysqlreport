@@ -27,7 +27,7 @@ final readonly class InstancesInfoBox extends AbstractInfoBox implements InfoBox
 
     protected const TITLE = 'Instances';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';

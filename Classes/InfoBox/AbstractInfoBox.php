@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\InfoBox;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use TYPO3\CMS\Core\View\ViewInterface;
 
 /**
  * Model with properties for panels you can see in BE module
@@ -27,25 +26,10 @@ abstract readonly class AbstractInfoBox
         protected Variables $variables,
     ) {}
 
-    abstract public function renderBody(): string;
-
-    public function updateView(ViewInterface $view): ?ViewInterface
+    public function getTitle(): string
     {
-        if (($body = $this->renderBody()) === '') {
-            return null;
-        }
-
-        $view->assign('title', static::TITLE);
-        $view->assign('body', $body);
-
-        if ($this instanceof InfoBoxUnorderedListInterface) {
-            $view->assign('unorderedList', $this->getUnorderedList());
-        }
-
-        if ($this instanceof InfoBoxStateInterface) {
-            $view->assign('state', $this->getState()->value);
-        }
-
-        return $view;
+        return static::TITLE;
     }
+
+    abstract public function getBody(): string;
 }

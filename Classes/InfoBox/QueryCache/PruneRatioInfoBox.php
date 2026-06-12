@@ -36,7 +36,7 @@ final readonly class PruneRatioInfoBox extends AbstractInfoBox implements InfoBo
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset($this->statusValues['Qcache_inserts'])

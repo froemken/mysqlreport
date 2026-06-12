@@ -26,7 +26,7 @@ final readonly class AbortedConnectsInfoBox extends AbstractInfoBox
 
     protected const TITLE = 'Aborted Connects';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Aborted_connects'])) {
             return '';

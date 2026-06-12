@@ -27,7 +27,7 @@ final readonly class WriteRatioInfoBox extends AbstractInfoBox implements InfoBo
 
     protected const TITLE = 'Write Ratio';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset(

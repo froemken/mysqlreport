@@ -25,7 +25,7 @@ final readonly class StandaloneReplicationInfoBox extends AbstractInfoBox
 
     protected const TITLE = 'Standalone or Replication';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Slave_running'])) {
             return '';

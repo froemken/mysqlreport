@@ -35,7 +35,7 @@ final readonly class QueryCacheSizeTooHighInfoBox extends AbstractInfoBox implem
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset($this->variables['query_cache_size'])

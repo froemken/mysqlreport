@@ -29,7 +29,7 @@ final readonly class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements 
 
     protected const TITLE = 'InnoDB Buffer Load';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (!isset($this->statusValues['Innodb_page_size'])) {
             return '';

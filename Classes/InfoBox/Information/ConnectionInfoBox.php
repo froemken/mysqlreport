@@ -30,7 +30,7 @@ final readonly class ConnectionInfoBox extends AbstractInfoBox implements InfoBo
 
     protected const TITLE = 'Connections';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         return 'Keep an eye on your server\'s connections. '
             . 'It is a first indicator of how much work your server has to do. '

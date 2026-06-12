@@ -27,7 +27,7 @@ final readonly class LogFileSizeInfoBox extends AbstractInfoBox implements InfoB
 
     protected const TITLE = 'Log File Size';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset(

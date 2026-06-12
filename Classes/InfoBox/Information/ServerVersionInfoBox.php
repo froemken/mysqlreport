@@ -28,7 +28,7 @@ final readonly class ServerVersionInfoBox extends AbstractInfoBox implements Inf
 
     protected const TITLE = 'Server Information';
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         return 'The following server information was found:';
     }

@@ -36,7 +36,7 @@ final readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxS
         $this->queryCacheHelper = $queryCacheHelper;
     }
 
-    public function renderBody(): string
+    public function getBody(): string
     {
         if (
             !isset($this->statusValues['Qcache_hits'])
