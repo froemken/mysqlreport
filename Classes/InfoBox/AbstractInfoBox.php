@@ -11,17 +11,10 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
-use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 
 /**
  * Model with properties for panels you can see in BE module
  */
 abstract readonly class AbstractInfoBox implements InfoBoxInterface
 {
-    public function __construct(
-        protected StatusValues $statusValues,
-        protected Variables $variables,
-    ) {}
-
 }

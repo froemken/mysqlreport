@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Utility\CommandUtility;
@@ -24,6 +27,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 final readonly class BackLogInfoBox extends AbstractInfoBox
 {
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
+
 
     public const TITLE = 'Back Log';
 

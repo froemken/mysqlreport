@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+
 use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
@@ -25,6 +28,11 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class HitRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
+
 
     public const TITLE = 'Hit Ratio';
 

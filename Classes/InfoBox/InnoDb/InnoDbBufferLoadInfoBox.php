@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+
 use StefanFroemken\Mysqlreport\InfoBox\AbstractInfoBox;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
@@ -26,6 +29,11 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 final readonly class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
+    public function __construct(
+        private StatusValues $statusValues,
+        private Variables $variables,
+    ) {}
+
 
     public const TITLE = 'InnoDB Buffer Load';
 
