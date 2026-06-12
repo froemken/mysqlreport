@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class AverageUsedBlocksInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
-    protected const TITLE = 'Average Used Blocks';
+    public const TITLE = 'Average Used Blocks';
 
     private QueryCacheHelper $queryCacheHelper;
 

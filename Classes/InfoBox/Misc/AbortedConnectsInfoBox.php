@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class AbortedConnectsInfoBox extends AbstractInfoBox
 {
 
-    protected const TITLE = 'Aborted Connects';
+    public const TITLE = 'Aborted Connects';
 
     public function getBody(): string
     {

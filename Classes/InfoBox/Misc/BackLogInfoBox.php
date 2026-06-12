@@ -25,7 +25,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final readonly class BackLogInfoBox extends AbstractInfoBox
 {
 
-    protected const TITLE = 'Back Log';
+    public const TITLE = 'Back Log';
 
     public function getBody(): string
     {

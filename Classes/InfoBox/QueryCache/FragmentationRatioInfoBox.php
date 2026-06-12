@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class FragmentationRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Fragmentation Ratio';
+    public const TITLE = 'Fragmentation Ratio';
 
     private QueryCacheHelper $queryCacheHelper;
 

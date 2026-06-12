@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class InsertRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Insert Ratio';
+    public const TITLE = 'Insert Ratio';
 
     private QueryCacheHelper $queryCacheHelper;
 

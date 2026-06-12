@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class StandaloneReplicationInfoBox extends AbstractInfoBox
 {
 
-    protected const TITLE = 'Standalone or Replication';
+    public const TITLE = 'Standalone or Replication';
 
     public function getBody(): string
     {

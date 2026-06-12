@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class PruneRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Prune Ratio';
+    public const TITLE = 'Prune Ratio';
 
     private QueryCacheHelper $queryCacheHelper;
 

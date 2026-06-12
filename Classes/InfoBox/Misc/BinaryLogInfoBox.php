@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class BinaryLogInfoBox extends AbstractInfoBox
 {
 
-    protected const TITLE = 'Binary Log';
+    public const TITLE = 'Binary Log';
 
     public function getBody(): string
     {

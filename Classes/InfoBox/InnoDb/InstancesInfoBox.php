@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class InstancesInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Instances';
+    public const TITLE = 'Instances';
 
     public function getBody(): string
     {

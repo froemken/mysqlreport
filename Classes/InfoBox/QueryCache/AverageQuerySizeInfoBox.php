@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class AverageQuerySizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Average Query Size';
+    public const TITLE = 'Average Query Size';
 
     private QueryCacheHelper $queryCacheHelper;
 

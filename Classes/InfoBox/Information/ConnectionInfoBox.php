@@ -28,7 +28,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class ConnectionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Connections';
+    public const TITLE = 'Connections';
 
     public function getBody(): string
     {

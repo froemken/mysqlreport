@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class LogFileSizeInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Log File Size';
+    public const TITLE = 'Log File Size';
 
     public function getBody(): string
     {

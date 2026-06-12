@@ -30,7 +30,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class OpenedTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Opened Tables';
+    public const TITLE = 'Opened Tables';
 
     public function getBody(): string
     {

@@ -27,7 +27,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class QueryCacheStatusInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Query Cache Status';
+    public const TITLE = 'Query Cache Status';
 
     private QueryCacheHelper $queryCacheHelper;
 

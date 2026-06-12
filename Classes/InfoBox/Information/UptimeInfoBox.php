@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class UptimeInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
-    protected const TITLE = 'Uptime';
+    public const TITLE = 'Uptime';
 
     public function getBody(): string
     {

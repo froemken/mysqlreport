@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class HitRatioBySFInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Hit Ratio by SF';
+    public const TITLE = 'Hit Ratio by SF';
 
     public function getBody(): string
     {

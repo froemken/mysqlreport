@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class ServerVersionInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
-    protected const TITLE = 'Server Information';
+    public const TITLE = 'Server Information';
 
     public function getBody(): string
     {

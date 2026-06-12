@@ -26,7 +26,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class TempTablesInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
-    protected const TITLE = 'Temporary Tables';
+    public const TITLE = 'Temporary Tables';
 
     public function getBody(): string
     {

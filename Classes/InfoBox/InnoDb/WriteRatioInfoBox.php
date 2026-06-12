@@ -25,7 +25,7 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 final readonly class WriteRatioInfoBox extends AbstractInfoBox implements InfoBoxStateInterface
 {
 
-    protected const TITLE = 'Write Ratio';
+    public const TITLE = 'Write Ratio';
 
     public function getBody(): string
     {

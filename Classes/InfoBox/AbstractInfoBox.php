@@ -17,19 +17,12 @@ use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 /**
  * Model with properties for panels you can see in BE module
  */
-abstract readonly class AbstractInfoBox
+abstract readonly class AbstractInfoBox implements InfoBoxInterface
 {
-    protected const TITLE = '';
-
     public function __construct(
         protected StatusValues $statusValues,
         protected Variables $variables,
     ) {}
-
-    public function getTitle(): string
-    {
-        return static::TITLE;
-    }
 
     abstract public function getBody(): string;
 }

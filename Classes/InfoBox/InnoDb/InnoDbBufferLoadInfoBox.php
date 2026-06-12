@@ -27,7 +27,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 final readonly class InnoDbBufferLoadInfoBox extends AbstractInfoBox implements InfoBoxUnorderedListInterface
 {
 
-    protected const TITLE = 'InnoDB Buffer Load';
+    public const TITLE = 'InnoDB Buffer Load';
 
     public function getBody(): string
     {

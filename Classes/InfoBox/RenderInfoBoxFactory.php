@@ -24,7 +24,7 @@ final class RenderInfoBoxFactory
     ) {}
 
     /**
-     * @param iterable<AbstractInfoBox> $infoBoxes
+     * @param iterable<InfoBoxInterface> $infoBoxes
      */
     public function render(iterable $infoBoxes): string
     {
@@ -36,7 +36,7 @@ final class RenderInfoBoxFactory
             }
 
             $view = $this->getViewForInfoBox();
-            $view->assign('title', $infoBox->getTitle());
+            $view->assign('title', $infoBox::TITLE);
             $view->assign('body', $body);
 
             if ($infoBox instanceof InfoBoxUnorderedListInterface) {
