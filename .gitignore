@@ -19,3 +19,4 @@
 /Build/rector/composer.json.orig
 /Build/rector/composer.json.testing
 /Build/rector/.Build/
+/var/
