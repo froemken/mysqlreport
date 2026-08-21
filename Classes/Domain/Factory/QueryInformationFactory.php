@@ -52,9 +52,9 @@ readonly class QueryInformationFactory
         if ($request instanceof ServerRequestInterface) {
             $normalizedParams = $request->getAttribute('normalizedParams');
             if ($normalizedParams instanceof NormalizedParams) {
-                $ip = (string)$normalizedParams->getRemoteAddress();
-                $referer = (string)$normalizedParams->getHttpReferer();
-                $requestUrl = (string)$normalizedParams->getRequestUrl();
+                $ip = $normalizedParams->getRemoteAddress();
+                $referer = $normalizedParams->getHttpReferer();
+                $requestUrl = $normalizedParams->getRequestUrl();
             }
         }
         $this->ip = $ip;
