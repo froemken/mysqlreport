@@ -51,9 +51,3 @@ TYPO3s ConnectionPool API in FE and/or BE context.
     ChangeLog/Index
     Links
 
-..  Meta Menu
-
-..  toctree::
-    :hidden:
-
-    Sitemap

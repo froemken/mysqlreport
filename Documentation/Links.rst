@@ -1,15 +1,12 @@
 ..  include:: /Includes.rst.txt
 
-
 ..  _links:
 
+=====
 Links
------
+=====
 
-The links to issue and the GitHub repository are maintained in the Settings.cfg.
-
-You may want to remove this file if all important links are already handled in
-Settings.cfg.
+Project links and resources:
 
 :Packagist:
     https://packagist.org/packages/stefanfroemken/mysqlreport
@@ -22,3 +19,4 @@ Settings.cfg.
 
 :GitHub Repository:
     https://github.com/froemken/mysqlreport
+
