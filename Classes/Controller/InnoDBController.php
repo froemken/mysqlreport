@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\RenderInfoBoxFactory;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
@@ -19,7 +20,7 @@ use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 class InnoDBController extends ActionController
 {
     /**
-     * @param iterable<int, \StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface> $infoBoxes
+     * @param iterable<int, InfoBoxInterface> $infoBoxes
      */
     public function __construct(
         private readonly iterable $infoBoxes,
