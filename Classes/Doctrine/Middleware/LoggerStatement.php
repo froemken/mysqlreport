@@ -16,6 +16,7 @@ use Doctrine\DBAL\Driver\Statement as StatementInterface;
 use Doctrine\DBAL\ParameterType;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
 use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
+use StefanFroemken\Mysqlreport\Service\QueryCollector;
 
 /**
  * Here in the connection, we can wrap our logger around the queries and commands.
@@ -32,14 +33,11 @@ final class LoggerStatement implements StatementInterface
      */
     private array $types = [];
 
-    /**
-     * @param \SplQueue<QueryInformation> $queries
-     */
     public function __construct(
         private readonly StatementInterface $wrappedStatement,
         private readonly MySqlReportSqlLogger $logger,
         private readonly string $sql,
-        private readonly \SplQueue $queries,
+        private readonly QueryCollector $queryCollector,
     ) {}
 
     public function bindValue(int|string $param, mixed $value, ParameterType $type = ParameterType::STRING): void
@@ -54,6 +52,11 @@ final class LoggerStatement implements StatementInterface
     {
         $startTime = microtime(true);
         $result = $this->wrappedStatement->execute();
+
+        if ($this->queryCollector->isFlushing()) {
+            return $result;
+        }
+
         $queryInformation = $this->logger->stopQuery(
             $this->sql,
             microtime(true) - $startTime,
@@ -62,7 +65,7 @@ final class LoggerStatement implements StatementInterface
         );
 
         if ($queryInformation instanceof QueryInformation) {
-            $this->queries->push($queryInformation);
+            $this->queryCollector->addQuery($queryInformation);
         }
 
         return $result;

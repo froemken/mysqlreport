@@ -74,10 +74,12 @@ services:
 
 
   # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeConnection
+  StefanFroemken\Mysqlreport\Service\QueryCollector:
+    public: true
+
   StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository:
     public: true
 
-  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeConnection
   StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper:
     public: true
 

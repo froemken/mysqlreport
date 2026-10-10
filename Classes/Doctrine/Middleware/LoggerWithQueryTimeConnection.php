@@ -17,9 +17,8 @@ use Doctrine\DBAL\Driver\Middleware\AbstractConnectionMiddleware;
 use Doctrine\DBAL\Driver\Result;
 use Doctrine\DBAL\Driver\Statement;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
-use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
-use StefanFroemken\Mysqlreport\Helper\ExplainQueryHelper;
 use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
+use StefanFroemken\Mysqlreport\Service\QueryCollector;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
@@ -27,27 +26,18 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  */
 class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
 {
-    /**
-     * @var \SplQueue<QueryInformation>
-     */
-    private readonly \SplQueue $queries;
-
     private readonly MySqlReportSqlLogger $logger;
 
-    private readonly ExplainQueryHelper $explainQueryHelper;
-
-    private readonly QueryInformationRepository $queryInformationRepository;
+    private readonly QueryCollector $queryCollector;
 
     public function __construct(Connection $connection)
     {
         parent::__construct($connection);
 
-        $this->queries = new \SplQueue();
         // Since Doctrine driver instances are instantiated by DBAL and not by the DI container,
         // services are resolved via GeneralUtility::makeInstance.
         $this->logger = GeneralUtility::makeInstance(MySqlReportSqlLogger::class);
-        $this->explainQueryHelper = GeneralUtility::makeInstance(ExplainQueryHelper::class);
-        $this->queryInformationRepository = GeneralUtility::makeInstance(QueryInformationRepository::class);
+        $this->queryCollector = GeneralUtility::makeInstance(QueryCollector::class);
     }
 
     /**
@@ -61,7 +51,7 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
             parent::prepare($sql),
             $this->logger,
             $sql,
-            $this->queries,
+            $this->queryCollector,
         );
     }
 
@@ -74,10 +64,14 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
     {
         $startTime = microtime(true);
         $queryResult = parent::query($sql);
-        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
 
+        if ($this->queryCollector->isFlushing()) {
+            return $queryResult;
+        }
+
+        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
         if ($queryInformation instanceof QueryInformation) {
-            $this->queries->push($queryInformation);
+            $this->queryCollector->addQuery($queryInformation);
         }
 
         return $queryResult;
@@ -92,25 +86,16 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
     {
         $startTime = microtime(true);
         $affectedRows = parent::exec($sql);
-        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
 
+        if ($this->queryCollector->isFlushing()) {
+            return (int)$affectedRows;
+        }
+
+        $queryInformation = $this->logger->stopQuery($sql, microtime(true) - $startTime);
         if ($queryInformation instanceof QueryInformation) {
-            $this->queries->push($queryInformation);
+            $this->queryCollector->addQuery($queryInformation);
         }
 
         return (int)$affectedRows;
-    }
-
-    public function __destruct()
-    {
-        $queriesToStore = [];
-        foreach ($this->queries as $index => $queryInformation) {
-            $queryInformation->setQueryId($index);
-            $this->explainQueryHelper->updateQueryInformation($queryInformation);
-
-            $queriesToStore[] = $queryInformation->asArray();
-        }
-
-        $this->queryInformationRepository->bulkInsert($queriesToStore);
     }
 }
