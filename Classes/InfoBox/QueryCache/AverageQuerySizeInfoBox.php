@@ -30,17 +30,15 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
     public const TITLE = 'Average Query Size';
 
     public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset($this->statusValues['Qcache_queries_in_cache'])
-            || (int)$this->statusValues['Qcache_queries_in_cache'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
+            !isset($statusValues['Qcache_queries_in_cache'])
+            || (int)$statusValues['Qcache_queries_in_cache'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
         ) {
             return '';
         }
@@ -50,39 +48,32 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
 
         return sprintf(
             implode(' ', $content),
-            $this->getAvgQuerySize(),
-            $this->variables['query_cache_min_res_unit'],
+            $this->getAvgQuerySize($statusValues, $variables),
+            $variables['query_cache_min_res_unit'],
         );
     }
 
-    private function getAvgQuerySize(): float
+    private function getAvgQuerySize(StatusValues $statusValues, Variables $variables): float
     {
-        $status = $this->statusValues;
-
         $avgQuerySize = 0;
-        if ($status['Qcache_queries_in_cache']) {
-            $avgQuerySize = $this->getUsedQueryCacheSize() / $status['Qcache_queries_in_cache'];
+        if ($statusValues['Qcache_queries_in_cache']) {
+            $avgQuerySize = $this->getUsedQueryCacheSize($statusValues, $variables) / $statusValues['Qcache_queries_in_cache'];
         }
 
         return round($avgQuerySize, 4);
     }
 
-    private function getUsedQueryCacheSize(): int
+    private function getUsedQueryCacheSize(StatusValues $statusValues, Variables $variables): int
     {
-        $status = $this->statusValues;
-        $variables = $this->variables;
-
         // ~40KB are reserved by the operating system
         $queryCacheSize = $variables['query_cache_size'] - (40 * 1024);
 
-        return $queryCacheSize - $status['Qcache_free_memory'];
+        return $queryCacheSize - $statusValues['Qcache_free_memory'];
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $variables = $this->variables;
-
-        $avgQuerySize = $this->getAvgQuerySize();
+        $avgQuerySize = $this->getAvgQuerySize($statusValues, $variables);
         if ($avgQuerySize > $variables['query_cache_min_res_unit']) {
             return ContextualFeedbackSeverity::ERROR;
         }

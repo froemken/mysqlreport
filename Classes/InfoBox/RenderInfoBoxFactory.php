@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
+use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepositoryInterface;
+use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepositoryInterface;
 use TYPO3\CMS\Core\View\ViewFactoryData;
 use TYPO3\CMS\Core\View\ViewFactoryInterface;
 use TYPO3\CMS\Core\View\ViewInterface;
@@ -21,6 +23,8 @@ final readonly class RenderInfoBoxFactory
 
     public function __construct(
         private ViewFactoryInterface $viewFactory,
+        private StatusRepositoryInterface $statusRepository,
+        private VariablesRepositoryInterface $variablesRepository,
     ) {}
 
     /**
@@ -28,9 +32,12 @@ final readonly class RenderInfoBoxFactory
      */
     public function render(iterable $infoBoxes): string
     {
+        $statusValues = $this->statusRepository->findAll();
+        $variables = $this->variablesRepository->findAll();
+
         $renderedInfoBoxes = '';
         foreach ($infoBoxes as $infoBox) {
-            $body = $infoBox->getBody();
+            $body = $infoBox->getBody($statusValues, $variables);
             if ($body === '') {
                 continue;
             }
@@ -40,11 +47,11 @@ final readonly class RenderInfoBoxFactory
             $view->assign('body', $body);
 
             if ($infoBox instanceof InfoBoxUnorderedListInterface) {
-                $view->assign('unorderedList', $infoBox->getUnorderedList());
+                $view->assign('unorderedList', $infoBox->getUnorderedList($statusValues, $variables));
             }
 
             if ($infoBox instanceof InfoBoxStateInterface) {
-                $view->assign('state', $infoBox->getState());
+                $view->assign('state', $infoBox->getState($statusValues, $variables));
             }
 
             $renderedInfoBoxes .= $view->render();

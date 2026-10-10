@@ -28,14 +28,9 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
 {
     public const TITLE = 'Hit Ratio';
 
-    public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->variables['thread_cache_size'])) {
+        if (!isset($variables['thread_cache_size'])) {
             return '';
         }
 
@@ -43,12 +38,12 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
         $content[] = 'As closer to 100%% as better.';
         $content[] = "\n\n";
 
-        if ((int)$this->variables['thread_cache_size'] === 0) {
+        if ((int)$variables['thread_cache_size'] === 0) {
             $content[] = 'Your thread_cache_size (0) is not activated. Please set this value 10.';
-        } elseif ($this->statusValues['Threads_connected'] < $this->variables['thread_cache_size']) {
+        } elseif ($statusValues['Threads_connected'] < $variables['thread_cache_size']) {
             $content[] = 'It seems that you are the only person on this MySQL-Server, so this value should be OK.';
         } else {
-            $content[] = 'It seems that your thread_cache_size (' . $this->variables['thread_cache_size'] . ') is too low.';
+            $content[] = 'It seems that your thread_cache_size (' . $variables['thread_cache_size'] . ') is too low.';
             $content[] = 'Please increase this value in 10th steps.';
         }
 
@@ -57,7 +52,7 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
 
         return sprintf(
             implode(' ', $content),
-            $this->getHitRatio(),
+            $this->getHitRatio($statusValues),
         );
     }
 
@@ -65,18 +60,16 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
      * get hit ratio of threads cache
      * A ratio nearly 100 would be cool
      */
-    private function getHitRatio(): float
+    private function getHitRatio(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
-        $hitRatio = 100 - (($status['Threads_created'] / $status['Connections']) * 100);
+        $hitRatio = 100 - (($statusValues['Threads_created'] / $statusValues['Connections']) * 100);
 
         return round($hitRatio, 2);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $hitRatio = $this->getHitRatio();
+        $hitRatio = $this->getHitRatio($statusValues);
         if ($hitRatio <= 80) {
             $state = ContextualFeedbackSeverity::ERROR;
         } elseif ($hitRatio <= 95) {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
@@ -30,24 +31,23 @@ final readonly class QueryCacheStatusInfoBox implements InfoBoxInterface, InfoBo
     public const TITLE = 'Query Cache Status';
 
     public function __construct(
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!$this->queryCacheHelper->isQueryCacheEnabled($this->variables)) {
+        if (!$this->queryCacheHelper->isQueryCacheEnabled($variables)) {
             return 'Query Cache is not activated';
         }
 
-        if ((int)($this->variables['query_cache_size']) === 0) {
+        if ((int)($variables['query_cache_size']) === 0) {
             return 'Query Cache is activated, but query_cache_size can not be 0';
         }
 
         return 'Query Cache is activated';
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
         return ContextualFeedbackSeverity::INFO;
     }

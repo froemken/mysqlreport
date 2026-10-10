@@ -12,24 +12,23 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Dashboard\Provider;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepositoryInterface;
 use TYPO3\CMS\Dashboard\WidgetApi;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-readonly class QueryTypesDataProvider implements ChartDataProviderInterface
+final readonly class QueryTypesDataProvider implements ChartDataProviderInterface
 {
-    private StatusValues $statusValues;
-
-    public function __construct(StatusRepository $statusRepository)
-    {
-        $this->statusValues = $statusRepository->findAll();
-    }
+    public function __construct(
+        private StatusRepositoryInterface $statusRepository,
+    ) {}
 
     /**
      * @return array<string, array<mixed>>
      */
     public function getChartData(): array
     {
+        $statusValues = $this->statusRepository->findAll();
+
         return [
             'labels' => ['SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE'],
             'datasets' => [
@@ -38,39 +37,39 @@ readonly class QueryTypesDataProvider implements ChartDataProviderInterface
                     'backgroundColor' => WidgetApi::getDefaultChartColors()[0],
                     'border' => 0,
                     'data' => [
-                        $this->getSelect(),
-                        $this->getInsert(),
-                        $this->getUpdate(),
-                        $this->getDelete(),
-                        $this->getTruncate(),
+                        $this->getSelect($statusValues),
+                        $this->getInsert($statusValues),
+                        $this->getUpdate($statusValues),
+                        $this->getDelete($statusValues),
+                        $this->getTruncate($statusValues),
                     ],
                 ],
             ],
         ];
     }
 
-    private function getSelect(): int
+    private function getSelect(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Com_select'] ?? 0);
+        return (int)($statusValues['Com_select'] ?? 0);
     }
 
-    private function getInsert(): int
+    private function getInsert(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Com_insert'] ?? 0);
+        return (int)($statusValues['Com_insert'] ?? 0);
     }
 
-    private function getUpdate(): int
+    private function getUpdate(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Com_update'] ?? 0);
+        return (int)($statusValues['Com_update'] ?? 0);
     }
 
-    private function getDelete(): int
+    private function getDelete(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Com_delete'] ?? 0);
+        return (int)($statusValues['Com_delete'] ?? 0);
     }
 
-    private function getTruncate(): int
+    private function getTruncate(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Com_truncate'] ?? 0);
+        return (int)($statusValues['Com_truncate'] ?? 0);
     }
 }

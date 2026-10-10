@@ -31,17 +31,15 @@ final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStat
     public const TITLE = 'Insert Ratio';
 
     public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset($this->statusValues['Qcache_hits'])
-            || (int)$this->statusValues['Qcache_hits'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
+            !isset($statusValues['Qcache_hits'])
+            || (int)$statusValues['Qcache_hits'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
         ) {
             return '';
         }
@@ -55,22 +53,20 @@ final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStat
 
         return sprintf(
             implode(' ', $content),
-            $this->getInsertRatio(),
+            $this->getInsertRatio($statusValues),
         );
     }
 
-    private function getInsertRatio(): float
+    private function getInsertRatio(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
-        $insertRatio = ($status['Qcache_inserts'] / ($status['Qcache_hits'] + $status['Com_select'])) * 100;
+        $insertRatio = ($statusValues['Qcache_inserts'] / ($statusValues['Qcache_hits'] + $statusValues['Com_select'])) * 100;
 
         return round($insertRatio, 4);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $insertRatio = $this->getInsertRatio();
+        $insertRatio = $this->getInsertRatio($statusValues);
         if ($insertRatio <= 20) {
             $state = ContextualFeedbackSeverity::OK;
         } elseif ($insertRatio <= 40) {

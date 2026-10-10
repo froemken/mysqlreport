@@ -28,24 +28,19 @@ final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStat
 {
     public const TITLE = 'Log File Size';
 
-    public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
             !isset(
-                $this->statusValues['Innodb_page_size'],
-                $this->variables['innodb_log_files_in_group'],
+                $statusValues['Innodb_page_size'],
+                $variables['innodb_log_files_in_group'],
             )
-            || (int)$this->variables['innodb_log_files_in_group'] === 0
+            || (int)$variables['innodb_log_files_in_group'] === 0
         ) {
             return '';
         }
 
-        $logFileSize = $this->getLogFileSize();
+        $logFileSize = $this->getLogFileSize($statusValues, $variables);
 
         $content = [];
         $content[] = 'Your current log file size is %d Bytes.';
@@ -69,31 +64,25 @@ final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStat
      *
      * @return array<string, int>
      */
-    private function getLogFileSize(): array
+    private function getLogFileSize(StatusValues $statusValues, Variables $variables): array
     {
-        $variables = $this->variables;
-
         return [
             'value' => $variables['innodb_log_file_size'],
-            'niceToHave' => $this->getSizeOfEachLogFile(),
+            'niceToHave' => $this->getSizeOfEachLogFile($statusValues, $variables),
         ];
     }
 
-    private function getSizeOfEachLogFile(): int
+    private function getSizeOfEachLogFile(StatusValues $statusValues, Variables $variables): int
     {
-        $variables = $this->variables;
-        $status = $this->statusValues;
-
-        $bytesWrittenEachSecond = $status['Innodb_os_log_written'] / $status['Uptime'];
+        $bytesWrittenEachSecond = $statusValues['Innodb_os_log_written'] / $statusValues['Uptime'];
         $bytesWrittenEachHour = $bytesWrittenEachSecond * 60 * 60;
 
         return (int)($bytesWrittenEachHour / $variables['innodb_log_files_in_group']);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $variables = $this->variables;
-        $sizeOfEachLogFile = $this->getSizeOfEachLogFile();
+        $sizeOfEachLogFile = $this->getSizeOfEachLogFile($statusValues, $variables);
 
         if ($sizeOfEachLogFile < 5242880 || $sizeOfEachLogFile < $variables['innodb_log_file_size']) {
             return ContextualFeedbackSeverity::OK;

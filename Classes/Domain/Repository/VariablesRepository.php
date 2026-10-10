@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 /**
  * Repository to get the MySQL/MariaDB VARIABLES
  */
-final readonly class VariablesRepository
+final readonly class VariablesRepository implements VariablesRepositoryInterface
 {
     public function __construct(
         private ConnectionPool $connectionPool,

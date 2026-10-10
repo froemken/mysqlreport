@@ -17,7 +17,7 @@ namespace StefanFroemken\Mysqlreport\Domain\Model;
  *
  * @implements \ArrayAccess<int|string|null, mixed>
  */
-class Variables implements \ArrayAccess
+final class Variables implements \ArrayAccess
 {
     /**
      * @var array<int|string|null, mixed>

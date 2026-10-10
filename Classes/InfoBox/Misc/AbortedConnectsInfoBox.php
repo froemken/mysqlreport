@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -26,13 +27,9 @@ final readonly class AbortedConnectsInfoBox implements InfoBoxInterface
 {
     public const TITLE = 'Aborted Connects';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->statusValues['Aborted_connects'])) {
+        if (!isset($statusValues['Aborted_connects'])) {
             return '';
         }
 
@@ -43,7 +40,7 @@ final readonly class AbortedConnectsInfoBox implements InfoBoxInterface
 
         return sprintf(
             implode(' ', $content),
-            $this->statusValues['Aborted_connects'],
+            $statusValues['Aborted_connects'],
         );
     }
 }

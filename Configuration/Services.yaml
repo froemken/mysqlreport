@@ -8,10 +8,6 @@ services:
   _defaults:
     autowire: true
     autoconfigure: true
-    public: false
-    bind:
-      StefanFroemken\Mysqlreport\Domain\Model\StatusValues: '@mysqlreport.status'
-      StefanFroemken\Mysqlreport\Domain\Model\Variables: '@mysqlreport.variables'
 
   StefanFroemken\Mysqlreport\:
     resource: '../Classes/*'
@@ -19,15 +15,6 @@ services:
       - '../Classes/Domain/Model/*'
       - '../Classes/InfoBox/ListElement.php'
 
-  mysqlreport.status:
-    class: StefanFroemken\Mysqlreport\Domain\Model\StatusValues
-    factory: ['@StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository', 'findAll']
-
-  mysqlreport.variables:
-    class: StefanFroemken\Mysqlreport\Domain\Model\Variables
-    factory: ['@StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository', 'findAll']
-
-  # Will be called via GeneralUtility::makeInstance in LoggerWithQueryTimeMiddleware and LoggerWithQueryTimeConnection
   StefanFroemken\Mysqlreport\Configuration\ExtConf:
     public: true
 

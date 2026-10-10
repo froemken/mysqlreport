@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
@@ -28,11 +29,7 @@ final readonly class UptimeInfoBox implements InfoBoxInterface, InfoBoxUnordered
 {
     public const TITLE = 'Uptime';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         return '"Uptime" shows the time since the server was started or restarted. '
             . 'Database administrators can execute "FLUSH STATUS" to reset various status variables. '
@@ -48,31 +45,31 @@ final readonly class UptimeInfoBox implements InfoBoxInterface, InfoBoxUnordered
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
     {
         $unorderedList = new \SplQueue();
 
-        if (isset($this->statusValues['Uptime'])) {
+        if (isset($statusValues['Uptime'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime',
-                value: $this->statusValues['Uptime'] . ' seconds',
+                value: $statusValues['Uptime'] . ' seconds',
             ));
 
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime in days',
-                value: $this->convertSecondsToDays((int)$this->statusValues['Uptime']) . ' days',
+                value: $this->convertSecondsToDays((int)$statusValues['Uptime']) . ' days',
             ));
         }
 
-        if (isset($this->statusValues['Uptime_since_flush_status'])) {
+        if (isset($statusValues['Uptime_since_flush_status'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime since status variables reset',
-                value: $this->statusValues['Uptime_since_flush_status'] . ' seconds',
+                value: $statusValues['Uptime_since_flush_status'] . ' seconds',
             ));
 
             $unorderedList->enqueue(new ListElement(
                 title: 'Uptime since status variables reset in days',
-                value: $this->convertSecondsToDays((int)$this->statusValues['Uptime_since_flush_status']) . ' days',
+                value: $this->convertSecondsToDays((int)$statusValues['Uptime_since_flush_status']) . ' days',
             ));
         }
 

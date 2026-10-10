@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -27,19 +28,15 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
 {
     public const TITLE = 'Write Ratio';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
             !isset(
-                $this->statusValues['Innodb_page_size'],
-                $this->statusValues['Innodb_buffer_pool_write_requests'],
-                $this->statusValues['Innodb_buffer_pool_pages_flushed'],
+                $statusValues['Innodb_page_size'],
+                $statusValues['Innodb_buffer_pool_write_requests'],
+                $statusValues['Innodb_buffer_pool_pages_flushed'],
             )
-            || (int)$this->statusValues['Innodb_buffer_pool_pages_flushed'] === 0
+            || (int)$statusValues['Innodb_buffer_pool_pages_flushed'] === 0
         ) {
             return '';
         }
@@ -51,7 +48,7 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
 
         return sprintf(
             implode(' ', $content),
-            $this->getWriteRatio(),
+            $this->getWriteRatio($statusValues),
         );
     }
 
@@ -59,18 +56,16 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
      * get write ratio of innoDb Buffer
      * A value higher than 1 is good
      */
-    private function getWriteRatio(): float
+    private function getWriteRatio(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
-        $writeRatio = $status['Innodb_buffer_pool_write_requests'] / $status['Innodb_buffer_pool_pages_flushed'];
+        $writeRatio = $statusValues['Innodb_buffer_pool_write_requests'] / $statusValues['Innodb_buffer_pool_pages_flushed'];
 
         return round($writeRatio, 2);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $writeRatio = $this->getWriteRatio();
+        $writeRatio = $this->getWriteRatio($statusValues);
         if ($writeRatio <= 2) {
             $state = ContextualFeedbackSeverity::ERROR;
         } elseif ($writeRatio <= 7) {

@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+
 interface InfoBoxUnorderedListInterface
 {
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue;
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue;
 }

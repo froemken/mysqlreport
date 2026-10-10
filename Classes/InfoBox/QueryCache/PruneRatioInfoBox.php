@@ -31,17 +31,15 @@ final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxState
     public const TITLE = 'Prune Ratio';
 
     public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset($this->statusValues['Qcache_inserts'])
-            || (int)$this->statusValues['Qcache_inserts'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
+            !isset($statusValues['Qcache_inserts'])
+            || (int)$statusValues['Qcache_inserts'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
         ) {
             return '';
         }
@@ -63,25 +61,23 @@ final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxState
 
         return sprintf(
             implode(' ', $content),
-            $this->getPruneRatio(),
+            $this->getPruneRatio($statusValues),
         );
     }
 
-    private function getPruneRatio(): float
+    private function getPruneRatio(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-        $pruneRatio = 0;
-
-        if ($status['Qcache_inserts']) {
-            $pruneRatio = ($status['Qcache_lowmem_prunes'] / $status['Qcache_inserts']) * 100;
+        $pruneRatio = 0.0;
+        if ($statusValues['Qcache_inserts']) {
+            $pruneRatio = ($statusValues['Qcache_lowmem_prunes'] / $statusValues['Qcache_inserts']) * 100;
         }
 
         return round($pruneRatio, 4);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $pruneRatio = $this->getPruneRatio();
+        $pruneRatio = $this->getPruneRatio($statusValues);
         if ($pruneRatio <= 10) {
             $state = ContextualFeedbackSeverity::OK;
         } elseif ($pruneRatio <= 40) {

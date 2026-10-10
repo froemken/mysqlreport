@@ -28,22 +28,17 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
 {
     public const TITLE = 'Instances';
 
-    public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->statusValues['Innodb_page_size'])) {
+        if (!isset($statusValues['Innodb_page_size'])) {
             return '';
         }
 
-        if (!isset($this->variables['innodb_buffer_pool_instances'])) {
+        if (!isset($variables['innodb_buffer_pool_instances'])) {
             return '';
         }
 
-        $instances = $this->getInstances();
+        $instances = $this->getInstances($variables);
 
         $content = [];
         $content[] = 'Each Instance should be allocated to 1GB.';
@@ -58,17 +53,13 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
         );
     }
 
-    private function getInstances(): int
+    private function getInstances(Variables $variables): int
     {
-        $variables = $this->variables;
-
         return (int)$variables['innodb_buffer_pool_instances'];
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $variables = $this->variables;
-
         $innodbBufferShouldBe = $variables['innodb_buffer_pool_instances'] * (1024 * 1024 * 1024); // Instances * 1 GB
         if (
             $variables['innodb_buffer_pool_size'] < (1024 * 1024 * 1024)

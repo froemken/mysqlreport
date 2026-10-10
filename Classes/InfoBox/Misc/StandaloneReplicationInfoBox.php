@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -25,13 +26,9 @@ final readonly class StandaloneReplicationInfoBox implements InfoBoxInterface
 {
     public const TITLE = 'Standalone or Replication';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->statusValues['Slave_running'])) {
+        if (!isset($statusValues['Slave_running'])) {
             return '';
         }
 
@@ -43,7 +40,7 @@ final readonly class StandaloneReplicationInfoBox implements InfoBoxInterface
 
         return sprintf(
             implode(' ', $content),
-            $this->statusValues['Slave_running'],
+            $statusValues['Slave_running'],
         );
     }
 }
