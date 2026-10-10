@@ -4,7 +4,7 @@
       data-namespace-typo3-fluid="true">
 
 <f:be.infobox title="Query" disableIcon="true">
-    {queryInformationRecord.query -> m:format.sql() -> f:format.raw()}
+    {queryInformationRecord.query -> m:format.sql()}
 </f:be.infobox>
 
 <f:if condition="{queryInformationRecord.explain}">
