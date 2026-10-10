@@ -26,7 +26,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 final readonly class BackLogInfoBox implements InfoBoxInterface
 {
-    public const TITLE = 'Back Log';
+    public function getTitle(): string
+    {
+        return 'Back Log';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -34,14 +37,15 @@ final readonly class BackLogInfoBox implements InfoBoxInterface
             return '';
         }
 
-        $content = [];
-        $content[] = 'The back_log is a small buffer, which holds all network requests to the Server.';
-        $content[] = 'It will increase if you have many requests at the same time.';
-        $content[] = 'The back_log is limited to the max requests your operating system can handle.';
-        $content[] = "\n\n";
-        $content[] = 'Current Back_log: %s';
-        $content[] = "\n\n";
-        $content[] = 'Max allowed Request by operating system: %s';
+        $content = [
+            'The back_log is a small buffer, which holds all network requests to the Server.',
+            'It will increase if you have many requests at the same time.',
+            'The back_log is limited to the max requests your operating system can handle.',
+            "\n\n",
+            'Current Back_log: %s',
+            "\n\n",
+            'Max allowed Request by operating system: %s',
+        ];
 
         return sprintf(
             implode(' ', $content),

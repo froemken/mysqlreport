@@ -28,7 +28,10 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 )]
 final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    public const TITLE = 'InnoDB Buffer Load';
+    public function getTitle(): string
+    {
+        return 'InnoDB Buffer Load';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -36,10 +39,11 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
             return '';
         }
 
-        $content = [];
-        $content[] = 'Following progressbar shows you how pages (a block with %d Bytes) are currently balanced in InnoDB Buffer';
-        $content[] = 'If free InnoDB Buffer is below 15-20%% it may indicate that you have to increase your innodb_buffer_pool_size';
-        $content[] = 'If free InnoDB Buffer is higher than 20-30%% it may indicate that you should reduce innodb_buffer_pool_size';
+        $content = [
+            'Following progressbar shows you how pages (a block with %d Bytes) are currently balanced in InnoDB Buffer',
+            'If free InnoDB Buffer is below 15-20%% it may indicate that you have to increase your innodb_buffer_pool_size',
+            'If free InnoDB Buffer is higher than 20-30%% it may indicate that you should reduce innodb_buffer_pool_size',
+        ];
 
         return sprintf(
             implode(' ', $content),
@@ -54,57 +58,35 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
      */
     private function getLoad(StatusValues $statusValues): array
     {
-        $load = [];
+        $pageSize = $statusValues['Innodb_page_size'];
+        $total = $statusValues['Innodb_buffer_pool_pages_total'] * $pageSize;
+        $data = $statusValues['Innodb_buffer_pool_pages_data'] * $pageSize;
+        $misc = $statusValues['Innodb_buffer_pool_pages_misc'] * $pageSize;
+        $free = $statusValues['Innodb_buffer_pool_pages_free'] * $pageSize;
 
-        // in Bytes
-        $total = $statusValues['Innodb_buffer_pool_pages_total'] * $statusValues['Innodb_page_size'];
-        $data = $statusValues['Innodb_buffer_pool_pages_data'] * $statusValues['Innodb_page_size'];
-        $misc = $statusValues['Innodb_buffer_pool_pages_misc'] * $statusValues['Innodb_page_size'];
-        $free = $statusValues['Innodb_buffer_pool_pages_free'] * $statusValues['Innodb_page_size'];
-
-        // in MB
-        $load['total'] = GeneralUtility::formatSize($total, '| KB| MB| GB| TB| PB| EB| ZB| YB');
-        $load['data'] = GeneralUtility::formatSize($data, '| KB| MB| GB| TB| PB| EB| ZB| YB');
-        $load['misc'] = GeneralUtility::formatSize($misc, '| KB| MB| GB| TB| PB| EB| ZB| YB');
-        $load['free'] = GeneralUtility::formatSize($free, '| KB| MB| GB| TB| PB| EB| ZB| YB');
-
-        // in percent
-        $load['dataPercent'] = round(100 / $total * $data, 1);
-        $load['miscPercent'] = round(100 / $total * $misc, 1);
-        $load['freePercent'] = round(100 / $total * $free, 1);
-
-        return $load;
+        return [
+            'total' => GeneralUtility::formatSize($total, '| KB| MB| GB| TB| PB| EB| ZB| YB'),
+            'data' => GeneralUtility::formatSize($data, '| KB| MB| GB| TB| PB| EB| ZB| YB'),
+            'misc' => GeneralUtility::formatSize($misc, '| KB| MB| GB| TB| PB| EB| ZB| YB'),
+            'free' => GeneralUtility::formatSize($free, '| KB| MB| GB| TB| PB| EB| ZB| YB'),
+            'dataPercent' => round(100 / $total * $data, 1),
+            'miscPercent' => round(100 / $total * $misc, 1),
+            'freePercent' => round(100 / $total * $free, 1),
+        ];
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
-
         $load = $this->getLoad($statusValues);
 
-        $unorderedList->enqueue(new ListElement(
-            title: 'Total',
-            value: $load['total'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Data',
-            value: $load['data'] . ' (' . $load['dataPercent'] . '%)',
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Misc',
-            value: $load['misc'] . ' (' . $load['miscPercent'] . '%)',
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Free',
-            value: $load['free'] . ' (' . $load['freePercent'] . '%)',
-        ));
-
-        return $unorderedList;
+        return [
+            new ListElement(title: 'Total', value: (string)$load['total']),
+            new ListElement(title: 'Data', value: $load['data'] . ' (' . $load['dataPercent'] . '%)'),
+            new ListElement(title: 'Misc', value: $load['misc'] . ' (' . $load['miscPercent'] . '%)'),
+            new ListElement(title: 'Free', value: $load['free'] . ' (' . $load['freePercent'] . '%)'),
+        ];
     }
 }

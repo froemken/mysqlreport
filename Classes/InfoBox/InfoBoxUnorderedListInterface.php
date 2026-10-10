@@ -17,7 +17,7 @@ use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 interface InfoBoxUnorderedListInterface
 {
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue;
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array;
 }

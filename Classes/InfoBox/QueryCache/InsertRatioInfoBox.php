@@ -28,11 +28,14 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Insert Ratio';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Insert Ratio';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -44,12 +47,13 @@ final readonly class InsertRatioInfoBox implements InfoBoxInterface, InfoBoxStat
             return '';
         }
 
-        $content = [];
-        $content[] = 'This indicates if queries are written into cache very often.';
-        $content[] = 'If you have just started your MySQL-Server or have less SELECT-Statement this value can be red or yellow.';
-        $content[] = 'So please wait till all caches are warmed up.';
-        $content[] = "\n\n";
-        $content[] = 'Insert Ratio: %f%%';
+        $content = [
+            'This indicates if queries are written into cache very often.',
+            'If you have just started your MySQL-Server or have less SELECT-Statement this value can be red or yellow.',
+            'So please wait till all caches are warmed up.',
+            "\n\n",
+            'Insert Ratio: %f%%',
+        ];
 
         return sprintf(
             implode(' ', $content),

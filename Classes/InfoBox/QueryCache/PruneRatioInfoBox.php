@@ -28,11 +28,14 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Prune Ratio';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Prune Ratio';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -44,20 +47,14 @@ final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxState
             return '';
         }
 
-        $content = [];
-        $content[] = 'This is the ratio between deleted and inserted queries in cache.';
-        $content[] = 'If a new query was written into Cache and prune increases, it may indicate,';
-        $content[] = 'that query_cache_size is too small.';
-        $content[] = 'But be careful and don\'t set query_cache_size too high.';
-        $content[] = 'A maximum of 256MB should be OK.';
-        $content[] = 'If ratio is still high you should check your query_cache_limit.';
-        $content[] = 'Please check section "Average used blocks" below';
-        $content[] = 'If ratio is still too high you have too much different queries.';
-        $content[] = 'Please deactivate Query Cache completely.';
-        $content[] = 'It does not make sense to increase query_cache_size,';
-        $content[] = 'because of mutex/concurrency while updating or deleting records';
-        $content[] = "\n\n";
-        $content[] = 'Prune Ratio: %f%%';
+        $content = [
+            'This is the ratio between deleted and inserted queries in cache.',
+            'If a new query was written into Cache and prune increases, it may indicate that query_cache_size is too small.',
+            'A maximum of 256MB should be OK. If ratio is still high check query_cache_limit and section "Average used blocks".',
+            'If ratio is still too high deactivate Query Cache completely due to mutex/concurrency overhead.',
+            "\n\n",
+            'Prune Ratio: %f%%',
+        ];
 
         return sprintf(
             implode(' ', $content),

@@ -28,11 +28,14 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class QueryCacheStatusInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Query Cache Status';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Query Cache Status';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -40,7 +43,7 @@ final readonly class QueryCacheStatusInfoBox implements InfoBoxInterface, InfoBo
             return 'Query Cache is not activated';
         }
 
-        if ((int)($variables['query_cache_size']) === 0) {
+        if ((int)$variables['query_cache_size'] === 0) {
             return 'Query Cache is activated, but query_cache_size can not be 0';
         }
 

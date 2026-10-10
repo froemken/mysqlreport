@@ -27,11 +27,14 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Average Query Size';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Average Query Size';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -43,8 +46,9 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
             return '';
         }
 
-        $content = [];
-        $content[] = 'Average Query Size of %f Bytes should not be higher than %d (query_cache_min_res_unit).';
+        $content = [
+            'Average Query Size of %f Bytes should not be higher than %d (query_cache_min_res_unit).',
+        ];
 
         return sprintf(
             implode(' ', $content),

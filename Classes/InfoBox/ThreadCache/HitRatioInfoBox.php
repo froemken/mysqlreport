@@ -26,7 +26,10 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Hit Ratio';
+    public function getTitle(): string
+    {
+        return 'Hit Ratio';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -34,19 +37,15 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
             return '';
         }
 
-        $content = [];
-        $content[] = 'As closer to 100%% as better.';
-        $content[] = "\n\n";
-
-        if ((int)$variables['thread_cache_size'] === 0) {
+        $threadCacheSize = (int)$variables['thread_cache_size'];
+        $content = ['As closer to 100%% as better.', "\n\n"];
+        if ($threadCacheSize === 0) {
             $content[] = 'Your thread_cache_size (0) is not activated. Please set this value 10.';
-        } elseif ($statusValues['Threads_connected'] < $variables['thread_cache_size']) {
+        } elseif ($statusValues['Threads_connected'] < $threadCacheSize) {
             $content[] = 'It seems that you are the only person on this MySQL-Server, so this value should be OK.';
         } else {
-            $content[] = 'It seems that your thread_cache_size (' . $variables['thread_cache_size'] . ') is too low.';
-            $content[] = 'Please increase this value in 10th steps.';
+            $content[] = 'It seems that your thread_cache_size (' . $threadCacheSize . ') is too low. Please increase this value in 10th steps.';
         }
-
         $content[] = "\n\n";
         $content[] = 'Hit Ratio: %f';
 

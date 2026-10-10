@@ -7,6 +7,6 @@
 <f:section name="Content">
     <h1>Server Information</h1>
 
-    {renderedInfoBoxes -> f:format.raw()}
+    <f:render partial="InfoBoxes" arguments="{infoBoxes: infoBoxes}"/>
 </f:section>
 </html>

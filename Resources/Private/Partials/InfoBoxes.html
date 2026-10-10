@@ -2,13 +2,15 @@
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
-<f:be.infobox title="{title}" state="{state}" disableIcon="true">
-    <p>{body -> f:format.nl2br()}</p>
+<f:for each="{infoBoxes}" as="infoBox">
+    <f:be.infobox title="{infoBox.title}" state="{infoBox.state}" disableIcon="true">
+        <p>{infoBox.body -> f:format.nl2br()}</p>
 
-    <f:if condition="{unorderedList}">
-        <f:render section="renderUnorderedList" arguments="{unorderedList: unorderedList}"/>
-    </f:if>
-</f:be.infobox>
+        <f:if condition="{infoBox.unorderedList}">
+            <f:render section="renderUnorderedList" arguments="{unorderedList: infoBox.unorderedList}"/>
+        </f:if>
+    </f:be.infobox>
+</f:for>
 
 <f:section name="renderUnorderedList">
     <ul>

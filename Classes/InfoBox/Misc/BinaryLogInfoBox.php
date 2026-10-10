@@ -24,29 +24,28 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class BinaryLogInfoBox implements InfoBoxInterface
 {
-    public const TITLE = 'Binary Log';
+    public function getTitle(): string
+    {
+        return 'Binary Log';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (
-            isset($statusValues['Slave_running'])
-            && (
-                strtolower($statusValues['Slave_running']) === 'off'
-                || (int)$statusValues['Slave_running'] === 0
-            )
-        ) {
-            $content = [];
-            $content[] = 'Your server runs in standalone-mode.';
-            $content[] = 'You don\'t need replication. So you can deactivate binary logging';
-            $content[] = "\n\n";
-            $content[] = 'Link: https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_binary_log';
-            $content[] = "\n\n";
-            $content[] = 'Quote: "The binary logging feature can be turned on and off, although Oracle recommends always';
-            $content[] = 'enabling it if you use replication or perform backups."';
-
-            return implode(' ', $content);
+        $slaveRunning = strtolower((string)($statusValues['Slave_running'] ?? ''));
+        if (!isset($statusValues['Slave_running']) || ($slaveRunning !== 'off' && (int)$statusValues['Slave_running'] !== 0)) {
+            return '';
         }
 
-        return '';
+        $content = [
+            'Your server runs in standalone-mode.',
+            'You don\'t need replication. So you can deactivate binary logging',
+            "\n\n",
+            'Link: https://dev.mysql.com/doc/refman/8.0/en/glossary.html#glos_binary_log',
+            "\n\n",
+            'Quote: "The binary logging feature can be turned on and off, although Oracle recommends always',
+            'enabling it if you use replication or perform backups."',
+        ];
+
+        return implode(' ', $content);
     }
 }

@@ -14,7 +14,7 @@ namespace StefanFroemken\Mysqlreport\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
-use StefanFroemken\Mysqlreport\InfoBox\RenderInfoBoxFactory;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxService;
 use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
 
@@ -26,7 +26,7 @@ final readonly class MiscController
      */
     public function __construct(
         private iterable $infoBoxes,
-        private RenderInfoBoxFactory $renderInfoBoxFactory,
+        private InfoBoxService $infoBoxService,
         private ModuleTemplateFactory $moduleTemplateFactory,
     ) {}
 
@@ -39,8 +39,8 @@ final readonly class MiscController
         );
 
         $moduleTemplate->assign(
-            'renderedInfoBoxes',
-            $this->renderInfoBoxFactory->render($this->infoBoxes),
+            'infoBoxes',
+            $this->infoBoxService->buildInfoBoxes($this->infoBoxes),
         );
 
         return $moduleTemplate->renderResponse('Misc/Index');

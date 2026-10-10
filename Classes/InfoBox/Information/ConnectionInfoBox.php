@@ -29,7 +29,10 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class ConnectionInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Connections';
+    public function getTitle(): string
+    {
+        return 'Connections';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -45,71 +48,95 @@ final readonly class ConnectionInfoBox implements InfoBoxInterface, InfoBoxUnord
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
+        $unorderedList = [];
+        $this->addConnectionStatusElements($unorderedList, $statusValues, $variables);
+        $this->addVariableElements($unorderedList, $variables);
 
+        return $unorderedList;
+    }
+
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addConnectionStatusElements(
+        array &$unorderedList,
+        StatusValues $statusValues,
+        Variables $variables,
+    ): void {
         if (isset($statusValues['Connections'])) {
-            $unorderedList->enqueue(new ListElement(
+            $unorderedList[] = new ListElement(
                 title: 'Connections in total (Connections)',
                 value: $statusValues['Connections'],
-            ));
-            $unorderedList->enqueue(new ListElement(
+            );
+            $unorderedList[] = new ListElement(
                 title: 'Average connections each second',
                 value: $this->getAverage(
                     (int)$statusValues['Connections'],
                     (int)$statusValues['Uptime'],
                 ),
-            ));
+            );
         }
 
         if (isset($statusValues['Max_used_connections'])) {
-            $unorderedList->enqueue(new ListElement(
-                title: 'Max used simultaneous connections (Max_used_connections)',
-                value: $statusValues['Max_used_connections'],
-            ));
-
-            $maxConnections = (int)($variables['max_connections'] ?? 0);
-            if ($maxConnections > 0) {
-                $percent = 100 / $maxConnections * (int)$statusValues['Max_used_connections'];
-                $unorderedList->enqueue(new ListElement(
-                    title: 'Max used simultaneous connections in percent',
-                    value: number_format($percent, 2, ',', '.') . '%',
-                ));
-            }
+            $this->addMaxUsedConnectionsElements($unorderedList, $statusValues, $variables);
         }
+    }
 
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addMaxUsedConnectionsElements(
+        array &$unorderedList,
+        StatusValues $statusValues,
+        Variables $variables,
+    ): void {
+        $unorderedList[] = new ListElement(
+            title: 'Max used simultaneous connections (Max_used_connections)',
+            value: $statusValues['Max_used_connections'],
+        );
+
+        $maxConnections = (int)($variables['max_connections'] ?? 0);
+        if ($maxConnections > 0) {
+            $percent = 100 / $maxConnections * (int)$statusValues['Max_used_connections'];
+            $unorderedList[] = new ListElement(
+                title: 'Max used simultaneous connections in percent',
+                value: number_format($percent, 2, ',', '.') . '%',
+            );
+        }
+    }
+
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addVariableElements(array &$unorderedList, Variables $variables): void
+    {
         if (isset($variables['max_connections'])) {
-            $unorderedList->enqueue(new ListElement(
+            $unorderedList[] = new ListElement(
                 title: 'Max allowed simultaneous connections (max_connections)',
                 value: $variables['max_connections'],
-            ));
+            );
         }
 
         if (isset($variables['extra_max_connections'])) {
-            $unorderedList->enqueue(new ListElement(
+            $unorderedList[] = new ListElement(
                 title: 'Extra connections (extra_max_connections)',
                 value: $variables['extra_max_connections'],
-            ));
+            );
         }
 
         if (isset($variables['max_user_connections'])) {
-            if ((int)$variables['max_user_connections'] === 0) {
-                $unorderedList->enqueue(new ListElement(
-                    title: 'Max allowed user connections (max_user_connections)',
-                    value: 'No per-user limit (applies global max_connections limit)',
-                ));
-            } else {
-                $unorderedList->enqueue(new ListElement(
-                    title: 'Max allowed user connections (max_user_connections)',
-                    value: $variables['max_user_connections'],
-                ));
-            }
+            $value = (int)$variables['max_user_connections'] === 0
+                ? 'No per-user limit (applies global max_connections limit)'
+                : $variables['max_user_connections'];
+            $unorderedList[] = new ListElement(
+                title: 'Max allowed user connections (max_user_connections)',
+                value: $value,
+            );
         }
-
-        return $unorderedList;
     }
 
     public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity

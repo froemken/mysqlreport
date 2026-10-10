@@ -27,7 +27,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    public const TITLE = 'Max Packet Size';
+    public function getTitle(): string
+    {
+        return 'Max Packet Size';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -35,27 +38,26 @@ final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBo
             return '';
         }
 
-        $content = [];
-        $content[] = 'Max allowed packet size a client can send to or retrieve from the server.';
-        $content[] = 'In most cases 64 MB should be enough.';
-        $content[] = 'If you have a lot of huge BLOB columns or your server fails with ER_NET_PACKET_TOO_LARGE you should increase this value to maybe 256 MB.';
-        $content[] = 'Hint: 1 GB is the largest allowed size.';
+        $content = [
+            'Max allowed packet size a client can send to or retrieve from the server.',
+            'In most cases 64 MB should be enough.',
+            'If you have a lot of huge BLOB columns or your server fails with ER_NET_PACKET_TOO_LARGE you should increase this value to maybe 256 MB.',
+            'Hint: 1 GB is the largest allowed size.',
+        ];
 
         return implode(' ', $content);
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Max allowed packet size in bytes (max_allowed_packet)',
-            value: $variables['max_allowed_packet'],
-        ));
-
-        return $unorderedList;
+        return [
+            new ListElement(
+                title: 'Max allowed packet size in bytes (max_allowed_packet)',
+                value: (string)$variables['max_allowed_packet'],
+            ),
+        ];
     }
 }

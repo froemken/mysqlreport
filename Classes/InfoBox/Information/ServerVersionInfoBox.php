@@ -27,7 +27,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class ServerVersionInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    public const TITLE = 'Server Information';
+    public function getTitle(): string
+    {
+        return 'Server Information';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -35,38 +38,25 @@ final readonly class ServerVersionInfoBox implements InfoBoxInterface, InfoBoxUn
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
+        $keys = [
+            'version' => 'Version',
+            'version_comment' => 'Version comment',
+            'version_compile_machine' => 'Version compile machine',
+            'version_compile_os' => 'Version compile OS',
+        ];
 
-        if (isset($variables['version'])) {
-            $unorderedList->enqueue(new ListElement(
-                title: 'Version',
-                value: $variables['version'],
-            ));
-        }
-
-        if (isset($variables['version_comment'])) {
-            $unorderedList->enqueue(new ListElement(
-                title: 'Version comment',
-                value: $variables['version_comment'],
-            ));
-        }
-
-        if (isset($variables['version_compile_machine'])) {
-            $unorderedList->enqueue(new ListElement(
-                title: 'Version compile machine',
-                value: $variables['version_compile_machine'],
-            ));
-        }
-
-        if (isset($variables['version_compile_os'])) {
-            $unorderedList->enqueue(new ListElement(
-                title: 'Version compile OS',
-                value: $variables['version_compile_os'],
-            ));
+        $unorderedList = [];
+        foreach ($keys as $key => $title) {
+            if (isset($variables[$key])) {
+                $unorderedList[] = new ListElement(
+                    title: $title,
+                    value: $variables[$key],
+                );
+            }
         }
 
         return $unorderedList;

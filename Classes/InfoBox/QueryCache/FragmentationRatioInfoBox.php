@@ -27,11 +27,14 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Fragmentation Ratio';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Fragmentation Ratio';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -43,13 +46,14 @@ final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, Info
             return '';
         }
 
-        $content = [];
-        $content[] = 'You can defragment query cache with FLUSH QUERY CACHE if you are allowed to (RELOAD privileges).';
-        $content[] = 'While processing FLUSH, query cache is not available and all queries will be blocked for that duration.';
-        $content[] = 'But this command is very fast if your query_cache_size is small.';
-        $content[] = 'If you want to clear query cache you should use: RESET QUERY CACHE';
-        $content[] = "\n\n";
-        $content[] = 'Fragmentation Ratio: %f%%';
+        $content = [
+            'You can defragment query cache with FLUSH QUERY CACHE if you are allowed to (RELOAD privileges).',
+            'While processing FLUSH, query cache is not available and all queries will be blocked for that duration.',
+            'But this command is very fast if your query_cache_size is small.',
+            'If you want to clear query cache you should use: RESET QUERY CACHE',
+            "\n\n",
+            'Fragmentation Ratio: %f%%',
+        ];
 
         return sprintf(
             implode(' ', $content),

@@ -28,11 +28,14 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Hit Ratio';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Hit Ratio';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -44,10 +47,11 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
             return '';
         }
 
-        $content = [];
-        $content[] = 'As higher as better.';
-        $content[] = "\n\n";
-        $content[] = 'Hit Ratio: %f';
+        $content = [
+            'As higher as better.',
+            "\n\n",
+            'Hit Ratio: %f',
+        ];
 
         return sprintf(
             implode(' ', $content),

@@ -27,31 +27,30 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Hit Ratio';
+    public function getTitle(): string
+    {
+        return 'Hit Ratio';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (
-            !isset(
-                $statusValues['Innodb_page_size'],
-                $statusValues['Innodb_buffer_pool_read_requests'],
-                $statusValues['Innodb_buffer_pool_reads'],
-            )
-        ) {
+        if (!isset(
+            $statusValues['Innodb_page_size'],
+            $statusValues['Innodb_buffer_pool_read_requests'],
+            $statusValues['Innodb_buffer_pool_reads'],
+        )) {
             return '';
         }
 
-        $content = [];
-        $content[] = 'As higher as better.';
-        $content[] = 'Everything below 90 is really bad. 99 maybe OK, but is not perfect. Everything above 99.9 is great.';
-        $content[] = 'Increase the value of innodb_buffer_pool_size to get better results.';
-        $content[] = "\n\n";
-        $content[] = 'Hit Ratio: %f';
+        $content = [
+            'As higher as better.',
+            'Everything below 90 is really bad. 99 maybe OK, but is not perfect. Everything above 99.9 is great.',
+            'Increase the value of innodb_buffer_pool_size to get better results.',
+            "\n\n",
+            'Hit Ratio: %f',
+        ];
 
-        return sprintf(
-            implode(' ', $content),
-            $this->getHitRatio($statusValues),
-        );
+        return sprintf(implode(' ', $content), $this->getHitRatio($statusValues));
     }
 
     /**

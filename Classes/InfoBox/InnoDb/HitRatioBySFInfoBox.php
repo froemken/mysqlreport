@@ -27,31 +27,30 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class HitRatioBySFInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Hit Ratio by SF';
+    public function getTitle(): string
+    {
+        return 'Hit Ratio by SF';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (
-            !isset(
-                $statusValues['Innodb_page_size'],
-                $statusValues['Innodb_buffer_pool_reads'],
-                $statusValues['Innodb_buffer_pool_read_requests'],
-            )
-        ) {
+        if (!isset(
+            $statusValues['Innodb_page_size'],
+            $statusValues['Innodb_buffer_pool_reads'],
+            $statusValues['Innodb_buffer_pool_read_requests'],
+        )) {
             return '';
         }
 
-        $content = [];
-        $content[] = 'IMO we should have a factor of 1/1000 of speed between reading from HDD and reading from RAM.';
-        $content[] = 'So, the amount of reading from HDD * 1000 would be our nice-to-have value for reading from RAM.';
-        $content[] = '100 / value of nice-to-have * innodb_buffer_pool_read_requests shows us a percentage value how far we are away from factor 1/1000.';
-        $content[] = "\n\n";
-        $content[] = 'Hit Ratio by SF: %f';
+        $content = [
+            'IMO we should have a factor of 1/1000 of speed between reading from HDD and reading from RAM.',
+            'So, the amount of reading from HDD * 1000 would be our nice-to-have value for reading from RAM.',
+            '100 / value of nice-to-have * innodb_buffer_pool_read_requests shows us a percentage value how far we are away from factor 1/1000.',
+            "\n\n",
+            'Hit Ratio by SF: %f',
+        ];
 
-        return sprintf(
-            implode(' ', $content),
-            $this->getHitRatioBySF($statusValues),
-        );
+        return sprintf(implode(' ', $content), $this->getHitRatioBySF($statusValues));
     }
 
     /**
