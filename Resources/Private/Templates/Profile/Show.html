@@ -46,7 +46,7 @@
                 <td>{profile.query_type}</td>
                 <td>{profile.amount}</td>
                 <td>
-                    {profile.duration}
+                    {profile.duration -> f:format.number(decimals: 6)}
                 </td>
                 <td>
                     <f:be.link route="mysqlreport_profile"

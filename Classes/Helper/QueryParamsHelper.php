@@ -11,16 +11,13 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Helper;
 
-use Doctrine\DBAL\Exception;
-use Doctrine\DBAL\Types\ConversionException;
-use Doctrine\DBAL\Types\Type;
 use Psr\Log\LoggerInterface;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Helper to replace query params in a query to get a ready to use query for EXPLAIN
  */
-readonly class QueryParamsHelper
+final readonly class QueryParamsHelper
 {
     public function __construct(
         private ConnectionPool $connectionPool,
@@ -28,35 +25,41 @@ readonly class QueryParamsHelper
     ) {}
 
     /**
-     * @param array<int, string> $params
-     * @param array<int, string> $types
+     * @param array<int|string, mixed> $params
+     * @param array<int|string, int|string> $types
      */
     public function getQueryWithReplacedParams(
         string $sql,
         array $params = [],
         array $types = [],
     ): string {
-        try {
-            if ($params !== []) {
-                $dbPlatform = $this->connectionPool->getConnectionByName(
-                    ConnectionPool::DEFAULT_CONNECTION_NAME,
-                )->getDatabasePlatform();
-
-                foreach ($params as $key => $param) {
-                    $type = Type::getType($types[$key]);
-                    $value = $type->convertToDatabaseValue($param, $dbPlatform);
-                    $sql = implode(
-                        var_export($value, true),
-                        explode('?', $sql, 2),
-                    );
-                }
-            }
-        } catch (ConversionException|Exception $exception) {
-            $this->logger->error('Error while replacing placeholders (?) in query', [
-                'exception' => $exception,
-            ]);
+        if ($params === []) {
+            return $sql;
         }
 
-        return $sql;
+        try {
+            return $this->parseAndReplaceParams($sql, $params, $types);
+        } catch (\Throwable $exception) {
+            $this->logger->error('Error while replacing placeholders in query', [
+                'exception' => $exception,
+            ]);
+            return $sql;
+        }
+    }
+
+    /**
+     * @param array<int|string, mixed> $params
+     * @param array<int|string, int|string> $types
+     */
+    private function parseAndReplaceParams(string $sql, array $params, array $types): string
+    {
+        $platform = $this->connectionPool->getConnectionByName(
+            ConnectionPool::DEFAULT_CONNECTION_NAME,
+        )->getDatabasePlatform();
+
+        $visitor = new SqlParamSubstitutionVisitor($params, $types, $platform);
+        $platform->createSQLParser()->parse($sql, $visitor);
+
+        return $visitor->getSql();
     }
 }

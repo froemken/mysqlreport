@@ -43,8 +43,8 @@ readonly class MySqlReportSqlLogger implements LoggerInterface
      * This method will be called just after the query has been executed by doctrine.
      * Start collecting duration and other stuff.
      *
-     * @param array<int, string> $params
-     * @param array<int, string> $types
+     * @param array<int|string, mixed> $params
+     * @param array<int|string, string> $types
      */
     public function stopQuery(string $query, float $duration, array $params = [], array $types = []): ?QueryInformation
     {

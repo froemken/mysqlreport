@@ -18,7 +18,6 @@ use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 class QueryInformationRepositoryTest extends UnitTestCase
@@ -42,14 +41,12 @@ class QueryInformationRepositoryTest extends UnitTestCase
             ->willReturn($connection);
 
         $extConf = new ExtConf();
-        $eventDispatcher = $this->createMock(EventDispatcher::class);
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->never())->method('error');
 
         $repository = new QueryInformationRepository(
             $connectionPool,
             $extConf,
-            $eventDispatcher,
             $logger,
         );
 
@@ -81,7 +78,6 @@ class QueryInformationRepositoryTest extends UnitTestCase
             ->willReturn($connection);
 
         $extConf = new ExtConf();
-        $eventDispatcher = $this->createMock(EventDispatcher::class);
         $logger = $this->createMock(LoggerInterface::class);
         $logger->expects($this->once())
             ->method('error')
@@ -93,7 +89,6 @@ class QueryInformationRepositoryTest extends UnitTestCase
         $repository = new QueryInformationRepository(
             $connectionPool,
             $extConf,
-            $eventDispatcher,
             $logger,
         );
 

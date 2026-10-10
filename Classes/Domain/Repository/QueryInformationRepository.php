@@ -15,11 +15,9 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Result;
 use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Event\ModifyQueryInformationRecordsEvent;
 use TYPO3\CMS\Core\Database\Connection;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Query\QueryBuilder;
-use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
 
 /**
  * Repository to retrieve the logged queries of a request
@@ -31,7 +29,6 @@ readonly class QueryInformationRepository
     public function __construct(
         private ConnectionPool $connectionPool,
         private ExtConf $extConf,
-        private EventDispatcher $eventDispatcher,
         private LoggerInterface $logger,
     ) {}
 
@@ -62,12 +59,7 @@ readonly class QueryInformationRepository
             ]);
         }
 
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
-        );
-
-        return $event->getQueryInformationRecords();
+        return $queryInformationRecords;
     }
 
     /**
@@ -104,12 +96,7 @@ readonly class QueryInformationRepository
             ]);
         }
 
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
-        );
-
-        return $event->getQueryInformationRecords();
+        return $queryInformationRecords;
     }
 
     /**
@@ -144,16 +131,11 @@ readonly class QueryInformationRepository
             ]);
         }
 
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
-        );
-
-        return $event->getQueryInformationRecords();
+        return $queryInformationRecords;
     }
 
     /**
-     * @return array<int, string>
+     * @return array<int, mixed>
      */
     public function getQueryInformationRecordsByQueryType(string $uniqueIdentifier, string $queryType): array
     {
@@ -187,12 +169,7 @@ readonly class QueryInformationRepository
             ]);
         }
 
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
-        );
-
-        return $event->getQueryInformationRecords();
+        return $queryInformationRecords;
     }
 
     /**
@@ -212,20 +189,13 @@ readonly class QueryInformationRepository
             );
 
         try {
-            $queryInformationRecord = $queryBuilder->executeQuery()->fetchAssociative() ?: [];
+            return $queryBuilder->executeQuery()->fetchAssociative() ?: [];
         } catch (Exception $exception) {
             $this->logger->error('Error while fetching records in method: getQueryInformationRecordByUid', [
                 'exception' => $exception,
             ]);
             return [];
         }
-
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, [$queryInformationRecord]),
-        );
-
-        return current($event->getQueryInformationRecords());
     }
 
     /**
@@ -311,12 +281,7 @@ readonly class QueryInformationRepository
             ]);
         }
 
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
-        );
-
-        return $event->getQueryInformationRecords();
+        return $queryInformationRecords;
     }
 
     /**
@@ -351,12 +316,7 @@ readonly class QueryInformationRepository
             ]);
         }
 
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
-        );
-
-        return $event->getQueryInformationRecords();
+        return $queryInformationRecords;
     }
 
     /**
@@ -394,12 +354,7 @@ readonly class QueryInformationRepository
             ]);
         }
 
-        /** @var ModifyQueryInformationRecordsEvent $event */
-        $event = $this->eventDispatcher->dispatch(
-            new ModifyQueryInformationRecordsEvent(__METHOD__, $queryInformationRecords),
-        );
-
-        return $event->getQueryInformationRecords();
+        return $queryInformationRecords;
     }
 
     /**

@@ -35,7 +35,7 @@
             <tr>
                 <td>{queryInformationRecord.query}...</td>
                 <td>
-                    {queryInformationRecord.duration}
+                    {queryInformationRecord.duration -> f:format.number(decimals: 6)}
                 </td>
                 <td>
                     <f:be.link route="mysqlreport_profile"

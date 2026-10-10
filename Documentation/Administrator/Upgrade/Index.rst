@@ -18,6 +18,10 @@ Removed TYPO3 13 compatibility.
 Added `adminpanel` as conflicting extension because of duplicate
 SQL logging.
 
+Removed PSR-14 event `ModifyQueryInformationRecordsEvent` and
+`RoundDurationOfQueryInformationRecordsEventListener`. Duration formatting
+is now handled in Fluid templates.
+
 ..  _upgrade-4-0-0:
 
 Upgrade to version 4.0.0
