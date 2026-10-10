@@ -16,21 +16,21 @@ use Doctrine\DBAL\Result;
 use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Event\ModifyQueryInformationRecordsEvent;
-use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\EventDispatcher\EventDispatcher;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * Repository to retrieve the logged queries of a request
  */
 readonly class QueryInformationRepository
 {
-    use DatabaseConnectionTrait;
-
     private const TABLE = 'tx_mysqlreport_query_information';
 
     public function __construct(
+        private ConnectionPool $connectionPool,
+        private ExtConf $extConf,
         private EventDispatcher $eventDispatcher,
         private LoggerInterface $logger,
     ) {}
@@ -373,7 +373,7 @@ readonly class QueryInformationRepository
                 $queryBuilder->expr()->gte(
                     'duration',
                     $queryBuilder->createNamedParameter(
-                        GeneralUtility::makeInstance(ExtConf::class)->getSlowQueryThreshold(),
+                        $this->extConf->getSlowQueryThreshold(),
                         Connection::PARAM_LOB,
                     ),
                 ),
@@ -437,5 +437,20 @@ readonly class QueryInformationRepository
                 'exception' => $exception,
             ]);
         }
+    }
+
+    private function getQueryBuilder(): QueryBuilder
+    {
+        return $this->connectionPool->getQueryBuilderForTable(self::TABLE);
+    }
+
+    private function getDefaultConnection(): Connection
+    {
+        return $this->connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+    }
+
+    private function getConnectionForMySqlReport(): Connection
+    {
+        return $this->connectionPool->getConnectionForTable(self::TABLE);
     }
 }

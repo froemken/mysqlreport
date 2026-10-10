@@ -13,21 +13,18 @@ namespace StefanFroemken\Mysqlreport\Domain\Factory;
 
 use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
-use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
 use TYPO3\CMS\Core\Context\Context;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ApplicationType;
 use TYPO3\CMS\Core\Http\NormalizedParams;
 use TYPO3\CMS\Core\Routing\PageArguments;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * A factory to build new Profile objects.
  * It should prevent calling methods to retrieve environment variables multiple times
  */
-readonly class QueryInformationFactory
+final readonly class QueryInformationFactory
 {
-    use Typo3RequestTrait;
-
     private int $pageUid;
 
     private string $ip;
@@ -42,27 +39,19 @@ readonly class QueryInformationFactory
 
     private int $crdate;
 
-    public function __construct()
-    {
-        $this->pageUid = $this->getPageUid();
-        $ip = '';
-        $referer = '';
-        $requestUrl = '';
-        $request = $GLOBALS['TYPO3_REQUEST'] ?? null;
-        if ($request instanceof ServerRequestInterface) {
-            $normalizedParams = $request->getAttribute('normalizedParams');
-            if ($normalizedParams instanceof NormalizedParams) {
-                $ip = $normalizedParams->getRemoteAddress();
-                $referer = $normalizedParams->getHttpReferer();
-                $requestUrl = $normalizedParams->getRequestUrl();
-            }
-        }
-        $this->ip = $ip;
-        $this->referer = $referer;
-        $this->request = $requestUrl;
-        $this->mode = $this->getTypo3Mode();
+    public function __construct(
+        private Context $context,
+    ) {
+        $serverRequest = $GLOBALS['TYPO3_REQUEST'] ?? null;
+        $request = $serverRequest instanceof ServerRequestInterface ? $serverRequest : null;
+
+        $this->pageUid = $this->resolvePageUid($request);
+        $this->ip = $this->resolveIp($request);
+        $this->referer = $this->resolveReferer($request);
+        $this->request = $this->resolveRequestUrl($request);
+        $this->mode = $this->resolveMode($request);
         $this->uniqueCallIdentifier = uniqid('', true);
-        $this->crdate = (int)GeneralUtility::makeInstance(Context::class)->getPropertyFromAspect('date', 'timestamp');
+        $this->crdate = (int)$this->context->getPropertyFromAspect('date', 'timestamp');
     }
 
     public function createNewQueryInformation(): QueryInformation
@@ -79,13 +68,10 @@ readonly class QueryInformationFactory
         return $queryInformation;
     }
 
-    private function getPageUid(): int
+    private function resolvePageUid(?ServerRequestInterface $request): int
     {
-        if (
-            ($serverRequest = $GLOBALS['TYPO3_REQUEST'] ?? null)
-            && $serverRequest instanceof ServerRequestInterface
-        ) {
-            $pageArguments = $serverRequest->getAttribute('routing');
+        if ($request !== null) {
+            $pageArguments = $request->getAttribute('routing');
             if ($pageArguments instanceof PageArguments) {
                 return $pageArguments->getPageId();
             }
@@ -99,12 +85,53 @@ readonly class QueryInformationFactory
         return 0;
     }
 
-    private function getTypo3Mode(): string
+    private function resolveIp(?ServerRequestInterface $request): string
+    {
+        if ($request === null) {
+            return '';
+        }
+        $normalizedParams = $request->getAttribute('normalizedParams');
+        if ($normalizedParams instanceof NormalizedParams) {
+            return (string)$normalizedParams->getRemoteAddress();
+        }
+        return '';
+    }
+
+    private function resolveReferer(?ServerRequestInterface $request): string
+    {
+        if ($request === null) {
+            return '';
+        }
+        $normalizedParams = $request->getAttribute('normalizedParams');
+        if ($normalizedParams instanceof NormalizedParams) {
+            return (string)$normalizedParams->getHttpReferer();
+        }
+        return '';
+    }
+
+    private function resolveRequestUrl(?ServerRequestInterface $request): string
+    {
+        if ($request === null) {
+            return '';
+        }
+        $normalizedParams = $request->getAttribute('normalizedParams');
+        if ($normalizedParams instanceof NormalizedParams) {
+            return (string)$normalizedParams->getRequestUrl();
+        }
+        return '';
+    }
+
+    private function resolveMode(?ServerRequestInterface $request): string
     {
         if (Environment::isCli()) {
             return 'CLI';
         }
 
-        return $this->isBackendRequest() ? 'BE' : 'FE';
+        if ($request !== null) {
+            $applicationType = ApplicationType::fromRequest($request);
+            return $applicationType->isBackend() ? 'BE' : 'FE';
+        }
+
+        return 'FE';
     }
 }

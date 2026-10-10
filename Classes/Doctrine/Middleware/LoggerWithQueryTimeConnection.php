@@ -43,6 +43,8 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
         parent::__construct($connection);
 
         $this->queries = new \SplQueue();
+        // Since Doctrine driver instances are instantiated by DBAL and not by the DI container,
+        // services are resolved via GeneralUtility::makeInstance.
         $this->logger = GeneralUtility::makeInstance(MySqlReportSqlLogger::class);
         $this->explainQueryHelper = GeneralUtility::makeInstance(ExplainQueryHelper::class);
         $this->queryInformationRepository = GeneralUtility::makeInstance(QueryInformationRepository::class);
@@ -55,8 +57,7 @@ class LoggerWithQueryTimeConnection extends AbstractConnectionMiddleware
      */
     public function prepare(string $sql): Statement
     {
-        return GeneralUtility::makeInstance(
-            LoggerStatement::class,
+        return new LoggerStatement(
             parent::prepare($sql),
             $this->logger,
             $sql,

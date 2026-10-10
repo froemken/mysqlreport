@@ -15,16 +15,15 @@ use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Model\QueryInformation;
-use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Helper to analyze an EXPLAIN query result and add information to QueryInformation model
  */
-readonly class ExplainQueryHelper
+final readonly class ExplainQueryHelper
 {
-    use DatabaseConnectionTrait;
-
     public function __construct(
+        private ConnectionPool $connectionPool,
         private ExtConf $extConf,
         private LoggerInterface $logger,
     ) {}
@@ -63,9 +62,8 @@ readonly class ExplainQueryHelper
     {
         $explainRows = [];
         try {
-            $queryResult = $this->getDefaultConnection()->executeQuery(
-                'EXPLAIN ' . $queryInformation->getQuery(),
-            );
+            $connection = $this->connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+            $queryResult = $connection->executeQuery('EXPLAIN ' . $queryInformation->getQuery());
 
             while ($explainRow = $queryResult->fetchAssociative()) {
                 $explainRows[] = $explainRow;

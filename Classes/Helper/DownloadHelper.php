@@ -32,7 +32,7 @@ readonly class DownloadHelper
 
     /**
      * @param array<int, string> $headerRow
-     * @param array<string, mixed> $records
+     * @param array<int, mixed> $records
      */
     public function asCSV(array $headerRow, array $records): ResponseInterface
     {
@@ -46,7 +46,7 @@ readonly class DownloadHelper
     }
 
     /**
-     * @param array<string, mixed> $records
+     * @param array<int, mixed> $records
      */
     public function asJSON(array $records): ResponseInterface
     {

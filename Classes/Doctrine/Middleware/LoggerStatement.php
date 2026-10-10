@@ -20,15 +20,15 @@ use StefanFroemken\Mysqlreport\Logger\MySqlReportSqlLogger;
 /**
  * Here in the connection, we can wrap our logger around the queries and commands.
  */
-class LoggerStatement implements StatementInterface
+final class LoggerStatement implements StatementInterface
 {
     /**
-     * @var array<int, string>
+     * @var array<int|string, mixed>
      */
     private array $params = [];
 
     /**
-     * @var array<int, string>
+     * @var array<int|string, string>
      */
     private array $types = [];
 
