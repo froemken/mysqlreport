@@ -10,12 +10,11 @@
     <h1>Queries of selected type</h1>
 
     <p>
-        <f:link.action action="show"
-                       controller="Profile"
-                       class="btn btn-primary"
-                       arguments="{uniqueIdentifier: uniqueIdentifier}">
+        <f:be.link route="mysqlreport_profile"
+                   parameters="{action: 'show', uniqueIdentifier: uniqueIdentifier}"
+                   class="btn btn-primary">
             Back
-        </f:link.action>
+        </f:be.link>
     </p>
 
     <table class="table">
@@ -47,12 +46,11 @@
                     {queryInformationRecord.duration}
                 </td>
                 <td>
-                    <f:link.action action="info"
-                                   controller="Profile"
-                                   class="btn btn-default"
-                                   arguments="{uid: queryInformationRecord.uid}">
+                    <f:be.link route="mysqlreport_profile"
+                               parameters="{action: 'info', uid: queryInformationRecord.uid}"
+                               class="btn btn-default">
                         <core:icon identifier="actions-search"/>
-                    </f:link.action>
+                    </f:be.link>
                 </td>
             </tr>
         </f:for>

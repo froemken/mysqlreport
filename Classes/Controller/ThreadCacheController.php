@@ -12,25 +12,27 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\RenderInfoBoxFactory;
+use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-class ThreadCacheController extends ActionController
+#[AsController]
+final readonly class ThreadCacheController
 {
     /**
      * @param iterable<int, InfoBoxInterface> $infoBoxes
      */
     public function __construct(
-        private readonly iterable $infoBoxes,
-        private readonly RenderInfoBoxFactory $renderInfoBoxFactory,
-        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        private iterable $infoBoxes,
+        private RenderInfoBoxFactory $renderInfoBoxFactory,
+        private ModuleTemplateFactory $moduleTemplateFactory,
     ) {}
 
-    public function indexAction(): ResponseInterface
+    public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
             'mysqlreport_threadcache',
             'MySQL Report - Thread Cache',

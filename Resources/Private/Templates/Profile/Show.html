@@ -1,6 +1,7 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Module"/>
@@ -9,23 +10,21 @@
     <h1>Queries grouped by type</h1>
 
     <p>
-        <f:link.action action="list"
-                       controller="Profile"
-                       class="btn btn-primary">
+        <f:be.link route="mysqlreport_profile"
+                   parameters="{action: 'list'}"
+                   class="btn btn-primary">
             Back
-        </f:link.action>
-        <f:link.action action="download"
-                       controller="Profile"
-                       class="btn btn-primary"
-                       arguments="{uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'}">
+        </f:be.link>
+        <f:be.link route="mysqlreport_profile"
+                   parameters="{action: 'download', uniqueIdentifier: uniqueIdentifier, downloadType: 'csv'}"
+                   class="btn btn-primary">
             Download CSV
-        </f:link.action>
-        <f:link.action action="download"
-                       controller="Profile"
-                       class="btn btn-primary"
-                       arguments="{uniqueIdentifier: uniqueIdentifier, downloadType: 'json'}">
+        </f:be.link>
+        <f:be.link route="mysqlreport_profile"
+                   parameters="{action: 'download', uniqueIdentifier: uniqueIdentifier, downloadType: 'json'}"
+                   class="btn btn-primary">
             Download JSON
-        </f:link.action>
+        </f:be.link>
     </p>
 
     <f:be.infobox title="Request" disableIcon="true">
@@ -50,12 +49,11 @@
                     {profile.duration}
                 </td>
                 <td>
-                    <f:link.action action="queryType"
-                                   controller="Profile"
-                                   class="btn btn-default"
-                                   arguments="{uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type}">
+                    <f:be.link route="mysqlreport_profile"
+                               parameters="{action: 'queryType', uniqueIdentifier: profile.unique_call_identifier, queryType: profile.query_type}"
+                               class="btn btn-default">
                         <core:icon identifier="actions-search"/>
-                    </f:link.action>
+                    </f:be.link>
                 </td>
             </tr>
         </f:for>

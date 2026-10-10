@@ -12,22 +12,24 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
+use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
-class SlowQueryController extends ActionController
+#[AsController]
+final readonly class SlowQueryController
 {
     public function __construct(
-        private readonly QueryInformationRepository $queryInformationRepository,
-        private readonly ExtConf $extConf,
-        private readonly ModuleTemplateFactory $moduleTemplateFactory,
+        private QueryInformationRepository $queryInformationRepository,
+        private ExtConf $extConf,
+        private ModuleTemplateFactory $moduleTemplateFactory,
     ) {}
 
-    public function indexAction(): ResponseInterface
+    public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
             'mysqlreport_slowquery',
             'MySQL Report - Slow Query',

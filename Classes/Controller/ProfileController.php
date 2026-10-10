@@ -12,38 +12,57 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Controller;
 
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use StefanFroemken\Mysqlreport\Domain\Repository\QueryInformationRepository;
 use StefanFroemken\Mysqlreport\Helper\DownloadHelper;
+use TYPO3\CMS\Backend\Attribute\AsController;
 use TYPO3\CMS\Backend\Template\ModuleTemplateFactory;
-use TYPO3\CMS\Extbase\Mvc\Controller\ActionController;
 
 /**
  * Controller to show and analyze all queries of a request
  */
-class ProfileController extends ActionController
+#[AsController]
+final readonly class ProfileController
 {
     public function __construct(
-        private readonly QueryInformationRepository $queryInformationRepository,
-        private readonly ModuleTemplateFactory $moduleTemplateFactory,
-        private readonly DownloadHelper $downloadHelper,
+        private QueryInformationRepository $queryInformationRepository,
+        private ModuleTemplateFactory $moduleTemplateFactory,
+        private DownloadHelper $downloadHelper,
     ) {}
 
-    public function listAction(): ResponseInterface
+    public function handleRequest(ServerRequestInterface $request): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $action = (string)($request->getQueryParams()['action'] ?? 'list');
+        return match ($action) {
+            'show' => $this->showAction($request),
+            'queryType' => $this->queryTypeAction($request),
+            'info' => $this->infoAction($request),
+            'queryProfiling' => $this->queryProfilingAction($request),
+            'download' => $this->downloadAction($request),
+            default => $this->listAction($request),
+        };
+    }
+
+    public function listAction(ServerRequestInterface $request): ResponseInterface
+    {
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
             'mysqlreport_profile',
             'MySQL Report - List Profiles',
         );
 
-        $moduleTemplate->assign('queryInformationRecords', $this->queryInformationRepository->findQueryInformationRecordsForCall());
+        $moduleTemplate->assign(
+            'queryInformationRecords',
+            $this->queryInformationRepository->findQueryInformationRecordsForCall(),
+        );
 
         return $moduleTemplate->renderResponse('Profile/List');
     }
 
-    public function showAction(string $uniqueIdentifier): ResponseInterface
+    public function showAction(ServerRequestInterface $request): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $uniqueIdentifier = (string)($request->getQueryParams()['uniqueIdentifier'] ?? '');
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
             'mysqlreport_profile',
             'MySQL Report - Show Profile',
@@ -59,9 +78,13 @@ class ProfileController extends ActionController
         return $moduleTemplate->renderResponse('Profile/Show');
     }
 
-    public function queryTypeAction(string $uniqueIdentifier, string $queryType): ResponseInterface
+    public function queryTypeAction(ServerRequestInterface $request): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $queryParams = $request->getQueryParams();
+        $uniqueIdentifier = (string)($queryParams['uniqueIdentifier'] ?? '');
+        $queryType = (string)($queryParams['queryType'] ?? '');
+
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
             'mysqlreport_profile',
             'MySQL Report - Show Query Type',
@@ -79,9 +102,13 @@ class ProfileController extends ActionController
         return $moduleTemplate->renderResponse('Profile/QueryType');
     }
 
-    public function infoAction(int $uid, string $prevController = ''): ResponseInterface
+    public function infoAction(ServerRequestInterface $request): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $queryParams = $request->getQueryParams();
+        $uid = (int)($queryParams['uid'] ?? 0);
+        $prevRoute = $this->resolvePrevRoute($queryParams);
+
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
             'mysqlreport_profile',
             'MySQL Report - Show Query Information',
@@ -92,37 +119,45 @@ class ProfileController extends ActionController
 
         $moduleTemplate->assignMultiple([
             'queryInformationRecord' => $queryInformationRecord,
-            'prevController' => $prevController,
+            'prevRoute' => $prevRoute,
+            'prevController' => $prevRoute,
         ]);
 
         return $moduleTemplate->renderResponse('Profile/Info');
     }
 
-    public function queryProfilingAction(int $uid, string $prevController = ''): ResponseInterface
+    public function queryProfilingAction(ServerRequestInterface $request): ResponseInterface
     {
-        $moduleTemplate = $this->moduleTemplateFactory->create($this->request);
+        $queryParams = $request->getQueryParams();
+        $uid = (int)($queryParams['uid'] ?? 0);
+        $prevRoute = $this->resolvePrevRoute($queryParams);
+
+        $moduleTemplate = $this->moduleTemplateFactory->create($request);
         $moduleTemplate->getDocHeaderComponent()->setShortcutContext(
             'mysqlreport_profile',
             'MySQL Report - Show Query Profiling',
         );
 
-        $queryInformationRecord = $this->queryInformationRepository->getQueryInformationRecordByUid($uid);
-
+        $record = $this->queryInformationRepository->getQueryInformationRecordByUid($uid);
         $moduleTemplate->assignMultiple([
-            'queryInformationRecord' => $queryInformationRecord,
-            'profiling' => $this->queryInformationRepository->getQueryProfiling($queryInformationRecord),
-            'prevController' => $prevController,
+            'queryInformationRecord' => $record,
+            'profiling' => $this->queryInformationRepository->getQueryProfiling($record),
+            'prevRoute' => $prevRoute,
+            'prevController' => $prevRoute,
         ]);
 
         return $moduleTemplate->renderResponse('Profile/QueryProfiling');
     }
 
-    public function downloadAction(string $uniqueIdentifier, string $downloadType): ResponseInterface
+    public function downloadAction(ServerRequestInterface $request): ResponseInterface
     {
+        $queryParams = $request->getQueryParams();
+        $uniqueIdentifier = (string)($queryParams['uniqueIdentifier'] ?? '');
+        $downloadType = (string)($queryParams['downloadType'] ?? '');
+
         if ($downloadType === '') {
             throw new \RuntimeException('downloadType was not given in request', 1673904554);
         }
-
         if (!in_array($downloadType, ['csv', 'json'], true)) {
             throw new \RuntimeException('Given downloadType is not allowed', 1673904777);
         }
@@ -142,26 +177,22 @@ class ProfileController extends ActionController
         );
 
         if ($downloadType === 'csv') {
-            return $this->downloadAsCsv(array_values($columns), $records);
+            return $this->downloadHelper->asCSV(array_values($columns), $records);
         }
-
-        return $this->downloadAsJson($records);
-    }
-
-    /**
-     * @param array<string> $headerColumns
-     * @param array<mixed> $records
-     */
-    private function downloadAsCsv(array $headerColumns, array $records): ResponseInterface
-    {
-        return $this->downloadHelper->asCSV($headerColumns, $records);
-    }
-
-    /**
-     * @param array<mixed> $records
-     */
-    private function downloadAsJson(array $records): ResponseInterface
-    {
         return $this->downloadHelper->asJSON($records);
+    }
+
+    /**
+     * @param array<string, mixed> $queryParams
+     */
+    private function resolvePrevRoute(array $queryParams): string
+    {
+        $prev = (string)($queryParams['prevRoute'] ?? $queryParams['prevController'] ?? '');
+        return match ($prev) {
+            'FileSort' => 'mysqlreport_filesort',
+            'FullTableScan' => 'mysqlreport_fulltablescan',
+            'SlowQuery' => 'mysqlreport_slowquery',
+            default => $prev,
+        };
     }
 }
