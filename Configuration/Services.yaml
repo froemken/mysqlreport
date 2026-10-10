@@ -101,7 +101,3 @@ services:
     tags:
       - name: event.listener
         event: TYPO3\CMS\Backend\Backend\Event\ModifyClearCacheActionsEvent
-  StefanFroemken\Mysqlreport\EventListener\RoundDurationOfQueryInformationRecordsEventListener:
-    tags:
-      - name: event.listener
-        event: StefanFroemken\Mysqlreport\Event\ModifyQueryInformationRecordsEvent
