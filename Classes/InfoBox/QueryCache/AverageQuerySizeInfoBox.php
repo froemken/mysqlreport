@@ -13,11 +13,11 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about current query cache average query size
@@ -78,15 +78,15 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
         return $queryCacheSize - $status['Qcache_free_memory'];
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
         $variables = $this->variables;
 
         $avgQuerySize = $this->getAvgQuerySize();
         if ($avgQuerySize > $variables['query_cache_min_res_unit']) {
-            return StateEnumeration::STATE_ERROR;
+            return ContextualFeedbackSeverity::ERROR;
         }
 
-        return StateEnumeration::STATE_OK;
+        return ContextualFeedbackSeverity::OK;
     }
 }

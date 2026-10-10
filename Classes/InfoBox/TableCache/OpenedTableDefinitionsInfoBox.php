@@ -13,12 +13,12 @@ namespace StefanFroemken\Mysqlreport\InfoBox\TableCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about Table Cache Opened table definitions
@@ -95,15 +95,15 @@ final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, 
         return $unorderedList;
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
         $openedTableDefinitions = $this->getOpenedTableDefinitionsEachSecond();
         if ($openedTableDefinitions <= 0.3) {
-            $state = StateEnumeration::STATE_OK;
+            $state = ContextualFeedbackSeverity::OK;
         } elseif ($openedTableDefinitions <= 2) {
-            $state = StateEnumeration::STATE_WARNING;
+            $state = ContextualFeedbackSeverity::WARNING;
         } else {
-            $state = StateEnumeration::STATE_ERROR;
+            $state = ContextualFeedbackSeverity::ERROR;
         }
 
         return $state;

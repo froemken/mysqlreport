@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about InnoDB buffer write ratio
@@ -68,15 +68,15 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
         return round($writeRatio, 2);
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
         $writeRatio = $this->getWriteRatio();
         if ($writeRatio <= 2) {
-            $state = StateEnumeration::STATE_ERROR;
+            $state = ContextualFeedbackSeverity::ERROR;
         } elseif ($writeRatio <= 7) {
-            $state = StateEnumeration::STATE_WARNING;
+            $state = ContextualFeedbackSeverity::WARNING;
         } else {
-            $state = StateEnumeration::STATE_OK;
+            $state = ContextualFeedbackSeverity::OK;
         }
 
         return $state;

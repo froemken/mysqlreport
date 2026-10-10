@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about the current query cache
@@ -47,8 +47,8 @@ final readonly class QueryCacheStatusInfoBox implements InfoBoxInterface, InfoBo
         return 'Query Cache is activated';
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
-        return StateEnumeration::STATE_INFO;
+        return ContextualFeedbackSeverity::INFO;
     }
 }

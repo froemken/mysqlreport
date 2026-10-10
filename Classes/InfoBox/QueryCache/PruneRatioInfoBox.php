@@ -13,11 +13,11 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about current query cache prune ratio
@@ -79,15 +79,15 @@ final readonly class PruneRatioInfoBox implements InfoBoxInterface, InfoBoxState
         return round($pruneRatio, 4);
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
         $pruneRatio = $this->getPruneRatio();
         if ($pruneRatio <= 10) {
-            $state = StateEnumeration::STATE_OK;
+            $state = ContextualFeedbackSeverity::OK;
         } elseif ($pruneRatio <= 40) {
-            $state = StateEnumeration::STATE_WARNING;
+            $state = ContextualFeedbackSeverity::WARNING;
         } else {
-            $state = StateEnumeration::STATE_ERROR;
+            $state = ContextualFeedbackSeverity::ERROR;
         }
 
         return $state;

@@ -13,12 +13,12 @@ namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about current connections and max used connections
@@ -117,9 +117,9 @@ final readonly class ConnectionInfoBox implements InfoBoxInterface, InfoBoxUnord
         return $unorderedList;
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
-        $state = StateEnumeration::STATE_NOTICE;
+        $state = ContextualFeedbackSeverity::NOTICE;
 
         $maxConnections = (int)($this->variables['max_connections'] ?? 0);
         if (
@@ -128,9 +128,9 @@ final readonly class ConnectionInfoBox implements InfoBoxInterface, InfoBoxUnord
         ) {
             $percent = 100 / $maxConnections * (int)$this->statusValues['Max_used_connections'];
             if ($percent > 90) {
-                $state = StateEnumeration::STATE_ERROR;
+                $state = ContextualFeedbackSeverity::ERROR;
             } elseif ($percent > 70) {
-                $state = StateEnumeration::STATE_WARNING;
+                $state = ContextualFeedbackSeverity::WARNING;
             }
         }
 
