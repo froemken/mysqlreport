@@ -27,7 +27,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class UptimeInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    public const TITLE = 'Uptime';
+    public function getTitle(): string
+    {
+        return 'Uptime';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -43,36 +46,52 @@ final readonly class UptimeInfoBox implements InfoBoxInterface, InfoBoxUnordered
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
-
-        if (isset($statusValues['Uptime'])) {
-            $unorderedList->enqueue(new ListElement(
-                title: 'Uptime',
-                value: $statusValues['Uptime'] . ' seconds',
-            ));
-
-            $unorderedList->enqueue(new ListElement(
-                title: 'Uptime in days',
-                value: $this->convertSecondsToDays((int)$statusValues['Uptime']) . ' days',
-            ));
-        }
-
-        if (isset($statusValues['Uptime_since_flush_status'])) {
-            $unorderedList->enqueue(new ListElement(
-                title: 'Uptime since status variables reset',
-                value: $statusValues['Uptime_since_flush_status'] . ' seconds',
-            ));
-
-            $unorderedList->enqueue(new ListElement(
-                title: 'Uptime since status variables reset in days',
-                value: $this->convertSecondsToDays((int)$statusValues['Uptime_since_flush_status']) . ' days',
-            ));
-        }
+        $unorderedList = [];
+        $this->addUptimeElements($unorderedList, $statusValues);
+        $this->addUptimeSinceFlushElements($unorderedList, $statusValues);
 
         return $unorderedList;
+    }
+
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addUptimeElements(array &$unorderedList, StatusValues $statusValues): void
+    {
+        if (!isset($statusValues['Uptime'])) {
+            return;
+        }
+
+        $unorderedList[] = new ListElement(
+            title: 'Uptime',
+            value: $statusValues['Uptime'] . ' seconds',
+        );
+        $unorderedList[] = new ListElement(
+            title: 'Uptime in days',
+            value: $this->convertSecondsToDays((int)$statusValues['Uptime']) . ' days',
+        );
+    }
+
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addUptimeSinceFlushElements(array &$unorderedList, StatusValues $statusValues): void
+    {
+        if (!isset($statusValues['Uptime_since_flush_status'])) {
+            return;
+        }
+
+        $unorderedList[] = new ListElement(
+            title: 'Uptime since status variables reset',
+            value: $statusValues['Uptime_since_flush_status'] . ' seconds',
+        );
+        $unorderedList[] = new ListElement(
+            title: 'Uptime since status variables reset in days',
+            value: $this->convertSecondsToDays((int)$statusValues['Uptime_since_flush_status']) . ' days',
+        );
     }
 }

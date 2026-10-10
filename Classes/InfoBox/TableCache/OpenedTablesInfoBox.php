@@ -31,7 +31,10 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Opened Tables';
+    public function getTitle(): string
+    {
+        return 'Opened Tables';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -57,63 +60,79 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Opened tables since server start (Opened_tables)',
-            value: $statusValues['Opened_tables'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Open tables in cache (Open_tables)',
-            value: $statusValues['Open_tables'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Max allowed tables in cache (table_open_cache)',
-            value: $variables['table_open_cache'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Max file descriptors the mysqld process can use (open_files_limit)',
-            value: $variables['open_files_limit'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
-            value: number_format(
-                $variables['max_connections'] * (5 + 2),
-                0,
-                ',',
-                '.',
-            ),
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
-            value: number_format(
-                $variables['max_connections'] * (8 + 3),
-                0,
-                ',',
-                '.',
-            ),
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Opened tables each second',
-            value: number_format(
-                $this->getOpenedTablesEachSecond($statusValues),
-                2,
-                ',',
-                '.',
-            ),
-        ));
+        $unorderedList = [];
+        $this->addTableStatusElements($unorderedList, $statusValues, $variables);
+        $this->addCalculatedCacheElements($unorderedList, $variables);
+        $this->addOpenedTablesPerSecond($unorderedList, $statusValues);
 
         return $unorderedList;
+    }
+
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addTableStatusElements(
+        array &$unorderedList,
+        StatusValues $statusValues,
+        Variables $variables,
+    ): void {
+        $unorderedList[] = new ListElement(
+            title: 'Opened tables since server start (Opened_tables)',
+            value: (string)$statusValues['Opened_tables'],
+        );
+        $unorderedList[] = new ListElement(
+            title: 'Open tables in cache (Open_tables)',
+            value: (string)$statusValues['Open_tables'],
+        );
+        $unorderedList[] = new ListElement(
+            title: 'Max allowed tables in cache (table_open_cache)',
+            value: (string)$variables['table_open_cache'],
+        );
+        $unorderedList[] = new ListElement(
+            title: 'Max file descriptors the mysqld process can use (open_files_limit)',
+            value: (string)$variables['open_files_limit'],
+        );
+    }
+
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addCalculatedCacheElements(array &$unorderedList, Variables $variables): void
+    {
+        $maxConnections = (int)($variables['max_connections'] ?? 0);
+        $calc5 = number_format($maxConnections * (5 + 2), 0, ',', '.');
+        $calc8 = number_format($maxConnections * (8 + 3), 0, ',', '.');
+
+        $unorderedList[] = new ListElement(
+            title: 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
+            value: $calc5,
+        );
+        $unorderedList[] = new ListElement(
+            title: 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
+            value: $calc8,
+        );
+    }
+
+    /**
+     * @param ListElement[] $unorderedList
+     */
+    private function addOpenedTablesPerSecond(array &$unorderedList, StatusValues $statusValues): void
+    {
+        $perSecond = number_format(
+            $this->getOpenedTablesEachSecond($statusValues),
+            2,
+            ',',
+            '.',
+        );
+
+        $unorderedList[] = new ListElement(
+            title: 'Opened tables each second',
+            value: $perSecond,
+        );
     }
 
     public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity

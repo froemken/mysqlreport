@@ -27,29 +27,30 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class QueryCacheSizeTooHighInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Query Cache too high';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Query Cache too high';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
             !isset($variables['query_cache_size'])
             || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
+            || (int)$variables['query_cache_size'] < 268435456
         ) {
             return '';
         }
 
-        if ($variables['query_cache_size'] < 268435456) {
-            return '';
-        }
-
-        $content = [];
-        $content[] = 'The query cache is configured too high.';
-        $content[] = 'Because of concurrency it may take too long to delete queries from Query Cache.';
-        $content[] = 'Try to keep query cache below 256MBAs higher as better.';
+        $content = [
+            'The query cache is configured too high.',
+            'Because of concurrency it may take too long to delete queries from Query Cache.',
+            'Try to keep query cache below 256MBAs higher as better.',
+        ];
 
         return implode(' ', $content);
     }

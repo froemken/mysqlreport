@@ -16,7 +16,7 @@ use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 
 interface InfoBoxInterface
 {
-    public const TITLE = '';
+    public function getTitle(): string;
 
     public function getBody(StatusValues $statusValues, Variables $variables): string;
 }

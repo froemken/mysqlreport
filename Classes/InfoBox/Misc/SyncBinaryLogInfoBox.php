@@ -24,7 +24,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
 {
-    public const TITLE = 'Sync Binary Log';
+    public function getTitle(): string
+    {
+        return 'Sync Binary Log';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -33,12 +36,13 @@ final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
             return '';
         }
 
-        $content = [];
-        $content[] = 'By default the binary log is NOT written to disk with each write.';
-        $content[] = 'So, if MySQL or the operating system crashes there is a little chance that the last query gets lost.';
-        $content[] = 'You can prevent that with enabling sync_binlog, but that slows down your modifying statements like (INSERT, UPDATE, DELETE).';
-        $content[] = "\n\n";
-        $content[] = 'Status "Sync_binlog": %s';
+        $content = [
+            'By default the binary log is NOT written to disk with each write.',
+            'So, if MySQL or the operating system crashes there is a little chance that the last query gets lost.',
+            'You can prevent that with enabling sync_binlog, but that slows down your modifying statements like (INSERT, UPDATE, DELETE).',
+            "\n\n",
+            'Status "Sync_binlog": %s',
+        ];
 
         return sprintf(
             implode(' ', $content),

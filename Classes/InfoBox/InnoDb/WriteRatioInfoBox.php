@@ -26,7 +26,10 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Write Ratio';
+    public function getTitle(): string
+    {
+        return 'Write Ratio';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -41,10 +44,11 @@ final readonly class WriteRatioInfoBox implements InfoBoxInterface, InfoBoxState
             return '';
         }
 
-        $content = [];
-        $content[] = 'As higher than 1 as better.';
-        $content[] = "\n\n";
-        $content[] = 'Write Ratio: %f';
+        $content = [
+            'As higher than 1 as better.',
+            "\n\n",
+            'Write Ratio: %f',
+        ];
 
         return sprintf(
             implode(' ', $content),

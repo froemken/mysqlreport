@@ -26,29 +26,29 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Log File Size';
+    public function getTitle(): string
+    {
+        return 'Log File Size';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset(
-                $statusValues['Innodb_page_size'],
-                $variables['innodb_log_files_in_group'],
-            )
+            !isset($statusValues['Innodb_page_size'], $variables['innodb_log_files_in_group'])
             || (int)$variables['innodb_log_files_in_group'] === 0
         ) {
             return '';
         }
 
         $logFileSize = $this->getLogFileSize($statusValues, $variables);
-
-        $content = [];
-        $content[] = 'Your current log file size is %d Bytes.';
-        $content[] = 'A good value for your log files would be a little bit higher than: %d Bytes.';
-        $content[] = 'Please call this test only on high peak of your server.';
-        $content[] = 'Be careful: When changing this value you have to cleanly shutdown your MySQL,';
-        $content[] = 'backup and remove the ib_logfile*-files from data-directory.';
-        $content[] = 'Start your server. If there are no errors you can safely delete your backed up ib_logfile*-files.';
+        $content = [
+            'Your current log file size is %d Bytes.',
+            'A good value for your log files would be a little bit higher than: %d Bytes.',
+            'Please call this test only on high peak of your server.',
+            'Be careful: When changing this value you have to cleanly shutdown your MySQL,',
+            'backup and remove the ib_logfile*-files from data-directory.',
+            'Start your server. If there are no errors you can safely delete your backed up ib_logfile*-files.',
+        ];
 
         return sprintf(
             implode(' ', $content),
@@ -67,7 +67,7 @@ final readonly class LogFileSizeInfoBox implements InfoBoxInterface, InfoBoxStat
     private function getLogFileSize(StatusValues $statusValues, Variables $variables): array
     {
         return [
-            'value' => $variables['innodb_log_file_size'],
+            'value' => (int)$variables['innodb_log_file_size'],
             'niceToHave' => $this->getSizeOfEachLogFile($statusValues, $variables),
         ];
     }

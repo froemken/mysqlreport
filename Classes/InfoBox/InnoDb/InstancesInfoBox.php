@@ -26,25 +26,25 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Instances';
+    public function getTitle(): string
+    {
+        return 'Instances';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($statusValues['Innodb_page_size'])) {
-            return '';
-        }
-
-        if (!isset($variables['innodb_buffer_pool_instances'])) {
+        if (!isset($statusValues['Innodb_page_size']) || !isset($variables['innodb_buffer_pool_instances'])) {
             return '';
         }
 
         $instances = $this->getInstances($variables);
 
-        $content = [];
-        $content[] = 'Each Instance should be allocated to 1GB.';
-        $content[] = 'You just have defined %d Instances.';
-        $content[] = 'This would enough to allocate %d GB';
-        $content[] = 'If your innodb_buffer_pool_size is less than 1GB, 1 Instance is OK.';
+        $content = [
+            'Each Instance should be allocated to 1GB.',
+            'You just have defined %d Instances.',
+            'This would enough to allocate %d GB',
+            'If your innodb_buffer_pool_size is less than 1GB, 1 Instance is OK.',
+        ];
 
         return sprintf(
             implode(' ', $content),
@@ -65,13 +65,13 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
             $variables['innodb_buffer_pool_size'] < (1024 * 1024 * 1024)
             && $variables['innodb_buffer_pool_instances'] === 1
         ) {
-            $state = ContextualFeedbackSeverity::OK;
-        } elseif ($innodbBufferShouldBe !== $variables['innodb_buffer_pool_size']) {
-            $state = ContextualFeedbackSeverity::ERROR;
-        } else {
-            $state = ContextualFeedbackSeverity::OK;
+            return ContextualFeedbackSeverity::OK;
         }
 
-        return $state;
+        if ($innodbBufferShouldBe !== $variables['innodb_buffer_pool_size']) {
+            return ContextualFeedbackSeverity::ERROR;
+        }
+
+        return ContextualFeedbackSeverity::OK;
     }
 }

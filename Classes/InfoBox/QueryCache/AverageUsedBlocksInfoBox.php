@@ -27,11 +27,14 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface
 {
-    public const TITLE = 'Average Used Blocks';
-
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
     ) {}
+
+    public function getTitle(): string
+    {
+        return 'Average Used Blocks';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -43,9 +46,10 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
             return '';
         }
 
-        $content = [];
-        $content[] = 'Currently your server is configured with an average amount of %f used blocks in Query Cache.';
-        $content[] = 'Please adjust query_cache_limit of currently %d Bytes to your needs, if needed';
+        $content = [
+            'Currently your server is configured with an average amount of %f used blocks in Query Cache.',
+            'Please adjust query_cache_limit of currently %d Bytes to your needs, if needed',
+        ];
 
         return sprintf(
             implode(' ', $content),
@@ -74,29 +78,15 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'very small',
-            value: '16KB - 128KB',
-        ));
-        $unorderedList->enqueue(new ListElement(
-            title: 'small',
-            value: '128KB - 256KB',
-        ));
-        $unorderedList->enqueue(new ListElement(
-            title: 'medium',
-            value: '256KB - 1MB',
-        ));
-        $unorderedList->enqueue(new ListElement(
-            title: 'big',
-            value: '1MB - 4MB',
-        ));
-
-        return $unorderedList;
+        return [
+            new ListElement(title: 'very small', value: '16KB - 128KB'),
+            new ListElement(title: 'small', value: '128KB - 256KB'),
+            new ListElement(title: 'medium', value: '256KB - 1MB'),
+            new ListElement(title: 'big', value: '1MB - 4MB'),
+        ];
     }
 }

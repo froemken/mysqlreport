@@ -24,7 +24,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class StandaloneReplicationInfoBox implements InfoBoxInterface
 {
-    public const TITLE = 'Standalone or Replication';
+    public function getTitle(): string
+    {
+        return 'Standalone or Replication';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -32,11 +35,12 @@ final readonly class StandaloneReplicationInfoBox implements InfoBoxInterface
             return '';
         }
 
-        $content = [];
-        $content[] = 'If slave_running is ON, you have a network of master-slave servers.';
-        $content[] = 'Else your server runs in standalone-mode';
-        $content[] = "\n\n";
-        $content[] = 'Slave_running: %s';
+        $content = [
+            'If slave_running is ON, you have a network of master-slave servers.',
+            'Else your server runs in standalone-mode',
+            "\n\n",
+            'Slave_running: %s',
+        ];
 
         return sprintf(
             implode(' ', $content),

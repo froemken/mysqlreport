@@ -31,7 +31,10 @@ use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 )]
 final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, InfoBoxUnorderedListInterface, InfoBoxStateInterface
 {
-    public const TITLE = 'Opened Table Definitions';
+    public function getTitle(): string
+    {
+        return 'Opened Table Definitions';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -54,38 +57,35 @@ final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, 
     }
 
     /**
-     * @return \SplQueue<ListElement>
+     * @return ListElement[]
      */
-    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): array
     {
-        $unorderedList = new \SplQueue();
+        $perSecond = number_format(
+            $this->getOpenedTableDefinitionsEachSecond($statusValues),
+            2,
+            ',',
+            '.',
+        );
 
-        $unorderedList->enqueue(new ListElement(
-            title: 'Opened tables since server start (Opened_table_definitions)',
-            value: $statusValues['Opened_table_definitions'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Open tables in cache (Open_table_definitions)',
-            value: $statusValues['Open_table_definitions'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Max allowed tables in cache (table_definition_cache)',
-            value: $variables['table_definition_cache'],
-        ));
-
-        $unorderedList->enqueue(new ListElement(
-            title: 'Opened table definitions each second',
-            value: number_format(
-                $this->getOpenedTableDefinitionsEachSecond($statusValues),
-                2,
-                ',',
-                '.',
+        return [
+            new ListElement(
+                title: 'Opened tables since server start (Opened_table_definitions)',
+                value: (string)$statusValues['Opened_table_definitions'],
             ),
-        ));
-
-        return $unorderedList;
+            new ListElement(
+                title: 'Open tables in cache (Open_table_definitions)',
+                value: (string)$statusValues['Open_table_definitions'],
+            ),
+            new ListElement(
+                title: 'Max allowed tables in cache (table_definition_cache)',
+                value: (string)$variables['table_definition_cache'],
+            ),
+            new ListElement(
+                title: 'Opened table definitions each second',
+                value: $perSecond,
+            ),
+        ];
     }
 
     public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity

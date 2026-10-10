@@ -25,7 +25,10 @@ use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 )]
 final readonly class AbortedConnectsInfoBox implements InfoBoxInterface
 {
-    public const TITLE = 'Aborted Connects';
+    public function getTitle(): string
+    {
+        return 'Aborted Connects';
+    }
 
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
@@ -33,10 +36,11 @@ final readonly class AbortedConnectsInfoBox implements InfoBoxInterface
             return '';
         }
 
-        $content = [];
-        $content[] = 'You have %d aborted connects.';
-        $content[] = 'If this value is high it could be that you have many wrong logins.';
-        $content[] = 'Please check your application for wrong authentication data.';
+        $content = [
+            'You have %d aborted connects.',
+            'If this value is high it could be that you have many wrong logins.',
+            'Please check your application for wrong authentication data.',
+        ];
 
         return sprintf(
             implode(' ', $content),
