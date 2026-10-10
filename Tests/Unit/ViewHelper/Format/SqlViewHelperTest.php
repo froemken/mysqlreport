@@ -133,7 +133,7 @@ final class SqlViewHelperTest extends UnitTestCase
         $viewHelper = new SqlViewHelper();
         $viewHelper->setSqlFormatter($sqlFormatter);
         $viewHelper->setArguments($arguments);
-        if ($childrenClosure !== null) {
+        if ($childrenClosure instanceof \Closure) {
             $viewHelper->setRenderChildrenClosure($childrenClosure);
         }
 
@@ -151,7 +151,7 @@ final class SqlViewHelperTest extends UnitTestCase
     ): void {
         $viewHelper = new SqlViewHelper();
         $viewHelper->setArguments($arguments);
-        if ($childrenClosure !== null) {
+        if ($childrenClosure instanceof \Closure) {
             $viewHelper->setRenderChildrenClosure($childrenClosure);
         }
 

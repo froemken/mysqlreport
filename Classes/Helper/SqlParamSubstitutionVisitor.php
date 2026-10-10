@@ -75,9 +75,7 @@ final class SqlParamSubstitutionVisitor implements Visitor
         $type = is_string($typeIdentifier) && Type::hasType($typeIdentifier)
             ? Type::getType($typeIdentifier)
             : null;
-        $value = $type !== null
-            ? $type->convertToDatabaseValue($param, $this->platform)
-            : $param;
+        $value = $type?->convertToDatabaseValue($param, $this->platform) ?? $param;
 
         return var_export($value, true);
     }

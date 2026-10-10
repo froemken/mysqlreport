@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\ViewHelper\Format;
 
 use Doctrine\SqlFormatter\SqlFormatter;
+use TYPO3Fluid\Fluid\Core\Parser\SyntaxTree\ViewHelperNode;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
@@ -48,7 +49,7 @@ final class SqlViewHelper extends AbstractViewHelper
     public function render(): string
     {
         $query = trim((string)($this->arguments['query'] ?? ''));
-        if ($query === '' && ($this->renderChildrenClosure !== null || $this->viewHelperNode !== null)) {
+        if ($query === '' && ($this->renderChildrenClosure instanceof \Closure || $this->viewHelperNode instanceof ViewHelperNode)) {
             $query = trim((string)$this->renderChildren());
         }
 

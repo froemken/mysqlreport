@@ -44,11 +44,9 @@ class QueryCollectorTest extends UnitTestCase
         $queryInformationRepository = $this->createMock(QueryInformationRepository::class);
         $queryInformationRepository->expects($this->once())
             ->method('bulkInsert')
-            ->with(self::callback(static function (array $records): bool {
-                return count($records) === 2
-                    && $records[0]['query_id'] === 0
-                    && $records[1]['query_id'] === 1;
-            }));
+            ->with(self::callback(static fn(array $records): bool => count($records) === 2
+                && $records[0]['query_id'] === 0
+                && $records[1]['query_id'] === 1));
 
         $subject = new QueryCollector($explainQueryHelper, $queryInformationRepository);
 
@@ -85,9 +83,7 @@ class QueryCollectorTest extends UnitTestCase
 
         $queryInformationRepository->expects($this->once())
             ->method('bulkInsert')
-            ->with(self::callback(static function (array $records): bool {
-                return count($records) === 1;
-            }));
+            ->with(self::callback(static fn(array $records): bool => count($records) === 1));
 
         $query = new QueryInformation();
         $query->setQuery('SELECT initial');
