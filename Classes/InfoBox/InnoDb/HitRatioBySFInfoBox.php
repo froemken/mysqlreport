@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about InnoDB buffer hit ratio by SF
@@ -70,7 +70,7 @@ final readonly class HitRatioBySFInfoBox implements InfoBoxInterface, InfoBoxSta
         return round($hitRatio, 2);
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
         $status = $this->statusValues;
 
@@ -78,11 +78,11 @@ final readonly class HitRatioBySFInfoBox implements InfoBoxInterface, InfoBoxSta
         $niceToHave = $status['Innodb_buffer_pool_reads'] * 1000;
         $hitRatio = 100 / $niceToHave * $status['Innodb_buffer_pool_read_requests'];
         if ($hitRatio <= 70) {
-            $state = StateEnumeration::STATE_ERROR;
+            $state = ContextualFeedbackSeverity::ERROR;
         } elseif ($hitRatio <= 90) {
-            $state = StateEnumeration::STATE_WARNING;
+            $state = ContextualFeedbackSeverity::WARNING;
         } else {
-            $state = StateEnumeration::STATE_OK;
+            $state = ContextualFeedbackSeverity::OK;
         }
 
         return $state;

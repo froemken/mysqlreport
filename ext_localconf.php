@@ -2,10 +2,6 @@
 
 declare(strict_types=1);
 
-if (!defined('TYPO3')) {
-    die('Access denied.');
-}
-
 use Psr\Log\LogLevel;
 use StefanFroemken\Mysqlreport\Doctrine\Middleware\LoggerWithQueryTimeMiddleware;
 use StefanFroemken\Mysqlreport\EventListener\CacheAction;
@@ -20,6 +16,7 @@ $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['driverMiddlewares']
     'target' => LoggerWithQueryTimeMiddleware::class,
     'after' => [
         'typo3/core/custom-platform-driver-middleware',
+        'typo3/core/custom-pdo-driver-result-middleware',
     ],
 ];
 

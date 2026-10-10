@@ -13,10 +13,10 @@ namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about InnoDB buffer instances
@@ -65,7 +65,7 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
         return (int)$variables['innodb_buffer_pool_instances'];
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
         $variables = $this->variables;
 
@@ -74,11 +74,11 @@ final readonly class InstancesInfoBox implements InfoBoxInterface, InfoBoxStateI
             $variables['innodb_buffer_pool_size'] < (1024 * 1024 * 1024)
             && $variables['innodb_buffer_pool_instances'] === 1
         ) {
-            $state = StateEnumeration::STATE_OK;
+            $state = ContextualFeedbackSeverity::OK;
         } elseif ($innodbBufferShouldBe !== $variables['innodb_buffer_pool_size']) {
-            $state = StateEnumeration::STATE_ERROR;
+            $state = ContextualFeedbackSeverity::ERROR;
         } else {
-            $state = StateEnumeration::STATE_OK;
+            $state = ContextualFeedbackSeverity::OK;
         }
 
         return $state;

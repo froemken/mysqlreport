@@ -44,7 +44,7 @@ final readonly class RenderInfoBoxFactory
             }
 
             if ($infoBox instanceof InfoBoxStateInterface) {
-                $view->assign('state', $infoBox->getState()->value);
+                $view->assign('state', $infoBox->getState());
             }
 
             $renderedInfoBoxes .= $view->render();

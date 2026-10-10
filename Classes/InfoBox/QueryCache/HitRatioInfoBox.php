@@ -13,11 +13,11 @@ namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
  * InfoBox to inform about the current query cache hit ratio
@@ -66,15 +66,15 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
         return round($hitRatio, 4);
     }
 
-    public function getState(): StateEnumeration
+    public function getState(): ContextualFeedbackSeverity
     {
         $hitRatio = $this->getHitRatio();
         if ($hitRatio <= 20) {
-            $state = StateEnumeration::STATE_ERROR;
+            $state = ContextualFeedbackSeverity::ERROR;
         } elseif ($hitRatio <= 40) {
-            $state = StateEnumeration::STATE_WARNING;
+            $state = ContextualFeedbackSeverity::WARNING;
         } else {
-            $state = StateEnumeration::STATE_OK;
+            $state = ContextualFeedbackSeverity::OK;
         }
 
         return $state;

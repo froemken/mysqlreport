@@ -106,14 +106,14 @@ your MySQL/MariaDB server.
 Highlight Infobox
 =================
 
-The `AbstractInfoBox` class comes with a `setState` method which accepts values
-from `StateEnumeration`.
+The `AbstractInfoBox` class comes with a `setState` method which allows values
+from `TYPO3\CMS\Core\Type\ContextualFeedbackSeverity`.
 
-*   -2 or StateEnumeration::STATE_NOTICE
-*   -1 or StateEnumeration::STATE_INFO
-*   0 or StateEnumeration::STATE_OK
-*   1 or StateEnumeration::STATE_WARNING
-*   2 or StateEnumeration::STATE_ERROR
+*   -2 or ContextualFeedbackSeverity::NOTICE
+*   -1 or ContextualFeedbackSeverity::INFO
+*   0 or ContextualFeedbackSeverity::OK
+*   1 or ContextualFeedbackSeverity::WARNING
+*   2 or ContextualFeedbackSeverity::ERROR
 
 ..  _api-unordered-list:
 

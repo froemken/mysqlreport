@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
-use StefanFroemken\Mysqlreport\Enumeration\StateEnumeration;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 interface InfoBoxStateInterface
 {
-    public function getState(): StateEnumeration;
+    public function getState(): ContextualFeedbackSeverity;
 }
