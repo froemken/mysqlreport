@@ -1,6 +1,7 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Module"/>
@@ -9,41 +10,37 @@
     <h1>Query Information</h1>
 
     <p>
-        <f:if condition="{prevController}">
+        <f:if condition="{prevRoute}">
             <f:then>
-                <f:link.action action="index"
-                               controller="{prevController}"
-                               class="btn btn-primary">
+                <f:be.link route="{prevRoute}"
+                           class="btn btn-primary">
                     Back
-                </f:link.action>
+                </f:be.link>
             </f:then>
             <f:else>
-                <f:link.action action="queryType"
-                               controller="Profile"
-                               class="btn btn-primary"
-                               arguments="{uniqueIdentifier: queryInformationRecord.unique_call_identifier, queryType: queryInformationRecord.query_type}">
+                <f:be.link route="mysqlreport_profile"
+                           parameters="{action: 'queryType', uniqueIdentifier: queryInformationRecord.unique_call_identifier, queryType: queryInformationRecord.query_type}"
+                           class="btn btn-primary">
                     Back
-                </f:link.action>
+                </f:be.link>
             </f:else>
         </f:if>
 
         <f:if condition="{queryInformationRecord.query_type} == 'SELECT'">
-            <f:if condition="{prevController}">
+            <f:if condition="{prevRoute}">
                 <f:then>
-                    <f:link.action action="queryProfiling"
-                                   controller="Profile"
-                                   class="btn btn-primary"
-                                   arguments="{uid: queryInformationRecord.uid, prevController: prevController}">
+                    <f:be.link route="mysqlreport_profile"
+                               parameters="{action: 'queryProfiling', uid: queryInformationRecord.uid, prevRoute: prevRoute}"
+                               class="btn btn-primary">
                         Show Query Profile
-                    </f:link.action>
+                    </f:be.link>
                 </f:then>
                 <f:else>
-                    <f:link.action action="queryProfiling"
-                                   controller="Profile"
-                                   class="btn btn-primary"
-                                   arguments="{uid: queryInformationRecord.uid}">
+                    <f:be.link route="mysqlreport_profile"
+                               parameters="{action: 'queryProfiling', uid: queryInformationRecord.uid}"
+                               class="btn btn-primary">
                         Show Query Profile
-                    </f:link.action>
+                    </f:be.link>
                 </f:else>
             </f:if>
         </f:if>

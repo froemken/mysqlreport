@@ -37,9 +37,10 @@ return [
         'path' => '/module/mysqlreport/status',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.status',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            StatusController::class => ['index'],
+        'routes' => [
+            '_default' => [
+                'target' => StatusController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_innodb' => [
@@ -48,9 +49,10 @@ return [
         'path' => '/module/mysqlreport/innodb',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.innodb',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            InnoDBController::class => ['index'],
+        'routes' => [
+            '_default' => [
+                'target' => InnoDBController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_threadcache' => [
@@ -59,9 +61,10 @@ return [
         'path' => '/module/mysqlreport/threadcache',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.threadcache',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            ThreadCacheController::class => ['index'],
+        'routes' => [
+            '_default' => [
+                'target' => ThreadCacheController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_tablecache' => [
@@ -70,9 +73,10 @@ return [
         'path' => '/module/mysqlreport/tablecache',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.tablecache',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            TableCacheController::class => ['index'],
+        'routes' => [
+            '_default' => [
+                'target' => TableCacheController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_querycache' => [
@@ -81,9 +85,10 @@ return [
         'path' => '/module/mysqlreport/querycache',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.querycache',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            QueryCacheController::class => ['index'],
+        'routes' => [
+            '_default' => [
+                'target' => QueryCacheController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_misc' => [
@@ -92,9 +97,10 @@ return [
         'path' => '/module/mysqlreport/misc',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.misc',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            MiscController::class => ['index'],
+        'routes' => [
+            '_default' => [
+                'target' => MiscController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_filesort' => [
@@ -103,10 +109,10 @@ return [
         'path' => '/module/mysqlreport/filesort',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.filesort',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            FileSortController::class => ['index'],
-            ProfileController::class => ['info', 'queryProfiling'],
+        'routes' => [
+            '_default' => [
+                'target' => FileSortController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_fulltablescan' => [
@@ -115,10 +121,10 @@ return [
         'path' => '/module/mysqlreport/fulltablescan',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.fulltablescan',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            FullTableScanController::class => ['index'],
-            ProfileController::class => ['info', 'queryProfiling'],
+        'routes' => [
+            '_default' => [
+                'target' => FullTableScanController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_slowquery' => [
@@ -127,10 +133,10 @@ return [
         'path' => '/module/mysqlreport/slowquery',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.slowquery',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            SlowQueryController::class => ['index'],
-            ProfileController::class => ['info', 'queryProfiling'],
+        'routes' => [
+            '_default' => [
+                'target' => SlowQueryController::class . '::handleRequest',
+            ],
         ],
     ],
     'mysqlreport_profile' => [
@@ -139,15 +145,27 @@ return [
         'path' => '/module/mysqlreport/profile',
         'iconIdentifier' => 'ext-mysqlreport-module',
         'labels' => 'mysqlreport.module.profile',
-        'extensionName' => 'Mysqlreport',
-        'controllerActions' => [
-            ProfileController::class => [
-                'list',
-                'show',
-                'queryType',
-                'info',
-                'queryProfiling',
-                'download',
+        'routes' => [
+            '_default' => [
+                'target' => ProfileController::class . '::handleRequest',
+            ],
+            'list' => [
+                'target' => ProfileController::class . '::listAction',
+            ],
+            'show' => [
+                'target' => ProfileController::class . '::showAction',
+            ],
+            'queryType' => [
+                'target' => ProfileController::class . '::queryTypeAction',
+            ],
+            'info' => [
+                'target' => ProfileController::class . '::infoAction',
+            ],
+            'queryProfiling' => [
+                'target' => ProfileController::class . '::queryProfilingAction',
+            ],
+            'download' => [
+                'target' => ProfileController::class . '::downloadAction',
             ],
         ],
     ],

@@ -1,6 +1,7 @@
 <html lang="en"
       xmlns:f="http://typo3.org/ns/TYPO3/CMS/Fluid/ViewHelpers"
       xmlns:be="http://typo3.org/ns/TYPO3/CMS/Backend/ViewHelpers"
+      xmlns:core="http://typo3.org/ns/TYPO3/CMS/Core/ViewHelpers"
       data-namespace-typo3-fluid="true">
 
 <f:layout name="Module"/>
@@ -37,12 +38,11 @@
                     {queryInformationRecord.duration}
                 </td>
                 <td>
-                    <f:link.action action="info"
-                                   controller="Profile"
-                                   class="btn btn-default"
-                                   arguments="{uid: queryInformationRecord.uid, prevController: 'FileSort'}">
+                    <f:be.link route="mysqlreport_profile"
+                               parameters="{action: 'info', uid: queryInformationRecord.uid, prevRoute: 'mysqlreport_filesort'}"
+                               class="btn btn-default">
                         <core:icon identifier="actions-search"/>
-                    </f:link.action>
+                    </f:be.link>
                 </td>
             </tr>
         </f:for>
