@@ -87,6 +87,9 @@ services:
     tags:
       - name: reports.status
 
+  # The "@?" prefix marks Doctrine\SqlFormatter\SqlFormatter as an optional service.
+  # This ensures the extension works smoothly in Classic/ZIP installations where
+  # "doctrine/sql-formatter" is not available via Composer.
   StefanFroemken\Mysqlreport\ViewHelper\Format\SqlViewHelper:
     calls:
       - setSqlFormatter: ['@?Doctrine\SqlFormatter\SqlFormatter']

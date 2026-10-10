@@ -15,10 +15,18 @@ use Doctrine\SqlFormatter\SqlFormatter;
 use TYPO3Fluid\Fluid\Core\ViewHelper\AbstractViewHelper;
 
 /**
- * ViewHelper to format a SQL statement, as far as "doctrine/sql-formatter" is available
+ * ViewHelper to format a SQL statement using "doctrine/sql-formatter" when available.
+ *
+ * In Classic/ZIP installations where "doctrine/sql-formatter" might not be present,
+ * the formatter dependency is optional and a sanitized fallback is rendered.
  */
-class SqlViewHelper extends AbstractViewHelper
+final class SqlViewHelper extends AbstractViewHelper
 {
+    /**
+     * SqlFormatter returns HTML markup, so output escaping must be disabled.
+     */
+    protected $escapeOutput = false;
+
     private ?SqlFormatter $sqlFormatter = null;
 
     public function setSqlFormatter(SqlFormatter $sqlFormatter): void
@@ -39,9 +47,9 @@ class SqlViewHelper extends AbstractViewHelper
 
     public function render(): string
     {
-        $query = trim($this->arguments['query'] ?? '');
-        if ($query === '') {
-            $query = $this->renderChildren();
+        $query = trim((string)($this->arguments['query'] ?? ''));
+        if ($query === '' && ($this->renderChildrenClosure !== null || $this->viewHelperNode !== null)) {
+            $query = trim((string)$this->renderChildren());
         }
 
         if ($query === '') {
@@ -49,7 +57,7 @@ class SqlViewHelper extends AbstractViewHelper
         }
 
         if (!$this->sqlFormatter instanceof SqlFormatter) {
-            return $query;
+            return htmlspecialchars($query, ENT_QUOTES | ENT_HTML5, 'UTF-8');
         }
 
         return $this->sqlFormatter->format($query);
