@@ -20,7 +20,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 /**
  * Helper to analyze an EXPLAIN query result and add information to QueryInformation model
  */
-final readonly class ExplainQueryHelper
+readonly class ExplainQueryHelper
 {
     public function __construct(
         private ConnectionPool $connectionPool,
