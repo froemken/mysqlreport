@@ -13,7 +13,6 @@ namespace StefanFroemken\Mysqlreport\Doctrine\Middleware;
 
 use Doctrine\DBAL\Driver;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
-use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Database\Middleware\UsableForConnectionInterface;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -21,9 +20,13 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
 /**
  * With the new driverMiddlewares-hook of TYPO3 we register a Middleware into Doctrine.
  */
-readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInterface
+final readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInterface
 {
-    use DatabaseConnectionTrait;
+    private const VALID_DRIVERS = ['mysqli', 'pdo_mysql'];
+
+    public function __construct(
+        private ExtConf $extConf,
+    ) {}
 
     /**
      * @param array<string, string> $connectionParams
@@ -34,11 +37,11 @@ readonly class LoggerWithQueryTimeMiddleware implements UsableForConnectionInter
             return false;
         }
 
-        if (!$this->isValidConnectionDriver($connectionParams['driver'] ?? '')) {
+        if (!in_array($connectionParams['driver'] ?? '', self::VALID_DRIVERS, true)) {
             return false;
         }
 
-        return GeneralUtility::makeInstance(ExtConf::class)->isQueryLoggingActivated();
+        return $this->extConf->isQueryLoggingActivated();
     }
 
     public function wrap(Driver $driver): Driver

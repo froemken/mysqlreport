@@ -14,23 +14,25 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Repository to get the MySQL/MariaDB VARIABLES
  */
-readonly class VariablesRepository
+final readonly class VariablesRepository
 {
-    use DatabaseConnectionTrait;
-
-    public function __construct(private LoggerInterface $logger) {}
+    public function __construct(
+        private ConnectionPool $connectionPool,
+        private LoggerInterface $logger,
+    ) {}
 
     public function findAll(): Variables
     {
         $rows = [];
 
         try {
-            $result = $this->getDefaultConnection()->executeQuery('SHOW GLOBAL VARIABLES');
+            $connection = $this->connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+            $result = $connection->executeQuery('SHOW GLOBAL VARIABLES');
             while ($row = $result->fetchAssociative()) {
                 $rows[$row['Variable_name']] = $row['Value'];
             }

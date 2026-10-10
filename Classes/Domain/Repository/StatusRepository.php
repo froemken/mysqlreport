@@ -14,16 +14,15 @@ namespace StefanFroemken\Mysqlreport\Domain\Repository;
 use Doctrine\DBAL\Exception;
 use Psr\Log\LoggerInterface;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Repository to get the MySQL/MariaDB STATUS values
  */
-readonly class StatusRepository
+final readonly class StatusRepository
 {
-    use DatabaseConnectionTrait;
-
     public function __construct(
+        private ConnectionPool $connectionPool,
         private LoggerInterface $logger,
     ) {}
 
@@ -32,7 +31,8 @@ readonly class StatusRepository
         $rows = [];
 
         try {
-            $result = $this->getDefaultConnection()->executeQuery('SHOW GLOBAL STATUS');
+            $connection = $this->connectionPool->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME);
+            $result = $connection->executeQuery('SHOW GLOBAL STATUS');
             while ($row = $result->fetchAssociative()) {
                 $rows[$row['Variable_name']] = $row['Value'];
             }

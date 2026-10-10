@@ -34,13 +34,13 @@ class ProfileControllerTest extends UnitTestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $repository = $this->createMock(QueryInformationRepository::class);
-        $repository->expects(self::once())
+        $repository->expects($this->once())
             ->method('getQueryInformationRecordsForDownloadByUniqueIdentifier')
             ->with('test-uuid', self::isType('array'))
             ->willReturn([['query' => 'SELECT 1']]);
 
         $downloadHelper = $this->createMock(DownloadHelper::class);
-        $downloadHelper->expects(self::once())
+        $downloadHelper->expects($this->once())
             ->method('asCSV')
             ->willReturn($response);
 
@@ -70,13 +70,13 @@ class ProfileControllerTest extends UnitTestCase
         $response = $this->createMock(ResponseInterface::class);
 
         $repository = $this->createMock(QueryInformationRepository::class);
-        $repository->expects(self::once())
+        $repository->expects($this->once())
             ->method('getQueryInformationRecordsForDownloadByUniqueIdentifier')
             ->with('test-uuid', self::isType('array'))
             ->willReturn([['query' => 'SELECT 1']]);
 
         $downloadHelper = $this->createMock(DownloadHelper::class);
-        $downloadHelper->expects(self::once())
+        $downloadHelper->expects($this->once())
             ->method('asJSON')
             ->willReturn($response);
 

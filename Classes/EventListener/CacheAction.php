@@ -11,19 +11,20 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\EventListener;
 
-use StefanFroemken\Mysqlreport\Traits\DatabaseConnectionTrait;
 use TYPO3\CMS\Backend\Backend\Event\ModifyClearCacheActionsEvent;
 use TYPO3\CMS\Backend\Routing\Exception\RouteNotFoundException;
 use TYPO3\CMS\Backend\Routing\UriBuilder;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 
 /**
  * Create ClearCache entry and process Cache Clearing of mysqlreport
  */
-readonly class CacheAction
+final readonly class CacheAction
 {
-    use DatabaseConnectionTrait;
+    private const TABLE = 'tx_mysqlreport_query_information';
 
     public function __construct(
+        private ConnectionPool $connectionPool,
         private UriBuilder $uriBuilder,
     ) {}
 
@@ -55,7 +56,7 @@ readonly class CacheAction
             isset($params['cacheCmd'])
             && $params['cacheCmd'] === 'mysqlprofiles'
         ) {
-            $this->getConnectionForMySqlReport()->truncate('tx_mysqlreport_query_information');
+            $this->connectionPool->getConnectionForTable(self::TABLE)->truncate(self::TABLE);
         }
     }
 }

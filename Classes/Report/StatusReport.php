@@ -14,14 +14,13 @@ namespace StefanFroemken\Mysqlreport\Report;
 use StefanFroemken\Mysqlreport\Configuration\ExtConf;
 use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Reports\Status;
 use TYPO3\CMS\Reports\StatusProviderInterface;
 
 /**
  * Provides a status report about mysqlreport
  */
-readonly class StatusReport implements StatusProviderInterface
+final readonly class StatusReport implements StatusProviderInterface
 {
     public function __construct(
         private ExtConf $extConf,
@@ -37,8 +36,7 @@ readonly class StatusReport implements StatusProviderInterface
         }
 
         return [
-            'addExplain' => GeneralUtility::makeInstance(
-                Status::class,
+            'addExplain' => new Status(
                 'Add EXPLAIN',
                 $this->getAddExplainValue() ? 'Active' : 'Deactivated',
                 'If active, it slows down your system. Further it may break queries which relates to insert_id and affected_rows',

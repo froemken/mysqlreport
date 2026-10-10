@@ -30,14 +30,16 @@ class QueryInformationFactoryTest extends UnitTestCase
 {
     private QueryInformationFactory $subject;
 
+    private Context $context;
+
     private int $time;
 
     protected function setUp(): void
     {
         $this->time = time();
 
-        $context = GeneralUtility::makeInstance(Context::class);
-        $context->setAspect('date', new DateTimeAspect(new \DateTimeImmutable('@' . $this->time)));
+        $this->context = new Context();
+        $this->context->setAspect('date', new DateTimeAspect(new \DateTimeImmutable('@' . $this->time)));
 
         $_SERVER = array_merge($_SERVER, [
             'REMOTE_ADDR' => '123.124.125.126',
@@ -64,13 +66,14 @@ class QueryInformationFactoryTest extends UnitTestCase
             Environment::isWindows() ? 'WINDOWS' : 'UNIX',
         );
 
-        $this->subject = new QueryInformationFactory();
+        $this->subject = new QueryInformationFactory($this->context);
     }
 
     protected function tearDown(): void
     {
         unset(
             $this->subject,
+            $this->context,
             $GLOBALS['TYPO3_REQUEST'],
         );
         GeneralUtility::purgeInstances();
@@ -93,7 +96,7 @@ class QueryInformationFactoryTest extends UnitTestCase
         $GLOBALS['TYPO3_REQUEST'] = (new ServerRequest('https://www.example.com/typo3/?id=30', 'GET', 'php://input', [], $_SERVER))
             ->withAttribute('applicationType', SystemEnvironmentBuilder::REQUESTTYPE_BE);
 
-        $this->subject = new QueryInformationFactory();
+        $this->subject = new QueryInformationFactory($this->context);
 
         self::assertSame(
             30,

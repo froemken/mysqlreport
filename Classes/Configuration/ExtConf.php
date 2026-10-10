@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Configuration;
 
-use StefanFroemken\Mysqlreport\Traits\Typo3RequestTrait;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autoconfigure;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationExtensionNotConfiguredException;
 use TYPO3\CMS\Core\Configuration\Exception\ExtensionConfigurationPathDoesNotExistException;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Core\Environment;
+use TYPO3\CMS\Core\Http\ApplicationType;
 
 /**
  * This class streamlines all settings from the extension manager
@@ -24,8 +25,6 @@ use TYPO3\CMS\Core\Core\Environment;
 #[Autoconfigure(constructor: 'create')]
 final readonly class ExtConf
 {
-    use Typo3RequestTrait;
-
     private const EXT_KEY = 'mysqlreport';
 
     private const DEFAULT_SETTINGS = [
@@ -91,15 +90,22 @@ final readonly class ExtConf
         return $this->slowQueryThreshold;
     }
 
-    public function isQueryLoggingActivated(): bool
+    public function isQueryLoggingActivated(?ServerRequestInterface $request = null): bool
     {
         if (Environment::isCli()) {
             return false;
         }
 
-        if ($this->enableFrontendLogging && !$this->isBackendRequest()) {
+        $request ??= $GLOBALS['TYPO3_REQUEST'] ?? null;
+        if (!$request instanceof ServerRequestInterface) {
+            return false;
+        }
+
+        $applicationType = ApplicationType::fromRequest($request);
+        if ($this->enableFrontendLogging && $applicationType->isFrontend()) {
             return true;
         }
-        return $this->enableBackendLogging && $this->isBackendRequest();
+
+        return $this->enableBackendLogging && $applicationType->isBackend();
     }
 }
