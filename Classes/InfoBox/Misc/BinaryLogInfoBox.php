@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -25,17 +26,13 @@ final readonly class BinaryLogInfoBox implements InfoBoxInterface
 {
     public const TITLE = 'Binary Log';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            isset($this->statusValues['Slave_running'])
+            isset($statusValues['Slave_running'])
             && (
-                strtolower($this->statusValues['Slave_running']) === 'off'
-                || (int)$this->statusValues['Slave_running'] === 0
+                strtolower($statusValues['Slave_running']) === 'off'
+                || (int)$statusValues['Slave_running'] === 0
             )
         ) {
             $content = [];

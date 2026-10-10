@@ -12,48 +12,50 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Dashboard\Provider;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepositoryInterface;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-readonly class CreatedTempTablesDataProvider implements ChartDataProviderInterface
+final readonly class CreatedTempTablesDataProvider implements ChartDataProviderInterface
 {
-    private StatusValues $statusValues;
-
-    public function __construct(StatusRepository $statusRepository)
-    {
-        $this->statusValues = $statusRepository->findAll();
-    }
+    public function __construct(
+        private StatusRepositoryInterface $statusRepository,
+    ) {}
 
     /**
      * @return array<string, array<mixed>>
      */
     public function getChartData(): array
     {
+        $statusValues = $this->statusRepository->findAll();
+
         return [
             'labels' => ['Disc', 'RAM'],
             'datasets' => [
                 [
                     'backgroundColor' => $this->getChartColors(),
                     'border' => 0,
-                    'data' => [$this->getCreatedTablesOnDisc(), $this->getCreatedTablesInRAM()],
+                    'data' => [
+                        $this->getCreatedTablesOnDisc($statusValues),
+                        $this->getCreatedTablesInRAM($statusValues),
+                    ],
                 ],
             ],
         ];
     }
 
-    private function getCreatedTablesOnDisc(): int
+    private function getCreatedTablesOnDisc(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Created_tmp_disk_tables'] ?? 0);
+        return (int)($statusValues['Created_tmp_disk_tables'] ?? 0);
     }
 
-    private function getCreatedTablesInRAM(): int
+    private function getCreatedTablesInRAM(StatusValues $statusValues): int
     {
-        return $this->getCreatedTablesInTotal() - $this->getCreatedTablesOnDisc();
+        return $this->getCreatedTablesInTotal($statusValues) - $this->getCreatedTablesOnDisc($statusValues);
     }
 
-    private function getCreatedTablesInTotal(): int
+    private function getCreatedTablesInTotal(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Created_tmp_tables'] ?? 0);
+        return (int)($statusValues['Created_tmp_tables'] ?? 0);
     }
 
     /**

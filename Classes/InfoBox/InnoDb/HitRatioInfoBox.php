@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -28,17 +29,13 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
 {
     public const TITLE = 'Hit Ratio';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
             !isset(
-                $this->statusValues['Innodb_page_size'],
-                $this->statusValues['Innodb_buffer_pool_read_requests'],
-                $this->statusValues['Innodb_buffer_pool_reads'],
+                $statusValues['Innodb_page_size'],
+                $statusValues['Innodb_buffer_pool_read_requests'],
+                $statusValues['Innodb_buffer_pool_reads'],
             )
         ) {
             return '';
@@ -53,7 +50,7 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
 
         return sprintf(
             implode(' ', $content),
-            $this->getHitRatio(),
+            $this->getHitRatio($statusValues),
         );
     }
 
@@ -61,18 +58,16 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
      * get hit ratio of innoDb Buffer
      * A ratio of 99.9 equals 1/1000
      */
-    private function getHitRatio(): float
+    private function getHitRatio(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
-        $hitRatio = ($status['Innodb_buffer_pool_read_requests'] / ($status['Innodb_buffer_pool_read_requests'] + $status['Innodb_buffer_pool_reads'])) * 100;
+        $hitRatio = ($statusValues['Innodb_buffer_pool_read_requests'] / ($statusValues['Innodb_buffer_pool_read_requests'] + $statusValues['Innodb_buffer_pool_reads'])) * 100;
 
         return round($hitRatio, 2);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $hitRatio = $this->getHitRatio();
+        $hitRatio = $this->getHitRatio($statusValues);
         if ($hitRatio <= 90) {
             $state = ContextualFeedbackSeverity::ERROR;
         } elseif ($hitRatio <= 99.7) {

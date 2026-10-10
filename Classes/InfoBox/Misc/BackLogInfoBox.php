@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
@@ -27,13 +28,9 @@ final readonly class BackLogInfoBox implements InfoBoxInterface
 {
     public const TITLE = 'Back Log';
 
-    public function __construct(
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->variables['back_log'])) {
+        if (!isset($variables['back_log'])) {
             return '';
         }
 
@@ -48,7 +45,7 @@ final readonly class BackLogInfoBox implements InfoBoxInterface
 
         return sprintf(
             implode(' ', $content),
-            $this->variables['back_log'],
+            $variables['back_log'],
             $this->getMaxNetworkRequests(),
         );
     }

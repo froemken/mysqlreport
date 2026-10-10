@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
@@ -29,20 +30,19 @@ final readonly class QueryCacheSizeTooHighInfoBox implements InfoBoxInterface, I
     public const TITLE = 'Query Cache too high';
 
     public function __construct(
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset($this->variables['query_cache_size'])
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
+            !isset($variables['query_cache_size'])
+            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
         ) {
             return '';
         }
 
-        if ($this->variables['query_cache_size'] < 268435456) {
+        if ($variables['query_cache_size'] < 268435456) {
             return '';
         }
 
@@ -54,7 +54,7 @@ final readonly class QueryCacheSizeTooHighInfoBox implements InfoBoxInterface, I
         return implode(' ', $content);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
         return ContextualFeedbackSeverity::ERROR;
     }

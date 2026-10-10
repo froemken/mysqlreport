@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
@@ -28,13 +29,9 @@ final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBo
 {
     public const TITLE = 'Max Packet Size';
 
-    public function __construct(
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->variables['max_allowed_packet'])) {
+        if (!isset($variables['max_allowed_packet'])) {
             return '';
         }
 
@@ -50,13 +47,13 @@ final readonly class MaxAllowedPacketInfoBox implements InfoBoxInterface, InfoBo
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
     {
         $unorderedList = new \SplQueue();
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed packet size in bytes (max_allowed_packet)',
-            value: $this->variables['max_allowed_packet'],
+            value: $variables['max_allowed_packet'],
         ));
 
         return $unorderedList;

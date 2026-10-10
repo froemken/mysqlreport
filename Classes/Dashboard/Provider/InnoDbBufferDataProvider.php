@@ -13,28 +13,27 @@ namespace StefanFroemken\Mysqlreport\Dashboard\Provider;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
-use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepositoryInterface;
+use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepositoryInterface;
 use TYPO3\CMS\Dashboard\WidgetApi;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-readonly class InnoDbBufferDataProvider implements ChartDataProviderInterface
+final readonly class InnoDbBufferDataProvider implements ChartDataProviderInterface
 {
-    private StatusValues $statusValues;
-
-    private Variables $variables;
-
-    public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
-    {
-        $this->statusValues = $statusRepository->findAll();
-        $this->variables = $variablesRepository->findAll();
-    }
+    public function __construct(
+        private StatusRepositoryInterface $statusRepository,
+        private VariablesRepositoryInterface $variablesRepository,
+    ) {}
 
     /**
      * @return array<string, array<mixed>>
      */
     public function getChartData(): array
     {
+        $statusValues = $this->statusRepository->findAll();
+        $variables = $this->variablesRepository->findAll();
+        $pageSize = $this->getPageSize($variables);
+
         return [
             'labels' => ['Data Buffer', 'Misc Buffer', 'Free Buffer'],
             'datasets' => [
@@ -42,34 +41,38 @@ readonly class InnoDbBufferDataProvider implements ChartDataProviderInterface
                     'label' => 'MB',
                     'backgroundColor' => WidgetApi::getDefaultChartColors(),
                     'border' => 0,
-                    'data' => [$this->getDataBuffer(), $this->getMiscBuffer(), $this->getFreeBuffer()],
+                    'data' => [
+                        $this->getDataBuffer($statusValues, $pageSize),
+                        $this->getMiscBuffer($statusValues, $pageSize),
+                        $this->getFreeBuffer($statusValues, $pageSize),
+                    ],
                 ],
             ],
         ];
     }
 
-    private function getDataBuffer(): float
+    private function getDataBuffer(StatusValues $statusValues, int $pageSize): float
     {
-        return $this->getStatusValueInMB((int)($this->statusValues['Innodb_buffer_pool_pages_data'] ?? 0));
+        return $this->getStatusValueInMB((int)($statusValues['Innodb_buffer_pool_pages_data'] ?? 0), $pageSize);
     }
 
-    private function getMiscBuffer(): float
+    private function getMiscBuffer(StatusValues $statusValues, int $pageSize): float
     {
-        return $this->getStatusValueInMB((int)($this->statusValues['Innodb_buffer_pool_pages_misc'] ?? 0));
+        return $this->getStatusValueInMB((int)($statusValues['Innodb_buffer_pool_pages_misc'] ?? 0), $pageSize);
     }
 
-    private function getFreeBuffer(): float
+    private function getFreeBuffer(StatusValues $statusValues, int $pageSize): float
     {
-        return $this->getStatusValueInMB((int)($this->statusValues['Innodb_buffer_pool_pages_free'] ?? 0));
+        return $this->getStatusValueInMB((int)($statusValues['Innodb_buffer_pool_pages_free'] ?? 0), $pageSize);
     }
 
-    private function getPageSize(): int
+    private function getPageSize(Variables $variables): int
     {
-        return (int)($this->variables['innodb_page_size'] ?? 0);
+        return (int)($variables['innodb_page_size'] ?? 0);
     }
 
-    private function getStatusValueInMB(int $statusValue): float
+    private function getStatusValueInMB(int $statusValue, int $pageSize): float
     {
-        return round((float)($statusValue * $this->getPageSize() / 1024 / 1024), 2);
+        return round((float)($statusValue * $pageSize / 1024 / 1024), 2);
     }
 }

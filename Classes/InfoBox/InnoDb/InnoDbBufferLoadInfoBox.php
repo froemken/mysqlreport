@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\InnoDb;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
@@ -29,13 +30,9 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
 {
     public const TITLE = 'InnoDB Buffer Load';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->statusValues['Innodb_page_size'])) {
+        if (!isset($statusValues['Innodb_page_size'])) {
             return '';
         }
 
@@ -46,7 +43,7 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
 
         return sprintf(
             implode(' ', $content),
-            $this->statusValues['Innodb_page_size'],
+            $statusValues['Innodb_page_size'],
         );
     }
 
@@ -55,16 +52,15 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
      *
      * @return array<string, float|string>
      */
-    private function getLoad(): array
+    private function getLoad(StatusValues $statusValues): array
     {
         $load = [];
-        $status = $this->statusValues;
 
         // in Bytes
-        $total = $status['Innodb_buffer_pool_pages_total'] * $status['Innodb_page_size'];
-        $data = $status['Innodb_buffer_pool_pages_data'] * $status['Innodb_page_size'];
-        $misc = $status['Innodb_buffer_pool_pages_misc'] * $status['Innodb_page_size'];
-        $free = $status['Innodb_buffer_pool_pages_free'] * $status['Innodb_page_size'];
+        $total = $statusValues['Innodb_buffer_pool_pages_total'] * $statusValues['Innodb_page_size'];
+        $data = $statusValues['Innodb_buffer_pool_pages_data'] * $statusValues['Innodb_page_size'];
+        $misc = $statusValues['Innodb_buffer_pool_pages_misc'] * $statusValues['Innodb_page_size'];
+        $free = $statusValues['Innodb_buffer_pool_pages_free'] * $statusValues['Innodb_page_size'];
 
         // in MB
         $load['total'] = GeneralUtility::formatSize($total, '| KB| MB| GB| TB| PB| EB| ZB| YB');
@@ -83,11 +79,11 @@ final readonly class InnoDbBufferLoadInfoBox implements InfoBoxInterface, InfoBo
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
     {
         $unorderedList = new \SplQueue();
 
-        $load = $this->getLoad();
+        $load = $this->getLoad($statusValues);
 
         $unorderedList->enqueue(new ListElement(
             title: 'Total',

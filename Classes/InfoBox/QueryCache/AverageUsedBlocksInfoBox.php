@@ -30,17 +30,15 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
     public const TITLE = 'Average Used Blocks';
 
     public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset($this->statusValues['Qcache_queries_in_cache'])
-            || (int)$this->statusValues['Qcache_queries_in_cache'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
+            !isset($statusValues['Qcache_queries_in_cache'])
+            || (int)$statusValues['Qcache_queries_in_cache'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
         ) {
             return '';
         }
@@ -51,8 +49,8 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
 
         return sprintf(
             implode(' ', $content),
-            $this->getAvgUsedBlocks(),
-            $this->variables['query_cache_limit'],
+            $this->getAvgUsedBlocks($statusValues),
+            $variables['query_cache_limit'],
         );
     }
 
@@ -63,13 +61,11 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
      *
      * @link: http://dev.mysql.com/doc/refman/5.0/en/query-cache-status-and-maintenance.html
      */
-    private function getAvgUsedBlocks(): float
+    private function getAvgUsedBlocks(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
         $avgUsedBlocks = 0;
-        $usedBlocks = $status['Qcache_total_blocks'] - $status['Qcache_free_blocks'];
-        $minimumUsedBlocks = $status['Qcache_queries_in_cache'] * 2; // see link above
+        $usedBlocks = $statusValues['Qcache_total_blocks'] - $statusValues['Qcache_free_blocks'];
+        $minimumUsedBlocks = $statusValues['Qcache_queries_in_cache'] * 2; // see link above
         if ($minimumUsedBlocks) {
             $avgUsedBlocks = $usedBlocks / $minimumUsedBlocks;
         }
@@ -80,7 +76,7 @@ final readonly class AverageUsedBlocksInfoBox implements InfoBoxInterface, InfoB
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
     {
         $unorderedList = new \SplQueue();
 

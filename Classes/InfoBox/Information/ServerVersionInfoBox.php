@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\Information;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
@@ -28,11 +29,7 @@ final readonly class ServerVersionInfoBox implements InfoBoxInterface, InfoBoxUn
 {
     public const TITLE = 'Server Information';
 
-    public function __construct(
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         return 'The following server information was found:';
     }
@@ -40,35 +37,35 @@ final readonly class ServerVersionInfoBox implements InfoBoxInterface, InfoBoxUn
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
     {
         $unorderedList = new \SplQueue();
 
-        if (isset($this->variables['version'])) {
+        if (isset($variables['version'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version',
-                value: $this->variables['version'],
+                value: $variables['version'],
             ));
         }
 
-        if (isset($this->variables['version_comment'])) {
+        if (isset($variables['version_comment'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version comment',
-                value: $this->variables['version_comment'],
+                value: $variables['version_comment'],
             ));
         }
 
-        if (isset($this->variables['version_compile_machine'])) {
+        if (isset($variables['version_compile_machine'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version compile machine',
-                value: $this->variables['version_compile_machine'],
+                value: $variables['version_compile_machine'],
             ));
         }
 
-        if (isset($this->variables['version_compile_os'])) {
+        if (isset($variables['version_compile_os'])) {
             $unorderedList->enqueue(new ListElement(
                 title: 'Version compile OS',
-                value: $this->variables['version_compile_os'],
+                value: $variables['version_compile_os'],
             ));
         }
 

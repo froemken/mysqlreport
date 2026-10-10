@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox;
 
+use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
+
 interface InfoBoxInterface
 {
     public const TITLE = '';
 
-    public function getBody(): string;
+    public function getBody(StatusValues $statusValues, Variables $variables): string;
 }

@@ -31,17 +31,15 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
     public const TITLE = 'Hit Ratio';
 
     public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset($this->statusValues['Qcache_hits'])
-            || (int)$this->statusValues['Qcache_hits'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
+            !isset($statusValues['Qcache_hits'])
+            || (int)$statusValues['Qcache_hits'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
         ) {
             return '';
         }
@@ -53,22 +51,20 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
 
         return sprintf(
             implode(' ', $content),
-            $this->getHitRatio(),
+            $this->getHitRatio($statusValues),
         );
     }
 
-    private function getHitRatio(): float
+    private function getHitRatio(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
-        $hitRatio = ($status['Qcache_hits'] / ($status['Qcache_hits'] + $status['Com_select'])) * 100;
+        $hitRatio = ($statusValues['Qcache_hits'] / ($statusValues['Qcache_hits'] + $statusValues['Com_select'])) * 100;
 
         return round($hitRatio, 4);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $hitRatio = $this->getHitRatio();
+        $hitRatio = $this->getHitRatio($statusValues);
         if ($hitRatio <= 20) {
             $state = ContextualFeedbackSeverity::ERROR;
         } elseif ($hitRatio <= 40) {

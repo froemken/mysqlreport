@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\InfoBox\Misc;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
+use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 
@@ -25,14 +26,10 @@ final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
 {
     public const TITLE = 'Sync Binary Log';
 
-    public function __construct(
-        private StatusValues $statusValues,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         // Sync_binlog does not exist on MariaDB
-        if (!isset($this->statusValues['Sync_binlog'])) {
+        if (!isset($statusValues['Sync_binlog'])) {
             return '';
         }
 
@@ -45,7 +42,7 @@ final readonly class SyncBinaryLogInfoBox implements InfoBoxInterface
 
         return sprintf(
             implode(' ', $content),
-            $this->statusValues['Sync_binlog'] ? 'ON' : 'OFF',
+            $statusValues['Sync_binlog'] ? 'ON' : 'OFF',
         );
     }
 }

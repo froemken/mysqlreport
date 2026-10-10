@@ -33,14 +33,9 @@ final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, 
 {
     public const TITLE = 'Opened Table Definitions';
 
-    public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->statusValues['Opened_table_definitions'])) {
+        if (!isset($statusValues['Opened_table_definitions'])) {
             return '';
         }
 
@@ -51,11 +46,9 @@ final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, 
     /**
      * Get the number of opened table definitions each second
      */
-    private function getOpenedTableDefinitionsEachSecond(): float
+    private function getOpenedTableDefinitionsEachSecond(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
-        $openedTableDefinitions = $status['Opened_table_definitions'] / $status['Uptime'];
+        $openedTableDefinitions = $statusValues['Opened_table_definitions'] / $statusValues['Uptime'];
 
         return round($openedTableDefinitions, 4);
     }
@@ -63,29 +56,29 @@ final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, 
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
     {
         $unorderedList = new \SplQueue();
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables since server start (Opened_table_definitions)',
-            value: $this->statusValues['Opened_table_definitions'],
+            value: $statusValues['Opened_table_definitions'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Open tables in cache (Open_table_definitions)',
-            value: $this->statusValues['Open_table_definitions'],
+            value: $statusValues['Open_table_definitions'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed tables in cache (table_definition_cache)',
-            value: $this->variables['table_definition_cache'],
+            value: $variables['table_definition_cache'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened table definitions each second',
             value: number_format(
-                $this->getOpenedTableDefinitionsEachSecond(),
+                $this->getOpenedTableDefinitionsEachSecond($statusValues),
                 2,
                 ',',
                 '.',
@@ -95,9 +88,9 @@ final readonly class OpenedTableDefinitionsInfoBox implements InfoBoxInterface, 
         return $unorderedList;
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $openedTableDefinitions = $this->getOpenedTableDefinitionsEachSecond();
+        $openedTableDefinitions = $this->getOpenedTableDefinitionsEachSecond($statusValues);
         if ($openedTableDefinitions <= 0.3) {
             $state = ContextualFeedbackSeverity::OK;
         } elseif ($openedTableDefinitions <= 2) {

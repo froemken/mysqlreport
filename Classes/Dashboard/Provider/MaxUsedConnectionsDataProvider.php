@@ -13,52 +13,53 @@ namespace StefanFroemken\Mysqlreport\Dashboard\Provider;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
-use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepositoryInterface;
+use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepositoryInterface;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-readonly class MaxUsedConnectionsDataProvider implements ChartDataProviderInterface
+final readonly class MaxUsedConnectionsDataProvider implements ChartDataProviderInterface
 {
-    private StatusValues $statusValues;
-
-    private Variables $variables;
-
-    public function __construct(StatusRepository $statusRepository, VariablesRepository $variablesRepository)
-    {
-        $this->statusValues = $statusRepository->findAll();
-        $this->variables = $variablesRepository->findAll();
-    }
+    public function __construct(
+        private StatusRepositoryInterface $statusRepository,
+        private VariablesRepositoryInterface $variablesRepository,
+    ) {}
 
     /**
      * @return array<string, array<mixed>>
      */
     public function getChartData(): array
     {
+        $statusValues = $this->statusRepository->findAll();
+        $variables = $this->variablesRepository->findAll();
+
         return [
             'labels' => ['Max Used Connections', 'Free Connections'],
             'datasets' => [
                 [
                     'backgroundColor' => $this->getChartColors(),
                     'border' => 0,
-                    'data' => [$this->getMaxUsedConnections(), $this->getFreeConnections()],
+                    'data' => [
+                        $this->getMaxUsedConnections($statusValues),
+                        $this->getFreeConnections($statusValues, $variables),
+                    ],
                 ],
             ],
         ];
     }
 
-    private function getMaxConnections(): int
+    private function getMaxConnections(Variables $variables): int
     {
-        return (int)($this->variables['max_connections'] ?? 0);
+        return (int)($variables['max_connections'] ?? 0);
     }
 
-    private function getFreeConnections(): int
+    private function getFreeConnections(StatusValues $statusValues, Variables $variables): int
     {
-        return $this->getMaxConnections() - $this->getMaxUsedConnections();
+        return $this->getMaxConnections($variables) - $this->getMaxUsedConnections($statusValues);
     }
 
-    private function getMaxUsedConnections(): int
+    private function getMaxUsedConnections(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Max_used_connections'] ?? 0);
+        return (int)($statusValues['Max_used_connections'] ?? 0);
     }
 
     /**

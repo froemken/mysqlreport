@@ -30,17 +30,15 @@ final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, Info
     public const TITLE = 'Fragmentation Ratio';
 
     public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
         private QueryCacheHelper $queryCacheHelper,
     ) {}
 
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
         if (
-            !isset($this->statusValues['Qcache_total_blocks'])
-            || (int)$this->statusValues['Qcache_total_blocks'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($this->variables)
+            !isset($statusValues['Qcache_total_blocks'])
+            || (int)$statusValues['Qcache_total_blocks'] === 0
+            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
         ) {
             return '';
         }
@@ -55,23 +53,21 @@ final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, Info
 
         return sprintf(
             implode(' ', $content),
-            $this->getFragmentationRatio(),
+            $this->getFragmentationRatio($statusValues),
         );
     }
 
-    private function getFragmentationRatio(): float
+    private function getFragmentationRatio(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-
         // total blocks / 2 = maximum fragmentation
-        $fragmentation = ($status['Qcache_free_blocks'] / ($status['Qcache_total_blocks'] / 2)) * 100;
+        $fragmentation = ($statusValues['Qcache_free_blocks'] / ($statusValues['Qcache_total_blocks'] / 2)) * 100;
 
         return round($fragmentation, 4);
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $fragmentation = $this->getFragmentationRatio();
+        $fragmentation = $this->getFragmentationRatio($statusValues);
         if ($fragmentation <= 15) {
             $state = ContextualFeedbackSeverity::OK;
         } elseif ($fragmentation <= 25) {

@@ -33,14 +33,9 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
 {
     public const TITLE = 'Opened Tables';
 
-    public function __construct(
-        private StatusValues $statusValues,
-        private Variables $variables,
-    ) {}
-
-    public function getBody(): string
+    public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (!isset($this->statusValues['Opened_tables'])) {
+        if (!isset($statusValues['Opened_tables'])) {
             return '';
         }
 
@@ -54,10 +49,9 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
     /**
      * get number of opened tables each second
      */
-    private function getOpenedTablesEachSecond(): float
+    private function getOpenedTablesEachSecond(StatusValues $statusValues): float
     {
-        $status = $this->statusValues;
-        $openedTables = $status['Opened_tables'] / $status['Uptime'];
+        $openedTables = $statusValues['Opened_tables'] / $statusValues['Uptime'];
 
         return round($openedTables, 4);
     }
@@ -65,34 +59,34 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
     /**
      * @return \SplQueue<ListElement>
      */
-    public function getUnorderedList(): \SplQueue
+    public function getUnorderedList(StatusValues $statusValues, Variables $variables): \SplQueue
     {
         $unorderedList = new \SplQueue();
 
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables since server start (Opened_tables)',
-            value: $this->statusValues['Opened_tables'],
+            value: $statusValues['Opened_tables'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Open tables in cache (Open_tables)',
-            value: $this->statusValues['Open_tables'],
+            value: $statusValues['Open_tables'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max allowed tables in cache (table_open_cache)',
-            value: $this->variables['table_open_cache'],
+            value: $variables['table_open_cache'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Max file descriptors the mysqld process can use (open_files_limit)',
-            value: $this->variables['open_files_limit'],
+            value: $variables['open_files_limit'],
         ));
 
         $unorderedList->enqueue(new ListElement(
             title: 'Calculated table_open_cache with 5 tables and 2 reserved file descriptors',
             value: number_format(
-                $this->variables['max_connections'] * (5 + 2),
+                $variables['max_connections'] * (5 + 2),
                 0,
                 ',',
                 '.',
@@ -102,7 +96,7 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
         $unorderedList->enqueue(new ListElement(
             title: 'Calculated table_open_cache with 8 tables and 3 reserved file descriptors',
             value: number_format(
-                $this->variables['max_connections'] * (8 + 3),
+                $variables['max_connections'] * (8 + 3),
                 0,
                 ',',
                 '.',
@@ -112,7 +106,7 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
         $unorderedList->enqueue(new ListElement(
             title: 'Opened tables each second',
             value: number_format(
-                $this->getOpenedTablesEachSecond(),
+                $this->getOpenedTablesEachSecond($statusValues),
                 2,
                 ',',
                 '.',
@@ -122,9 +116,9 @@ final readonly class OpenedTablesInfoBox implements InfoBoxInterface, InfoBoxUno
         return $unorderedList;
     }
 
-    public function getState(): ContextualFeedbackSeverity
+    public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $openedTables = $this->getOpenedTablesEachSecond();
+        $openedTables = $this->getOpenedTablesEachSecond($statusValues);
         if ($openedTables <= 0.6) {
             $state = ContextualFeedbackSeverity::OK;
         } elseif ($openedTables <= 4) {

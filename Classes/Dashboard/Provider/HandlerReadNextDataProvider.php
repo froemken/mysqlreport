@@ -12,23 +12,22 @@ declare(strict_types=1);
 namespace StefanFroemken\Mysqlreport\Dashboard\Provider;
 
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
-use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepository;
+use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepositoryInterface;
 use TYPO3\CMS\Dashboard\Widgets\ChartDataProviderInterface;
 
-readonly class HandlerReadNextDataProvider implements ChartDataProviderInterface
+final readonly class HandlerReadNextDataProvider implements ChartDataProviderInterface
 {
-    private StatusValues $statusValues;
-
-    public function __construct(StatusRepository $statusRepository)
-    {
-        $this->statusValues = $statusRepository->findAll();
-    }
+    public function __construct(
+        private StatusRepositoryInterface $statusRepository,
+    ) {}
 
     /**
      * @return array<string, array<mixed>>
      */
     public function getChartData(): array
     {
+        $statusValues = $this->statusRepository->findAll();
+
         return [
             'labels' => ['Disc', 'RAM'],
             'datasets' => [
@@ -36,20 +35,23 @@ readonly class HandlerReadNextDataProvider implements ChartDataProviderInterface
                     'label' => 'reads',
                     'backgroundColor' => $this->getChartColors(),
                     'border' => 0,
-                    'data' => [$this->getHandlerReadRndNext(), $this->getHandlerReadNext()],
+                    'data' => [
+                        $this->getHandlerReadRndNext($statusValues),
+                        $this->getHandlerReadNext($statusValues),
+                    ],
                 ],
             ],
         ];
     }
 
-    private function getHandlerReadRndNext(): int
+    private function getHandlerReadRndNext(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Handler_read_rnd_next'] ?? 0);
+        return (int)($statusValues['Handler_read_rnd_next'] ?? 0);
     }
 
-    private function getHandlerReadNext(): int
+    private function getHandlerReadNext(StatusValues $statusValues): int
     {
-        return (int)($this->statusValues['Handler_read_next'] ?? 0);
+        return (int)($statusValues['Handler_read_next'] ?? 0);
     }
 
     /**

@@ -19,7 +19,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 /**
  * Repository to get the MySQL/MariaDB STATUS values
  */
-final readonly class StatusRepository
+final readonly class StatusRepository implements StatusRepositoryInterface
 {
     public function __construct(
         private ConnectionPool $connectionPool,
