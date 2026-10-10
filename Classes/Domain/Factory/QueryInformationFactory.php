@@ -70,7 +70,7 @@ final readonly class QueryInformationFactory
 
     private function resolvePageUid(?ServerRequestInterface $request): int
     {
-        if ($request !== null) {
+        if ($request instanceof ServerRequestInterface) {
             $pageArguments = $request->getAttribute('routing');
             if ($pageArguments instanceof PageArguments) {
                 return $pageArguments->getPageId();
@@ -87,36 +87,36 @@ final readonly class QueryInformationFactory
 
     private function resolveIp(?ServerRequestInterface $request): string
     {
-        if ($request === null) {
+        if (!$request instanceof ServerRequestInterface) {
             return '';
         }
         $normalizedParams = $request->getAttribute('normalizedParams');
         if ($normalizedParams instanceof NormalizedParams) {
-            return (string)$normalizedParams->getRemoteAddress();
+            return $normalizedParams->getRemoteAddress();
         }
         return '';
     }
 
     private function resolveReferer(?ServerRequestInterface $request): string
     {
-        if ($request === null) {
+        if (!$request instanceof ServerRequestInterface) {
             return '';
         }
         $normalizedParams = $request->getAttribute('normalizedParams');
         if ($normalizedParams instanceof NormalizedParams) {
-            return (string)$normalizedParams->getHttpReferer();
+            return $normalizedParams->getHttpReferer();
         }
         return '';
     }
 
     private function resolveRequestUrl(?ServerRequestInterface $request): string
     {
-        if ($request === null) {
+        if (!$request instanceof ServerRequestInterface) {
             return '';
         }
         $normalizedParams = $request->getAttribute('normalizedParams');
         if ($normalizedParams instanceof NormalizedParams) {
-            return (string)$normalizedParams->getRequestUrl();
+            return $normalizedParams->getRequestUrl();
         }
         return '';
     }
@@ -127,7 +127,7 @@ final readonly class QueryInformationFactory
             return 'CLI';
         }
 
-        if ($request !== null) {
+        if ($request instanceof ServerRequestInterface) {
             $applicationType = ApplicationType::fromRequest($request);
             return $applicationType->isBackend() ? 'BE' : 'FE';
         }

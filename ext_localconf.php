@@ -20,12 +20,10 @@ $GLOBALS['TYPO3_CONF_VARS']['DB']['Connections']['Default']['driverMiddlewares']
     ],
 ];
 
-if (!isset($GLOBALS['TYPO3_CONF_VARS']['LOG']['StefanFroemken']['Mysqlreport']['writerConfiguration'])) {
-    $GLOBALS['TYPO3_CONF_VARS']['LOG']['StefanFroemken']['Mysqlreport']['writerConfiguration'] = [
-        LogLevel::INFO => [
-            FileWriter::class => [
-                'logFileInfix' => 'mysqlreport',
-            ],
+$GLOBALS['TYPO3_CONF_VARS']['LOG']['StefanFroemken']['Mysqlreport']['writerConfiguration'] ??= [
+    LogLevel::INFO => [
+        FileWriter::class => [
+            'logFileInfix' => 'mysqlreport',
         ],
-    ];
-}
+    ],
+];
