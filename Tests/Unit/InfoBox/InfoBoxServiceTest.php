@@ -11,22 +11,38 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\Tests\Unit\InfoBox;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use PHPUnit\Framework\Attributes\Test;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Domain\Repository\StatusRepositoryInterface;
 use StefanFroemken\Mysqlreport\Domain\Repository\VariablesRepositoryInterface;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxAvailabilityInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxItem;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxService;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxUnorderedListInterface;
 use StefanFroemken\Mysqlreport\InfoBox\ListElement;
+use TYPO3\CMS\Core\Database\Connection;
+use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\TestingFramework\Core\Unit\UnitTestCase;
 
 final class InfoBoxServiceTest extends UnitTestCase
 {
+    private function createConnectionPoolMock(): ConnectionPool
+    {
+        $platform = $this->createMock(AbstractPlatform::class);
+        $connection = $this->createMock(Connection::class);
+        $connection->method('getDatabasePlatform')->willReturn($platform);
+
+        $connectionPool = $this->createMock(ConnectionPool::class);
+        $connectionPool->method('getConnectionByName')->willReturn($connection);
+
+        return $connectionPool;
+    }
+
     #[Test]
     public function buildInfoBoxesBuildsItemsWithCorrectData(): void
     {
@@ -85,6 +101,7 @@ final class InfoBoxServiceTest extends UnitTestCase
         $service = new InfoBoxService(
             $statusRepository,
             $variablesRepository,
+            $this->createConnectionPoolMock(),
         );
 
         $items = $service->buildInfoBoxes([$dummyInfoBox, $emptyInfoBox]);
@@ -120,11 +137,69 @@ final class InfoBoxServiceTest extends UnitTestCase
             }
         };
 
-        $service = new InfoBoxService($statusRepository, $variablesRepository);
+        $service = new InfoBoxService(
+            $statusRepository,
+            $variablesRepository,
+            $this->createConnectionPoolMock(),
+        );
         $items = $service->buildInfoBoxes([$simpleInfoBox]);
 
         self::assertCount(1, $items);
         self::assertSame(ContextualFeedbackSeverity::INFO, $items[0]->getState());
         self::assertSame([], $items[0]->getUnorderedList());
+    }
+
+    #[Test]
+    public function buildInfoBoxesFiltersOutUnavailableInfoBoxes(): void
+    {
+        $statusRepository = $this->createMock(StatusRepositoryInterface::class);
+        $statusRepository->method('findAll')->willReturn(new StatusValues([]));
+
+        $variablesRepository = $this->createMock(VariablesRepositoryInterface::class);
+        $variablesRepository->method('findAll')->willReturn(new Variables([]));
+
+        $unavailableBox = new class () implements InfoBoxInterface, InfoBoxAvailabilityInterface {
+            public function isAvailable(AbstractPlatform $platform, Variables $variables, StatusValues $statusValues): bool
+            {
+                return false;
+            }
+
+            public function getTitle(): string
+            {
+                return 'Unavailable Box';
+            }
+
+            public function getBody(StatusValues $statusValues, Variables $variables): string
+            {
+                return 'Should not be seen';
+            }
+        };
+
+        $availableBox = new class () implements InfoBoxInterface, InfoBoxAvailabilityInterface {
+            public function isAvailable(AbstractPlatform $platform, Variables $variables, StatusValues $statusValues): bool
+            {
+                return true;
+            }
+
+            public function getTitle(): string
+            {
+                return 'Available Box';
+            }
+
+            public function getBody(StatusValues $statusValues, Variables $variables): string
+            {
+                return 'Visible';
+            }
+        };
+
+        $service = new InfoBoxService(
+            $statusRepository,
+            $variablesRepository,
+            $this->createConnectionPoolMock(),
+        );
+        $items = $service->buildInfoBoxes([$unavailableBox, $availableBox]);
+
+        self::assertCount(1, $items);
+        self::assertSame('Available Box', $items[0]->getTitle());
     }
 }

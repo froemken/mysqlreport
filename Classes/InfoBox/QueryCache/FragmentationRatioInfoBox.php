@@ -11,21 +11,23 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxAvailabilityInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
- * InfoBox to inform about the current query cache fragmentation ratio
+ * InfoBox to inform about the current query cache fragmentation ratio.
  */
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
 )]
-final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
+final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface, InfoBoxAvailabilityInterface
 {
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
@@ -36,50 +38,62 @@ final readonly class FragmentationRatioInfoBox implements InfoBoxInterface, Info
         return 'Fragmentation Ratio';
     }
 
+    public function isAvailable(
+        AbstractPlatform $platform,
+        Variables $variables,
+        StatusValues $statusValues,
+    ): bool {
+        return $this->queryCacheHelper->isQueryCacheEnabled($variables);
+    }
+
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (
-            !isset($statusValues['Qcache_total_blocks'])
-            || (int)$statusValues['Qcache_total_blocks'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
-        ) {
+        $totalBlocks = (int)($statusValues['Qcache_total_blocks'] ?? 0);
+        $freeBlocks = (int)($statusValues['Qcache_free_blocks'] ?? 0);
+
+        if ($totalBlocks === 0) {
             return '';
         }
 
-        $content = [
-            'You can defragment query cache with FLUSH QUERY CACHE if you are allowed to (RELOAD privileges).',
-            'While processing FLUSH, query cache is not available and all queries will be blocked for that duration.',
-            'But this command is very fast if your query_cache_size is small.',
-            'If you want to clear query cache you should use: RESET QUERY CACHE',
-            "\n\n",
-            'Fragmentation Ratio: %f%%',
+        $fragmentation = $this->calculateFragmentation($freeBlocks, $totalBlocks);
+
+        $paragraphs = [
+            sprintf('The current Query Cache memory fragmentation ratio is %.2f%%.', $fragmentation),
+            'When memory is fragmented, queries may be pruned prematurely even if overall free memory is available.',
+            'You can defragment the cache with "FLUSH QUERY CACHE". Note that this locks the cache mutex temporarily.',
         ];
 
-        return sprintf(
-            implode(' ', $content),
-            $this->getFragmentationRatio($statusValues),
-        );
-    }
-
-    private function getFragmentationRatio(StatusValues $statusValues): float
-    {
-        // total blocks / 2 = maximum fragmentation
-        $fragmentation = ($statusValues['Qcache_free_blocks'] / ($statusValues['Qcache_total_blocks'] / 2)) * 100;
-
-        return round($fragmentation, 4);
+        return implode("\n\n", $paragraphs);
     }
 
     public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $fragmentation = $this->getFragmentationRatio($statusValues);
-        if ($fragmentation <= 15) {
-            $state = ContextualFeedbackSeverity::OK;
-        } elseif ($fragmentation <= 25) {
-            $state = ContextualFeedbackSeverity::WARNING;
-        } else {
-            $state = ContextualFeedbackSeverity::ERROR;
+        $totalBlocks = (int)($statusValues['Qcache_total_blocks'] ?? 0);
+        $freeBlocks = (int)($statusValues['Qcache_free_blocks'] ?? 0);
+        $fragmentation = $this->calculateFragmentation($freeBlocks, $totalBlocks);
+
+        if ($fragmentation <= 15.0) {
+            return ContextualFeedbackSeverity::OK;
         }
 
-        return $state;
+        if ($fragmentation <= 25.0) {
+            return ContextualFeedbackSeverity::WARNING;
+        }
+
+        return ContextualFeedbackSeverity::ERROR;
+    }
+
+    private function calculateFragmentation(int $freeBlocks, int $totalBlocks): float
+    {
+        if ($totalBlocks <= 0) {
+            return 0.0;
+        }
+
+        $maxFragmentedBlocks = $totalBlocks / 2;
+        if ($maxFragmentedBlocks <= 0) {
+            return 0.0;
+        }
+
+        return round(($freeBlocks / $maxFragmentedBlocks) * 100, 2);
     }
 }
