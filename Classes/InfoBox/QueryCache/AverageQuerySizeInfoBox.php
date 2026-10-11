@@ -61,7 +61,7 @@ final readonly class AverageQuerySizeInfoBox implements InfoBoxInterface, InfoBo
             sprintf(
                 'Average query size in cache is %s (query_cache_min_res_unit: %s).',
                 GeneralUtility::formatSize((int)$avgSize),
-                GeneralUtility::formatSize((int)$minResUnit),
+                GeneralUtility::formatSize($minResUnit),
             ),
             'Each cached query allocates memory in blocks of query_cache_min_res_unit. '
             . 'If your average query size is much smaller, reducing this setting saves memory and reduces fragmentation.',

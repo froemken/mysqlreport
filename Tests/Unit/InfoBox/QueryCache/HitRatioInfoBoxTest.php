@@ -13,6 +13,7 @@ namespace StefanFroemken\Mysqlreport\Tests\Unit\InfoBox\QueryCache;
 
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\MockObject\MockObject;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
@@ -24,7 +25,7 @@ final class HitRatioInfoBoxTest extends UnitTestCase
 {
     private QueryCacheHelper $queryCacheHelper;
     private HitRatioInfoBox $infoBox;
-    private AbstractPlatform $platform;
+    private AbstractPlatform&MockObject $platform;
 
     protected function setUp(): void
     {
