@@ -11,22 +11,24 @@ declare(strict_types=1);
 
 namespace StefanFroemken\Mysqlreport\InfoBox\QueryCache;
 
+use Doctrine\DBAL\Platforms\AbstractPlatform;
 use StefanFroemken\Mysqlreport\Domain\Model\StatusValues;
 use StefanFroemken\Mysqlreport\Domain\Model\Variables;
 use StefanFroemken\Mysqlreport\Helper\QueryCacheHelper;
+use StefanFroemken\Mysqlreport\InfoBox\InfoBoxAvailabilityInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxInterface;
 use StefanFroemken\Mysqlreport\InfoBox\InfoBoxStateInterface;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 
 /**
- * InfoBox to inform about the current query cache hit ratio
+ * InfoBox to inform about the current query cache hit ratio.
  */
 #[AutoconfigureTag(
     name: 'mysqlreport.infobox.query_cache',
     attributes: ['priority' => 80],
 )]
-final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface
+final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateInterface, InfoBoxAvailabilityInterface
 {
     public function __construct(
         private QueryCacheHelper $queryCacheHelper,
@@ -37,46 +39,72 @@ final readonly class HitRatioInfoBox implements InfoBoxInterface, InfoBoxStateIn
         return 'Hit Ratio';
     }
 
+    public function isAvailable(
+        AbstractPlatform $platform,
+        Variables $variables,
+        StatusValues $statusValues,
+    ): bool {
+        return $this->queryCacheHelper->isQueryCacheEnabled($variables);
+    }
+
     public function getBody(StatusValues $statusValues, Variables $variables): string
     {
-        if (
-            !isset($statusValues['Qcache_hits'])
-            || (int)$statusValues['Qcache_hits'] === 0
-            || !$this->queryCacheHelper->isQueryCacheEnabled($variables)
-        ) {
+        $hits = (int)($statusValues['Qcache_hits'] ?? 0);
+        $selects = (int)($statusValues['Com_select'] ?? 0);
+        $total = $hits + $selects;
+
+        if ($total === 0) {
             return '';
         }
 
-        $content = [
-            'As higher as better.',
-            "\n\n",
-            'Hit Ratio: %f',
+        $hitRatio = $this->calculateHitRatio($hits, $total);
+
+        $paragraphs = [
+            sprintf('The current Query Cache hit ratio is %.2f%%.', $hitRatio),
+            sprintf('Formula: Qcache_hits (%d) / (Qcache_hits (%d) + Com_select (%d)) * 100', $hits, $hits, $selects),
+            $this->getAdviceForHitRatio($hitRatio),
         ];
 
-        return sprintf(
-            implode(' ', $content),
-            $this->getHitRatio($statusValues),
-        );
-    }
-
-    private function getHitRatio(StatusValues $statusValues): float
-    {
-        $hitRatio = ($statusValues['Qcache_hits'] / ($statusValues['Qcache_hits'] + $statusValues['Com_select'])) * 100;
-
-        return round($hitRatio, 4);
+        return implode("\n\n", $paragraphs);
     }
 
     public function getState(StatusValues $statusValues, Variables $variables): ContextualFeedbackSeverity
     {
-        $hitRatio = $this->getHitRatio($statusValues);
-        if ($hitRatio <= 20) {
-            $state = ContextualFeedbackSeverity::ERROR;
-        } elseif ($hitRatio <= 40) {
-            $state = ContextualFeedbackSeverity::WARNING;
-        } else {
-            $state = ContextualFeedbackSeverity::OK;
+        $hits = (int)($statusValues['Qcache_hits'] ?? 0);
+        $total = $hits + (int)($statusValues['Com_select'] ?? 0);
+        $hitRatio = $this->calculateHitRatio($hits, $total);
+
+        if ($hitRatio >= 50.0) {
+            return ContextualFeedbackSeverity::OK;
         }
 
-        return $state;
+        if ($hitRatio >= 25.0) {
+            return ContextualFeedbackSeverity::WARNING;
+        }
+
+        return ContextualFeedbackSeverity::ERROR;
+    }
+
+    private function calculateHitRatio(int $hits, int $total): float
+    {
+        if ($total <= 0) {
+            return 0.0;
+        }
+
+        return round(($hits / $total) * 100, 2);
+    }
+
+    private function getAdviceForHitRatio(float $hitRatio): string
+    {
+        if ($hitRatio >= 50.0) {
+            return 'A hit ratio above 50% indicates that the cache effectively serves a significant portion of read queries.';
+        }
+
+        if ($hitRatio >= 25.0) {
+            return 'A hit ratio between 25% and 50% offers moderate benefit. Observe whether write queries frequently invalidate entries.';
+        }
+
+        return 'A hit ratio below 25% indicates that most queries bypass the cache. The mutex overhead of cache management '
+            . 'likely exceeds any performance gains. Consider disabling the Query Cache.';
     }
 }
