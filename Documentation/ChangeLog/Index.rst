@@ -157,7 +157,7 @@ Version 2.0.0
 Version 1.1.5
 =============
 
-*   Use :php:`->fetch()` instead of :php:`->fetchAssociative()` for TYPO3 v10
+*   Use `->fetch()` instead of `->fetchAssociative()` for TYPO3 v10
     standalone compatibility
 
 ..  _changelog-1-1-4:
